@@ -1,0 +1,57 @@
+GAME DESIGN DOCUMENT: "Cat Detective" (Working Title)
+1. GAME OVERVIEW
+Concept: A cozy, narrative-driven isometric mystery game where the player controls a housecat solving human crimes (e.g., stolen diamonds, poisoning, murder).
+Genre: Point-and-Click / Isometric Detective Adventure.
+Perspective: 2.5D Isometric (Fixed-camera, pre-rendered backgrounds).
+Platform: Web browser (HTML5/WASM) via MonoGame (KNI framework).
+Target Scope: Short, highly polished indie experience meant to be developed solo over a few months.
+2. CORE GAMEPLAY LOOP
+The game relies on environmental storytelling and logical deduction rather than complex inventory management or branching dialogue trees. It is broken into two distinct phases:
+Phase 1: Information Gathering (The Map)
+Exploration: The cat explores a static, highly detailed isometric room.
+Smell Mode: The player can activate a "Smell Mode" (applying a dark blue tint to the screen) which highlights hidden clues like footprints, dropped items, or lingering scents.
+Inspection: Clicking on an item pops up a high-resolution, LLM-generated close-up image of the clue with a single line of descriptive text (e.g., "A torn piece of red fabric. It smells like cheap cologne.").
+Keyword Acquisition: Discovering clues automatically adds "Keywords" to the player’s notebook (e.g., [Red Fabric],[Poison], [10:00 PM]).
+Phase 2: Synthesis (The Deduction Board)
+Inspired by Return of the Obra Dinn and The Case of the Golden Idol.
+The player presses a button to open the "Deduction Board"—a UI screen displaying a "Mad Libs" style fill-in-the-blank sentence:
+"The diamond was stolen by ______, who entered through the ______ at ______."
+The player drags and drops their collected keywords into the slots.
+Win Condition: A simple boolean logic check. If the keywords match the expected solution, the case is solved, triggering a success animation and unlocking the next level.
+3. ART & AESTHETIC DIRECTION
+Visual Style: "Studio Ghibli Painted Diorama." Warm, cozy, detailed watercolor/digital painting with baked-in soft lighting.
+Backgrounds: Flat, pre-rendered 2D images generated via LLMs (Midjourney/DALL-E), depicting isolated isometric rooms on a clean background.
+Character Design: A chubby, stylized grey-and-white tabby cat with bright green eyes.
+Animation Approach:
+4-Directional movement achieved using only 2 walk cycles (Diagonally Down, Diagonally Up). The Left variations are achieved purely in code via SpriteEffects.FlipHorizontally.
+Walk cycles are derived from AI-generated sprite sheets, cut out in Photoshop, with shadows manually removed.
+4. TECHNICAL IMPLEMENTATION
+Engine & Framework
+Framework: MonoGame (using the KNI fork). KNI is chosen specifically for its robust support for Web/WASM builds, allowing the game to be easily shared and played in a browser.
+Language: C#.
+Map Editor: Tiled (.tmx / .json export).
+Rendering & Depth (The 2.5D Illusion)
+The game mimics a 3D isometric environment using purely 2D assets and logic.
+Y-Sorting: The core rendering trick. In the MonoGame Update() loop, the layerDepth of the Cat sprite is constantly updated based on its bottom Y-coordinate. If the cat walks "up" the screen, its Y-value decreases, automatically drawing it behind foreground furniture.
+The "Matryoshka" Layering: Rooms are split into:
+Base Canvas (Floor & Back walls).
+Y-Sorted Props (Desks, chairs).
+Front Wall Cutouts (Walls closest to the camera).
+Wall Fading: Tiled NavMesh trigger zones will be placed behind front-facing walls. When the cat's collision box intersects this zone, MonoGame uses MathHelper.Lerp to smoothly fade the front wall's alpha to 0.4f, revealing the cat behind it.
+Level Design Structure
+The "Movie Set" Approach: To avoid the complex Z-axis collision math of multi-story buildings, all rooms for a specific case (e.g., Exterior, 1st Floor, 2nd Floor) will be drawn side-by-side on a single massive, flat map.
+When the cat enters a door, their X/Y coordinates are instantly teleported to the adjacent "room" on the canvas, creating a seamless, no-load-screen transition.
+"El Mariachi" Lighting Hacks
+To ensure the uniformly colored Cat sprite blends into the richly lit AI backgrounds without expensive 3D shaders:
+Tint Zones: Tiled invisible collision boxes placed over dark areas of the map. Entering them Lerps the Cat’s SpriteBatch color to a moody blue/grey.
+Additive Light Masks: Sunbeams or lamp glows are exported from Photoshop as standalone semi-transparent PNGs and drawn on top of the Cat in MonoGame to wash the sprite out naturally.
+Blob Shadow: A simple, semi-transparent black oval drawn directly under the Cat's X/Y coordinates to ground the sprite to the floor at all times.
+5. DEVELOPMENT WORKFLOW (Asset Pipeline)
+Generate Environment: Use LLM to generate the isometric room ("empty room, isolated on white background, Studio Ghibli style").
+Photoshop Prep: Cut out the floor, separate the foreground walls/props, paint over sunbeams for additive masks. Export as labeled PNGs.
+Tiled Mapping: Load the Base Floor PNG into Tiled. Draw NavMesh collision polygons for walls, interactive trigger zones for clues, and lighting zones. Export to MonoGame.
+Code Logic: Hook up the Tiled coordinates to MonoGame collision events, populate the Deduction Board logic, and playtest.
+6. SCOPE & MILESTONES (3-Month Solo Plan)
+Month 1: The Engine & Core Systems. Get MonoGame KNI running. Implement Y-sorting, Tiled map importing, basic cat movement, wall fading, and the "Blob Shadow".
+Month 2: The Gameplay Loop. Build the UI for the "Smell Mode" shader, Clue pop-ups, and the Mad Libs Deduction Board. Create one fully playable test room.
+Month 3: Content & Web Export. Generate the art for 3 distinct cases (e.g., The Mansion, The Train cabin, The Museum). Implement sound effects. Export and test the WASM web build.
