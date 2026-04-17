@@ -60,6 +60,7 @@ Content/obj/DesktopGL/net8.0/Content/prop_desk.mgcontent
 Content/obj/DesktopGL/net8.0/Content/shadow_blob.mgcontent
 Content/obj/DesktopGL/net8.0/Content/spr_cat_walk_down.mgcontent
 Content/obj/DesktopGL/net8.0/Content/spr_cat_walk_up.mgcontent
+Content/obj/DesktopGL/net8.0/Content/walk_animation_forward.mgcontent
 Content/room_map.json
 DebugHelper.cs
 dotnet-tools.json
@@ -82,12 +83,59 @@ obj/Debug/net8.0/CatDetective.sourcelink.json
 obj/project.assets.json
 obj/project.nuget.cache
 Program.cs
+run_game.md
 Tiled maps/untitledcat_detective.tiled-project
 Tiled maps/untitledcat_detective.tiled-session
 </directory_structure>
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="Content/obj/DesktopGL/net8.0/Content/walk_animation_forward.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png</SourceFile>
+  <SourceTime>2026-04-17T14:23:03.786398+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/walk_animation_forward.xnb</DestFile>
+  <DestTime>2026-04-17T14:23:31.2457185+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="run_game.md">
+dotnet build
+dotnet run
+</file>
 
 <file path=".claude/settings.local.json">
 {
@@ -369,19 +417,19 @@ This section contains the contents of the repository's files.
                  "y":764.058858486422
                 }, 
                 {
-                 "height":15.3333333333334,
+                 "height":103.333333333333,
                  "id":58,
                  "name":"",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":168,
-                 "x":525.799757124771,
-                 "y":773.392191819756
+                 "width":470,
+                 "x":223.799757124771,
+                 "y":685.392191819756
                 }, 
                 {
-                 "height":128,
+                 "height":92.0000000000001,
                  "id":59,
                  "name":"",
                  "opacity":1,
@@ -390,7 +438,7 @@ This section contains the contents of the repository's files.
                  "visible":true,
                  "width":8,
                  "x":781.799757124771,
-                 "y":509.392191819756
+                 "y":545.392191819755
                 }, 
                 {
                  "height":46.6666666666667,
@@ -463,54 +511,6 @@ This section contains the contents of the repository's files.
                  "width":54.6666666666667,
                  "x":680.466423791437,
                  "y":680.058858486422
-                }, 
-                {
-                 "height":4,
-                 "id":66,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":21.3333333333334,
-                 "x":776.466423791437,
-                 "y":497.392191819756
-                }, 
-                {
-                 "height":62.6666666666667,
-                 "id":67,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":22.6666666666667,
-                 "x":776.466423791437,
-                 "y":481.392191819756
-                }, 
-                {
-                 "height":14.6666666666667,
-                 "id":68,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":24,
-                 "x":736.466423791437,
-                 "y":460.058858486422
-                }, 
-                {
-                 "height":18.6666666666666,
-                 "id":69,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":28,
-                 "x":753.799757124771,
-                 "y":474.725525153089
                 }, 
                 {
                  "height":78.6666666666666,
@@ -631,8 +631,7 @@ This section contains the contents of the repository's files.
                  "width":61.3333333333333,
                  "x":267.133090458104,
                  "y":601.392191819755
-                },
-            
+                }, 
                 {
                  "height":142.666666666667,
                  "id":81,
@@ -693,14 +692,14 @@ This section contains the contents of the repository's files.
          "name":"Triggers",
          "objects":[
                 {
-                 "height":319.634912022324,
+                 "height":403.634912022324,
                  "id":10,
                  "name":"desk_fade",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":539.750406945198,
+                 "width":466.417073611865,
                  "x":253.505464692659,
                  "y":335.271839392295
                 }, 
@@ -734,6 +733,66 @@ This section contains the contents of the repository's files.
  "version":"1.10",
  "width":33
 }
+</file>
+
+<file path="cat detective GDD.txt">
+GAME DESIGN DOCUMENT: "Cat Detective" (Working Title)
+1. GAME OVERVIEW
+Concept: A cozy, narrative-driven isometric mystery game where the player controls a housecat solving human crimes (e.g., stolen diamonds, poisoning, murder).
+Genre: Point-and-Click / Isometric Detective Adventure.
+Perspective: 2.5D Isometric (Fixed-camera, pre-rendered backgrounds).
+Platform: Web browser (HTML5/WASM) via MonoGame (KNI framework).
+Target Scope: Short, highly polished indie experience meant to be developed solo over a few months.
+2. CORE GAMEPLAY LOOP
+The game relies on environmental storytelling and logical deduction rather than complex inventory management or branching dialogue trees. It is broken into two distinct phases:
+Phase 1: Information Gathering (The Map)
+Exploration: The cat explores a static, highly detailed isometric room.
+Smell Mode: The player can activate a "Smell Mode" (applying a dark blue tint to the screen) which highlights hidden clues like footprints, dropped items, or lingering scents.
+Inspection: Clicking on an item pops up a high-resolution, LLM-generated close-up image of the clue with a single line of descriptive text (e.g., "A torn piece of red fabric. It smells like cheap cologne.").
+Keyword Acquisition: Discovering clues automatically adds "Keywords" to the player’s notebook (e.g., [Red Fabric],[Poison], [10:00 PM]).
+Phase 2: Synthesis (The Deduction Board)
+Inspired by Return of the Obra Dinn and The Case of the Golden Idol.
+The player presses a button to open the "Deduction Board"—a UI screen displaying a "Mad Libs" style fill-in-the-blank sentence:
+"The diamond was stolen by ______, who entered through the ______ at ______."
+The player drags and drops their collected keywords into the slots.
+Win Condition: A simple boolean logic check. If the keywords match the expected solution, the case is solved, triggering a success animation and unlocking the next level.
+3. ART & AESTHETIC DIRECTION
+Visual Style: "Studio Ghibli Painted Diorama." Warm, cozy, detailed watercolor/digital painting with baked-in soft lighting.
+Backgrounds: Flat, pre-rendered 2D images generated via LLMs (Midjourney/DALL-E), depicting isolated isometric rooms on a clean background.
+Character Design: A chubby, stylized grey-and-white tabby cat with bright green eyes.
+Animation Approach:
+4-Directional movement achieved using only 2 walk cycles (Diagonally Down, Diagonally Up). The Left variations are achieved purely in code via SpriteEffects.FlipHorizontally.
+Walk cycles are derived from AI-generated sprite sheets, cut out in Photoshop, with shadows manually removed.
+4. TECHNICAL IMPLEMENTATION
+Engine & Framework
+Framework: MonoGame (using the KNI fork). KNI is chosen specifically for its robust support for Web/WASM builds, allowing the game to be easily shared and played in a browser.
+Language: C#.
+Map Editor: Tiled (.tmx / .json export).
+Rendering & Depth (The 2.5D Illusion)
+The game mimics a 3D isometric environment using purely 2D assets and logic.
+Y-Sorting: The core rendering trick. In the MonoGame Update() loop, the layerDepth of the Cat sprite is constantly updated based on its bottom Y-coordinate. If the cat walks "up" the screen, its Y-value decreases, automatically drawing it behind foreground furniture.
+The "Matryoshka" Layering: Rooms are split into:
+Base Canvas (Floor & Back walls).
+Y-Sorted Props (Desks, chairs).
+Front Wall Cutouts (Walls closest to the camera).
+Wall Fading: Tiled NavMesh trigger zones will be placed behind front-facing walls. When the cat's collision box intersects this zone, MonoGame uses MathHelper.Lerp to smoothly fade the front wall's alpha to 0.4f, revealing the cat behind it.
+Level Design Structure
+The "Movie Set" Approach: To avoid the complex Z-axis collision math of multi-story buildings, all rooms for a specific case (e.g., Exterior, 1st Floor, 2nd Floor) will be drawn side-by-side on a single massive, flat map.
+When the cat enters a door, their X/Y coordinates are instantly teleported to the adjacent "room" on the canvas, creating a seamless, no-load-screen transition.
+"El Mariachi" Lighting Hacks
+To ensure the uniformly colored Cat sprite blends into the richly lit AI backgrounds without expensive 3D shaders:
+Tint Zones: Tiled invisible collision boxes placed over dark areas of the map. Entering them Lerps the Cat’s SpriteBatch color to a moody blue/grey.
+Additive Light Masks: Sunbeams or lamp glows are exported from Photoshop as standalone semi-transparent PNGs and drawn on top of the Cat in MonoGame to wash the sprite out naturally.
+Blob Shadow: A simple, semi-transparent black oval drawn directly under the Cat's X/Y coordinates to ground the sprite to the floor at all times.
+5. DEVELOPMENT WORKFLOW (Asset Pipeline)
+Generate Environment: Use LLM to generate the isometric room ("empty room, isolated on white background, Studio Ghibli style").
+Photoshop Prep: Cut out the floor, separate the foreground walls/props, paint over sunbeams for additive masks. Export as labeled PNGs.
+Tiled Mapping: Load the Base Floor PNG into Tiled. Draw NavMesh collision polygons for walls, interactive trigger zones for clues, and lighting zones. Export to MonoGame.
+Code Logic: Hook up the Tiled coordinates to MonoGame collision events, populate the Deduction Board logic, and playtest.
+6. SCOPE & MILESTONES (3-Month Solo Plan)
+Month 1: The Engine & Core Systems. Get MonoGame KNI running. Implement Y-sorting, Tiled map importing, basic cat movement, wall fading, and the "Blob Shadow".
+Month 2: The Gameplay Loop. Build the UI for the "Smell Mode" shader, Clue pop-ups, and the Mad Libs Deduction Board. Create one fully playable test room.
+Month 3: Content & Web Export. Generate the art for 3 distinct cases (e.g., The Mansion, The Train cabin, The Museum). Implement sound effects. Export and test the WASM web build.
 </file>
 
 <file path="CatDetective.csproj">
@@ -1033,6 +1092,20 @@ with the appropriate KNI platform packages. No C# source changes are needed.
 /processorParam:TextureFormat=Color
 /build:spr_cat_walk_up.png
 
+# ── Walk animation (2100 x 700, 11 frames in a 6×2 grid) ─────────────────
+# Native PNG transparency — ColorKey disabled.
+
+#begin walk_animation_forward.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:walk_animation_forward.png
+
 # ── NOTE: room_map.json ────────────────────────────────────────────────────
 # Copied verbatim by the .csproj <Content> ItemGroup; not processed here.
 </file>
@@ -1051,8 +1124,10 @@ with the appropriate KNI platform packages. No C# source changes are needed.
     <File>C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_down.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
@@ -1067,12 +1142,13 @@ with the appropriate KNI platform packages. No C# source changes are needed.
 <file path="Content/obj/DesktopGL/net8.0/Content/.mgstats">
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
 "C:/Users/larry/Projecten/cat_detective/Content/bg_base.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/bg_base.xnb","TextureProcessor","Texture2DContent",2147366,4871253,0.2628493
-"C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/mask_sunbeams.xnb","TextureProcessor","Texture2DContent",57833,4871253,0.2111735
+"C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/mask_sunbeams.xnb","TextureProcessor","Texture2DContent",83310,4871253,0.5379857
 "C:/Users/larry/Projecten/cat_detective/Content/prop_cabinet.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_cabinet.xnb","TextureProcessor","Texture2DContent",240216,4871253,0.1396972
 "C:/Users/larry/Projecten/cat_detective/Content/prop_desk.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_desk.xnb","TextureProcessor","Texture2DContent",375223,4871253,0.1434539
 "C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/shadow_blob.xnb","TextureProcessor","Texture2DContent",103928,1430485,0.0440162
 "C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_down.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_down.xnb","TextureProcessor","Texture2DContent",104992,633037,0.1324254
 "C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_up.xnb","TextureProcessor","Texture2DContent",105940,633037,0.0234247
+"C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/walk_animation_forward.xnb","TextureProcessor","Texture2DContent",1156271,5880085,0.268237
 </file>
 
 <file path="Content/obj/DesktopGL/net8.0/Content/bg_base.mgcontent">
@@ -1124,9 +1200,9 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png</SourceFile>
-  <SourceTime>2026-04-16T20:12:48.6734408+02:00</SourceTime>
+  <SourceTime>2026-04-17T08:08:04.1417441+02:00</SourceTime>
   <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/mask_sunbeams.xnb</DestFile>
-  <DestTime>2026-04-16T20:13:36.2450336+02:00</DestTime>
+  <DestTime>2026-04-17T08:08:39.4715286+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
@@ -1545,19 +1621,19 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
                  "y":764.058858486422
                 }, 
                 {
-                 "height":15.3333333333334,
+                 "height":103.333333333333,
                  "id":58,
                  "name":"",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":168,
-                 "x":525.799757124771,
-                 "y":773.392191819756
+                 "width":470,
+                 "x":223.799757124771,
+                 "y":685.392191819756
                 }, 
                 {
-                 "height":128,
+                 "height":92.0000000000001,
                  "id":59,
                  "name":"",
                  "opacity":1,
@@ -1566,7 +1642,7 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
                  "visible":true,
                  "width":8,
                  "x":781.799757124771,
-                 "y":509.392191819756
+                 "y":545.392191819755
                 }, 
                 {
                  "height":46.6666666666667,
@@ -1639,54 +1715,6 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
                  "width":54.6666666666667,
                  "x":680.466423791437,
                  "y":680.058858486422
-                }, 
-                {
-                 "height":4,
-                 "id":66,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":21.3333333333334,
-                 "x":776.466423791437,
-                 "y":497.392191819756
-                }, 
-                {
-                 "height":62.6666666666667,
-                 "id":67,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":22.6666666666667,
-                 "x":776.466423791437,
-                 "y":481.392191819756
-                }, 
-                {
-                 "height":14.6666666666667,
-                 "id":68,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":24,
-                 "x":736.466423791437,
-                 "y":460.058858486422
-                }, 
-                {
-                 "height":18.6666666666666,
-                 "id":69,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":28,
-                 "x":753.799757124771,
-                 "y":474.725525153089
                 }, 
                 {
                  "height":78.6666666666666,
@@ -1807,8 +1835,7 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
                  "width":61.3333333333333,
                  "x":267.133090458104,
                  "y":601.392191819755
-                },
-            
+                }, 
                 {
                  "height":142.666666666667,
                  "id":81,
@@ -1869,14 +1896,14 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
          "name":"Triggers",
          "objects":[
                 {
-                 "height":319.634912022324,
+                 "height":403.634912022324,
                  "id":10,
                  "name":"desk_fade",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":539.750406945198,
+                 "width":466.417073611865,
                  "x":253.505464692659,
                  "y":335.271839392295
                 }, 
@@ -2000,7 +2027,9 @@ namespace CatDetective.Entities
         // ── Animation ─────────────────────────────────────────────────────────
         private readonly Texture2D _walkDownTexture;
         private readonly Texture2D _walkUpTexture;
-        private readonly int       _frameCount;      // Columns in the sprite sheet
+        private readonly int       _frameCount;
+        private readonly int       _columns;
+        private readonly int       _rows;
 
         private int   _frameWidth;
         private int   _frameHeight;
@@ -2022,20 +2051,26 @@ namespace CatDetective.Entities
         /// <param name="walkDownTexture">Sprite sheet for down/forward movement.</param>
         /// <param name="walkUpTexture">Sprite sheet for up/backward movement.</param>
         /// <param name="startPosition">Initial bottom-center world position.</param>
-        /// <param name="frameCount">Number of animation frames in each sheet.</param>
+        /// <param name="frameCount">Total number of animation frames in each sheet.</param>
+        /// <param name="columns">Number of columns in the sprite grid.</param>
+        /// <param name="rows">Number of rows in the sprite grid.</param>
         public Cat(
             Texture2D walkDownTexture,
             Texture2D walkUpTexture,
             Vector2   startPosition,
-            int       frameCount = 4)
+            int       frameCount = 11,
+            int       columns    = 6,
+            int       rows       = 2)
         {
             _walkDownTexture = walkDownTexture;
             _walkUpTexture   = walkUpTexture;
             _frameCount      = frameCount;
+            _columns         = columns;
+            _rows            = rows;
 
             Texture      = _walkDownTexture;
-            _frameWidth  = Texture.Width / _frameCount;
-            _frameHeight = Texture.Height;
+            _frameWidth  = Texture.Width  / _columns;
+            _frameHeight = Texture.Height / _rows;
 
             Position = startPosition;
             RefreshCollisionBox();
@@ -2102,9 +2137,11 @@ namespace CatDetective.Entities
         {
             if (Texture == null) return;
 
-            // Source rectangle selects the current animation frame from the sheet.
+            // Source rectangle selects the current animation frame from the grid.
+            int currentColumn = _currentFrame % _columns;
+            int currentRow    = _currentFrame / _columns;
             var sourceRect = new Rectangle(
-                _currentFrame * _frameWidth, 0,
+                currentColumn * _frameWidth, currentRow * _frameHeight,
                 _frameWidth, _frameHeight);
 
             // When using a sourceRectangle, 'origin' is in SOURCE rect space,
@@ -2134,7 +2171,7 @@ namespace CatDetective.Entities
 
             var shadowOrigin = new Vector2(ShadowTexture.Width * 0.5f, ShadowTexture.Height * 0.5f);
             // Offset slightly down so the oval sits visually under the paws.
-            var shadowPos = Position + new Vector2(0f, 5f);
+            var shadowPos = Position + new Vector2(0f, -5f);
 
             // shadow_blob.png is 800 x 447. Scale it down to ~100 x 40 px so it
             // sits naturally under the cat's paws without dominating the scene.
@@ -2187,16 +2224,16 @@ namespace CatDetective.Entities
             // Swap texture based on current facing.
             // Re-derive frame dimensions because the two sheets may have different heights.
             Texture      = _facingUp ? _walkUpTexture : _walkDownTexture;
-            _frameWidth  = Texture.Width / _frameCount;
-            _frameHeight = Texture.Height;
+            _frameWidth  = Texture.Width  / _columns;
+            _frameHeight = Texture.Height / _rows;
         }
 
         private void AdvanceAnimation(float deltaTime)
         {
             if (!_isMoving)
             {
-                // Snap to the idle frame (frame 0) when standing still.
-                _currentFrame = 0;
+                // Snap to the last frame (start of the reversed sequence) when idle.
+                _currentFrame = _frameCount - 1;
                 _frameTimer   = 0f;
                 return;
             }
@@ -2205,7 +2242,7 @@ namespace CatDetective.Entities
             if (_frameTimer >= FRAME_INTERVAL)
             {
                 _frameTimer  -= FRAME_INTERVAL;
-                _currentFrame = (_currentFrame + 1) % _frameCount;
+                _currentFrame = (_currentFrame - 1 + _frameCount) % _frameCount;
             }
         }
 
@@ -2218,9 +2255,9 @@ namespace CatDetective.Entities
         private void RefreshCollisionBox()
         {
             CollisionBox = new Rectangle(
-                (int)(Position.X - (_frameWidth * SPRITE_SCALE) * 0.5f),
+                (int)(Position.X - (_frameWidth * SPRITE_SCALE) * 0.25f),
                 (int)(Position.Y - FEET_BOX_HEIGHT),
-                (int)(_frameWidth * SPRITE_SCALE),
+                (int)(_frameWidth * SPRITE_SCALE * 0.5f),
                 FEET_BOX_HEIGHT);
         }
     }
@@ -2385,8 +2422,17 @@ namespace CatDetective.Entities
                 TargetAlpha,
                 (float)gameTime.ElapsedGameTime.TotalSeconds * FADE_SPEED);
 
-            // sortY never changes for a static prop, but kept consistent with Cat.
-            LayerDepth = CalculateLayerDepth(_sortY);
+            // If the prop is transparent or currently fading, force it to the very front (LayerDepth = 1.0f)
+            // so the cat is always drawn behind it and seen through the transparency.
+            if (TargetAlpha < 1.0f || CurrentAlpha < 0.99f)
+            {
+                LayerDepth = 1.0f;
+            }
+            else
+            {
+                // Otherwise, sort normally based on its floor contact point.
+                LayerDepth = CalculateLayerDepth(_sortY);
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -2511,14 +2557,15 @@ namespace CatDetective
             _sunbeamsMask = Content.Load<Texture2D>("mask_sunbeams");
 
             // ── Cat ──────────────────────────────────────────────────────────
-            // Sprite sheets: 447 × 354 px, 3 frames of 149 × 354 each.
-            var walkDown = Content.Load<Texture2D>("spr_cat_walk_down");
-            var walkUp   = Content.Load<Texture2D>("spr_cat_walk_up");
-            var shadow   = Content.Load<Texture2D>("shadow_blob");
+            // Sprite sheet: 2100 × 700 px, 11 frames in a 6×2 grid.
+            // Both directions use the forward sheet until the up-facing sheet is ready.
+            var walkForward = Content.Load<Texture2D>("walk_animation_forward");
+            var shadow      = Content.Load<Texture2D>("shadow_blob");
 
             // Start position: centre-X, lower floor area.
             // Adjust Y once the room art is reviewed in-engine.
-            _cat = new Cat(walkDown, walkUp, startPosition: new Vector2(536, 900), frameCount: 1)
+            _cat = new Cat(walkForward, walkForward, startPosition: new Vector2(536, 900),
+                           frameCount: 11, columns: 6, rows: 2)
             {
                 ShadowTexture = shadow
             };
@@ -2964,7 +3011,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CatDetective")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ce99e28c78f55aa9ce32bd9daf709268ac093945")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b7125b68fdd927e82a0618273b58bfdfeaf95050")]
 [assembly: System.Reflection.AssemblyProductAttribute("CatDetective")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CatDetective")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
@@ -2973,7 +3020,7 @@ using System.Reflection;
 </file>
 
 <file path="obj/Debug/net8.0/CatDetective.AssemblyInfoInputs.cache">
-7b8de46d1bbf01c0ac2693844c58ac8757ed62e96484d79f637cf4339cddfeb3
+c4df3be163d78561e04a1c316ca241130eb7363038c815ac54a2139855cfc9ed
 </file>
 
 <file path="obj/Debug/net8.0/CatDetective.csproj.CoreCompileInputs.cache">
@@ -3015,6 +3062,7 @@ C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\prop_desk.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\shadow_blob.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\spr_cat_walk_down.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\spr_cat_walk_up.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\walk_animation_forward.xnb
 </file>
 
 <file path="obj/Debug/net8.0/CatDetective.GeneratedMSBuildEditorConfig.editorconfig">
@@ -3042,7 +3090,7 @@ build_property.EnableCodeStyleSeverity =
 </file>
 
 <file path="obj/Debug/net8.0/CatDetective.sourcelink.json">
-{"documents":{"C:\\Users\\larry\\Projecten\\cat_detective\\*":"https://raw.githubusercontent.com/ErikHilhorst/cat_detective/ce99e28c78f55aa9ce32bd9daf709268ac093945/*"}}
+{"documents":{"C:\\Users\\larry\\Projecten\\cat_detective\\*":"https://raw.githubusercontent.com/ErikHilhorst/cat_detective/b7125b68fdd927e82a0618273b58bfdfeaf95050/*"}}
 </file>
 
 <file path="obj/project.assets.json">
@@ -3321,66 +3369,6 @@ namespace CatDetective
         "C:/Users/larry/Projecten/cat_detective/Content/room_map.json"
     ]
 }
-</file>
-
-<file path="cat detective GDD.txt">
-GAME DESIGN DOCUMENT: "Cat Detective" (Working Title)
-1. GAME OVERVIEW
-Concept: A cozy, narrative-driven isometric mystery game where the player controls a housecat solving human crimes (e.g., stolen diamonds, poisoning, murder).
-Genre: Point-and-Click / Isometric Detective Adventure.
-Perspective: 2.5D Isometric (Fixed-camera, pre-rendered backgrounds).
-Platform: Web browser (HTML5/WASM) via MonoGame (KNI framework).
-Target Scope: Short, highly polished indie experience meant to be developed solo over a few months.
-2. CORE GAMEPLAY LOOP
-The game relies on environmental storytelling and logical deduction rather than complex inventory management or branching dialogue trees. It is broken into two distinct phases:
-Phase 1: Information Gathering (The Map)
-Exploration: The cat explores a static, highly detailed isometric room.
-Smell Mode: The player can activate a "Smell Mode" (applying a dark blue tint to the screen) which highlights hidden clues like footprints, dropped items, or lingering scents.
-Inspection: Clicking on an item pops up a high-resolution, LLM-generated close-up image of the clue with a single line of descriptive text (e.g., "A torn piece of red fabric. It smells like cheap cologne.").
-Keyword Acquisition: Discovering clues automatically adds "Keywords" to the player’s notebook (e.g., [Red Fabric],[Poison], [10:00 PM]).
-Phase 2: Synthesis (The Deduction Board)
-Inspired by Return of the Obra Dinn and The Case of the Golden Idol.
-The player presses a button to open the "Deduction Board"—a UI screen displaying a "Mad Libs" style fill-in-the-blank sentence:
-"The diamond was stolen by ______, who entered through the ______ at ______."
-The player drags and drops their collected keywords into the slots.
-Win Condition: A simple boolean logic check. If the keywords match the expected solution, the case is solved, triggering a success animation and unlocking the next level.
-3. ART & AESTHETIC DIRECTION
-Visual Style: "Studio Ghibli Painted Diorama." Warm, cozy, detailed watercolor/digital painting with baked-in soft lighting.
-Backgrounds: Flat, pre-rendered 2D images generated via LLMs (Midjourney/DALL-E), depicting isolated isometric rooms on a clean background.
-Character Design: A chubby, stylized grey-and-white tabby cat with bright green eyes.
-Animation Approach:
-4-Directional movement achieved using only 2 walk cycles (Diagonally Down, Diagonally Up). The Left variations are achieved purely in code via SpriteEffects.FlipHorizontally.
-Walk cycles are derived from AI-generated sprite sheets, cut out in Photoshop, with shadows manually removed.
-4. TECHNICAL IMPLEMENTATION
-Engine & Framework
-Framework: MonoGame (using the KNI fork). KNI is chosen specifically for its robust support for Web/WASM builds, allowing the game to be easily shared and played in a browser.
-Language: C#.
-Map Editor: Tiled (.tmx / .json export).
-Rendering & Depth (The 2.5D Illusion)
-The game mimics a 3D isometric environment using purely 2D assets and logic.
-Y-Sorting: The core rendering trick. In the MonoGame Update() loop, the layerDepth of the Cat sprite is constantly updated based on its bottom Y-coordinate. If the cat walks "up" the screen, its Y-value decreases, automatically drawing it behind foreground furniture.
-The "Matryoshka" Layering: Rooms are split into:
-Base Canvas (Floor & Back walls).
-Y-Sorted Props (Desks, chairs).
-Front Wall Cutouts (Walls closest to the camera).
-Wall Fading: Tiled NavMesh trigger zones will be placed behind front-facing walls. When the cat's collision box intersects this zone, MonoGame uses MathHelper.Lerp to smoothly fade the front wall's alpha to 0.4f, revealing the cat behind it.
-Level Design Structure
-The "Movie Set" Approach: To avoid the complex Z-axis collision math of multi-story buildings, all rooms for a specific case (e.g., Exterior, 1st Floor, 2nd Floor) will be drawn side-by-side on a single massive, flat map.
-When the cat enters a door, their X/Y coordinates are instantly teleported to the adjacent "room" on the canvas, creating a seamless, no-load-screen transition.
-"El Mariachi" Lighting Hacks
-To ensure the uniformly colored Cat sprite blends into the richly lit AI backgrounds without expensive 3D shaders:
-Tint Zones: Tiled invisible collision boxes placed over dark areas of the map. Entering them Lerps the Cat’s SpriteBatch color to a moody blue/grey.
-Additive Light Masks: Sunbeams or lamp glows are exported from Photoshop as standalone semi-transparent PNGs and drawn on top of the Cat in MonoGame to wash the sprite out naturally.
-Blob Shadow: A simple, semi-transparent black oval drawn directly under the Cat's X/Y coordinates to ground the sprite to the floor at all times.
-5. DEVELOPMENT WORKFLOW (Asset Pipeline)
-Generate Environment: Use LLM to generate the isometric room ("empty room, isolated on white background, Studio Ghibli style").
-Photoshop Prep: Cut out the floor, separate the foreground walls/props, paint over sunbeams for additive masks. Export as labeled PNGs.
-Tiled Mapping: Load the Base Floor PNG into Tiled. Draw NavMesh collision polygons for walls, interactive trigger zones for clues, and lighting zones. Export to MonoGame.
-Code Logic: Hook up the Tiled coordinates to MonoGame collision events, populate the Deduction Board logic, and playtest.
-6. SCOPE & MILESTONES (3-Month Solo Plan)
-Month 1: The Engine & Core Systems. Get MonoGame KNI running. Implement Y-sorting, Tiled map importing, basic cat movement, wall fading, and the "Blob Shadow".
-Month 2: The Gameplay Loop. Build the UI for the "Smell Mode" shader, Clue pop-ups, and the Mad Libs Deduction Board. Create one fully playable test room.
-Month 3: Content & Web Export. Generate the art for 3 distinct cases (e.g., The Mansion, The Train cabin, The Museum). Implement sound effects. Export and test the WASM web build.
 </file>
 
 </files>

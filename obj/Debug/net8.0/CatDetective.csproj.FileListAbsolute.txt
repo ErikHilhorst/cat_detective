@@ -32,3 +32,5 @@ C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\prop_desk.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\shadow_blob.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\spr_cat_walk_down.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\spr_cat_walk_up.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\walk_animation_forward.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\walk_animation_upward.xnb

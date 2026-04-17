@@ -97,14 +97,16 @@ namespace CatDetective
             _sunbeamsMask = Content.Load<Texture2D>("mask_sunbeams");
 
             // ── Cat ──────────────────────────────────────────────────────────
-            // Sprite sheets: 447 × 354 px, 3 frames of 149 × 354 each.
-            var walkDown = Content.Load<Texture2D>("spr_cat_walk_down");
-            var walkUp   = Content.Load<Texture2D>("spr_cat_walk_up");
-            var shadow   = Content.Load<Texture2D>("shadow_blob");
+            // Sprite sheet: 2100 × 700 px, 11 frames in a 6×2 grid.
+            // Both directions use the forward sheet until the up-facing sheet is ready.
+            var walkForward = Content.Load<Texture2D>("walk_animation_forward");
+            var walkUpward  = Content.Load<Texture2D>("walk_animation_upward");
+            var shadow      = Content.Load<Texture2D>("shadow_blob");
 
             // Start position: centre-X, lower floor area.
             // Adjust Y once the room art is reviewed in-engine.
-            _cat = new Cat(walkDown, walkUp, startPosition: new Vector2(536, 900), frameCount: 1)
+            _cat = new Cat(walkForward, walkUpward, startPosition: new Vector2(536, 900),
+                           frameCount: 12, columns: 6, rows: 2)
             {
                 ShadowTexture = shadow
             };

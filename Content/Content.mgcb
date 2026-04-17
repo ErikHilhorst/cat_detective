@@ -116,5 +116,30 @@
 /processorParam:TextureFormat=Color
 /build:spr_cat_walk_up.png
 
+# ── Walk animation (2100 x 700, 11 frames in a 6×2 grid) ─────────────────
+# Native PNG transparency — ColorKey disabled.
+
+#begin walk_animation_forward.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:walk_animation_forward.png
+
+#begin walk_animation_upward.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:walk_animation_upward.png
+
 # ── NOTE: room_map.json ────────────────────────────────────────────────────
 # Copied verbatim by the .csproj <Content> ItemGroup; not processed here.

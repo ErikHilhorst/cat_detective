@@ -30,30 +30,36 @@ namespace CatDetective.Entities
     public class Cat : GameObject
     {
         // ── Movement constants ─────────────────────────────────────────────────
-        private const float X_SPEED = 150f;
-        private const float Y_SPEED =  75f;
+        private const float X_SPEED = 250f;
+        private const float Y_SPEED = 125f;
 
         // ── Collision box ──────────────────────────────────────────────────────
         private const int   FEET_BOX_HEIGHT = 14;   // px, covers only the paws on the floor
 
         // ── Sprite scale ───────────────────────────────────────────────────────
-        private const float SPRITE_SCALE = 0.30f;   // placeholder art is oversized
+        private const float SPRITE_SCALE_DOWN = 0.5f;
+        private const float SPRITE_SCALE_UP   = 0.57f;
+
+        private float CurrentScale => _facingUp ? SPRITE_SCALE_UP : SPRITE_SCALE_DOWN;
 
         // ── Animation ─────────────────────────────────────────────────────────
         private readonly Texture2D _walkDownTexture;
         private readonly Texture2D _walkUpTexture;
-        private readonly int       _frameCount;      // Columns in the sprite sheet
+        private readonly int       _frameCount;
+        private readonly int       _columns;
+        private readonly int       _rows;
 
         private int   _frameWidth;
         private int   _frameHeight;
         private int   _currentFrame;
         private float _frameTimer;
-        private const float FRAME_INTERVAL = 0.12f;  // seconds per frame (~8 fps walk cycle)
+        private const float FRAME_INTERVAL = 0.07f;  // seconds per frame (~14 fps walk cycle)
 
         // ── Per-frame state ────────────────────────────────────────────────────
         private Vector2       _velocity;             // pixels/s this frame
         private bool          _isMoving;
         private bool          _facingUp;             // true → use walk-up sheet
+        private bool          _isFacingLeft;         // remembers last horizontal direction
         private SpriteEffects _spriteFlip = SpriteEffects.None;
 
         // ── Shadow ─────────────────────────────────────────────────────────────
@@ -64,20 +70,26 @@ namespace CatDetective.Entities
         /// <param name="walkDownTexture">Sprite sheet for down/forward movement.</param>
         /// <param name="walkUpTexture">Sprite sheet for up/backward movement.</param>
         /// <param name="startPosition">Initial bottom-center world position.</param>
-        /// <param name="frameCount">Number of animation frames in each sheet.</param>
+        /// <param name="frameCount">Total number of animation frames in each sheet.</param>
+        /// <param name="columns">Number of columns in the sprite grid.</param>
+        /// <param name="rows">Number of rows in the sprite grid.</param>
         public Cat(
             Texture2D walkDownTexture,
             Texture2D walkUpTexture,
             Vector2   startPosition,
-            int       frameCount = 4)
+            int       frameCount = 11,
+            int       columns    = 6,
+            int       rows       = 2)
         {
             _walkDownTexture = walkDownTexture;
             _walkUpTexture   = walkUpTexture;
             _frameCount      = frameCount;
+            _columns         = columns;
+            _rows            = rows;
 
             Texture      = _walkDownTexture;
-            _frameWidth  = Texture.Width / _frameCount;
-            _frameHeight = Texture.Height;
+            _frameWidth  = Texture.Width  / _columns;
+            _frameHeight = Texture.Height / _rows;
 
             Position = startPosition;
             RefreshCollisionBox();
@@ -144,9 +156,11 @@ namespace CatDetective.Entities
         {
             if (Texture == null) return;
 
-            // Source rectangle selects the current animation frame from the sheet.
+            // Source rectangle selects the current animation frame from the grid.
+            int currentColumn = _currentFrame % _columns;
+            int currentRow    = _currentFrame / _columns;
             var sourceRect = new Rectangle(
-                _currentFrame * _frameWidth, 0,
+                currentColumn * _frameWidth, currentRow * _frameHeight,
                 _frameWidth, _frameHeight);
 
             // When using a sourceRectangle, 'origin' is in SOURCE rect space,
@@ -160,7 +174,7 @@ namespace CatDetective.Entities
                 Color.White,
                 rotation:   0f,
                 origin:     frameOrigin,
-                scale:      new Vector2(SPRITE_SCALE),
+                scale:      new Vector2(CurrentScale),
                 effects:    _spriteFlip,
                 layerDepth: LayerDepth);
         }
@@ -171,26 +185,26 @@ namespace CatDetective.Entities
         /// (Pass 2 in the render pipeline) so it composites under the cat.
         /// </summary>
         public void DrawShadow(SpriteBatch spriteBatch)
-        {
-            if (ShadowTexture == null) return;
+{
+    if (ShadowTexture == null) return;
 
-            var shadowOrigin = new Vector2(ShadowTexture.Width * 0.5f, ShadowTexture.Height * 0.5f);
-            // Offset slightly down so the oval sits visually under the paws.
-            var shadowPos = Position + new Vector2(0f, -5f);
+    var shadowOrigin = new Vector2(ShadowTexture.Width * 0.5f, ShadowTexture.Height * 0.5f);
+    
+    // Offset significantly UP (negative Y) to close the transparent gap under the paws
+    var shadowPos = Position + new Vector2(0f, -20f);
 
-            // shadow_blob.png is 800 x 447. Scale it down to ~100 x 40 px so it
-            // sits naturally under the cat's paws without dominating the scene.
-            spriteBatch.Draw(
-                ShadowTexture,
-                shadowPos,
-                sourceRectangle: null,
-                Color.White * 0.55f,
-                rotation: 0f,
-                origin:   shadowOrigin,
-                scale:    new Vector2(0.13f, 0.09f),   // ≈ 104 x 40 px at runtime
-                effects:  SpriteEffects.None,
-                layerDepth: 0f);
-        }
+    spriteBatch.Draw(
+        ShadowTexture,
+        shadowPos,
+        sourceRectangle: null,
+        Color.White * 0.55f,
+        rotation: 0f,
+        origin:   shadowOrigin,
+        // Flattened Y scale to look painted onto the isometric floor
+        scale:    new Vector2(0.16f, 0.07f),   
+        effects:  SpriteEffects.None,
+        layerDepth: 0f);
+}
 
         // ── Private helpers ────────────────────────────────────────────────────
 
@@ -217,28 +231,28 @@ namespace CatDetective.Entities
                 // "up && !down" handles the case where both are held (no change).
                 _facingUp = up && !down;
 
-                // The two placeholder sheets have opposite default orientations:
-                //   walkUp   → naturally faces right; flip when going left.
-                //   walkDown → naturally faces left;  flip when going right.
-                bool facingLeft = left && !right;
+                // Update the facing memory only if a horizontal key is pressed.
+                if (left && !right)       _isFacingLeft = true;
+                else if (right && !left)  _isFacingLeft = false;
+
                 _spriteFlip = _facingUp
-                    ? (facingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None)
-                    : (facingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
+                    ? (_isFacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None)
+                    : (_isFacingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
             }
 
             // Swap texture based on current facing.
             // Re-derive frame dimensions because the two sheets may have different heights.
             Texture      = _facingUp ? _walkUpTexture : _walkDownTexture;
-            _frameWidth  = Texture.Width / _frameCount;
-            _frameHeight = Texture.Height;
+            _frameWidth  = Texture.Width  / _columns;
+            _frameHeight = Texture.Height / _rows;
         }
 
         private void AdvanceAnimation(float deltaTime)
         {
             if (!_isMoving)
             {
-                // Snap to the idle frame (frame 0) when standing still.
-                _currentFrame = 0;
+                // Snap to the last frame (start of the reversed sequence) when idle.
+                _currentFrame = _frameCount - 1;
                 _frameTimer   = 0f;
                 return;
             }
@@ -247,7 +261,7 @@ namespace CatDetective.Entities
             if (_frameTimer >= FRAME_INTERVAL)
             {
                 _frameTimer  -= FRAME_INTERVAL;
-                _currentFrame = (_currentFrame + 1) % _frameCount;
+                _currentFrame = (_currentFrame - 1 + _frameCount) % _frameCount;
             }
         }
 
@@ -260,9 +274,9 @@ namespace CatDetective.Entities
         private void RefreshCollisionBox()
         {
             CollisionBox = new Rectangle(
-                (int)(Position.X - (_frameWidth * SPRITE_SCALE) * 0.25f),
+                (int)(Position.X - (_frameWidth * CurrentScale) * 0.25f),
                 (int)(Position.Y - FEET_BOX_HEIGHT),
-                (int)(_frameWidth * SPRITE_SCALE * 0.5f),
+                (int)(_frameWidth * CurrentScale * 0.5f),
                 FEET_BOX_HEIGHT);
         }
     }
