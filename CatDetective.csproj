@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <!-- Disable implicit usings so every file's dependencies are explicit -->
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>CatDetective</AssemblyName>
+    <RootNamespace>CatDetective</RootNamespace>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <!--
+    KNI NOTE
+    =========
+    This project targets MonoGame.Framework.DesktopGL for local development.
+    For the final WASM / Web build (as described in the GDD), swap this package
+    reference for the appropriate KNI platform package, e.g.:
+        nkast.Kni.Platform.Browser.Blazor
+    The entire game-logic codebase stays identical — only this reference changes.
+  -->
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
+  </ItemGroup>
+
+  <!--
+    The Tiled map is read at runtime with System.Text.Json, NOT through the
+    content pipeline, so we copy it to the output directory directly.
+  -->
+  <ItemGroup>
+    <Content Include="Content\room_map.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,3386 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+<additional_info>
+
+</additional_info>
+
+</file_summary>
+
+<directory_structure>
+.claude/settings.local.json
+bin/Debug/net8.0/CatDetective.deps.json
+bin/Debug/net8.0/CatDetective.runtimeconfig.json
+bin/Debug/net8.0/Content/room_map.json
+cat detective GDD.txt
+CatDetective.csproj
+CLAUDE.md
+Content/Content.mgcb
+Content/obj/DesktopGL/net8.0/Content/.mgcontent
+Content/obj/DesktopGL/net8.0/Content/.mgstats
+Content/obj/DesktopGL/net8.0/Content/bg_base.mgcontent
+Content/obj/DesktopGL/net8.0/Content/mask_sunbeams.mgcontent
+Content/obj/DesktopGL/net8.0/Content/prop_cabinet.mgcontent
+Content/obj/DesktopGL/net8.0/Content/prop_desk.mgcontent
+Content/obj/DesktopGL/net8.0/Content/shadow_blob.mgcontent
+Content/obj/DesktopGL/net8.0/Content/spr_cat_walk_down.mgcontent
+Content/obj/DesktopGL/net8.0/Content/spr_cat_walk_up.mgcontent
+Content/room_map.json
+DebugHelper.cs
+dotnet-tools.json
+Entities/Cat.cs
+Entities/GameObject.cs
+Entities/Prop.cs
+Game1.cs
+Map/MapParser.cs
+obj/CatDetective.csproj.nuget.dgspec.json
+obj/CatDetective.csproj.nuget.g.props
+obj/CatDetective.csproj.nuget.g.targets
+obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+obj/Debug/net8.0/CatDetective.AssemblyInfo.cs
+obj/Debug/net8.0/CatDetective.AssemblyInfoInputs.cache
+obj/Debug/net8.0/CatDetective.csproj.CoreCompileInputs.cache
+obj/Debug/net8.0/CatDetective.csproj.FileListAbsolute.txt
+obj/Debug/net8.0/CatDetective.GeneratedMSBuildEditorConfig.editorconfig
+obj/Debug/net8.0/CatDetective.genruntimeconfig.cache
+obj/Debug/net8.0/CatDetective.sourcelink.json
+obj/project.assets.json
+obj/project.nuget.cache
+Program.cs
+Tiled maps/untitledcat_detective.tiled-project
+Tiled maps/untitledcat_detective.tiled-session
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".claude/settings.local.json">
+{
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Read",
+      "Edit",
+      "Write",
+      "WebFetch",
+      "Grep",
+      "Glob",
+      "LS",
+      "MultiEdit",
+      "NotebookRead",
+      "NotebookEdit",
+      "TodoRead",
+      "TodoWrite",
+      "WebSearch",
+      "Bash(dotnet build *)"
+    ]
+  }
+}
+</file>
+
+<file path="bin/Debug/net8.0/CatDetective.deps.json">
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "CatDetective/1.0.0": {
+        "dependencies": {
+          "MonoGame.Framework.DesktopGL": "3.8.1.303"
+        },
+        "runtime": {
+          "CatDetective.dll": {}
+        }
+      },
+      "MonoGame.Framework.DesktopGL/3.8.1.303": {
+        "runtime": {
+          "lib/net6.0/MonoGame.Framework.dll": {
+            "assemblyVersion": "3.8.1.303",
+            "fileVersion": "3.8.1.303"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/linux-x64/native/libSDL2-2.0.so.0": {
+            "rid": "linux-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/linux-x64/native/libopenal.so.1": {
+            "rid": "linux-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/osx/native/libSDL2.dylib": {
+            "rid": "osx",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/osx/native/libopenal.1.dylib": {
+            "rid": "osx",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/SDL2.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "2.0.20.0"
+          },
+          "runtimes/win-x64/native/soft_oal.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x86/native/SDL2.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "2.0.20.0"
+          },
+          "runtimes/win-x86/native/soft_oal.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "CatDetective/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MonoGame.Framework.DesktopGL/3.8.1.303": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-eGYhqn0n1olk8MNYeE9EuBmoNNECN1T18rPMaQpkzsEQ0H3nVyFPXC+uCo78v5pi5juQpJ3PSFnSkjzZJ1U58A==",
+      "path": "monogame.framework.desktopgl/3.8.1.303",
+      "hashPath": "monogame.framework.desktopgl.3.8.1.303.nupkg.sha512"
+    }
+  }
+}
+</file>
+
+<file path="bin/Debug/net8.0/CatDetective.runtimeconfig.json">
+{
+  "runtimeOptions": {
+    "tfm": "net8.0",
+    "framework": {
+      "name": "Microsoft.NETCore.App",
+      "version": "8.0.0"
+    },
+    "configProperties": {
+      "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false
+    }
+  }
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/room_map.json">
+{ "compressionlevel":-1,
+ "height":35,
+ "infinite":false,
+ "layers":[
+        {
+         "id":3,
+         "image":"..\/first art ideas\/full scene.png",
+         "imageheight":1136,
+         "imagewidth":1072,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":1,
+         "name":"Collisions",
+         "objects":[
+                {
+                 "height":46,
+                 "id":1,
+                 "name":"wall_bottom",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1072,
+                 "x":19.8068366793271,
+                 "y":1135.0388341989
+                }, 
+                {
+                 "height":160,
+                 "id":2,
+                 "name":"wall_top",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1072,
+                 "x":13.0600728625689,
+                 "y":2.87156034415899
+                }, 
+                {
+                 "height":1136,
+                 "id":3,
+                 "name":"wall_left",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":80,
+                 "x":8,
+                 "y":126
+                }, 
+                {
+                 "height":1136,
+                 "id":4,
+                 "name":"wall_right",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":80,
+                 "x":1060.72087435083,
+                 "y":2.87156034415899
+                }, 
+                {
+                 "height":75.9999999999999,
+                 "id":24,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":5.99999999999999,
+                 "x":71.133090458104,
+                 "y":1029.39219181976
+                }, 
+                {
+                 "height":60.6666666666666,
+                 "id":25,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":280,
+                 "x":39.133090458104,
+                 "y":760.725525153089
+                }, 
+                {
+                 "height":210,
+                 "id":26,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":91.3333333333333,
+                 "x":65.7997571247707,
+                 "y":781.392191819756
+                }, 
+                {
+                 "height":90.6666666666666,
+                 "id":27,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":70.6666666666667,
+                 "x":104.466423791437,
+                 "y":936.725525153089
+                }, 
+                {
+                 "height":96,
+                 "id":28,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":63.3333333333333,
+                 "x":173.799757124771,
+                 "y":920.058858486422
+                }, 
+                {
+                 "height":62.6666666666666,
+                 "id":55,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":200,
+                 "x":329.799757124771,
+                 "y":762.725525153089
+                }, 
+                {
+                 "height":89.3333333333334,
+                 "id":56,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":218.666666666667,
+                 "x":264.466423791437,
+                 "y":764.058858486422
+                }, 
+                {
+                 "height":15.3333333333334,
+                 "id":58,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":168,
+                 "x":525.799757124771,
+                 "y":773.392191819756
+                }, 
+                {
+                 "height":128,
+                 "id":59,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":8,
+                 "x":781.799757124771,
+                 "y":509.392191819756
+                }, 
+                {
+                 "height":46.6666666666667,
+                 "id":60,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":22.6666666666667,
+                 "x":760.466423791437,
+                 "y":625.392191819755
+                }, 
+                {
+                 "height":21.3333333333333,
+                 "id":61,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":34.6666666666666,
+                 "x":739.133090458104,
+                 "y":658.725525153089
+                }, 
+                {
+                 "height":14.6666666666666,
+                 "id":62,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":65.3333333333333,
+                 "x":703.133090458104,
+                 "y":685.392191819756
+                }, 
+                {
+                 "height":16,
+                 "id":63,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":68,
+                 "x":707.133090458104,
+                 "y":676.058858486422
+                }, 
+                {
+                 "height":102.666666666667,
+                 "id":64,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":26.6666666666666,
+                 "x":665.799757124771,
+                 "y":689.392191819756
+                }, 
+                {
+                 "height":36,
+                 "id":65,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":54.6666666666667,
+                 "x":680.466423791437,
+                 "y":680.058858486422
+                }, 
+                {
+                 "height":4,
+                 "id":66,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":21.3333333333334,
+                 "x":776.466423791437,
+                 "y":497.392191819756
+                }, 
+                {
+                 "height":62.6666666666667,
+                 "id":67,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":22.6666666666667,
+                 "x":776.466423791437,
+                 "y":481.392191819756
+                }, 
+                {
+                 "height":14.6666666666667,
+                 "id":68,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":24,
+                 "x":736.466423791437,
+                 "y":460.058858486422
+                }, 
+                {
+                 "height":18.6666666666666,
+                 "id":69,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":28,
+                 "x":753.799757124771,
+                 "y":474.725525153089
+                }, 
+                {
+                 "height":78.6666666666666,
+                 "id":70,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":88,
+                 "x":989.799757124771,
+                 "y":434.725525153089
+                }, 
+                {
+                 "height":80,
+                 "id":71,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":154.666666666667,
+                 "x":925.799757124771,
+                 "y":360.058858486422
+                }, 
+                {
+                 "height":101.333333333333,
+                 "id":72,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":118.666666666667,
+                 "x":812.466423791437,
+                 "y":321.392191819756
+                }, 
+                {
+                 "height":58.6666666666666,
+                 "id":73,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":236,
+                 "x":668.466423791437,
+                 "y":293.392191819756
+                }, 
+                {
+                 "height":32,
+                 "id":74,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":157.333333333333,
+                 "x":723.133090458104,
+                 "y":357.392191819756
+                }, 
+                {
+                 "height":18.6666666666667,
+                 "id":75,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":81.3333333333333,
+                 "x":771.133090458104,
+                 "y":393.392191819756
+                }, 
+                {
+                 "height":46.6666666666667,
+                 "id":76,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":121.333333333333,
+                 "x":560.466423791437,
+                 "y":268.058858486422
+                }, 
+                {
+                 "height":92,
+                 "id":77,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":84,
+                 "x":475.133090458104,
+                 "y":253.392191819756
+                }, 
+                {
+                 "height":408,
+                 "id":78,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":88,
+                 "x":181.799757124771,
+                 "y":366.725525153089
+                }, 
+                {
+                 "height":180,
+                 "id":79,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":61.3333333333333,
+                 "x":267.133090458104,
+                 "y":601.392191819755
+                },
+            
+                {
+                 "height":142.666666666667,
+                 "id":81,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":97.3333333333333,
+                 "x":371.133090458104,
+                 "y":269.392191819756
+                }, 
+                {
+                 "height":140,
+                 "id":82,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":85.3333333333333,
+                 "x":412.466423791437,
+                 "y":252.058858486422
+                }, 
+                {
+                 "height":57.3333333333334,
+                 "id":83,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":141.333333333333,
+                 "x":251.133090458104,
+                 "y":361.392191819756
+                }, 
+                {
+                 "height":49.3333333333333,
+                 "id":84,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":77.3333333333333,
+                 "x":288.466423791437,
+                 "y":418.725525153089
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Triggers",
+         "objects":[
+                {
+                 "height":319.634912022324,
+                 "id":10,
+                 "name":"desk_fade",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":539.750406945198,
+                 "x":253.505464692659,
+                 "y":335.271839392295
+                }, 
+                {
+                 "height":624.432447097128,
+                 "id":11,
+                 "name":"cabinet_fade",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":307.64785675529,
+                 "x":854.92132392871,
+                 "y":514.24959305504
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":5,
+ "nextobjectid":85,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":33
+}
+</file>
+
+<file path="CatDetective.csproj">
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <!-- Disable implicit usings so every file's dependencies are explicit -->
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>CatDetective</AssemblyName>
+    <RootNamespace>CatDetective</RootNamespace>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <!--
+    KNI NOTE
+    =========
+    This project targets MonoGame.Framework.DesktopGL for local development.
+    For the final WASM / Web build (as described in the GDD), swap this package
+    reference for the appropriate KNI platform package, e.g.:
+        nkast.Kni.Platform.Browser.Blazor
+    The entire game-logic codebase stays identical — only this reference changes.
+  -->
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
+  </ItemGroup>
+
+  <!--
+    The Tiled map is read at runtime with System.Text.Json, NOT through the
+    content pipeline, so we copy it to the output directory directly.
+  -->
+  <ItemGroup>
+    <Content Include="Content\room_map.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>
+</file>
+
+<file path="CLAUDE.md">
+# Cat Detective — CLAUDE.md
+
+## Project overview
+
+A 2.5D isometric detective adventure game where a cat solves human crimes.
+Cozy Studio Ghibli aesthetic, pre-rendered backgrounds, point-and-click/free-roam gameplay.
+Built in C# using **MonoGame (KNI fork)**, targeting **Web/WASM** as the final platform.
+
+Current state: prototype — movement, Y-sorting, prop fading, and the render pipeline are implemented.
+Real art assets are not yet present; placeholder PNGs in `Content/` are needed to build.
+
+---
+
+## Tech stack
+
+| Layer | Choice |
+|-------|--------|
+| Language | C# (.NET 8) |
+| Framework | MonoGame.Framework.DesktopGL (dev) → KNI WASM (ship) |
+| Map editor | Tiled — JSON export only |
+| JSON parsing | System.Text.Json (built-in, no extra packages) |
+| Content pipeline | MonoGame Content Builder (`.mgcb`) |
+
+---
+
+## File structure
+
+```
+CatDetective.csproj       — Project file; swap package for KNI to target WASM
+Program.cs                — Entry point ([STAThread])
+Game1.cs                  — Main loop; owns the 4-pass render pipeline
+
+Entities/
+  GameObject.cs           — Abstract base: Position (bottom-center), LayerDepth, CollisionBox
+  Prop.cs                 — Foreground furniture; fades when cat walks behind it
+  Cat.cs                  — Player character; sprite-sheet animator, AABB movement
+
+Map/
+  MapParser.cs            — Reads Tiled JSON; extracts "Collisions" and "Triggers" layers
+
+Content/
+  Content.mgcb            — Asset pipeline config (ALL sprites: PremultiplyAlpha=False)
+  room_map.json           — Tiled map; copied verbatim to output, not pipeline-processed
+
+  bg_base.png             — Full-room pre-rendered background (no desk/cabinet)
+  prop_desk.png           — Desk cutout sprite
+  prop_cabinet.png        — Cabinet cutout sprite
+  mask_sunbeams.png       — Sunbeam VFX: black BG + warm-white beams (used additively)
+  shadow_blob.png         — Blurred black oval for the blob shadow under the cat
+  spr_cat_walk_down.png   — Horizontal sprite sheet, 4 frames, walk toward camera
+  spr_cat_walk_up.png     — Horizontal sprite sheet, 4 frames, walk away from camera
+```
+
+---
+
+## Architecture rules
+
+### Pivot / origin — NEVER change this
+All entities use **bottom-center** as the draw origin. `Position` = the floor contact point.
+Changing this to top-left breaks Y-sorting for every entity in the scene.
+`TextureOrigin` in `GameObject` computes `(width/2, height)` automatically.
+
+### Layer depth formula — keep it normalised
+```csharp
+layerDepth = Math.Clamp(Position.Y / screenHeight, 0f, 1f);
+```
+`SpriteSortMode.FrontToBack` → higher depth = drawn in front. Do not invert this.
+
+### Render pipeline — keep passes in order
+| Pass | Blend | Content |
+|------|-------|---------|
+| 1 | AlphaBlend | `bg_base` at (0,0) |
+| 2 | AlphaBlend | Blob shadow (before cat, so it sits under) |
+| 3 | **NonPremultiplied**, FrontToBack | Cat + all props |
+| 4 | **Additive** | `mask_sunbeams` at (0,0) |
+
+Inserting a new entity: decide which pass it belongs to and draw it there.
+New lighting overlays → Pass 4 (additive). New floor decals → Pass 1 or 2. New Y-sortable objects → Pass 3.
+
+### Content pipeline — PremultiplyAlpha=False
+Every sprite used in Pass 3 (NonPremultiplied) must be built with `PremultiplyAlpha=False` in `Content.mgcb`.
+If a new sprite is added, add its entry to the `.mgcb` with this flag.
+The background and sunbeam mask can use either setting; keep them False for consistency.
+
+### Cat update — two-phase
+`Cat.Update()` reads input and advances animation. It does NOT move the cat.
+`Cat.MoveWithCollision()` applies velocity with per-axis AABB resolution.
+Call them in that order from `Game1.Update()`. Do not merge them.
+
+---
+
+## Map / Tiled conventions
+
+- Only **object layers** are parsed. Tile layers are ignored.
+- Layer named `Collisions` → feeds `_solidBoundaries` (blocks cat movement).
+- Layer named `Triggers` → fade zones; matched to props by name substring (`"desk"`, `"cabinet"`).
+- The JSON file is read at runtime with `File.ReadAllText`. Edit it without rebuilding `.mgcb`.
+- Object rectangles only. Tiled polygons and ellipses are not supported yet.
+
+---
+
+## Build & run
+
+```bash
+dotnet restore
+dotnet run
+```
+
+Controls: WASD or arrow keys. Escape to quit.
+
+To rebuild content assets after changing `.mgcb`:
+```bash
+dotnet build   # MonoGame.Content.Builder.Task runs mgcb automatically
+```
+
+---
+
+## Switching to KNI / WASM
+
+In `CatDetective.csproj`, replace:
+```xml
+<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
+<PackageReference Include="MonoGame.Content.Builder.Task"  Version="3.8.1.303" />
+```
+with the appropriate KNI platform packages. No C# source changes are needed.
+
+---
+
+## What NOT to do
+
+- Do not use `SpriteSortMode.BackToFront` — the entire depth system assumes `FrontToBack`.
+- Do not set `PremultiplyAlpha=True` for Pass 3 sprites — it will cause darkening when props fade.
+- Do not parse Tiled tilesets — the GDD uses pre-rendered PNGs, not tile-based rendering.
+- Do not add collision logic inside `Cat.Update()` — keep movement and collision in `MoveWithCollision()`.
+- Do not commit art assets to git as large binaries — use Git LFS or keep them out of the repo.
+</file>
+
+<file path="Content/Content.mgcb">
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:bin/$(Platform)
+/intermediateDir:obj/$(Platform)
+/platform:DesktopGL
+/config:
+/profile:Reach
+/compress:False
+
+#-------------------------------- References --------------------------------#
+
+#---------------------------------- Content ---------------------------------#
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PremultiplyAlpha=False on every asset.
+#
+# All sprites are rendered in Pass 3 with BlendState.NonPremultiplied, so
+# they must be stored with straight (non-premultiplied) alpha.  Keeping
+# everything consistent here avoids subtle colour differences if assets are
+# moved between passes later.
+# ═══════════════════════════════════════════════════════════════════════════
+
+# ── Background (1072 x 1136) ───────────────────────────────────────────────
+#begin bg_base.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:bg_base.png
+
+# ── Props — full-room overlays (1072 x 1136 each) ─────────────────────────
+#begin prop_desk.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:prop_desk.png
+
+#begin prop_cabinet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:prop_cabinet.png
+
+# ── VFX ────────────────────────────────────────────────────────────────────
+# mask_sunbeams is drawn with BlendState.Additive (Pass 4).
+# shadow_blob is drawn with BlendState.AlphaBlend (Pass 2).
+# Both still use straight alpha for consistency.
+
+#begin mask_sunbeams.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:mask_sunbeams.png
+
+#begin shadow_blob.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:shadow_blob.png
+
+# ── Cat sprite sheets (single-frame placeholders) ─────────────────────────
+# Placeholder images have a white background; ColorKeyColor is set to White.
+# frameCount is 1 in Game1.cs until real sprite sheets are available.
+
+#begin spr_cat_walk_down.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,255,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:spr_cat_walk_down.png
+
+#begin spr_cat_walk_up.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,255,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:spr_cat_walk_up.png
+
+# ── NOTE: room_map.json ────────────────────────────────────────────────────
+# Copied verbatim by the .csproj <Content> ItemGroup; not processed here.
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Profile>Reach</Profile>
+  <Platform>DesktopGL</Platform>
+  <Config />
+  <SourceFiles>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/bg_base.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/prop_desk.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/prop_cabinet.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_down.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png</File>
+  </SourceFiles>
+  <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+  </DestFiles>
+</SourceFileCollection>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/.mgstats">
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/larry/Projecten/cat_detective/Content/bg_base.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/bg_base.xnb","TextureProcessor","Texture2DContent",2147366,4871253,0.2628493
+"C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/mask_sunbeams.xnb","TextureProcessor","Texture2DContent",57833,4871253,0.2111735
+"C:/Users/larry/Projecten/cat_detective/Content/prop_cabinet.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_cabinet.xnb","TextureProcessor","Texture2DContent",240216,4871253,0.1396972
+"C:/Users/larry/Projecten/cat_detective/Content/prop_desk.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_desk.xnb","TextureProcessor","Texture2DContent",375223,4871253,0.1434539
+"C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/shadow_blob.xnb","TextureProcessor","Texture2DContent",103928,1430485,0.0440162
+"C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_down.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_down.xnb","TextureProcessor","Texture2DContent",104992,633037,0.1324254
+"C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_up.xnb","TextureProcessor","Texture2DContent",105940,633037,0.0234247
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/bg_base.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/bg_base.png</SourceFile>
+  <SourceTime>2026-04-16T19:56:22.0394545+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/bg_base.xnb</DestFile>
+  <DestTime>2026-04-16T19:57:28.7409509+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,0,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/mask_sunbeams.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png</SourceFile>
+  <SourceTime>2026-04-16T20:12:48.6734408+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/mask_sunbeams.xnb</DestFile>
+  <DestTime>2026-04-16T20:13:36.2450336+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,0,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/prop_cabinet.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/prop_cabinet.png</SourceFile>
+  <SourceTime>2026-04-16T19:16:50.4983489+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_cabinet.xnb</DestFile>
+  <DestTime>2026-04-16T19:56:13.0540194+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,0,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/prop_desk.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/prop_desk.png</SourceFile>
+  <SourceTime>2026-04-16T19:17:14.7102561+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_desk.xnb</DestFile>
+  <DestTime>2026-04-16T19:56:12.9128116+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,0,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/shadow_blob.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png</SourceFile>
+  <SourceTime>2026-04-16T19:31:11.7515029+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/shadow_blob.xnb</DestFile>
+  <DestTime>2026-04-16T19:56:13.2681755+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,0,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/spr_cat_walk_down.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_down.png</SourceFile>
+  <SourceTime>2026-04-16T19:33:26.3515291+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_down.xnb</DestFile>
+  <DestTime>2026-04-16T20:06:15.5857599+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,255,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/spr_cat_walk_up.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png</SourceFile>
+  <SourceTime>2026-04-16T19:38:54.0734022+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_up.xnb</DestFile>
+  <DestTime>2026-04-16T20:06:15.6140976+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,255,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/room_map.json">
+{ "compressionlevel":-1,
+ "height":35,
+ "infinite":false,
+ "layers":[
+        {
+         "id":3,
+         "image":"..\/first art ideas\/full scene.png",
+         "imageheight":1136,
+         "imagewidth":1072,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":1,
+         "name":"Collisions",
+         "objects":[
+                {
+                 "height":46,
+                 "id":1,
+                 "name":"wall_bottom",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1072,
+                 "x":19.8068366793271,
+                 "y":1135.0388341989
+                }, 
+                {
+                 "height":160,
+                 "id":2,
+                 "name":"wall_top",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1072,
+                 "x":13.0600728625689,
+                 "y":2.87156034415899
+                }, 
+                {
+                 "height":1136,
+                 "id":3,
+                 "name":"wall_left",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":80,
+                 "x":8,
+                 "y":126
+                }, 
+                {
+                 "height":1136,
+                 "id":4,
+                 "name":"wall_right",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":80,
+                 "x":1060.72087435083,
+                 "y":2.87156034415899
+                }, 
+                {
+                 "height":75.9999999999999,
+                 "id":24,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":5.99999999999999,
+                 "x":71.133090458104,
+                 "y":1029.39219181976
+                }, 
+                {
+                 "height":60.6666666666666,
+                 "id":25,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":280,
+                 "x":39.133090458104,
+                 "y":760.725525153089
+                }, 
+                {
+                 "height":210,
+                 "id":26,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":91.3333333333333,
+                 "x":65.7997571247707,
+                 "y":781.392191819756
+                }, 
+                {
+                 "height":90.6666666666666,
+                 "id":27,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":70.6666666666667,
+                 "x":104.466423791437,
+                 "y":936.725525153089
+                }, 
+                {
+                 "height":96,
+                 "id":28,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":63.3333333333333,
+                 "x":173.799757124771,
+                 "y":920.058858486422
+                }, 
+                {
+                 "height":62.6666666666666,
+                 "id":55,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":200,
+                 "x":329.799757124771,
+                 "y":762.725525153089
+                }, 
+                {
+                 "height":89.3333333333334,
+                 "id":56,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":218.666666666667,
+                 "x":264.466423791437,
+                 "y":764.058858486422
+                }, 
+                {
+                 "height":15.3333333333334,
+                 "id":58,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":168,
+                 "x":525.799757124771,
+                 "y":773.392191819756
+                }, 
+                {
+                 "height":128,
+                 "id":59,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":8,
+                 "x":781.799757124771,
+                 "y":509.392191819756
+                }, 
+                {
+                 "height":46.6666666666667,
+                 "id":60,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":22.6666666666667,
+                 "x":760.466423791437,
+                 "y":625.392191819755
+                }, 
+                {
+                 "height":21.3333333333333,
+                 "id":61,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":34.6666666666666,
+                 "x":739.133090458104,
+                 "y":658.725525153089
+                }, 
+                {
+                 "height":14.6666666666666,
+                 "id":62,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":65.3333333333333,
+                 "x":703.133090458104,
+                 "y":685.392191819756
+                }, 
+                {
+                 "height":16,
+                 "id":63,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":68,
+                 "x":707.133090458104,
+                 "y":676.058858486422
+                }, 
+                {
+                 "height":102.666666666667,
+                 "id":64,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":26.6666666666666,
+                 "x":665.799757124771,
+                 "y":689.392191819756
+                }, 
+                {
+                 "height":36,
+                 "id":65,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":54.6666666666667,
+                 "x":680.466423791437,
+                 "y":680.058858486422
+                }, 
+                {
+                 "height":4,
+                 "id":66,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":21.3333333333334,
+                 "x":776.466423791437,
+                 "y":497.392191819756
+                }, 
+                {
+                 "height":62.6666666666667,
+                 "id":67,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":22.6666666666667,
+                 "x":776.466423791437,
+                 "y":481.392191819756
+                }, 
+                {
+                 "height":14.6666666666667,
+                 "id":68,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":24,
+                 "x":736.466423791437,
+                 "y":460.058858486422
+                }, 
+                {
+                 "height":18.6666666666666,
+                 "id":69,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":28,
+                 "x":753.799757124771,
+                 "y":474.725525153089
+                }, 
+                {
+                 "height":78.6666666666666,
+                 "id":70,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":88,
+                 "x":989.799757124771,
+                 "y":434.725525153089
+                }, 
+                {
+                 "height":80,
+                 "id":71,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":154.666666666667,
+                 "x":925.799757124771,
+                 "y":360.058858486422
+                }, 
+                {
+                 "height":101.333333333333,
+                 "id":72,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":118.666666666667,
+                 "x":812.466423791437,
+                 "y":321.392191819756
+                }, 
+                {
+                 "height":58.6666666666666,
+                 "id":73,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":236,
+                 "x":668.466423791437,
+                 "y":293.392191819756
+                }, 
+                {
+                 "height":32,
+                 "id":74,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":157.333333333333,
+                 "x":723.133090458104,
+                 "y":357.392191819756
+                }, 
+                {
+                 "height":18.6666666666667,
+                 "id":75,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":81.3333333333333,
+                 "x":771.133090458104,
+                 "y":393.392191819756
+                }, 
+                {
+                 "height":46.6666666666667,
+                 "id":76,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":121.333333333333,
+                 "x":560.466423791437,
+                 "y":268.058858486422
+                }, 
+                {
+                 "height":92,
+                 "id":77,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":84,
+                 "x":475.133090458104,
+                 "y":253.392191819756
+                }, 
+                {
+                 "height":408,
+                 "id":78,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":88,
+                 "x":181.799757124771,
+                 "y":366.725525153089
+                }, 
+                {
+                 "height":180,
+                 "id":79,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":61.3333333333333,
+                 "x":267.133090458104,
+                 "y":601.392191819755
+                },
+            
+                {
+                 "height":142.666666666667,
+                 "id":81,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":97.3333333333333,
+                 "x":371.133090458104,
+                 "y":269.392191819756
+                }, 
+                {
+                 "height":140,
+                 "id":82,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":85.3333333333333,
+                 "x":412.466423791437,
+                 "y":252.058858486422
+                }, 
+                {
+                 "height":57.3333333333334,
+                 "id":83,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":141.333333333333,
+                 "x":251.133090458104,
+                 "y":361.392191819756
+                }, 
+                {
+                 "height":49.3333333333333,
+                 "id":84,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":77.3333333333333,
+                 "x":288.466423791437,
+                 "y":418.725525153089
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Triggers",
+         "objects":[
+                {
+                 "height":319.634912022324,
+                 "id":10,
+                 "name":"desk_fade",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":539.750406945198,
+                 "x":253.505464692659,
+                 "y":335.271839392295
+                }, 
+                {
+                 "height":624.432447097128,
+                 "id":11,
+                 "name":"cabinet_fade",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":307.64785675529,
+                 "x":854.92132392871,
+                 "y":514.24959305504
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":5,
+ "nextobjectid":85,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":33
+}
+</file>
+
+<file path="DebugHelper.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+
+namespace CatDetective
+{
+    public static class DebugHelper
+    {
+        public static void DrawLine(SpriteBatch spriteBatch, Texture2D pixel, Vector2 p1, Vector2 p2, Color color, int thickness = 2)
+        {
+            float length = Vector2.Distance(p1, p2);
+            float angle = (float)Math.Atan2(p2.Y - p1.Y, p2.X - p1.X);
+            spriteBatch.Draw(pixel, p1, null, color, angle, Vector2.Zero, new Vector2(length, thickness), SpriteEffects.None, 0f);
+        }
+
+        public static void DrawHollowRect(SpriteBatch spriteBatch, Texture2D pixel, Rectangle rect, Color color, int thickness = 2)
+        {
+            DrawLine(spriteBatch, pixel, new Vector2(rect.Left,  rect.Top),    new Vector2(rect.Right, rect.Top),    color, thickness);
+            DrawLine(spriteBatch, pixel, new Vector2(rect.Right, rect.Top),    new Vector2(rect.Right, rect.Bottom), color, thickness);
+            DrawLine(spriteBatch, pixel, new Vector2(rect.Right, rect.Bottom), new Vector2(rect.Left,  rect.Bottom), color, thickness);
+            DrawLine(spriteBatch, pixel, new Vector2(rect.Left,  rect.Bottom), new Vector2(rect.Left,  rect.Top),   color, thickness);
+        }
+    }
+}
+</file>
+
+<file path="dotnet-tools.json">
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "dotnet-mgcb": {
+      "version": "3.8.4.1",
+      "commands": [
+        "mgcb"
+      ],
+      "rollForward": false
+    }
+  }
+}
+</file>
+
+<file path="Entities/Cat.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
+
+namespace CatDetective.Entities
+{
+    /// <summary>
+    /// The player-controlled cat character.
+    ///
+    /// MOVEMENT
+    ///   Isometric perspective means the Y-axis appears foreshortened.
+    ///   We compensate by running Y movement at half the X speed so the
+    ///   cat doesn't slide unnaturally fast toward or away from the camera.
+    ///     X_SPEED = 100 px/s  (full horizontal speed)
+    ///     Y_SPEED =  50 px/s  (half vertical speed)
+    ///
+    /// ANIMATION
+    ///   Two sprite sheets, each with <see cref="_frameCount"/> equally-wide frames:
+    ///     spr_cat_walk_down  — used when moving down / forward
+    ///     spr_cat_walk_up    — used when moving up / backward
+    ///   Left-facing variants are derived at runtime via SpriteEffects.FlipHorizontally;
+    ///   no extra textures are needed (matches the GDD animation approach).
+    ///
+    /// COLLISION BOX
+    ///   A thin rectangle at the cat's feet only (~14 px tall), centred on Position.
+    ///   This keeps the player from clipping through walls at shoulder height and
+    ///   prevents false positives on tall furniture whose trigger zones are above.
+    /// </summary>
+    public class Cat : GameObject
+    {
+        // ── Movement constants ─────────────────────────────────────────────────
+        private const float X_SPEED = 150f;
+        private const float Y_SPEED =  75f;
+
+        // ── Collision box ──────────────────────────────────────────────────────
+        private const int   FEET_BOX_HEIGHT = 14;   // px, covers only the paws on the floor
+
+        // ── Sprite scale ───────────────────────────────────────────────────────
+        private const float SPRITE_SCALE = 0.30f;   // placeholder art is oversized
+
+        // ── Animation ─────────────────────────────────────────────────────────
+        private readonly Texture2D _walkDownTexture;
+        private readonly Texture2D _walkUpTexture;
+        private readonly int       _frameCount;      // Columns in the sprite sheet
+
+        private int   _frameWidth;
+        private int   _frameHeight;
+        private int   _currentFrame;
+        private float _frameTimer;
+        private const float FRAME_INTERVAL = 0.12f;  // seconds per frame (~8 fps walk cycle)
+
+        // ── Per-frame state ────────────────────────────────────────────────────
+        private Vector2       _velocity;             // pixels/s this frame
+        private bool          _isMoving;
+        private bool          _facingUp;             // true → use walk-up sheet
+        private SpriteEffects _spriteFlip = SpriteEffects.None;
+
+        // ── Shadow ─────────────────────────────────────────────────────────────
+        /// <summary>Assign shadow_blob.png after construction.</summary>
+        public Texture2D? ShadowTexture { get; set; }
+
+        // ── Constructor ────────────────────────────────────────────────────────
+        /// <param name="walkDownTexture">Sprite sheet for down/forward movement.</param>
+        /// <param name="walkUpTexture">Sprite sheet for up/backward movement.</param>
+        /// <param name="startPosition">Initial bottom-center world position.</param>
+        /// <param name="frameCount">Number of animation frames in each sheet.</param>
+        public Cat(
+            Texture2D walkDownTexture,
+            Texture2D walkUpTexture,
+            Vector2   startPosition,
+            int       frameCount = 4)
+        {
+            _walkDownTexture = walkDownTexture;
+            _walkUpTexture   = walkUpTexture;
+            _frameCount      = frameCount;
+
+            Texture      = _walkDownTexture;
+            _frameWidth  = Texture.Width / _frameCount;
+            _frameHeight = Texture.Height;
+
+            Position = startPosition;
+            RefreshCollisionBox();
+            LayerDepth = CalculateLayerDepth();
+        }
+
+        // ── Update ─────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Phase 1 of the per-frame update: read input, pick texture/flip,
+        /// advance animation timer. Does NOT move the cat — that happens in
+        /// <see cref="MoveWithCollision"/> so collision resolution can be applied
+        /// cleanly on each axis separately.
+        /// </summary>
+        public override void Update(GameTime gameTime)
+        {
+            HandleInput();
+            AdvanceAnimation((float)gameTime.ElapsedGameTime.TotalSeconds);
+        }
+
+        /// <summary>
+        /// Phase 2 of the per-frame update: apply <see cref="_velocity"/> to
+        /// <see cref="Position"/> while resolving AABB collisions axis by axis.
+        ///
+        /// Separating X and Y resolution prevents the cat from getting stuck in
+        /// corners — it slides smoothly along walls instead.
+        /// </summary>
+        public void MoveWithCollision(float deltaTime, List<Rectangle> solidBoundaries)
+        {
+            // ── Try X axis ────────────────────────────────────────────────────
+            Position = new Vector2(Position.X + _velocity.X * deltaTime, Position.Y);
+            RefreshCollisionBox();
+            foreach (var wall in solidBoundaries)
+            {
+                if (CollisionBox.Intersects(wall))
+                {
+                    // Revert X and stop, but Y can still proceed below.
+                    Position = new Vector2(Position.X - _velocity.X * deltaTime, Position.Y);
+                    RefreshCollisionBox();
+                    break;
+                }
+            }
+
+            // ── Try Y axis ────────────────────────────────────────────────────
+            Position = new Vector2(Position.X, Position.Y + _velocity.Y * deltaTime);
+            RefreshCollisionBox();
+            foreach (var wall in solidBoundaries)
+            {
+                if (CollisionBox.Intersects(wall))
+                {
+                    Position = new Vector2(Position.X, Position.Y - _velocity.Y * deltaTime);
+                    RefreshCollisionBox();
+                    break;
+                }
+            }
+
+            // Update depth AFTER the final resolved position is known.
+            LayerDepth = CalculateLayerDepth();
+        }
+
+        // ── Draw ───────────────────────────────────────────────────────────────
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            if (Texture == null) return;
+
+            // Source rectangle selects the current animation frame from the sheet.
+            var sourceRect = new Rectangle(
+                _currentFrame * _frameWidth, 0,
+                _frameWidth, _frameHeight);
+
+            // When using a sourceRectangle, 'origin' is in SOURCE rect space,
+            // so bottom-center of the FRAME, not the full texture.
+            var frameOrigin = new Vector2(_frameWidth * 0.5f, _frameHeight);
+
+            spriteBatch.Draw(
+                Texture,
+                Position,
+                sourceRect,
+                Color.White,
+                rotation:   0f,
+                origin:     frameOrigin,
+                scale:      new Vector2(SPRITE_SCALE),
+                effects:    _spriteFlip,
+                layerDepth: LayerDepth);
+        }
+
+        /// <summary>
+        /// Draws the blob shadow beneath the cat's feet.
+        /// Must be called inside a separate SpriteBatch pass with AlphaBlend
+        /// (Pass 2 in the render pipeline) so it composites under the cat.
+        /// </summary>
+        public void DrawShadow(SpriteBatch spriteBatch)
+        {
+            if (ShadowTexture == null) return;
+
+            var shadowOrigin = new Vector2(ShadowTexture.Width * 0.5f, ShadowTexture.Height * 0.5f);
+            // Offset slightly down so the oval sits visually under the paws.
+            var shadowPos = Position + new Vector2(0f, 5f);
+
+            // shadow_blob.png is 800 x 447. Scale it down to ~100 x 40 px so it
+            // sits naturally under the cat's paws without dominating the scene.
+            spriteBatch.Draw(
+                ShadowTexture,
+                shadowPos,
+                sourceRectangle: null,
+                Color.White * 0.55f,
+                rotation: 0f,
+                origin:   shadowOrigin,
+                scale:    new Vector2(0.13f, 0.09f),   // ≈ 104 x 40 px at runtime
+                effects:  SpriteEffects.None,
+                layerDepth: 0f);
+        }
+
+        // ── Private helpers ────────────────────────────────────────────────────
+
+        private void HandleInput()
+        {
+            var kb = Keyboard.GetState();
+
+            bool up    = kb.IsKeyDown(Keys.W) || kb.IsKeyDown(Keys.Up);
+            bool down  = kb.IsKeyDown(Keys.S) || kb.IsKeyDown(Keys.Down);
+            bool left  = kb.IsKeyDown(Keys.A) || kb.IsKeyDown(Keys.Left);
+            bool right = kb.IsKeyDown(Keys.D) || kb.IsKeyDown(Keys.Right);
+
+            _velocity = Vector2.Zero;
+            if (left)  _velocity.X -= X_SPEED;
+            if (right) _velocity.X += X_SPEED;
+            if (up)    _velocity.Y -= Y_SPEED;
+            if (down)  _velocity.Y += Y_SPEED;
+
+            _isMoving = _velocity != Vector2.Zero;
+
+            if (_isMoving)
+            {
+                // Net vertical direction decides which sprite sheet to use.
+                // "up && !down" handles the case where both are held (no change).
+                _facingUp = up && !down;
+
+                // The two placeholder sheets have opposite default orientations:
+                //   walkUp   → naturally faces right; flip when going left.
+                //   walkDown → naturally faces left;  flip when going right.
+                bool facingLeft = left && !right;
+                _spriteFlip = _facingUp
+                    ? (facingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None)
+                    : (facingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
+            }
+
+            // Swap texture based on current facing.
+            // Re-derive frame dimensions because the two sheets may have different heights.
+            Texture      = _facingUp ? _walkUpTexture : _walkDownTexture;
+            _frameWidth  = Texture.Width / _frameCount;
+            _frameHeight = Texture.Height;
+        }
+
+        private void AdvanceAnimation(float deltaTime)
+        {
+            if (!_isMoving)
+            {
+                // Snap to the idle frame (frame 0) when standing still.
+                _currentFrame = 0;
+                _frameTimer   = 0f;
+                return;
+            }
+
+            _frameTimer += deltaTime;
+            if (_frameTimer >= FRAME_INTERVAL)
+            {
+                _frameTimer  -= FRAME_INTERVAL;
+                _currentFrame = (_currentFrame + 1) % _frameCount;
+            }
+        }
+
+        /// <summary>
+        /// Rebuilds the feet-only collision box centred on <see cref="Position"/>.
+        /// Because Position is the bottom-center, the box spans:
+        ///   X: [Position.X - frameWidth/2 .. Position.X + frameWidth/2]
+        ///   Y: [Position.Y - FEET_BOX_HEIGHT .. Position.Y]
+        /// </summary>
+        private void RefreshCollisionBox()
+        {
+            CollisionBox = new Rectangle(
+                (int)(Position.X - (_frameWidth * SPRITE_SCALE) * 0.5f),
+                (int)(Position.Y - FEET_BOX_HEIGHT),
+                (int)(_frameWidth * SPRITE_SCALE),
+                FEET_BOX_HEIGHT);
+        }
+    }
+}
+</file>
+
+<file path="Entities/GameObject.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+
+namespace CatDetective.Entities
+{
+    /// <summary>
+    /// Base class for every visible, positionable entity in the scene.
+    ///
+    /// PIVOT RULE (CRITICAL):
+    ///   All rendering uses the BOTTOM-CENTER of the sprite as its origin/pivot.
+    ///   This means <see cref="Position"/> represents the point where the entity
+    ///   "touches the floor". Y-sorting then correctly sorts by the floor contact
+    ///   point rather than the top-left corner of the texture.
+    ///
+    /// LAYER DEPTH:
+    ///   MonoGame's SpriteSortMode.FrontToBack draws higher depth values in front.
+    ///   We normalise Position.Y to [0..1] using the screen height so the cat
+    ///   slides naturally in front of or behind props as it moves up or down.
+    /// </summary>
+    public abstract class GameObject
+    {
+        // ── Static screen height used by all instances for depth normalisation ──
+        private static int _screenHeight = 720;
+
+        /// <summary>Call once from Game1.Initialize() before any entities are created.</summary>
+        public static void SetScreenHeight(int height) => _screenHeight = height;
+
+        // ── Core properties ────────────────────────────────────────────────────
+        /// <summary>
+        /// World position of this entity's BOTTOM-CENTER (floor contact point).
+        /// </summary>
+        public Vector2 Position { get; set; }
+
+        /// <summary>Current sprite texture (may be swapped per animation state).</summary>
+        public Texture2D? Texture { get; set; }
+
+        /// <summary>Axis-aligned bounding box used for collision detection.</summary>
+        public Rectangle CollisionBox { get; protected set; }
+
+        /// <summary>
+        /// Depth in [0..1]. Higher = rendered in front when using FrontToBack sort.
+        /// Updated each frame via <see cref="CalculateLayerDepth"/>.
+        /// </summary>
+        public float LayerDepth { get; protected set; }
+
+        // ── Helpers ────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// The bottom-center pivot in TEXTURE space.
+        /// For a full-texture draw this is (width/2, height).
+        /// Subclasses that draw from a source rectangle should compute their own.
+        /// </summary>
+        protected Vector2 TextureOrigin =>
+            Texture != null
+                ? new Vector2(Texture.Width * 0.5f, Texture.Height)
+                : Vector2.Zero;
+
+        /// <summary>
+        /// Normalises a floor Y-coordinate to a [0..1] depth value.
+        /// Pass an explicit <paramref name="sortY"/> when the draw position differs
+        /// from the logical floor contact point (e.g. full-room overlay props that
+        /// always draw at (0,0) but must sort by where the object stands in the scene).
+        /// Defaults to <see cref="Position"/>.Y when not supplied.
+        /// </summary>
+        protected float CalculateLayerDepth(float? sortY = null) =>
+            Math.Clamp((sortY ?? Position.Y) / _screenHeight, 0f, 1f);
+
+        // ── Abstract interface ─────────────────────────────────────────────────
+        public virtual void Update(GameTime gameTime) { }
+        public abstract void Draw(SpriteBatch spriteBatch);
+    }
+}
+</file>
+
+<file path="Entities/Prop.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace CatDetective.Entities
+{
+    /// <summary>
+    /// A foreground prop (desk, cabinet, etc.) that:
+    ///   1. Y-sorts correctly with the cat via <see cref="LayerDepth"/>.
+    ///   2. Smoothly fades to semi-transparent when the cat walks behind it.
+    ///
+    /// FULL-ROOM OVERLAY
+    ///   Prop textures are the same pixel dimensions as the background (1072 × 1136).
+    ///   The PNG contains the prop painted in the correct isometric position over a
+    ///   fully transparent background, so it is always drawn at (0, 0) — no
+    ///   position offset needed.
+    ///
+    ///   Because the draw position is always (0,0), <see cref="LayerDepth"/> is
+    ///   calculated from a separate <see cref="_sortY"/> value — the approximate
+    ///   Y coordinate (in screen space) of the prop's floor contact point within
+    ///   the full-room image.  Tune this in Game1 to control when the cat passes
+    ///   in front of or behind the prop.
+    ///
+    /// FADE TRIGGER ZONE
+    ///   An AABB placed in the area visually "behind" the prop (lower screen Y =
+    ///   further from camera in isometric view).  When the cat's feet enter this
+    ///   zone, <see cref="TargetAlpha"/> drops to 0.4f.
+    /// </summary>
+    public class Prop : GameObject
+    {
+        private const float FADE_SPEED = 5f;
+
+        private readonly float _sortY;   // logical floor Y used for depth, not draw position
+
+        // ── Fade state ─────────────────────────────────────────────────────────
+        public float CurrentAlpha { get; private set; } = 1.0f;
+        public float TargetAlpha  { get; private set; } = 1.0f;
+
+        /// <summary>
+        /// AABB that triggers the fade when intersected by the player's CollisionBox.
+        /// Populated from the Tiled "Triggers" layer at load time.
+        /// </summary>
+        public Rectangle FadeTriggerZone { get; set; }
+
+        // ── Constructor ────────────────────────────────────────────────────────
+        /// <param name="texture">Full-room overlay texture (same size as bg_base).</param>
+        /// <param name="sortY">
+        ///   The Y screen coordinate of this prop's floor contact point.
+        ///   Used only for depth sorting — the texture always draws at (0, 0).
+        ///   A good starting value: roughly the Y of the prop's bottom edge in the image.
+        /// </param>
+        /// <param name="fadeTriggerZone">AABB that triggers the fade when the cat enters.</param>
+        public Prop(Texture2D texture, float sortY, Rectangle fadeTriggerZone)
+        {
+            Texture          = texture;
+            _sortY           = sortY;
+            FadeTriggerZone  = fadeTriggerZone;
+            Position         = Vector2.Zero;      // draw position is always top-left
+            LayerDepth       = CalculateLayerDepth(_sortY);
+        }
+
+        // ── Public API ─────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Call every frame (before Update) with the player's current CollisionBox.
+        /// Sets <see cref="TargetAlpha"/> based on whether the player is inside
+        /// the fade trigger zone.
+        /// </summary>
+        public void CheckFadeTrigger(Rectangle playerBounds)
+        {
+            TargetAlpha = FadeTriggerZone.Intersects(playerBounds) ? 0.4f : 1.0f;
+        }
+
+        // ── GameObject overrides ───────────────────────────────────────────────
+
+        public override void Update(GameTime gameTime)
+        {
+            CurrentAlpha = MathHelper.Lerp(
+                CurrentAlpha,
+                TargetAlpha,
+                (float)gameTime.ElapsedGameTime.TotalSeconds * FADE_SPEED);
+
+            // sortY never changes for a static prop, but kept consistent with Cat.
+            LayerDepth = CalculateLayerDepth(_sortY);
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            if (Texture == null) return;
+
+            // Full-room overlay: draw at (0,0) with no origin offset.
+            // The texture's transparent regions show the background underneath;
+            // only the painted prop pixels are visible.
+            spriteBatch.Draw(
+                Texture,
+                position:        Vector2.Zero,
+                sourceRectangle: null,
+                color:           Color.White * CurrentAlpha,
+                rotation:        0f,
+                origin:          Vector2.Zero,
+                scale:           Vector2.One,
+                effects:         SpriteEffects.None,
+                layerDepth:      LayerDepth);
+        }
+    }
+}
+</file>
+
+<file path="Game1.cs">
+using CatDetective.Entities;
+using CatDetective.Map;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
+using System.IO;
+
+namespace CatDetective
+{
+    /// <summary>
+    /// Root game class for the Cat Detective prototype.
+    ///
+    /// SCREEN RESOLUTION
+    ///   1072 × 1136 — matches the art assets exactly so no scaling artefacts occur.
+    ///
+    /// RENDER PIPELINE (in order each frame):
+    ///
+    ///   Pass 1 — Base Background  (AlphaBlend, Deferred)
+    ///     bg_base.png drawn at (0,0).
+    ///
+    ///   Pass 2 — Blob Shadow  (AlphaBlend, Deferred)
+    ///     shadow_blob.png drawn under the cat's feet BEFORE the cat sprite,
+    ///     so it composites underneath.
+    ///
+    ///   Pass 3 — Y-Sorted Entities  (NonPremultiplied, FrontToBack)
+    ///     Cat and props drawn together, sorted by floor-Y depth.
+    ///     Props are full-room overlays (same size as background) drawn at (0,0);
+    ///     their LayerDepth is derived from a logical sortY, not their draw position.
+    ///     Prop alpha lerps to 0.4 when the cat walks behind them.
+    ///
+    ///   Pass 4 — Lighting / Sunbeams  (Additive, Deferred)
+    ///     mask_sunbeams.png drawn at (0,0). Additive blend washes out the scene
+    ///     naturally where beams hit — no shaders needed (GDD "El Mariachi" trick).
+    /// </summary>
+    public class Game1 : Game
+    {
+        // ── Internal resolution — matches bg_base.png / prop overlay dimensions ─
+        private const int   SCREEN_WIDTH   = 1072;
+        private const int   SCREEN_HEIGHT  = 1136;
+
+        // ── Display scale — shrinks the OS window while keeping proportions ────
+        // Change this one constant to resize the window (e.g. 0.5 for half size).
+        private const float DISPLAY_SCALE  = 0.6f;
+        private static readonly int WINDOW_WIDTH  = (int)(SCREEN_WIDTH  * DISPLAY_SCALE);
+        private static readonly int WINDOW_HEIGHT = (int)(SCREEN_HEIGHT * DISPLAY_SCALE);
+
+        // ── MonoGame core ──────────────────────────────────────────────────────
+        private readonly GraphicsDeviceManager _graphics;
+        private SpriteBatch     _spriteBatch   = null!;
+        private RenderTarget2D  _renderTarget  = null!;
+
+        // ── Scene textures ─────────────────────────────────────────────────────
+        private Texture2D _bgBase       = null!;
+        private Texture2D _sunbeamsMask = null!;
+
+        // ── Entities ───────────────────────────────────────────────────────────
+        private Cat  _cat     = null!;
+        private Prop _desk    = null!;
+        private Prop _cabinet = null!;
+
+        // ── World data from Tiled ──────────────────────────────────────────────
+        private List<Rectangle> _solidBoundaries = new();
+
+        // ── Debug overlay ──────────────────────────────────────────────────────
+        private Texture2D    _debugPixel  = null!;
+        private bool         _showDebug   = true;   // F1 toggles
+        private KeyboardState _prevKbState;
+
+        // ══════════════════════════════════════════════════════════════════════
+        public Game1()
+        {
+            _graphics = new GraphicsDeviceManager(this)
+            {
+                PreferredBackBufferWidth  = WINDOW_WIDTH,
+                PreferredBackBufferHeight = WINDOW_HEIGHT,
+            };
+            Content.RootDirectory = "Content";
+            IsMouseVisible = true;
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        protected override void Initialize()
+        {
+            GameObject.SetScreenHeight(SCREEN_HEIGHT);
+            base.Initialize();
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        protected override void LoadContent()
+        {
+            _spriteBatch  = new SpriteBatch(GraphicsDevice);
+            _renderTarget = new RenderTarget2D(GraphicsDevice, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+            // ── Scene textures ───────────────────────────────────────────────
+            _bgBase       = Content.Load<Texture2D>("bg_base");
+            _sunbeamsMask = Content.Load<Texture2D>("mask_sunbeams");
+
+            // ── Cat ──────────────────────────────────────────────────────────
+            // Sprite sheets: 447 × 354 px, 3 frames of 149 × 354 each.
+            var walkDown = Content.Load<Texture2D>("spr_cat_walk_down");
+            var walkUp   = Content.Load<Texture2D>("spr_cat_walk_up");
+            var shadow   = Content.Load<Texture2D>("shadow_blob");
+
+            // Start position: centre-X, lower floor area.
+            // Adjust Y once the room art is reviewed in-engine.
+            _cat = new Cat(walkDown, walkUp, startPosition: new Vector2(536, 900), frameCount: 1)
+            {
+                ShadowTexture = shadow
+            };
+
+            // ── Props ────────────────────────────────────────────────────────
+            // Full-room overlay PNGs: same 1072 × 1136 canvas as bg_base.
+            // sortY is the approximate Y of each prop's floor contact point within
+            // the image. Tune these values after reviewing the art in-engine.
+            var deskTex    = Content.Load<Texture2D>("prop_desk");
+            var cabinetTex = Content.Load<Texture2D>("prop_cabinet");
+
+            // ── Debug pixel ─────────────────────────────────────────────────
+            _debugPixel = new Texture2D(GraphicsDevice, 1, 1);
+            _debugPixel.SetData(new[] { Color.White });
+
+            // ── Parse Tiled map ──────────────────────────────────────────────
+            string mapPath = Path.Combine(Content.RootDirectory, "room_map.json");
+            MapParser.Parse(mapPath, out _solidBoundaries, out var triggers);
+
+            // ── Wire trigger zones to props ───────────────────────────────────
+            var deskTrigger    = new Rectangle(230, 490, 280, 210); // fallback
+            var cabinetTrigger = new Rectangle(590, 340, 220, 200); // fallback
+
+            foreach (var (name, rect) in triggers)
+            {
+                var lower = name.ToLowerInvariant();
+                if (lower.Contains("desk"))    deskTrigger    = rect;
+                if (lower.Contains("cabinet")) cabinetTrigger = rect;
+            }
+
+            // sortY values: approximate Y of each prop's floor contact in the
+            // full-room overlay image. Tune after reviewing in-engine.
+            _desk    = new Prop(deskTex,    sortY: 750f, deskTrigger);
+            _cabinet = new Prop(cabinetTex, sortY: 580f, cabinetTrigger);
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        protected override void Update(GameTime gameTime)
+        {
+            var kbState = Keyboard.GetState();
+            if (kbState.IsKeyDown(Keys.Escape))
+                Exit();
+
+            // Toggle debug overlay with F1 (on key-down, not held)
+            if (kbState.IsKeyDown(Keys.F1) && !_prevKbState.IsKeyDown(Keys.F1))
+                _showDebug = !_showDebug;
+            _prevKbState = kbState;
+
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            _cat.Update(gameTime);
+            _cat.MoveWithCollision(dt, _solidBoundaries);
+
+            _desk.CheckFadeTrigger(_cat.CollisionBox);
+            _cabinet.CheckFadeTrigger(_cat.CollisionBox);
+            _desk.Update(gameTime);
+            _cabinet.Update(gameTime);
+
+            base.Update(gameTime);
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        protected override void Draw(GameTime gameTime)
+        {
+            // ── Render all passes into the full-resolution render target ─────
+            GraphicsDevice.SetRenderTarget(_renderTarget);
+            GraphicsDevice.Clear(Color.Black);
+
+            // ════════════════════════════════════════════════════════════════
+            // PASS 1 — BASE BACKGROUND
+            // ════════════════════════════════════════════════════════════════
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            _spriteBatch.Draw(_bgBase, Vector2.Zero, Color.White);
+            _spriteBatch.End();
+
+            // ════════════════════════════════════════════════════════════════
+            // PASS 2 — BLOB SHADOW
+            // ════════════════════════════════════════════════════════════════
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            _cat.DrawShadow(_spriteBatch);
+            _spriteBatch.End();
+
+            // ════════════════════════════════════════════════════════════════
+            // PASS 3 — Y-SORTED ENTITIES
+            // NonPremultiplied required: textures have straight alpha (see .mgcb),
+            // and prop alpha modulation must fade cleanly without colour darkening.
+            // ════════════════════════════════════════════════════════════════
+            _spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.NonPremultiplied);
+            _desk.Draw(_spriteBatch);
+            _cabinet.Draw(_spriteBatch);
+            _cat.Draw(_spriteBatch);
+            _spriteBatch.End();
+
+            // ════════════════════════════════════════════════════════════════
+            // PASS 4 — LIGHTING / SUNBEAMS  (additive — El Mariachi trick)
+            // ════════════════════════════════════════════════════════════════
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
+            _spriteBatch.Draw(_sunbeamsMask, Vector2.Zero, Color.White);
+            _spriteBatch.End();
+
+            // ════════════════════════════════════════════════════════════════
+            // PASS 5 — DEBUG OVERLAY  (F1 to toggle)
+            // AlphaBlend + Deferred; drawn last so it sits on top of everything.
+            // ════════════════════════════════════════════════════════════════
+            if (_showDebug)
+            {
+                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
+                // Collision walls — red
+                foreach (var wall in _solidBoundaries)
+                    DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, wall, Color.Red);
+
+                // Cat feet collision box — cyan
+                DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, _cat.CollisionBox, Color.Cyan);
+
+                _spriteBatch.End();
+            }
+
+            // ── Blit render target to the OS window at display scale ─────────
+            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.Clear(Color.Black);
+
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
+            _spriteBatch.Draw(
+                _renderTarget,
+                new Rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT),
+                Color.White);
+            _spriteBatch.End();
+
+            base.Draw(gameTime);
+        }
+    }
+}
+</file>
+
+<file path="Map/MapParser.cs">
+using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace CatDetective.Map
+{
+    // ─────────────────────────────────────────────────────────────────────────
+    // Minimal Tiled JSON data models
+    //
+    // We only care about "objectgroup" layers that contain simple rectangle
+    // objects.  Tile layers and tilesets are intentionally ignored — the GDD
+    // uses pre-rendered background PNGs, not tile-based rendering.
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /// <summary>Root of the Tiled .json export.</summary>
+    internal sealed class TiledMapData
+    {
+        [JsonPropertyName("layers")]
+        public List<TiledLayer> Layers { get; set; } = new();
+    }
+
+    /// <summary>One layer inside the map (we only process type == "objectgroup").</summary>
+    internal sealed class TiledLayer
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = string.Empty;
+
+        [JsonPropertyName("type")]
+        public string Type { get; set; } = string.Empty;
+
+        [JsonPropertyName("objects")]
+        public List<TiledObject> Objects { get; set; } = new();
+    }
+
+    /// <summary>
+    /// One rectangle object inside an objectgroup layer.
+    /// Tiled stores X/Y as float (supports sub-pixel placement in the editor).
+    /// </summary>
+    internal sealed class TiledObject
+    {
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = string.Empty;
+
+        [JsonPropertyName("x")]
+        public float X { get; set; }
+
+        [JsonPropertyName("y")]
+        public float Y { get; set; }
+
+        [JsonPropertyName("width")]
+        public float Width { get; set; }
+
+        [JsonPropertyName("height")]
+        public float Height { get; set; }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Parses a Tiled JSON export and extracts:
+    ///   • Solid collision rectangles from the layer named <c>Collisions</c>.
+    ///   • Named trigger rectangles from the layer named <c>Triggers</c>.
+    ///
+    /// Usage from Game1.LoadContent():
+    /// <code>
+    ///   MapParser.Parse(
+    ///       Path.Combine(Content.RootDirectory, "room_map.json"),
+    ///       out solidBoundaries,
+    ///       out triggers);
+    /// </code>
+    /// </summary>
+    public static class MapParser
+    {
+        private static readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        /// <summary>
+        /// Parses <paramref name="jsonPath"/> and populates the two output lists.
+        /// If the file is missing the method logs a warning and returns empty lists
+        /// so the game can still run without a map (useful during early prototyping).
+        /// </summary>
+        /// <param name="jsonPath">Absolute or relative path to the Tiled JSON file.</param>
+        /// <param name="solidBoundaries">
+        ///   Output: all rectangles from the "Collisions" layer.
+        ///   Feed these into <c>Cat.MoveWithCollision()</c> each frame.
+        /// </param>
+        /// <param name="triggers">
+        ///   Output: all (name, rect) pairs from the "Triggers" layer.
+        ///   Match names to props ("desk_fade", "cabinet_fade") in LoadContent().
+        /// </param>
+        public static void Parse(
+            string jsonPath,
+            out List<Rectangle> solidBoundaries,
+            out List<(string Name, Rectangle Rect)> triggers)
+        {
+            solidBoundaries = new List<Rectangle>();
+            triggers        = new List<(string, Rectangle)>();
+
+            if (!File.Exists(jsonPath))
+            {
+                Console.WriteLine($"[MapParser] WARNING: '{jsonPath}' not found. " +
+                                  "No collision or trigger data loaded.");
+                return;
+            }
+
+            string json;
+            try
+            {
+                json = File.ReadAllText(jsonPath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[MapParser] ERROR reading map file: {ex.Message}");
+                return;
+            }
+
+            var mapData = JsonSerializer.Deserialize<TiledMapData>(json, _jsonOptions);
+            if (mapData == null) return;
+
+            foreach (var layer in mapData.Layers)
+            {
+                // Skip tile layers and any non-object layers
+                if (layer.Type != "objectgroup") continue;
+
+                switch (layer.Name)
+                {
+                    case "Collisions":
+                        foreach (var obj in layer.Objects)
+                            solidBoundaries.Add(ToRect(obj));
+                        break;
+
+                    case "Triggers":
+                        foreach (var obj in layer.Objects)
+                            triggers.Add((obj.Name, ToRect(obj)));
+                        break;
+                }
+            }
+
+            Console.WriteLine(
+                $"[MapParser] Loaded {solidBoundaries.Count} collision(s), " +
+                $"{triggers.Count} trigger(s) from '{jsonPath}'.");
+        }
+
+        private static Rectangle ToRect(TiledObject obj) =>
+            new Rectangle((int)obj.X, (int)obj.Y, (int)obj.Width, (int)obj.Height);
+    }
+}
+</file>
+
+<file path="obj/CatDetective.csproj.nuget.dgspec.json">
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj",
+        "projectName": "CatDetective",
+        "projectPath": "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj",
+        "packagesPath": "C:\\Users\\larry\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\larry\\Projecten\\cat_detective\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\larry\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "MonoGame.Content.Builder.Task": {
+              "target": "Package",
+              "version": "[3.8.1.303, )"
+            },
+            "MonoGame.Framework.DesktopGL": {
+              "target": "Package",
+              "version": "[3.8.1.303, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.23, 8.0.23]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[8.0.23, 8.0.23]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.23, 8.0.23]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.23, 8.0.23]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
+</file>
+
+<file path="obj/CatDetective.csproj.nuget.g.props">
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <RestoreSuccess Condition=" '$(RestoreSuccess)' == '' ">True</RestoreSuccess>
+    <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
+    <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">$(MSBuildThisFileDirectory)project.assets.json</ProjectAssetsFile>
+    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
+    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">C:\Users\larry\.nuget\packages\</NuGetPackageFolders>
+    <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
+    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">7.0.0</NuGetToolVersion>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <SourceRoot Include="C:\Users\larry\.nuget\packages\" />
+  </ItemGroup>
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)monogame.content.builder.task\3.8.1.303\build\MonoGame.Content.Builder.Task.props" Condition="Exists('$(NuGetPackageRoot)monogame.content.builder.task\3.8.1.303\build\MonoGame.Content.Builder.Task.props')" />
+  </ImportGroup>
+</Project>
+</file>
+
+<file path="obj/CatDetective.csproj.nuget.g.targets">
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)monogame.framework.desktopgl\3.8.1.303\build\MonoGame.Framework.DesktopGL.targets" Condition="Exists('$(NuGetPackageRoot)monogame.framework.desktopgl\3.8.1.303\build\MonoGame.Framework.DesktopGL.targets')" />
+    <Import Project="$(NuGetPackageRoot)monogame.content.builder.task\3.8.1.303\build\MonoGame.Content.Builder.Task.targets" Condition="Exists('$(NuGetPackageRoot)monogame.content.builder.task\3.8.1.303\build\MonoGame.Content.Builder.Task.targets')" />
+  </ImportGroup>
+</Project>
+</file>
+
+<file path="obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs">
+// <autogenerated />
+using System;
+using System.Reflection;
+[assembly: global::System.Runtime.Versioning.TargetFrameworkAttribute(".NETCoreApp,Version=v8.0", FrameworkDisplayName = ".NET 8.0")]
+</file>
+
+<file path="obj/Debug/net8.0/CatDetective.AssemblyInfo.cs">
+//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+using System;
+using System.Reflection;
+
+[assembly: System.Reflection.AssemblyCompanyAttribute("CatDetective")]
+[assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ce99e28c78f55aa9ce32bd9daf709268ac093945")]
+[assembly: System.Reflection.AssemblyProductAttribute("CatDetective")]
+[assembly: System.Reflection.AssemblyTitleAttribute("CatDetective")]
+[assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
+
+// Generated by the MSBuild WriteCodeFragment class.
+</file>
+
+<file path="obj/Debug/net8.0/CatDetective.AssemblyInfoInputs.cache">
+7b8de46d1bbf01c0ac2693844c58ac8757ed62e96484d79f637cf4339cddfeb3
+</file>
+
+<file path="obj/Debug/net8.0/CatDetective.csproj.CoreCompileInputs.cache">
+b4787cfcc9b002b0a051b9c39bf21bc774f844360597298fadbe7bf5a7efe84c
+</file>
+
+<file path="obj/Debug/net8.0/CatDetective.csproj.FileListAbsolute.txt">
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\room_map.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.exe
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.deps.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.runtimeconfig.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.dll
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.pdb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\MonoGame.Framework.dll
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\linux-x64\native\libSDL2-2.0.so.0
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\linux-x64\native\libopenal.so.1
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\osx\native\libSDL2.dylib
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\osx\native\libopenal.1.dylib
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\win-x64\native\SDL2.dll
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\win-x64\native\soft_oal.dll
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\win-x86\native\SDL2.dll
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\win-x86\native\soft_oal.dll
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.csproj.AssemblyReference.cache
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.AssemblyInfoInputs.cache
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.AssemblyInfo.cs
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.csproj.CoreCompileInputs.cache
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.sourcelink.json
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetec.86C7045D.Up2Date
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.dll
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\refint\CatDetective.dll
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.pdb
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.genruntimeconfig.cache
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\ref\CatDetective.dll
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\bg_base.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\mask_sunbeams.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\prop_cabinet.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\prop_desk.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\shadow_blob.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\spr_cat_walk_down.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\spr_cat_walk_up.xnb
+</file>
+
+<file path="obj/Debug/net8.0/CatDetective.GeneratedMSBuildEditorConfig.editorconfig">
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = CatDetective
+build_property.ProjectDir = C:\Users\larry\Projecten\cat_detective\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity =
+</file>
+
+<file path="obj/Debug/net8.0/CatDetective.genruntimeconfig.cache">
+9242b68c503066df1bd576ac962275a4b2ad5e1c28efc5bbc3334b67134ceec6
+</file>
+
+<file path="obj/Debug/net8.0/CatDetective.sourcelink.json">
+{"documents":{"C:\\Users\\larry\\Projecten\\cat_detective\\*":"https://raw.githubusercontent.com/ErikHilhorst/cat_detective/ce99e28c78f55aa9ce32bd9daf709268ac093945/*"}}
+</file>
+
+<file path="obj/project.assets.json">
+{
+  "version": 3,
+  "targets": {
+    "net8.0": {
+      "MonoGame.Content.Builder.Task/3.8.1.303": {
+        "type": "package",
+        "build": {
+          "build/MonoGame.Content.Builder.Task.props": {},
+          "build/MonoGame.Content.Builder.Task.targets": {}
+        }
+      },
+      "MonoGame.Framework.DesktopGL/3.8.1.303": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/MonoGame.Framework.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/MonoGame.Framework.dll": {}
+        },
+        "build": {
+          "build/MonoGame.Framework.DesktopGL.targets": {}
+        },
+        "runtimeTargets": {
+          "runtimes/linux-x64/native/libSDL2-2.0.so.0": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/linux-x64/native/libopenal.so.1": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/osx/native/libSDL2.dylib": {
+            "assetType": "native",
+            "rid": "osx"
+          },
+          "runtimes/osx/native/libopenal.1.dylib": {
+            "assetType": "native",
+            "rid": "osx"
+          },
+          "runtimes/win-x64/native/SDL2.dll": {
+            "assetType": "native",
+            "rid": "win-x64"
+          },
+          "runtimes/win-x64/native/soft_oal.dll": {
+            "assetType": "native",
+            "rid": "win-x64"
+          },
+          "runtimes/win-x86/native/SDL2.dll": {
+            "assetType": "native",
+            "rid": "win-x86"
+          },
+          "runtimes/win-x86/native/soft_oal.dll": {
+            "assetType": "native",
+            "rid": "win-x86"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "MonoGame.Content.Builder.Task/3.8.1.303": {
+      "sha512": "9Ilzzje62LhWElbPNEl7vh7XsRSbze+lvCJdZtTZUGu48FRgvYN6THURwIB9PN98EI33/Wnf6iuShNUtD7hL4Q==",
+      "type": "package",
+      "path": "monogame.content.builder.task/3.8.1.303",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "build/MonoGame.Content.Builder.Task.props",
+        "build/MonoGame.Content.Builder.Task.targets",
+        "monogame.content.builder.task.3.8.1.303.nupkg.sha512",
+        "monogame.content.builder.task.nuspec"
+      ]
+    },
+    "MonoGame.Framework.DesktopGL/3.8.1.303": {
+      "sha512": "eGYhqn0n1olk8MNYeE9EuBmoNNECN1T18rPMaQpkzsEQ0H3nVyFPXC+uCo78v5pi5juQpJ3PSFnSkjzZJ1U58A==",
+      "type": "package",
+      "path": "monogame.framework.desktopgl/3.8.1.303",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "build/MonoGame.Framework.DesktopGL.targets",
+        "lib/net6.0/MonoGame.Framework.dll",
+        "monogame.framework.desktopgl.3.8.1.303.nupkg.sha512",
+        "monogame.framework.desktopgl.nuspec",
+        "runtimes/linux-x64/native/libSDL2-2.0.so.0",
+        "runtimes/linux-x64/native/libopenal.so.1",
+        "runtimes/osx/native/libSDL2.dylib",
+        "runtimes/osx/native/libopenal.1.dylib",
+        "runtimes/win-x64/native/SDL2.dll",
+        "runtimes/win-x64/native/soft_oal.dll",
+        "runtimes/win-x86/native/SDL2.dll",
+        "runtimes/win-x86/native/soft_oal.dll"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net8.0": [
+      "MonoGame.Content.Builder.Task >= 3.8.1.303",
+      "MonoGame.Framework.DesktopGL >= 3.8.1.303"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\larry\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj",
+      "projectName": "CatDetective",
+      "projectPath": "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj",
+      "packagesPath": "C:\\Users\\larry\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\larry\\Projecten\\cat_detective\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\larry\\AppData\\Roaming\\NuGet\\NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "net8.0"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "10.0.100"
+    },
+    "frameworks": {
+      "net8.0": {
+        "targetAlias": "net8.0",
+        "dependencies": {
+          "MonoGame.Content.Builder.Task": {
+            "target": "Package",
+            "version": "[3.8.1.303, )"
+          },
+          "MonoGame.Framework.DesktopGL": {
+            "target": "Package",
+            "version": "[3.8.1.303, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.23, 8.0.23]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[8.0.23, 8.0.23]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.23, 8.0.23]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.23, 8.0.23]"
+          }
+        ],
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}
+</file>
+
+<file path="obj/project.nuget.cache">
+{
+  "version": 2,
+  "dgSpecHash": "e1CPmxW4KJw=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\larry\\.nuget\\packages\\monogame.content.builder.task\\3.8.1.303\\monogame.content.builder.task.3.8.1.303.nupkg.sha512",
+    "C:\\Users\\larry\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.1.303\\monogame.framework.desktopgl.3.8.1.303.nupkg.sha512",
+    "C:\\Users\\larry\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.23\\microsoft.netcore.app.ref.8.0.23.nupkg.sha512",
+    "C:\\Users\\larry\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.23\\microsoft.windowsdesktop.app.ref.8.0.23.nupkg.sha512",
+    "C:\\Users\\larry\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.23\\microsoft.aspnetcore.app.ref.8.0.23.nupkg.sha512",
+    "C:\\Users\\larry\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.23\\microsoft.netcore.app.host.win-x64.8.0.23.nupkg.sha512"
+  ],
+  "logs": []
+}
+</file>
+
+<file path="Program.cs">
+using System;
+
+namespace CatDetective
+{
+    /// <summary>
+    /// Entry point. MonoGame requires [STAThread] on Windows for COM interop.
+    /// </summary>
+    internal static class Program
+    {
+        [STAThread]
+        private static void Main()
+        {
+            using var game = new Game1();
+            game.Run();
+        }
+    }
+}
+</file>
+
+<file path="Tiled maps/untitledcat_detective.tiled-project">
+{
+    "automappingRulesFile": "",
+    "commands": [
+    ],
+    "compatibilityVersion": 1100,
+    "extensionsPath": "extensions",
+    "folders": [
+        "."
+    ],
+    "properties": [
+    ],
+    "propertyTypes": [
+    ]
+}
+</file>
+
+<file path="Tiled maps/untitledcat_detective.tiled-session">
+{
+    "activeFile": "C:/Users/larry/Projecten/cat_detective/Content/room_map.json",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "C:/Users/larry/Projecten/cat_detective/Content/room_map.json": {
+            "scale": 0.592876838235294,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 807.9249670568175,
+                "y": 444.443066428959
+            }
+        }
+    },
+    "openFiles": [
+        "C:/Users/larry/Projecten/cat_detective/Content/room_map.json"
+    ],
+    "project": "untitledcat_detective.tiled-project",
+    "recentFiles": [
+        "C:/Users/larry/Projecten/cat_detective/Content/room_map.json"
+    ]
+}
+</file>
+
+<file path="cat detective GDD.txt">
+GAME DESIGN DOCUMENT: "Cat Detective" (Working Title)
+1. GAME OVERVIEW
+Concept: A cozy, narrative-driven isometric mystery game where the player controls a housecat solving human crimes (e.g., stolen diamonds, poisoning, murder).
+Genre: Point-and-Click / Isometric Detective Adventure.
+Perspective: 2.5D Isometric (Fixed-camera, pre-rendered backgrounds).
+Platform: Web browser (HTML5/WASM) via MonoGame (KNI framework).
+Target Scope: Short, highly polished indie experience meant to be developed solo over a few months.
+2. CORE GAMEPLAY LOOP
+The game relies on environmental storytelling and logical deduction rather than complex inventory management or branching dialogue trees. It is broken into two distinct phases:
+Phase 1: Information Gathering (The Map)
+Exploration: The cat explores a static, highly detailed isometric room.
+Smell Mode: The player can activate a "Smell Mode" (applying a dark blue tint to the screen) which highlights hidden clues like footprints, dropped items, or lingering scents.
+Inspection: Clicking on an item pops up a high-resolution, LLM-generated close-up image of the clue with a single line of descriptive text (e.g., "A torn piece of red fabric. It smells like cheap cologne.").
+Keyword Acquisition: Discovering clues automatically adds "Keywords" to the player’s notebook (e.g., [Red Fabric],[Poison], [10:00 PM]).
+Phase 2: Synthesis (The Deduction Board)
+Inspired by Return of the Obra Dinn and The Case of the Golden Idol.
+The player presses a button to open the "Deduction Board"—a UI screen displaying a "Mad Libs" style fill-in-the-blank sentence:
+"The diamond was stolen by ______, who entered through the ______ at ______."
+The player drags and drops their collected keywords into the slots.
+Win Condition: A simple boolean logic check. If the keywords match the expected solution, the case is solved, triggering a success animation and unlocking the next level.
+3. ART & AESTHETIC DIRECTION
+Visual Style: "Studio Ghibli Painted Diorama." Warm, cozy, detailed watercolor/digital painting with baked-in soft lighting.
+Backgrounds: Flat, pre-rendered 2D images generated via LLMs (Midjourney/DALL-E), depicting isolated isometric rooms on a clean background.
+Character Design: A chubby, stylized grey-and-white tabby cat with bright green eyes.
+Animation Approach:
+4-Directional movement achieved using only 2 walk cycles (Diagonally Down, Diagonally Up). The Left variations are achieved purely in code via SpriteEffects.FlipHorizontally.
+Walk cycles are derived from AI-generated sprite sheets, cut out in Photoshop, with shadows manually removed.
+4. TECHNICAL IMPLEMENTATION
+Engine & Framework
+Framework: MonoGame (using the KNI fork). KNI is chosen specifically for its robust support for Web/WASM builds, allowing the game to be easily shared and played in a browser.
+Language: C#.
+Map Editor: Tiled (.tmx / .json export).
+Rendering & Depth (The 2.5D Illusion)
+The game mimics a 3D isometric environment using purely 2D assets and logic.
+Y-Sorting: The core rendering trick. In the MonoGame Update() loop, the layerDepth of the Cat sprite is constantly updated based on its bottom Y-coordinate. If the cat walks "up" the screen, its Y-value decreases, automatically drawing it behind foreground furniture.
+The "Matryoshka" Layering: Rooms are split into:
+Base Canvas (Floor & Back walls).
+Y-Sorted Props (Desks, chairs).
+Front Wall Cutouts (Walls closest to the camera).
+Wall Fading: Tiled NavMesh trigger zones will be placed behind front-facing walls. When the cat's collision box intersects this zone, MonoGame uses MathHelper.Lerp to smoothly fade the front wall's alpha to 0.4f, revealing the cat behind it.
+Level Design Structure
+The "Movie Set" Approach: To avoid the complex Z-axis collision math of multi-story buildings, all rooms for a specific case (e.g., Exterior, 1st Floor, 2nd Floor) will be drawn side-by-side on a single massive, flat map.
+When the cat enters a door, their X/Y coordinates are instantly teleported to the adjacent "room" on the canvas, creating a seamless, no-load-screen transition.
+"El Mariachi" Lighting Hacks
+To ensure the uniformly colored Cat sprite blends into the richly lit AI backgrounds without expensive 3D shaders:
+Tint Zones: Tiled invisible collision boxes placed over dark areas of the map. Entering them Lerps the Cat’s SpriteBatch color to a moody blue/grey.
+Additive Light Masks: Sunbeams or lamp glows are exported from Photoshop as standalone semi-transparent PNGs and drawn on top of the Cat in MonoGame to wash the sprite out naturally.
+Blob Shadow: A simple, semi-transparent black oval drawn directly under the Cat's X/Y coordinates to ground the sprite to the floor at all times.
+5. DEVELOPMENT WORKFLOW (Asset Pipeline)
+Generate Environment: Use LLM to generate the isometric room ("empty room, isolated on white background, Studio Ghibli style").
+Photoshop Prep: Cut out the floor, separate the foreground walls/props, paint over sunbeams for additive masks. Export as labeled PNGs.
+Tiled Mapping: Load the Base Floor PNG into Tiled. Draw NavMesh collision polygons for walls, interactive trigger zones for clues, and lighting zones. Export to MonoGame.
+Code Logic: Hook up the Tiled coordinates to MonoGame collision events, populate the Deduction Board logic, and playtest.
+6. SCOPE & MILESTONES (3-Month Solo Plan)
+Month 1: The Engine & Core Systems. Get MonoGame KNI running. Implement Y-sorting, Tiled map importing, basic cat movement, wall fading, and the "Blob Shadow".
+Month 2: The Gameplay Loop. Build the UI for the "Smell Mode" shader, Clue pop-ups, and the Mad Libs Deduction Board. Create one fully playable test room.
+Month 3: Content & Web Export. Generate the art for 3 distinct cases (e.g., The Mansion, The Train cabin, The Museum). Implement sound effects. Export and test the WASM web build.
+</file>
+
+</files>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Profile>Reach</Profile>
+  <Platform>DesktopGL</Platform>
+  <Config />
+  <SourceFiles>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/bg_base.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/prop_desk.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/prop_cabinet.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_down.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png</File>
+  </SourceFiles>
+  <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+  </DestFiles>
+</SourceFileCollection>
