@@ -35,3 +35,4 @@ C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\spr_cat_walk_up.
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\walk_animation_forward.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\walk_animation_upward.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\dialogue_font.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\scenes_config.json

@@ -1,5 +1,6 @@
 using CatDetective.Entities;
 using CatDetective.Map;
+using CatDetective.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -35,9 +36,11 @@ namespace CatDetective
     /// </summary>
     public class Game1 : Game
     {
-        // ── Internal resolution — matches bg_base.png / prop overlay dimensions ─
-        private const int   SCREEN_WIDTH   = 1072;
+        // ── Internal resolution — 16:9 canvas (1136 × 16/9 ≈ 2020) ─────────────
+        private const int   SCREEN_WIDTH   = 2020;
         private const int   SCREEN_HEIGHT  = 1136;
+        // Original room art width; the art is centred inside the wider canvas.
+        private const int   ROOM_WIDTH     = 1072;
 
         // ── Display scale — shrinks the OS window while keeping proportions ────
         // Change this one constant to resize the window (e.g. 0.5 for half size).
@@ -47,8 +50,10 @@ namespace CatDetective
 
         // ── MonoGame core ──────────────────────────────────────────────────────
         private readonly GraphicsDeviceManager _graphics;
-        private SpriteBatch     _spriteBatch   = null!;
-        private RenderTarget2D  _renderTarget  = null!;
+        private SpriteBatch     _spriteBatch      = null!;
+        private RenderTarget2D  _renderTarget     = null!;
+        private Matrix          _cameraTransform;
+        private Color           _ambientColor     = Color.Black;
 
         // ── Scene textures ─────────────────────────────────────────────────────
         private Texture2D _bgBase       = null!;
@@ -67,7 +72,43 @@ namespace CatDetective
         private Dictionary<string, InteractionData> _interactionDatabase = null!;
         private bool            _isDialogueActive;
         private InteractionData? _currentInteraction;
-        private List<string>    _collectedClues = new();
+
+        // ── Notebook / inventory ───────────────────────────────────────────────
+        private NotebookManager _notebook = new();
+        private bool         _isNotebookOpen = false;
+        private ClueCategory _selectedTab    = ClueCategory.Who;
+        private MouseState   _prevMouseState;
+
+        // Notebook UI rectangles — all in virtual 2020×1136 screen space.
+        private static readonly Rectangle _notebookButtonRect =
+            new Rectangle(2020 - 120, 20, 100, 100);
+        private static readonly Rectangle _notebookPanelRect  =
+            new Rectangle(2020 - 450, 140, 430, 950);
+        // Four equal tabs across the top of the panel (107 px each).
+        private static readonly Rectangle[] _tabRects = BuildTabRects();
+        private static Rectangle[] BuildTabRects()
+        {
+            const int tabH = 60;
+            int       tabW = _notebookPanelRect.Width / 4;   // 107
+            int       y    = _notebookPanelRect.Y;
+            return new[]
+            {
+                new Rectangle(_notebookPanelRect.X + 0 * tabW, y, tabW, tabH),
+                new Rectangle(_notebookPanelRect.X + 1 * tabW, y, tabW, tabH),
+                new Rectangle(_notebookPanelRect.X + 2 * tabW, y, tabW, tabH),
+                new Rectangle(_notebookPanelRect.X + 3 * tabW, y, tabW, tabH),
+            };
+        }
+        // One tint per tab category (index matches ClueCategory enum order).
+        private static readonly Color[] _tabColors = new[]
+        {
+            new Color( 80, 120, 230),   // Who       — blue
+            new Color( 80, 200, 100),   // What      — green
+            new Color(230, 140,  40),   // Why       — orange
+            new Color(160,  80, 220),   // WhereWhen — purple
+        };
+        private static readonly string[] _tabLabels =
+            { "Who", "What", "Why", "Where/When" };
 
         // ── UI ─────────────────────────────────────────────────────────────────
         private SpriteFont _dialogueFont = null!;
@@ -93,6 +134,10 @@ namespace CatDetective
         protected override void Initialize()
         {
             GameObject.SetScreenHeight(SCREEN_HEIGHT);
+
+            float offsetX = (SCREEN_WIDTH - ROOM_WIDTH) / 2f;
+            _cameraTransform = Matrix.CreateTranslation(offsetX, 0, 0);
+
             base.Initialize();
         }
 
@@ -179,6 +224,10 @@ namespace CatDetective
                     }) },
             };
 
+            // ── Scene config ─────────────────────────────────────────────────
+            string configPath = Path.Combine(Content.RootDirectory, "scenes_config.json");
+            _ambientColor = SceneConfigParser.GetAmbientColor(configPath, "detective_office");
+
             // ── Parse Tiled map ──────────────────────────────────────────────
             string mapPath = Path.Combine(Content.RootDirectory, "room_map.json");
             MapParser.Parse(mapPath, out _solidBoundaries, out var triggers, out _interactables);
@@ -212,6 +261,34 @@ namespace CatDetective
                 _showDebug = !_showDebug;
             _prevKbState = kbState;
 
+            // ── Notebook mouse input ──────────────────────────────────────────
+            // Convert OS-window mouse coords to virtual 2020×1136 screen space.
+            var mouseState = Mouse.GetState();
+            if (mouseState.LeftButton == ButtonState.Pressed &&
+                _prevMouseState.LeftButton == ButtonState.Released)
+            {
+                var vm = new Point(
+                    (int)(mouseState.X / DISPLAY_SCALE),
+                    (int)(mouseState.Y / DISPLAY_SCALE));
+
+                if (_notebookButtonRect.Contains(vm))
+                {
+                    _isNotebookOpen = !_isNotebookOpen;
+                }
+                else if (_isNotebookOpen)
+                {
+                    for (int i = 0; i < _tabRects.Length; i++)
+                    {
+                        if (_tabRects[i].Contains(vm))
+                        {
+                            _selectedTab = (ClueCategory)i;
+                            break;
+                        }
+                    }
+                }
+            }
+            _prevMouseState = mouseState;
+
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (_isDialogueActive)
@@ -235,10 +312,9 @@ namespace CatDetective
                         _currentInteraction = data;
                         _isDialogueActive   = true;
 
-                        // Collect any new clue IDs.
+                        // Unlock any clues attached to this interaction's keywords.
                         foreach (var kw in data.Keywords)
-                            if (!_collectedClues.Contains(kw.Id))
-                                _collectedClues.Add(kw.Id);
+                            _notebook.UnlockClue(kw.Id);
                     }
                 }
             }
@@ -256,19 +332,21 @@ namespace CatDetective
         {
             // ── Render all passes into the full-resolution render target ─────
             GraphicsDevice.SetRenderTarget(_renderTarget);
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(_ambientColor);
 
             // ════════════════════════════════════════════════════════════════
             // PASS 1 — BASE BACKGROUND
             // ════════════════════════════════════════════════════════════════
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                transformMatrix: _cameraTransform);
             _spriteBatch.Draw(_bgBase, Vector2.Zero, Color.White);
             _spriteBatch.End();
 
             // ════════════════════════════════════════════════════════════════
             // PASS 2 — BLOB SHADOW
             // ════════════════════════════════════════════════════════════════
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                transformMatrix: _cameraTransform);
             _cat.DrawShadow(_spriteBatch);
             _spriteBatch.End();
 
@@ -277,7 +355,8 @@ namespace CatDetective
             // NonPremultiplied required: textures have straight alpha (see .mgcb),
             // and prop alpha modulation must fade cleanly without colour darkening.
             // ════════════════════════════════════════════════════════════════
-            _spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.NonPremultiplied);
+            _spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.NonPremultiplied,
+                transformMatrix: _cameraTransform);
             _desk.Draw(_spriteBatch);
             _cabinet.Draw(_spriteBatch);
             _cat.Draw(_spriteBatch);
@@ -286,17 +365,19 @@ namespace CatDetective
             // ════════════════════════════════════════════════════════════════
             // PASS 4 — LIGHTING / SUNBEAMS  (additive — El Mariachi trick)
             // ════════════════════════════════════════════════════════════════
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive,
+                transformMatrix: _cameraTransform);
             _spriteBatch.Draw(_sunbeamsMask, Vector2.Zero, Color.White);
             _spriteBatch.End();
 
             // ════════════════════════════════════════════════════════════════
             // PASS 5 — DEBUG OVERLAY  (F1 to toggle)
-            // AlphaBlend + Deferred; drawn last so it sits on top of everything.
+            // Uses _cameraTransform so debug rectangles align with the art.
             // ════════════════════════════════════════════════════════════════
             if (_showDebug)
             {
-                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                    transformMatrix: _cameraTransform);
 
                 // Collision walls — red
                 foreach (var wall in _solidBoundaries)
@@ -351,6 +432,88 @@ namespace CatDetective
                 _spriteBatch.End();
             }
 
+            // ════════════════════════════════════════════════════════════════
+            // PASS 7 — NOTEBOOK UI
+            // AlphaBlend, NO camera transform — fixed to virtual screen coords.
+            // ════════════════════════════════════════════════════════════════
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
+            // Toggle button — always visible.
+            _spriteBatch.Draw(_debugPixel, _notebookButtonRect, Color.DimGray);
+            var btnLabel     = "Notes";
+            var btnLabelSize = _dialogueFont.MeasureString(btnLabel);
+            _spriteBatch.DrawString(
+                _dialogueFont, btnLabel,
+                new Vector2(
+                    _notebookButtonRect.X + (_notebookButtonRect.Width  - btnLabelSize.X) * 0.5f,
+                    _notebookButtonRect.Y + (_notebookButtonRect.Height - btnLabelSize.Y) * 0.5f),
+                Color.White);
+
+            if (_isNotebookOpen)
+            {
+                // Panel background — drawn below the tabs.
+                var contentRect = new Rectangle(
+                    _notebookPanelRect.X,
+                    _notebookPanelRect.Y + 60,              // below tabs
+                    _notebookPanelRect.Width,
+                    _notebookPanelRect.Height - 60);
+                _spriteBatch.Draw(_debugPixel, contentRect, Color.Black * 0.82f);
+
+                // Tabs.
+                for (int i = 0; i < _tabRects.Length; i++)
+                {
+                    bool active = (ClueCategory)i == _selectedTab;
+                    // Active tab is taller (grows upward) to look "selected".
+                    var tr = active
+                        ? new Rectangle(_tabRects[i].X, _tabRects[i].Y - 8,
+                                        _tabRects[i].Width, _tabRects[i].Height + 8)
+                        : _tabRects[i];
+
+                    _spriteBatch.Draw(_debugPixel, tr,
+                        active ? _tabColors[i] : _tabColors[i] * 0.55f);
+
+                    var labelSize = _dialogueFont.MeasureString(_tabLabels[i]);
+                    _spriteBatch.DrawString(
+                        _dialogueFont, _tabLabels[i],
+                        new Vector2(
+                            tr.X + (tr.Width  - labelSize.X) * 0.5f,
+                            tr.Y + (tr.Height - labelSize.Y) * 0.5f),
+                        Color.White);
+                }
+
+                // Clue list — filtered to active tab.
+                const int CLUE_PADDING = 16;
+                float cx = contentRect.X + CLUE_PADDING;
+                float cy = contentRect.Y + CLUE_PADDING;
+                float maxW = contentRect.Width - CLUE_PADDING * 2;
+                float lineH = _dialogueFont.LineSpacing + 6;
+
+                bool any = false;
+                foreach (var clue in _notebook.UnlockedClues)
+                {
+                    if (clue.Category != _selectedTab) continue;
+                    any = true;
+                    // Bullet point.
+                    _spriteBatch.DrawString(_dialogueFont, "* ", new Vector2(cx, cy), Color.LightGray);
+                    float bulletW = _dialogueFont.MeasureString("* ").X;
+                    // Word-wrap the display text.
+                    cy = DrawWrappedString(_spriteBatch, _dialogueFont, clue.DisplayText,
+                             new Vector2(cx + bulletW, cy),
+                             maxW - bulletW, lineH,
+                             Color.White);
+                    cy += 4f;   // small gap between entries
+                }
+
+                if (!any)
+                {
+                    _spriteBatch.DrawString(
+                        _dialogueFont, "- nothing yet -",
+                        new Vector2(cx, cy), Color.Gray);
+                }
+            }
+
+            _spriteBatch.End();
+
             // ── Blit render target to the OS window at display scale ─────────
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
@@ -366,6 +529,37 @@ namespace CatDetective
         }
 
         // ── Helpers ────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Draws <paramref name="text"/> word-wrapped within <paramref name="maxWidth"/>
+        /// starting at <paramref name="origin"/>.
+        /// Returns the Y coordinate of the line AFTER the last drawn line.
+        /// </summary>
+        private float DrawWrappedString(
+            SpriteBatch spriteBatch,
+            SpriteFont  font,
+            string      text,
+            Vector2     origin,
+            float       maxWidth,
+            float       lineHeight,
+            Color       color)
+        {
+            float x = origin.X, y = origin.Y;
+            string[] words = text.Split(' ');
+            foreach (var word in words)
+            {
+                float wordW = font.MeasureString(word).X;
+                float spaceW = font.MeasureString(" ").X;
+                if (x > origin.X && x + wordW > origin.X + maxWidth)
+                {
+                    x  = origin.X;
+                    y += lineHeight;
+                }
+                spriteBatch.DrawString(font, word, new Vector2(x, y), color);
+                x += wordW + spaceW;
+            }
+            return y + lineHeight;
+        }
 
         /// <summary>
         /// Splits <paramref name="text"/> into plain/coloured spans by scanning for

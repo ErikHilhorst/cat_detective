@@ -1,0 +1,10 @@
+{
+  "scenes": {
+    "detective_office": {
+      "ambientColor": "#D8CBB8"
+    },
+    "malibu_mansion": {
+      "ambientColor": "#FAD6A5"
+    }
+  }
+}
