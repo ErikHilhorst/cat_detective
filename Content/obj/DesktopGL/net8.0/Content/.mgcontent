@@ -13,8 +13,10 @@
     <File>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_upward.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/dialogue_font.spritefont</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

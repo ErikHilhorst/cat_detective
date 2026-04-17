@@ -417,6 +417,77 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[
+                {
+                 "height":50,
+                 "id":85,
+                 "name":"inspect_answering_machine",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":97.3333333333333,
+                 "x":246.666666666667,
+                 "y":346.666666666667
+                }, 
+                {
+                 "height":119.333333333333,
+                 "id":86,
+                 "name":"inspect_takeout_bag",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":80,
+                 "x":825.666666666667,
+                 "y":326.666666666667
+                }, 
+                {
+                 "height":86,
+                 "id":87,
+                 "name":"inspect_calendar",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":120,
+                 "x":940.666666666667,
+                 "y":856
+                }, 
+                {
+                 "height":50,
+                 "id":88,
+                 "name":"inspect_newspaper",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":50.6666666666666,
+                 "x":662.666666666667,
+                 "y":550.666666666667
+                }, 
+                {
+                 "height":104.666666666667,
+                 "id":89,
+                 "name":"inspect_trash_can",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":65.3333333333334,
+                 "x":171.333333333333,
+                 "y":918.666666666667
+                }],
+         "opacity":1,
+         "type":"objectgroup",
          "visible":true,
          "x":0,
          "y":0
@@ -456,8 +527,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":85,
+ "nextlayerid":6,
+ "nextobjectid":90,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",

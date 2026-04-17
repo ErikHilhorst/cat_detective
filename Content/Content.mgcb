@@ -141,5 +141,13 @@
 /processorParam:TextureFormat=Color
 /build:walk_animation_upward.png
 
+# ── Dialogue font ─────────────────────────────────────────────────────────
+#begin dialogue_font.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:dialogue_font.spritefont
+
 # ── NOTE: room_map.json ────────────────────────────────────────────────────
 # Copied verbatim by the .csproj <Content> ItemGroup; not processed here.

@@ -1,0 +1,36 @@
+Game Design Document: Addendum I - Core Loop & UI
+
+1. Aesthetic & Display Constraints
+Vibe: Present-day California, sunny, highly detailed anime/Studio Ghibli style (rich watercolors, warm lighting, sunbeams). Cozy, low-stress, no gore.
+Aspect Ratio & Layout: The game operates on a fixed 16:9 layout.
+Ambient Pillarboxing: The pre-rendered isometric room art (e.g., 1072x1136) is centered vertically. The remaining horizontal screen space (left/right margins) is filled with a solid hex color defined in the Tiled map data (e.g., "AmbientColor": "#2A3B4C"). This dead space is explicitly used to house UI elements so the room art is never obscured.
+Sprited Interactables: While the background is pre-rendered, items of interest (clues) are rendered as separate sprites layered on top, giving them a slight visual pop to guide the player's eye without needing glowing outlines.
+2. The Single-Button Interaction System
+To maximize mobile compatibility and ease of play, the cat uses a single contextual "Interact" input ( tap/click/Spacebar ) when overlapping a collision trigger.
+Look (Objects): Pops up a high-res image and a short line of descriptive text.
+Listen (NPCs): Pops up a dialogue box with a character portrait.
+Consult (The Detective): Interacts with the "Doofus Detective" (the human owner) to open the Deduction Board and attempt to solve the case.
+Note: The previously pitched "Smell Mode" shader and physical mid-level puzzles (pushing blocks, etc.) have been cut to keep development scope ruthlessly tight and focused on narrative deduction.
+3. Clue System & "The Noise"
+To prevent brute-forcing, the game utilizes a signal-to-noise ratio. The player will collect many keywords, including red herrings, inflating the mathematical permutations of the final puzzle.
+Auto-Extraction: Clues are automatically added to the player's Notebook after an interaction.
+Color-Coded Logic: Clues belong to strict categories, visually represented in both the dialogue text and the UI.
+🟦 [WHO] (People, Suspects) - Blue
+🟩 [WHAT] (Evidence, Objects, Items) - Green
+🟧 [WHY] (Motives, Context) - Orange
+🟪 [WHEN/WHERE] (Times, Locations) - Purple
+Transformation: Dialogue text parses raw tags ({who:agatha}) into colored text. In the Notebook, this tag translates into a clear, objective statement (e.g., "Lady Agatha" or "Roderick insulted her").
+4. UI & The Deduction Board (Tap-to-Fill)
+The UI is designed to be completely tap/click driven. Drag-and-drop mechanics are explicitly avoided to ensure flawless mobile web performance.
+The Notebook: Accessed via a pulsing icon in the ambient margin. Opens a clean, scrollable list of collected clues sorted into four colored tabs (Blue, Green, Orange, Purple).
+The Deduction Board (Tester): Initiated by talking to the Detective. Displays a "Mad Libs" sentence with colored, empty slots.
+Mechanic: The player taps an empty slot. A dropdown menu appears containing only the collected clues of that matching color. The player taps a clue to fill the slot.
+The Obra Dinn Rule: The game never validates a single slot. Logic is only checked when the player hits a global "Submit" button.
+5. Level Design Mechanics: The "Hide & Seek" Alpha Fade
+To create a sense of exploration without a 3D camera, the Y-Sorting alpha-fade mechanic is repurposed as a core puzzle element.
+By placing key objects physically behind tall foreground props (like desks or cabinets), the player cannot see the clue by default.
+The player must naturally walk the cat behind the furniture. The furniture's alpha lerps to 0.4f (transparency), revealing the hidden object sprite underneath, rewarding spatial exploration.
+6. The "Triangle Method" Deduction Formula
+Cases are solved by connecting isolated facts. The game will rarely spell out the answer. Instead, it relies on A + B = C logic.
+Example: The player finds a Torn Glove (A) hidden behind a cabinet. An NPC mentions they saw Chad wearing bandages (B). The player deduces that Chad was bitten by the stolen parrot (C).
+Win State: Upon correct submission, the Detective realizes the truth based on the cat's actions (e.g., the cat knocks over the evidence, triggering the human's "Eureka" moment). Case closed.

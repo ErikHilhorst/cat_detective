@@ -61,6 +61,7 @@ Content/obj/DesktopGL/net8.0/Content/shadow_blob.mgcontent
 Content/obj/DesktopGL/net8.0/Content/spr_cat_walk_down.mgcontent
 Content/obj/DesktopGL/net8.0/Content/spr_cat_walk_up.mgcontent
 Content/obj/DesktopGL/net8.0/Content/walk_animation_forward.mgcontent
+Content/obj/DesktopGL/net8.0/Content/walk_animation_upward.mgcontent
 Content/room_map.json
 DebugHelper.cs
 dotnet-tools.json
@@ -90,52 +91,6 @@ Tiled maps/untitledcat_detective.tiled-session
 
 <files>
 This section contains the contents of the repository's files.
-
-<file path="Content/obj/DesktopGL/net8.0/Content/walk_animation_forward.mgcontent">
-<?xml version="1.0" encoding="utf-8"?>
-<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png</SourceFile>
-  <SourceTime>2026-04-17T14:23:03.786398+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/walk_animation_forward.xnb</DestFile>
-  <DestTime>2026-04-17T14:23:31.2457185+02:00</DestTime>
-  <Importer>TextureImporter</Importer>
-  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
-  <Processor>TextureProcessor</Processor>
-  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
-  <Parameters>
-    <Key>ColorKeyEnabled</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>GenerateMipmaps</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>PremultiplyAlpha</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ResizeToPowerOfTwo</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>MakeSquare</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>TextureFormat</Key>
-    <Value>Color</Value>
-  </Parameters>
-  <Dependencies />
-  <BuildAsset />
-  <BuildOutput />
-</PipelineBuildEvent>
-</file>
-
-<file path="run_game.md">
-dotnet build
-dotnet run
-</file>
 
 <file path=".claude/settings.local.json">
 {
@@ -974,183 +929,6 @@ with the appropriate KNI platform packages. No C# source changes are needed.
 - Do not commit art assets to git as large binaries — use Git LFS or keep them out of the repo.
 </file>
 
-<file path="Content/Content.mgcb">
-#----------------------------- Global Properties ----------------------------#
-
-/outputDir:bin/$(Platform)
-/intermediateDir:obj/$(Platform)
-/platform:DesktopGL
-/config:
-/profile:Reach
-/compress:False
-
-#-------------------------------- References --------------------------------#
-
-#---------------------------------- Content ---------------------------------#
-
-# ═══════════════════════════════════════════════════════════════════════════
-# PremultiplyAlpha=False on every asset.
-#
-# All sprites are rendered in Pass 3 with BlendState.NonPremultiplied, so
-# they must be stored with straight (non-premultiplied) alpha.  Keeping
-# everything consistent here avoids subtle colour differences if assets are
-# moved between passes later.
-# ═══════════════════════════════════════════════════════════════════════════
-
-# ── Background (1072 x 1136) ───────────────────────────────────────────────
-#begin bg_base.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:bg_base.png
-
-# ── Props — full-room overlays (1072 x 1136 each) ─────────────────────────
-#begin prop_desk.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:prop_desk.png
-
-#begin prop_cabinet.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:prop_cabinet.png
-
-# ── VFX ────────────────────────────────────────────────────────────────────
-# mask_sunbeams is drawn with BlendState.Additive (Pass 4).
-# shadow_blob is drawn with BlendState.AlphaBlend (Pass 2).
-# Both still use straight alpha for consistency.
-
-#begin mask_sunbeams.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:mask_sunbeams.png
-
-#begin shadow_blob.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:shadow_blob.png
-
-# ── Cat sprite sheets (single-frame placeholders) ─────────────────────────
-# Placeholder images have a white background; ColorKeyColor is set to White.
-# frameCount is 1 in Game1.cs until real sprite sheets are available.
-
-#begin spr_cat_walk_down.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,255,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:spr_cat_walk_down.png
-
-#begin spr_cat_walk_up.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,255,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:spr_cat_walk_up.png
-
-# ── Walk animation (2100 x 700, 11 frames in a 6×2 grid) ─────────────────
-# Native PNG transparency — ColorKey disabled.
-
-#begin walk_animation_forward.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:walk_animation_forward.png
-
-# ── NOTE: room_map.json ────────────────────────────────────────────────────
-# Copied verbatim by the .csproj <Content> ItemGroup; not processed here.
-</file>
-
-<file path="Content/obj/DesktopGL/net8.0/Content/.mgcontent">
-<?xml version="1.0" encoding="utf-8"?>
-<SourceFileCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Profile>Reach</Profile>
-  <Platform>DesktopGL</Platform>
-  <Config />
-  <SourceFiles>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/bg_base.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/prop_desk.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/prop_cabinet.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_down.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png</File>
-  </SourceFiles>
-  <DestFiles>
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-  </DestFiles>
-</SourceFileCollection>
-</file>
-
-<file path="Content/obj/DesktopGL/net8.0/Content/.mgstats">
-Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
-"C:/Users/larry/Projecten/cat_detective/Content/bg_base.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/bg_base.xnb","TextureProcessor","Texture2DContent",2147366,4871253,0.2628493
-"C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/mask_sunbeams.xnb","TextureProcessor","Texture2DContent",83310,4871253,0.5379857
-"C:/Users/larry/Projecten/cat_detective/Content/prop_cabinet.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_cabinet.xnb","TextureProcessor","Texture2DContent",240216,4871253,0.1396972
-"C:/Users/larry/Projecten/cat_detective/Content/prop_desk.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_desk.xnb","TextureProcessor","Texture2DContent",375223,4871253,0.1434539
-"C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/shadow_blob.xnb","TextureProcessor","Texture2DContent",103928,1430485,0.0440162
-"C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_down.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_down.xnb","TextureProcessor","Texture2DContent",104992,633037,0.1324254
-"C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_up.xnb","TextureProcessor","Texture2DContent",105940,633037,0.0234247
-"C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/walk_animation_forward.xnb","TextureProcessor","Texture2DContent",1156271,5880085,0.268237
-</file>
-
 <file path="Content/obj/DesktopGL/net8.0/Content/bg_base.mgcontent">
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -1335,9 +1113,9 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png</SourceFile>
-  <SourceTime>2026-04-16T19:31:11.7515029+02:00</SourceTime>
+  <SourceTime>2026-04-17T15:30:59.4264439+02:00</SourceTime>
   <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/shadow_blob.xnb</DestFile>
-  <DestTime>2026-04-16T19:56:13.2681755+02:00</DestTime>
+  <DestTime>2026-04-17T15:31:24.3247863+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
@@ -1439,6 +1217,88 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
   <Parameters>
     <Key>ColorKeyEnabled</Key>
     <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/walk_animation_forward.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png</SourceFile>
+  <SourceTime>2026-04-17T15:14:14.7000275+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/walk_animation_forward.xnb</DestFile>
+  <DestTime>2026-04-17T15:14:43.4249727+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/walk_animation_upward.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_upward.png</SourceFile>
+  <SourceTime>2026-04-17T15:00:19.5351484+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/walk_animation_upward.xnb</DestFile>
+  <DestTime>2026-04-17T15:04:22.804101+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>False</Value>
   </Parameters>
   <Parameters>
     <Key>GenerateMipmaps</Key>
@@ -1982,288 +1842,6 @@ namespace CatDetective
 }
 </file>
 
-<file path="Entities/Cat.cs">
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
-
-namespace CatDetective.Entities
-{
-    /// <summary>
-    /// The player-controlled cat character.
-    ///
-    /// MOVEMENT
-    ///   Isometric perspective means the Y-axis appears foreshortened.
-    ///   We compensate by running Y movement at half the X speed so the
-    ///   cat doesn't slide unnaturally fast toward or away from the camera.
-    ///     X_SPEED = 100 px/s  (full horizontal speed)
-    ///     Y_SPEED =  50 px/s  (half vertical speed)
-    ///
-    /// ANIMATION
-    ///   Two sprite sheets, each with <see cref="_frameCount"/> equally-wide frames:
-    ///     spr_cat_walk_down  — used when moving down / forward
-    ///     spr_cat_walk_up    — used when moving up / backward
-    ///   Left-facing variants are derived at runtime via SpriteEffects.FlipHorizontally;
-    ///   no extra textures are needed (matches the GDD animation approach).
-    ///
-    /// COLLISION BOX
-    ///   A thin rectangle at the cat's feet only (~14 px tall), centred on Position.
-    ///   This keeps the player from clipping through walls at shoulder height and
-    ///   prevents false positives on tall furniture whose trigger zones are above.
-    /// </summary>
-    public class Cat : GameObject
-    {
-        // ── Movement constants ─────────────────────────────────────────────────
-        private const float X_SPEED = 150f;
-        private const float Y_SPEED =  75f;
-
-        // ── Collision box ──────────────────────────────────────────────────────
-        private const int   FEET_BOX_HEIGHT = 14;   // px, covers only the paws on the floor
-
-        // ── Sprite scale ───────────────────────────────────────────────────────
-        private const float SPRITE_SCALE = 0.30f;   // placeholder art is oversized
-
-        // ── Animation ─────────────────────────────────────────────────────────
-        private readonly Texture2D _walkDownTexture;
-        private readonly Texture2D _walkUpTexture;
-        private readonly int       _frameCount;
-        private readonly int       _columns;
-        private readonly int       _rows;
-
-        private int   _frameWidth;
-        private int   _frameHeight;
-        private int   _currentFrame;
-        private float _frameTimer;
-        private const float FRAME_INTERVAL = 0.12f;  // seconds per frame (~8 fps walk cycle)
-
-        // ── Per-frame state ────────────────────────────────────────────────────
-        private Vector2       _velocity;             // pixels/s this frame
-        private bool          _isMoving;
-        private bool          _facingUp;             // true → use walk-up sheet
-        private SpriteEffects _spriteFlip = SpriteEffects.None;
-
-        // ── Shadow ─────────────────────────────────────────────────────────────
-        /// <summary>Assign shadow_blob.png after construction.</summary>
-        public Texture2D? ShadowTexture { get; set; }
-
-        // ── Constructor ────────────────────────────────────────────────────────
-        /// <param name="walkDownTexture">Sprite sheet for down/forward movement.</param>
-        /// <param name="walkUpTexture">Sprite sheet for up/backward movement.</param>
-        /// <param name="startPosition">Initial bottom-center world position.</param>
-        /// <param name="frameCount">Total number of animation frames in each sheet.</param>
-        /// <param name="columns">Number of columns in the sprite grid.</param>
-        /// <param name="rows">Number of rows in the sprite grid.</param>
-        public Cat(
-            Texture2D walkDownTexture,
-            Texture2D walkUpTexture,
-            Vector2   startPosition,
-            int       frameCount = 11,
-            int       columns    = 6,
-            int       rows       = 2)
-        {
-            _walkDownTexture = walkDownTexture;
-            _walkUpTexture   = walkUpTexture;
-            _frameCount      = frameCount;
-            _columns         = columns;
-            _rows            = rows;
-
-            Texture      = _walkDownTexture;
-            _frameWidth  = Texture.Width  / _columns;
-            _frameHeight = Texture.Height / _rows;
-
-            Position = startPosition;
-            RefreshCollisionBox();
-            LayerDepth = CalculateLayerDepth();
-        }
-
-        // ── Update ─────────────────────────────────────────────────────────────
-
-        /// <summary>
-        /// Phase 1 of the per-frame update: read input, pick texture/flip,
-        /// advance animation timer. Does NOT move the cat — that happens in
-        /// <see cref="MoveWithCollision"/> so collision resolution can be applied
-        /// cleanly on each axis separately.
-        /// </summary>
-        public override void Update(GameTime gameTime)
-        {
-            HandleInput();
-            AdvanceAnimation((float)gameTime.ElapsedGameTime.TotalSeconds);
-        }
-
-        /// <summary>
-        /// Phase 2 of the per-frame update: apply <see cref="_velocity"/> to
-        /// <see cref="Position"/> while resolving AABB collisions axis by axis.
-        ///
-        /// Separating X and Y resolution prevents the cat from getting stuck in
-        /// corners — it slides smoothly along walls instead.
-        /// </summary>
-        public void MoveWithCollision(float deltaTime, List<Rectangle> solidBoundaries)
-        {
-            // ── Try X axis ────────────────────────────────────────────────────
-            Position = new Vector2(Position.X + _velocity.X * deltaTime, Position.Y);
-            RefreshCollisionBox();
-            foreach (var wall in solidBoundaries)
-            {
-                if (CollisionBox.Intersects(wall))
-                {
-                    // Revert X and stop, but Y can still proceed below.
-                    Position = new Vector2(Position.X - _velocity.X * deltaTime, Position.Y);
-                    RefreshCollisionBox();
-                    break;
-                }
-            }
-
-            // ── Try Y axis ────────────────────────────────────────────────────
-            Position = new Vector2(Position.X, Position.Y + _velocity.Y * deltaTime);
-            RefreshCollisionBox();
-            foreach (var wall in solidBoundaries)
-            {
-                if (CollisionBox.Intersects(wall))
-                {
-                    Position = new Vector2(Position.X, Position.Y - _velocity.Y * deltaTime);
-                    RefreshCollisionBox();
-                    break;
-                }
-            }
-
-            // Update depth AFTER the final resolved position is known.
-            LayerDepth = CalculateLayerDepth();
-        }
-
-        // ── Draw ───────────────────────────────────────────────────────────────
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            if (Texture == null) return;
-
-            // Source rectangle selects the current animation frame from the grid.
-            int currentColumn = _currentFrame % _columns;
-            int currentRow    = _currentFrame / _columns;
-            var sourceRect = new Rectangle(
-                currentColumn * _frameWidth, currentRow * _frameHeight,
-                _frameWidth, _frameHeight);
-
-            // When using a sourceRectangle, 'origin' is in SOURCE rect space,
-            // so bottom-center of the FRAME, not the full texture.
-            var frameOrigin = new Vector2(_frameWidth * 0.5f, _frameHeight);
-
-            spriteBatch.Draw(
-                Texture,
-                Position,
-                sourceRect,
-                Color.White,
-                rotation:   0f,
-                origin:     frameOrigin,
-                scale:      new Vector2(SPRITE_SCALE),
-                effects:    _spriteFlip,
-                layerDepth: LayerDepth);
-        }
-
-        /// <summary>
-        /// Draws the blob shadow beneath the cat's feet.
-        /// Must be called inside a separate SpriteBatch pass with AlphaBlend
-        /// (Pass 2 in the render pipeline) so it composites under the cat.
-        /// </summary>
-        public void DrawShadow(SpriteBatch spriteBatch)
-        {
-            if (ShadowTexture == null) return;
-
-            var shadowOrigin = new Vector2(ShadowTexture.Width * 0.5f, ShadowTexture.Height * 0.5f);
-            // Offset slightly down so the oval sits visually under the paws.
-            var shadowPos = Position + new Vector2(0f, -5f);
-
-            // shadow_blob.png is 800 x 447. Scale it down to ~100 x 40 px so it
-            // sits naturally under the cat's paws without dominating the scene.
-            spriteBatch.Draw(
-                ShadowTexture,
-                shadowPos,
-                sourceRectangle: null,
-                Color.White * 0.55f,
-                rotation: 0f,
-                origin:   shadowOrigin,
-                scale:    new Vector2(0.13f, 0.09f),   // ≈ 104 x 40 px at runtime
-                effects:  SpriteEffects.None,
-                layerDepth: 0f);
-        }
-
-        // ── Private helpers ────────────────────────────────────────────────────
-
-        private void HandleInput()
-        {
-            var kb = Keyboard.GetState();
-
-            bool up    = kb.IsKeyDown(Keys.W) || kb.IsKeyDown(Keys.Up);
-            bool down  = kb.IsKeyDown(Keys.S) || kb.IsKeyDown(Keys.Down);
-            bool left  = kb.IsKeyDown(Keys.A) || kb.IsKeyDown(Keys.Left);
-            bool right = kb.IsKeyDown(Keys.D) || kb.IsKeyDown(Keys.Right);
-
-            _velocity = Vector2.Zero;
-            if (left)  _velocity.X -= X_SPEED;
-            if (right) _velocity.X += X_SPEED;
-            if (up)    _velocity.Y -= Y_SPEED;
-            if (down)  _velocity.Y += Y_SPEED;
-
-            _isMoving = _velocity != Vector2.Zero;
-
-            if (_isMoving)
-            {
-                // Net vertical direction decides which sprite sheet to use.
-                // "up && !down" handles the case where both are held (no change).
-                _facingUp = up && !down;
-
-                // The two placeholder sheets have opposite default orientations:
-                //   walkUp   → naturally faces right; flip when going left.
-                //   walkDown → naturally faces left;  flip when going right.
-                bool facingLeft = left && !right;
-                _spriteFlip = _facingUp
-                    ? (facingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None)
-                    : (facingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
-            }
-
-            // Swap texture based on current facing.
-            // Re-derive frame dimensions because the two sheets may have different heights.
-            Texture      = _facingUp ? _walkUpTexture : _walkDownTexture;
-            _frameWidth  = Texture.Width  / _columns;
-            _frameHeight = Texture.Height / _rows;
-        }
-
-        private void AdvanceAnimation(float deltaTime)
-        {
-            if (!_isMoving)
-            {
-                // Snap to the last frame (start of the reversed sequence) when idle.
-                _currentFrame = _frameCount - 1;
-                _frameTimer   = 0f;
-                return;
-            }
-
-            _frameTimer += deltaTime;
-            if (_frameTimer >= FRAME_INTERVAL)
-            {
-                _frameTimer  -= FRAME_INTERVAL;
-                _currentFrame = (_currentFrame - 1 + _frameCount) % _frameCount;
-            }
-        }
-
-        /// <summary>
-        /// Rebuilds the feet-only collision box centred on <see cref="Position"/>.
-        /// Because Position is the bottom-center, the box spans:
-        ///   X: [Position.X - frameWidth/2 .. Position.X + frameWidth/2]
-        ///   Y: [Position.Y - FEET_BOX_HEIGHT .. Position.Y]
-        /// </summary>
-        private void RefreshCollisionBox()
-        {
-            CollisionBox = new Rectangle(
-                (int)(Position.X - (_frameWidth * SPRITE_SCALE) * 0.25f),
-                (int)(Position.Y - FEET_BOX_HEIGHT),
-                (int)(_frameWidth * SPRITE_SCALE * 0.5f),
-                FEET_BOX_HEIGHT);
-        }
-    }
-}
-</file>
-
 <file path="Entities/GameObject.cs">
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -2452,250 +2030,6 @@ namespace CatDetective.Entities
                 scale:           Vector2.One,
                 effects:         SpriteEffects.None,
                 layerDepth:      LayerDepth);
-        }
-    }
-}
-</file>
-
-<file path="Game1.cs">
-using CatDetective.Entities;
-using CatDetective.Map;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
-using System.IO;
-
-namespace CatDetective
-{
-    /// <summary>
-    /// Root game class for the Cat Detective prototype.
-    ///
-    /// SCREEN RESOLUTION
-    ///   1072 × 1136 — matches the art assets exactly so no scaling artefacts occur.
-    ///
-    /// RENDER PIPELINE (in order each frame):
-    ///
-    ///   Pass 1 — Base Background  (AlphaBlend, Deferred)
-    ///     bg_base.png drawn at (0,0).
-    ///
-    ///   Pass 2 — Blob Shadow  (AlphaBlend, Deferred)
-    ///     shadow_blob.png drawn under the cat's feet BEFORE the cat sprite,
-    ///     so it composites underneath.
-    ///
-    ///   Pass 3 — Y-Sorted Entities  (NonPremultiplied, FrontToBack)
-    ///     Cat and props drawn together, sorted by floor-Y depth.
-    ///     Props are full-room overlays (same size as background) drawn at (0,0);
-    ///     their LayerDepth is derived from a logical sortY, not their draw position.
-    ///     Prop alpha lerps to 0.4 when the cat walks behind them.
-    ///
-    ///   Pass 4 — Lighting / Sunbeams  (Additive, Deferred)
-    ///     mask_sunbeams.png drawn at (0,0). Additive blend washes out the scene
-    ///     naturally where beams hit — no shaders needed (GDD "El Mariachi" trick).
-    /// </summary>
-    public class Game1 : Game
-    {
-        // ── Internal resolution — matches bg_base.png / prop overlay dimensions ─
-        private const int   SCREEN_WIDTH   = 1072;
-        private const int   SCREEN_HEIGHT  = 1136;
-
-        // ── Display scale — shrinks the OS window while keeping proportions ────
-        // Change this one constant to resize the window (e.g. 0.5 for half size).
-        private const float DISPLAY_SCALE  = 0.6f;
-        private static readonly int WINDOW_WIDTH  = (int)(SCREEN_WIDTH  * DISPLAY_SCALE);
-        private static readonly int WINDOW_HEIGHT = (int)(SCREEN_HEIGHT * DISPLAY_SCALE);
-
-        // ── MonoGame core ──────────────────────────────────────────────────────
-        private readonly GraphicsDeviceManager _graphics;
-        private SpriteBatch     _spriteBatch   = null!;
-        private RenderTarget2D  _renderTarget  = null!;
-
-        // ── Scene textures ─────────────────────────────────────────────────────
-        private Texture2D _bgBase       = null!;
-        private Texture2D _sunbeamsMask = null!;
-
-        // ── Entities ───────────────────────────────────────────────────────────
-        private Cat  _cat     = null!;
-        private Prop _desk    = null!;
-        private Prop _cabinet = null!;
-
-        // ── World data from Tiled ──────────────────────────────────────────────
-        private List<Rectangle> _solidBoundaries = new();
-
-        // ── Debug overlay ──────────────────────────────────────────────────────
-        private Texture2D    _debugPixel  = null!;
-        private bool         _showDebug   = true;   // F1 toggles
-        private KeyboardState _prevKbState;
-
-        // ══════════════════════════════════════════════════════════════════════
-        public Game1()
-        {
-            _graphics = new GraphicsDeviceManager(this)
-            {
-                PreferredBackBufferWidth  = WINDOW_WIDTH,
-                PreferredBackBufferHeight = WINDOW_HEIGHT,
-            };
-            Content.RootDirectory = "Content";
-            IsMouseVisible = true;
-        }
-
-        // ══════════════════════════════════════════════════════════════════════
-        protected override void Initialize()
-        {
-            GameObject.SetScreenHeight(SCREEN_HEIGHT);
-            base.Initialize();
-        }
-
-        // ══════════════════════════════════════════════════════════════════════
-        protected override void LoadContent()
-        {
-            _spriteBatch  = new SpriteBatch(GraphicsDevice);
-            _renderTarget = new RenderTarget2D(GraphicsDevice, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-            // ── Scene textures ───────────────────────────────────────────────
-            _bgBase       = Content.Load<Texture2D>("bg_base");
-            _sunbeamsMask = Content.Load<Texture2D>("mask_sunbeams");
-
-            // ── Cat ──────────────────────────────────────────────────────────
-            // Sprite sheet: 2100 × 700 px, 11 frames in a 6×2 grid.
-            // Both directions use the forward sheet until the up-facing sheet is ready.
-            var walkForward = Content.Load<Texture2D>("walk_animation_forward");
-            var shadow      = Content.Load<Texture2D>("shadow_blob");
-
-            // Start position: centre-X, lower floor area.
-            // Adjust Y once the room art is reviewed in-engine.
-            _cat = new Cat(walkForward, walkForward, startPosition: new Vector2(536, 900),
-                           frameCount: 11, columns: 6, rows: 2)
-            {
-                ShadowTexture = shadow
-            };
-
-            // ── Props ────────────────────────────────────────────────────────
-            // Full-room overlay PNGs: same 1072 × 1136 canvas as bg_base.
-            // sortY is the approximate Y of each prop's floor contact point within
-            // the image. Tune these values after reviewing the art in-engine.
-            var deskTex    = Content.Load<Texture2D>("prop_desk");
-            var cabinetTex = Content.Load<Texture2D>("prop_cabinet");
-
-            // ── Debug pixel ─────────────────────────────────────────────────
-            _debugPixel = new Texture2D(GraphicsDevice, 1, 1);
-            _debugPixel.SetData(new[] { Color.White });
-
-            // ── Parse Tiled map ──────────────────────────────────────────────
-            string mapPath = Path.Combine(Content.RootDirectory, "room_map.json");
-            MapParser.Parse(mapPath, out _solidBoundaries, out var triggers);
-
-            // ── Wire trigger zones to props ───────────────────────────────────
-            var deskTrigger    = new Rectangle(230, 490, 280, 210); // fallback
-            var cabinetTrigger = new Rectangle(590, 340, 220, 200); // fallback
-
-            foreach (var (name, rect) in triggers)
-            {
-                var lower = name.ToLowerInvariant();
-                if (lower.Contains("desk"))    deskTrigger    = rect;
-                if (lower.Contains("cabinet")) cabinetTrigger = rect;
-            }
-
-            // sortY values: approximate Y of each prop's floor contact in the
-            // full-room overlay image. Tune after reviewing in-engine.
-            _desk    = new Prop(deskTex,    sortY: 750f, deskTrigger);
-            _cabinet = new Prop(cabinetTex, sortY: 580f, cabinetTrigger);
-        }
-
-        // ══════════════════════════════════════════════════════════════════════
-        protected override void Update(GameTime gameTime)
-        {
-            var kbState = Keyboard.GetState();
-            if (kbState.IsKeyDown(Keys.Escape))
-                Exit();
-
-            // Toggle debug overlay with F1 (on key-down, not held)
-            if (kbState.IsKeyDown(Keys.F1) && !_prevKbState.IsKeyDown(Keys.F1))
-                _showDebug = !_showDebug;
-            _prevKbState = kbState;
-
-            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            _cat.Update(gameTime);
-            _cat.MoveWithCollision(dt, _solidBoundaries);
-
-            _desk.CheckFadeTrigger(_cat.CollisionBox);
-            _cabinet.CheckFadeTrigger(_cat.CollisionBox);
-            _desk.Update(gameTime);
-            _cabinet.Update(gameTime);
-
-            base.Update(gameTime);
-        }
-
-        // ══════════════════════════════════════════════════════════════════════
-        protected override void Draw(GameTime gameTime)
-        {
-            // ── Render all passes into the full-resolution render target ─────
-            GraphicsDevice.SetRenderTarget(_renderTarget);
-            GraphicsDevice.Clear(Color.Black);
-
-            // ════════════════════════════════════════════════════════════════
-            // PASS 1 — BASE BACKGROUND
-            // ════════════════════════════════════════════════════════════════
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            _spriteBatch.Draw(_bgBase, Vector2.Zero, Color.White);
-            _spriteBatch.End();
-
-            // ════════════════════════════════════════════════════════════════
-            // PASS 2 — BLOB SHADOW
-            // ════════════════════════════════════════════════════════════════
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            _cat.DrawShadow(_spriteBatch);
-            _spriteBatch.End();
-
-            // ════════════════════════════════════════════════════════════════
-            // PASS 3 — Y-SORTED ENTITIES
-            // NonPremultiplied required: textures have straight alpha (see .mgcb),
-            // and prop alpha modulation must fade cleanly without colour darkening.
-            // ════════════════════════════════════════════════════════════════
-            _spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.NonPremultiplied);
-            _desk.Draw(_spriteBatch);
-            _cabinet.Draw(_spriteBatch);
-            _cat.Draw(_spriteBatch);
-            _spriteBatch.End();
-
-            // ════════════════════════════════════════════════════════════════
-            // PASS 4 — LIGHTING / SUNBEAMS  (additive — El Mariachi trick)
-            // ════════════════════════════════════════════════════════════════
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
-            _spriteBatch.Draw(_sunbeamsMask, Vector2.Zero, Color.White);
-            _spriteBatch.End();
-
-            // ════════════════════════════════════════════════════════════════
-            // PASS 5 — DEBUG OVERLAY  (F1 to toggle)
-            // AlphaBlend + Deferred; drawn last so it sits on top of everything.
-            // ════════════════════════════════════════════════════════════════
-            if (_showDebug)
-            {
-                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-
-                // Collision walls — red
-                foreach (var wall in _solidBoundaries)
-                    DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, wall, Color.Red);
-
-                // Cat feet collision box — cyan
-                DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, _cat.CollisionBox, Color.Cyan);
-
-                _spriteBatch.End();
-            }
-
-            // ── Blit render target to the OS window at display scale ─────────
-            GraphicsDevice.SetRenderTarget(null);
-            GraphicsDevice.Clear(Color.Black);
-
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
-            _spriteBatch.Draw(
-                _renderTarget,
-                new Rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT),
-                Color.White);
-            _spriteBatch.End();
-
-            base.Draw(gameTime);
         }
     }
 }
@@ -2995,74 +2329,8 @@ using System.Reflection;
 [assembly: global::System.Runtime.Versioning.TargetFrameworkAttribute(".NETCoreApp,Version=v8.0", FrameworkDisplayName = ".NET 8.0")]
 </file>
 
-<file path="obj/Debug/net8.0/CatDetective.AssemblyInfo.cs">
-//------------------------------------------------------------------------------
-// <auto-generated>
-//     This code was generated by a tool.
-//
-//     Changes to this file may cause incorrect behavior and will be lost if
-//     the code is regenerated.
-// </auto-generated>
-//------------------------------------------------------------------------------
-
-using System;
-using System.Reflection;
-
-[assembly: System.Reflection.AssemblyCompanyAttribute("CatDetective")]
-[assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b7125b68fdd927e82a0618273b58bfdfeaf95050")]
-[assembly: System.Reflection.AssemblyProductAttribute("CatDetective")]
-[assembly: System.Reflection.AssemblyTitleAttribute("CatDetective")]
-[assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
-
-// Generated by the MSBuild WriteCodeFragment class.
-</file>
-
-<file path="obj/Debug/net8.0/CatDetective.AssemblyInfoInputs.cache">
-c4df3be163d78561e04a1c316ca241130eb7363038c815ac54a2139855cfc9ed
-</file>
-
 <file path="obj/Debug/net8.0/CatDetective.csproj.CoreCompileInputs.cache">
 b4787cfcc9b002b0a051b9c39bf21bc774f844360597298fadbe7bf5a7efe84c
-</file>
-
-<file path="obj/Debug/net8.0/CatDetective.csproj.FileListAbsolute.txt">
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\room_map.json
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.exe
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.deps.json
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.runtimeconfig.json
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.dll
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.pdb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\MonoGame.Framework.dll
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\linux-x64\native\libSDL2-2.0.so.0
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\linux-x64\native\libopenal.so.1
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\osx\native\libSDL2.dylib
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\osx\native\libopenal.1.dylib
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\win-x64\native\SDL2.dll
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\win-x64\native\soft_oal.dll
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\win-x86\native\SDL2.dll
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\win-x86\native\soft_oal.dll
-C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.csproj.AssemblyReference.cache
-C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.AssemblyInfoInputs.cache
-C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.AssemblyInfo.cs
-C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.csproj.CoreCompileInputs.cache
-C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.sourcelink.json
-C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetec.86C7045D.Up2Date
-C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.dll
-C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\refint\CatDetective.dll
-C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.pdb
-C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.genruntimeconfig.cache
-C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\ref\CatDetective.dll
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\bg_base.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\mask_sunbeams.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\prop_cabinet.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\prop_desk.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\shadow_blob.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\spr_cat_walk_down.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\spr_cat_walk_up.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\walk_animation_forward.xnb
 </file>
 
 <file path="obj/Debug/net8.0/CatDetective.GeneratedMSBuildEditorConfig.editorconfig">
@@ -3087,10 +2355,6 @@ build_property.EnableCodeStyleSeverity =
 
 <file path="obj/Debug/net8.0/CatDetective.genruntimeconfig.cache">
 9242b68c503066df1bd576ac962275a4b2ad5e1c28efc5bbc3334b67134ceec6
-</file>
-
-<file path="obj/Debug/net8.0/CatDetective.sourcelink.json">
-{"documents":{"C:\\Users\\larry\\Projecten\\cat_detective\\*":"https://raw.githubusercontent.com/ErikHilhorst/cat_detective/b7125b68fdd927e82a0618273b58bfdfeaf95050/*"}}
 </file>
 
 <file path="obj/project.assets.json">
@@ -3328,6 +2592,11 @@ namespace CatDetective
 }
 </file>
 
+<file path="run_game.md">
+dotnet build
+dotnet run
+</file>
+
 <file path="Tiled maps/untitledcat_detective.tiled-project">
 {
     "automappingRulesFile": "",
@@ -3369,6 +2638,799 @@ namespace CatDetective
         "C:/Users/larry/Projecten/cat_detective/Content/room_map.json"
     ]
 }
+</file>
+
+<file path="Content/Content.mgcb">
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:bin/$(Platform)
+/intermediateDir:obj/$(Platform)
+/platform:DesktopGL
+/config:
+/profile:Reach
+/compress:False
+
+#-------------------------------- References --------------------------------#
+
+#---------------------------------- Content ---------------------------------#
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PremultiplyAlpha=False on every asset.
+#
+# All sprites are rendered in Pass 3 with BlendState.NonPremultiplied, so
+# they must be stored with straight (non-premultiplied) alpha.  Keeping
+# everything consistent here avoids subtle colour differences if assets are
+# moved between passes later.
+# ═══════════════════════════════════════════════════════════════════════════
+
+# ── Background (1072 x 1136) ───────────────────────────────────────────────
+#begin bg_base.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:bg_base.png
+
+# ── Props — full-room overlays (1072 x 1136 each) ─────────────────────────
+#begin prop_desk.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:prop_desk.png
+
+#begin prop_cabinet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:prop_cabinet.png
+
+# ── VFX ────────────────────────────────────────────────────────────────────
+# mask_sunbeams is drawn with BlendState.Additive (Pass 4).
+# shadow_blob is drawn with BlendState.AlphaBlend (Pass 2).
+# Both still use straight alpha for consistency.
+
+#begin mask_sunbeams.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:mask_sunbeams.png
+
+#begin shadow_blob.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:shadow_blob.png
+
+# ── Cat sprite sheets (single-frame placeholders) ─────────────────────────
+# Placeholder images have a white background; ColorKeyColor is set to White.
+# frameCount is 1 in Game1.cs until real sprite sheets are available.
+
+#begin spr_cat_walk_down.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,255,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:spr_cat_walk_down.png
+
+#begin spr_cat_walk_up.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,255,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:spr_cat_walk_up.png
+
+# ── Walk animation (2100 x 700, 11 frames in a 6×2 grid) ─────────────────
+# Native PNG transparency — ColorKey disabled.
+
+#begin walk_animation_forward.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:walk_animation_forward.png
+
+#begin walk_animation_upward.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:walk_animation_upward.png
+
+# ── NOTE: room_map.json ────────────────────────────────────────────────────
+# Copied verbatim by the .csproj <Content> ItemGroup; not processed here.
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Profile>Reach</Profile>
+  <Platform>DesktopGL</Platform>
+  <Config />
+  <SourceFiles>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/bg_base.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/prop_desk.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/prop_cabinet.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_down.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_upward.png</File>
+  </SourceFiles>
+  <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+  </DestFiles>
+</SourceFileCollection>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/.mgstats">
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/larry/Projecten/cat_detective/Content/bg_base.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/bg_base.xnb","TextureProcessor","Texture2DContent",2147366,4871253,0.2628493
+"C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/mask_sunbeams.xnb","TextureProcessor","Texture2DContent",83310,4871253,0.5379857
+"C:/Users/larry/Projecten/cat_detective/Content/prop_cabinet.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_cabinet.xnb","TextureProcessor","Texture2DContent",240216,4871253,0.1396972
+"C:/Users/larry/Projecten/cat_detective/Content/prop_desk.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_desk.xnb","TextureProcessor","Texture2DContent",375223,4871253,0.1434539
+"C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/shadow_blob.xnb","TextureProcessor","Texture2DContent",121682,1430485,0.3164453
+"C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_down.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_down.xnb","TextureProcessor","Texture2DContent",104992,633037,0.1324254
+"C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_up.xnb","TextureProcessor","Texture2DContent",105940,633037,0.0234247
+"C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/walk_animation_forward.xnb","TextureProcessor","Texture2DContent",1247913,5880085,0.3191753
+"C:/Users/larry/Projecten/cat_detective/Content/walk_animation_upward.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/walk_animation_upward.xnb","TextureProcessor","Texture2DContent",967587,5880085,0.3191212
+</file>
+
+<file path="Entities/Cat.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
+
+namespace CatDetective.Entities
+{
+    /// <summary>
+    /// The player-controlled cat character.
+    ///
+    /// MOVEMENT
+    ///   Isometric perspective means the Y-axis appears foreshortened.
+    ///   We compensate by running Y movement at half the X speed so the
+    ///   cat doesn't slide unnaturally fast toward or away from the camera.
+    ///     X_SPEED = 100 px/s  (full horizontal speed)
+    ///     Y_SPEED =  50 px/s  (half vertical speed)
+    ///
+    /// ANIMATION
+    ///   Two sprite sheets, each with <see cref="_frameCount"/> equally-wide frames:
+    ///     spr_cat_walk_down  — used when moving down / forward
+    ///     spr_cat_walk_up    — used when moving up / backward
+    ///   Left-facing variants are derived at runtime via SpriteEffects.FlipHorizontally;
+    ///   no extra textures are needed (matches the GDD animation approach).
+    ///
+    /// COLLISION BOX
+    ///   A thin rectangle at the cat's feet only (~14 px tall), centred on Position.
+    ///   This keeps the player from clipping through walls at shoulder height and
+    ///   prevents false positives on tall furniture whose trigger zones are above.
+    /// </summary>
+    public class Cat : GameObject
+    {
+        // ── Movement constants ─────────────────────────────────────────────────
+        private const float X_SPEED = 250f;
+        private const float Y_SPEED = 125f;
+
+        // ── Collision box ──────────────────────────────────────────────────────
+        private const int   FEET_BOX_HEIGHT = 14;   // px, covers only the paws on the floor
+
+        // ── Sprite scale ───────────────────────────────────────────────────────
+        private const float SPRITE_SCALE_DOWN = 0.5f;
+        private const float SPRITE_SCALE_UP   = 0.57f;
+
+        private float CurrentScale => _facingUp ? SPRITE_SCALE_UP : SPRITE_SCALE_DOWN;
+
+        // ── Animation ─────────────────────────────────────────────────────────
+        private readonly Texture2D _walkDownTexture;
+        private readonly Texture2D _walkUpTexture;
+        private readonly int       _frameCount;
+        private readonly int       _columns;
+        private readonly int       _rows;
+
+        private int   _frameWidth;
+        private int   _frameHeight;
+        private int   _currentFrame;
+        private float _frameTimer;
+        private const float FRAME_INTERVAL = 0.07f;  // seconds per frame (~14 fps walk cycle)
+
+        // ── Per-frame state ────────────────────────────────────────────────────
+        private Vector2       _velocity;             // pixels/s this frame
+        private bool          _isMoving;
+        private bool          _facingUp;             // true → use walk-up sheet
+        private bool          _isFacingLeft;         // remembers last horizontal direction
+        private SpriteEffects _spriteFlip = SpriteEffects.None;
+
+        // ── Shadow ─────────────────────────────────────────────────────────────
+        /// <summary>Assign shadow_blob.png after construction.</summary>
+        public Texture2D? ShadowTexture { get; set; }
+
+        // ── Constructor ────────────────────────────────────────────────────────
+        /// <param name="walkDownTexture">Sprite sheet for down/forward movement.</param>
+        /// <param name="walkUpTexture">Sprite sheet for up/backward movement.</param>
+        /// <param name="startPosition">Initial bottom-center world position.</param>
+        /// <param name="frameCount">Total number of animation frames in each sheet.</param>
+        /// <param name="columns">Number of columns in the sprite grid.</param>
+        /// <param name="rows">Number of rows in the sprite grid.</param>
+        public Cat(
+            Texture2D walkDownTexture,
+            Texture2D walkUpTexture,
+            Vector2   startPosition,
+            int       frameCount = 11,
+            int       columns    = 6,
+            int       rows       = 2)
+        {
+            _walkDownTexture = walkDownTexture;
+            _walkUpTexture   = walkUpTexture;
+            _frameCount      = frameCount;
+            _columns         = columns;
+            _rows            = rows;
+
+            Texture      = _walkDownTexture;
+            _frameWidth  = Texture.Width  / _columns;
+            _frameHeight = Texture.Height / _rows;
+
+            Position = startPosition;
+            RefreshCollisionBox();
+            LayerDepth = CalculateLayerDepth();
+        }
+
+        // ── Update ─────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Phase 1 of the per-frame update: read input, pick texture/flip,
+        /// advance animation timer. Does NOT move the cat — that happens in
+        /// <see cref="MoveWithCollision"/> so collision resolution can be applied
+        /// cleanly on each axis separately.
+        /// </summary>
+        public override void Update(GameTime gameTime)
+        {
+            HandleInput();
+            AdvanceAnimation((float)gameTime.ElapsedGameTime.TotalSeconds);
+        }
+
+        /// <summary>
+        /// Phase 2 of the per-frame update: apply <see cref="_velocity"/> to
+        /// <see cref="Position"/> while resolving AABB collisions axis by axis.
+        ///
+        /// Separating X and Y resolution prevents the cat from getting stuck in
+        /// corners — it slides smoothly along walls instead.
+        /// </summary>
+        public void MoveWithCollision(float deltaTime, List<Rectangle> solidBoundaries)
+        {
+            // ── Try X axis ────────────────────────────────────────────────────
+            Position = new Vector2(Position.X + _velocity.X * deltaTime, Position.Y);
+            RefreshCollisionBox();
+            foreach (var wall in solidBoundaries)
+            {
+                if (CollisionBox.Intersects(wall))
+                {
+                    // Revert X and stop, but Y can still proceed below.
+                    Position = new Vector2(Position.X - _velocity.X * deltaTime, Position.Y);
+                    RefreshCollisionBox();
+                    break;
+                }
+            }
+
+            // ── Try Y axis ────────────────────────────────────────────────────
+            Position = new Vector2(Position.X, Position.Y + _velocity.Y * deltaTime);
+            RefreshCollisionBox();
+            foreach (var wall in solidBoundaries)
+            {
+                if (CollisionBox.Intersects(wall))
+                {
+                    Position = new Vector2(Position.X, Position.Y - _velocity.Y * deltaTime);
+                    RefreshCollisionBox();
+                    break;
+                }
+            }
+
+            // Update depth AFTER the final resolved position is known.
+            LayerDepth = CalculateLayerDepth();
+        }
+
+        // ── Draw ───────────────────────────────────────────────────────────────
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            if (Texture == null) return;
+
+            // Source rectangle selects the current animation frame from the grid.
+            int currentColumn = _currentFrame % _columns;
+            int currentRow    = _currentFrame / _columns;
+            var sourceRect = new Rectangle(
+                currentColumn * _frameWidth, currentRow * _frameHeight,
+                _frameWidth, _frameHeight);
+
+            // When using a sourceRectangle, 'origin' is in SOURCE rect space,
+            // so bottom-center of the FRAME, not the full texture.
+            var frameOrigin = new Vector2(_frameWidth * 0.5f, _frameHeight);
+
+            spriteBatch.Draw(
+                Texture,
+                Position,
+                sourceRect,
+                Color.White,
+                rotation:   0f,
+                origin:     frameOrigin,
+                scale:      new Vector2(CurrentScale),
+                effects:    _spriteFlip,
+                layerDepth: LayerDepth);
+        }
+
+        /// <summary>
+        /// Draws the blob shadow beneath the cat's feet.
+        /// Must be called inside a separate SpriteBatch pass with AlphaBlend
+        /// (Pass 2 in the render pipeline) so it composites under the cat.
+        /// </summary>
+        public void DrawShadow(SpriteBatch spriteBatch)
+{
+    if (ShadowTexture == null) return;
+
+    var shadowOrigin = new Vector2(ShadowTexture.Width * 0.5f, ShadowTexture.Height * 0.5f);
+    
+    // Offset significantly UP (negative Y) to close the transparent gap under the paws
+    var shadowPos = Position + new Vector2(0f, -20f);
+
+    spriteBatch.Draw(
+        ShadowTexture,
+        shadowPos,
+        sourceRectangle: null,
+        Color.White * 0.55f,
+        rotation: 0f,
+        origin:   shadowOrigin,
+        // Flattened Y scale to look painted onto the isometric floor
+        scale:    new Vector2(0.16f, 0.07f),   
+        effects:  SpriteEffects.None,
+        layerDepth: 0f);
+}
+
+        // ── Private helpers ────────────────────────────────────────────────────
+
+        private void HandleInput()
+        {
+            var kb = Keyboard.GetState();
+
+            bool up    = kb.IsKeyDown(Keys.W) || kb.IsKeyDown(Keys.Up);
+            bool down  = kb.IsKeyDown(Keys.S) || kb.IsKeyDown(Keys.Down);
+            bool left  = kb.IsKeyDown(Keys.A) || kb.IsKeyDown(Keys.Left);
+            bool right = kb.IsKeyDown(Keys.D) || kb.IsKeyDown(Keys.Right);
+
+            _velocity = Vector2.Zero;
+            if (left)  _velocity.X -= X_SPEED;
+            if (right) _velocity.X += X_SPEED;
+            if (up)    _velocity.Y -= Y_SPEED;
+            if (down)  _velocity.Y += Y_SPEED;
+
+            _isMoving = _velocity != Vector2.Zero;
+
+            if (_isMoving)
+            {
+                // Net vertical direction decides which sprite sheet to use.
+                // "up && !down" handles the case where both are held (no change).
+                _facingUp = up && !down;
+
+                // Update the facing memory only if a horizontal key is pressed.
+                if (left && !right)       _isFacingLeft = true;
+                else if (right && !left)  _isFacingLeft = false;
+
+                _spriteFlip = _facingUp
+                    ? (_isFacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None)
+                    : (_isFacingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
+            }
+
+            // Swap texture based on current facing.
+            // Re-derive frame dimensions because the two sheets may have different heights.
+            Texture      = _facingUp ? _walkUpTexture : _walkDownTexture;
+            _frameWidth  = Texture.Width  / _columns;
+            _frameHeight = Texture.Height / _rows;
+        }
+
+        private void AdvanceAnimation(float deltaTime)
+        {
+            if (!_isMoving)
+            {
+                // Snap to the last frame (start of the reversed sequence) when idle.
+                _currentFrame = _frameCount - 1;
+                _frameTimer   = 0f;
+                return;
+            }
+
+            _frameTimer += deltaTime;
+            if (_frameTimer >= FRAME_INTERVAL)
+            {
+                _frameTimer  -= FRAME_INTERVAL;
+                _currentFrame = (_currentFrame - 1 + _frameCount) % _frameCount;
+            }
+        }
+
+        /// <summary>
+        /// Rebuilds the feet-only collision box centred on <see cref="Position"/>.
+        /// Because Position is the bottom-center, the box spans:
+        ///   X: [Position.X - frameWidth/2 .. Position.X + frameWidth/2]
+        ///   Y: [Position.Y - FEET_BOX_HEIGHT .. Position.Y]
+        /// </summary>
+        private void RefreshCollisionBox()
+        {
+            CollisionBox = new Rectangle(
+                (int)(Position.X - (_frameWidth * CurrentScale) * 0.25f),
+                (int)(Position.Y - FEET_BOX_HEIGHT),
+                (int)(_frameWidth * CurrentScale * 0.5f),
+                FEET_BOX_HEIGHT);
+        }
+    }
+}
+</file>
+
+<file path="Game1.cs">
+using CatDetective.Entities;
+using CatDetective.Map;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
+using System.IO;
+
+namespace CatDetective
+{
+    /// <summary>
+    /// Root game class for the Cat Detective prototype.
+    ///
+    /// SCREEN RESOLUTION
+    ///   1072 × 1136 — matches the art assets exactly so no scaling artefacts occur.
+    ///
+    /// RENDER PIPELINE (in order each frame):
+    ///
+    ///   Pass 1 — Base Background  (AlphaBlend, Deferred)
+    ///     bg_base.png drawn at (0,0).
+    ///
+    ///   Pass 2 — Blob Shadow  (AlphaBlend, Deferred)
+    ///     shadow_blob.png drawn under the cat's feet BEFORE the cat sprite,
+    ///     so it composites underneath.
+    ///
+    ///   Pass 3 — Y-Sorted Entities  (NonPremultiplied, FrontToBack)
+    ///     Cat and props drawn together, sorted by floor-Y depth.
+    ///     Props are full-room overlays (same size as background) drawn at (0,0);
+    ///     their LayerDepth is derived from a logical sortY, not their draw position.
+    ///     Prop alpha lerps to 0.4 when the cat walks behind them.
+    ///
+    ///   Pass 4 — Lighting / Sunbeams  (Additive, Deferred)
+    ///     mask_sunbeams.png drawn at (0,0). Additive blend washes out the scene
+    ///     naturally where beams hit — no shaders needed (GDD "El Mariachi" trick).
+    /// </summary>
+    public class Game1 : Game
+    {
+        // ── Internal resolution — matches bg_base.png / prop overlay dimensions ─
+        private const int   SCREEN_WIDTH   = 1072;
+        private const int   SCREEN_HEIGHT  = 1136;
+
+        // ── Display scale — shrinks the OS window while keeping proportions ────
+        // Change this one constant to resize the window (e.g. 0.5 for half size).
+        private const float DISPLAY_SCALE  = 0.6f;
+        private static readonly int WINDOW_WIDTH  = (int)(SCREEN_WIDTH  * DISPLAY_SCALE);
+        private static readonly int WINDOW_HEIGHT = (int)(SCREEN_HEIGHT * DISPLAY_SCALE);
+
+        // ── MonoGame core ──────────────────────────────────────────────────────
+        private readonly GraphicsDeviceManager _graphics;
+        private SpriteBatch     _spriteBatch   = null!;
+        private RenderTarget2D  _renderTarget  = null!;
+
+        // ── Scene textures ─────────────────────────────────────────────────────
+        private Texture2D _bgBase       = null!;
+        private Texture2D _sunbeamsMask = null!;
+
+        // ── Entities ───────────────────────────────────────────────────────────
+        private Cat  _cat     = null!;
+        private Prop _desk    = null!;
+        private Prop _cabinet = null!;
+
+        // ── World data from Tiled ──────────────────────────────────────────────
+        private List<Rectangle> _solidBoundaries = new();
+
+        // ── Debug overlay ──────────────────────────────────────────────────────
+        private Texture2D    _debugPixel  = null!;
+        private bool         _showDebug   = true;   // F1 toggles
+        private KeyboardState _prevKbState;
+
+        // ══════════════════════════════════════════════════════════════════════
+        public Game1()
+        {
+            _graphics = new GraphicsDeviceManager(this)
+            {
+                PreferredBackBufferWidth  = WINDOW_WIDTH,
+                PreferredBackBufferHeight = WINDOW_HEIGHT,
+            };
+            Content.RootDirectory = "Content";
+            IsMouseVisible = true;
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        protected override void Initialize()
+        {
+            GameObject.SetScreenHeight(SCREEN_HEIGHT);
+            base.Initialize();
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        protected override void LoadContent()
+        {
+            _spriteBatch  = new SpriteBatch(GraphicsDevice);
+            _renderTarget = new RenderTarget2D(GraphicsDevice, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+            // ── Scene textures ───────────────────────────────────────────────
+            _bgBase       = Content.Load<Texture2D>("bg_base");
+            _sunbeamsMask = Content.Load<Texture2D>("mask_sunbeams");
+
+            // ── Cat ──────────────────────────────────────────────────────────
+            // Sprite sheet: 2100 × 700 px, 11 frames in a 6×2 grid.
+            // Both directions use the forward sheet until the up-facing sheet is ready.
+            var walkForward = Content.Load<Texture2D>("walk_animation_forward");
+            var walkUpward  = Content.Load<Texture2D>("walk_animation_upward");
+            var shadow      = Content.Load<Texture2D>("shadow_blob");
+
+            // Start position: centre-X, lower floor area.
+            // Adjust Y once the room art is reviewed in-engine.
+            _cat = new Cat(walkForward, walkUpward, startPosition: new Vector2(536, 900),
+                           frameCount: 12, columns: 6, rows: 2)
+            {
+                ShadowTexture = shadow
+            };
+
+            // ── Props ────────────────────────────────────────────────────────
+            // Full-room overlay PNGs: same 1072 × 1136 canvas as bg_base.
+            // sortY is the approximate Y of each prop's floor contact point within
+            // the image. Tune these values after reviewing the art in-engine.
+            var deskTex    = Content.Load<Texture2D>("prop_desk");
+            var cabinetTex = Content.Load<Texture2D>("prop_cabinet");
+
+            // ── Debug pixel ─────────────────────────────────────────────────
+            _debugPixel = new Texture2D(GraphicsDevice, 1, 1);
+            _debugPixel.SetData(new[] { Color.White });
+
+            // ── Parse Tiled map ──────────────────────────────────────────────
+            string mapPath = Path.Combine(Content.RootDirectory, "room_map.json");
+            MapParser.Parse(mapPath, out _solidBoundaries, out var triggers);
+
+            // ── Wire trigger zones to props ───────────────────────────────────
+            var deskTrigger    = new Rectangle(230, 490, 280, 210); // fallback
+            var cabinetTrigger = new Rectangle(590, 340, 220, 200); // fallback
+
+            foreach (var (name, rect) in triggers)
+            {
+                var lower = name.ToLowerInvariant();
+                if (lower.Contains("desk"))    deskTrigger    = rect;
+                if (lower.Contains("cabinet")) cabinetTrigger = rect;
+            }
+
+            // sortY values: approximate Y of each prop's floor contact in the
+            // full-room overlay image. Tune after reviewing in-engine.
+            _desk    = new Prop(deskTex,    sortY: 750f, deskTrigger);
+            _cabinet = new Prop(cabinetTex, sortY: 580f, cabinetTrigger);
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        protected override void Update(GameTime gameTime)
+        {
+            var kbState = Keyboard.GetState();
+            if (kbState.IsKeyDown(Keys.Escape))
+                Exit();
+
+            // Toggle debug overlay with F1 (on key-down, not held)
+            if (kbState.IsKeyDown(Keys.F1) && !_prevKbState.IsKeyDown(Keys.F1))
+                _showDebug = !_showDebug;
+            _prevKbState = kbState;
+
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            _cat.Update(gameTime);
+            _cat.MoveWithCollision(dt, _solidBoundaries);
+
+            _desk.CheckFadeTrigger(_cat.CollisionBox);
+            _cabinet.CheckFadeTrigger(_cat.CollisionBox);
+            _desk.Update(gameTime);
+            _cabinet.Update(gameTime);
+
+            base.Update(gameTime);
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        protected override void Draw(GameTime gameTime)
+        {
+            // ── Render all passes into the full-resolution render target ─────
+            GraphicsDevice.SetRenderTarget(_renderTarget);
+            GraphicsDevice.Clear(Color.Black);
+
+            // ════════════════════════════════════════════════════════════════
+            // PASS 1 — BASE BACKGROUND
+            // ════════════════════════════════════════════════════════════════
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            _spriteBatch.Draw(_bgBase, Vector2.Zero, Color.White);
+            _spriteBatch.End();
+
+            // ════════════════════════════════════════════════════════════════
+            // PASS 2 — BLOB SHADOW
+            // ════════════════════════════════════════════════════════════════
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            _cat.DrawShadow(_spriteBatch);
+            _spriteBatch.End();
+
+            // ════════════════════════════════════════════════════════════════
+            // PASS 3 — Y-SORTED ENTITIES
+            // NonPremultiplied required: textures have straight alpha (see .mgcb),
+            // and prop alpha modulation must fade cleanly without colour darkening.
+            // ════════════════════════════════════════════════════════════════
+            _spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.NonPremultiplied);
+            _desk.Draw(_spriteBatch);
+            _cabinet.Draw(_spriteBatch);
+            _cat.Draw(_spriteBatch);
+            _spriteBatch.End();
+
+            // ════════════════════════════════════════════════════════════════
+            // PASS 4 — LIGHTING / SUNBEAMS  (additive — El Mariachi trick)
+            // ════════════════════════════════════════════════════════════════
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
+            _spriteBatch.Draw(_sunbeamsMask, Vector2.Zero, Color.White);
+            _spriteBatch.End();
+
+            // ════════════════════════════════════════════════════════════════
+            // PASS 5 — DEBUG OVERLAY  (F1 to toggle)
+            // AlphaBlend + Deferred; drawn last so it sits on top of everything.
+            // ════════════════════════════════════════════════════════════════
+            if (_showDebug)
+            {
+                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
+                // Collision walls — red
+                foreach (var wall in _solidBoundaries)
+                    DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, wall, Color.Red);
+
+                // Cat feet collision box — cyan
+                DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, _cat.CollisionBox, Color.Cyan);
+
+                _spriteBatch.End();
+            }
+
+            // ── Blit render target to the OS window at display scale ─────────
+            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.Clear(Color.Black);
+
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
+            _spriteBatch.Draw(
+                _renderTarget,
+                new Rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT),
+                Color.White);
+            _spriteBatch.End();
+
+            base.Draw(gameTime);
+        }
+    }
+}
+</file>
+
+<file path="obj/Debug/net8.0/CatDetective.AssemblyInfo.cs">
+//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+using System;
+using System.Reflection;
+
+[assembly: System.Reflection.AssemblyCompanyAttribute("CatDetective")]
+[assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d185fe15e40db0a3cf748c4201a2f445f55680db")]
+[assembly: System.Reflection.AssemblyProductAttribute("CatDetective")]
+[assembly: System.Reflection.AssemblyTitleAttribute("CatDetective")]
+[assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
+
+// Generated by the MSBuild WriteCodeFragment class.
+</file>
+
+<file path="obj/Debug/net8.0/CatDetective.AssemblyInfoInputs.cache">
+600cbb1d514a35254e871f107cef0877495b9dc5aa1bfee3b1419da0c6213585
+</file>
+
+<file path="obj/Debug/net8.0/CatDetective.csproj.FileListAbsolute.txt">
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\room_map.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.exe
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.deps.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.runtimeconfig.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.dll
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.pdb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\MonoGame.Framework.dll
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\linux-x64\native\libSDL2-2.0.so.0
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\linux-x64\native\libopenal.so.1
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\osx\native\libSDL2.dylib
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\osx\native\libopenal.1.dylib
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\win-x64\native\SDL2.dll
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\win-x64\native\soft_oal.dll
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\win-x86\native\SDL2.dll
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\runtimes\win-x86\native\soft_oal.dll
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.csproj.AssemblyReference.cache
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.AssemblyInfoInputs.cache
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.AssemblyInfo.cs
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.csproj.CoreCompileInputs.cache
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.sourcelink.json
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetec.86C7045D.Up2Date
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.dll
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\refint\CatDetective.dll
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.pdb
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.genruntimeconfig.cache
+C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\ref\CatDetective.dll
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\bg_base.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\mask_sunbeams.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\prop_cabinet.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\prop_desk.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\shadow_blob.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\spr_cat_walk_down.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\spr_cat_walk_up.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\walk_animation_forward.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\walk_animation_upward.xnb
+</file>
+
+<file path="obj/Debug/net8.0/CatDetective.sourcelink.json">
+{"documents":{"C:\\Users\\larry\\Projecten\\cat_detective\\*":"https://raw.githubusercontent.com/ErikHilhorst/cat_detective/d185fe15e40db0a3cf748c4201a2f445f55680db/*"}}
 </file>
 
 </files>

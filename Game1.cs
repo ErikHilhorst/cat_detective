@@ -60,7 +60,17 @@ namespace CatDetective
         private Prop _cabinet = null!;
 
         // ── World data from Tiled ──────────────────────────────────────────────
-        private List<Rectangle> _solidBoundaries = new();
+        private List<Rectangle>                   _solidBoundaries = new();
+        private List<(string Name, Rectangle Rect)> _interactables = new();
+
+        // ── Interaction system ─────────────────────────────────────────────────
+        private Dictionary<string, InteractionData> _interactionDatabase = null!;
+        private bool            _isDialogueActive;
+        private InteractionData? _currentInteraction;
+        private List<string>    _collectedClues = new();
+
+        // ── UI ─────────────────────────────────────────────────────────────────
+        private SpriteFont _dialogueFont = null!;
 
         // ── Debug overlay ──────────────────────────────────────────────────────
         private Texture2D    _debugPixel  = null!;
@@ -122,9 +132,56 @@ namespace CatDetective
             _debugPixel = new Texture2D(GraphicsDevice, 1, 1);
             _debugPixel.SetData(new[] { Color.White });
 
+            // ── Dialogue font ────────────────────────────────────────────────
+            _dialogueFont = Content.Load<SpriteFont>("dialogue_font");
+
+            // ── Interaction database (hardcoded; swap for data file later) ───
+            // [bracket] tokens in Text are tinted using the matching Keyword.Color.
+            _interactionDatabase = new Dictionary<string, InteractionData>
+            {
+                { "inspect_answering_machine", new InteractionData(
+                    "BEEP. 'Hey, it's Lance's manager. We need you at the house " +
+                    "[the day before the premiere]! Don't be late!' " +
+                    "BEEP. 'Hi honey, don't forget my birthday on [Sunday]!'",
+                    new[] {
+                        new Keyword("the day before the premiere", "the_day_before_the_premiere", InteractionData.Plot),
+                        new Keyword("Sunday",                      "sunday",                      InteractionData.Plot),
+                    }) },
+
+                { "inspect_takeout_bag", new InteractionData(
+                    "Smells like leftover [Fish Tacos]. The delivery receipt says it " +
+                    "was brought to the [Downtown Office].",
+                    new[] {
+                        new Keyword("Fish Tacos",      "fish_tacos",      InteractionData.Misc),
+                        new Keyword("Downtown Office", "downtown_office", InteractionData.Plot),
+                    }) },
+
+                { "inspect_calendar", new InteractionData(
+                    "The month is almost over. The detective has circled [Thursday] " +
+                    "for the dentist, and [Friday] is marked with a giant question mark.",
+                    new[] {
+                        new Keyword("Thursday", "thursday", InteractionData.Plot),
+                        new Keyword("Friday",   "friday",   InteractionData.Plot),
+                    }) },
+
+                { "inspect_newspaper", new InteractionData(
+                    "'Pirate Cove 3' premieres this [Saturday]! But production halts " +
+                    "as Lance's prized macaw, Rudebeak, is reported as a [stolen pet]!",
+                    new[] {
+                        new Keyword("Saturday",   "saturday",   InteractionData.Plot),
+                        new Keyword("stolen pet", "stolen_pet", InteractionData.Crime),
+                    }) },
+
+                { "inspect_trash_can", new InteractionData(
+                    "A bunch of unpaid bills, and a shiny VIP parking pass for a [Malibu Mansion].",
+                    new[] {
+                        new Keyword("Malibu Mansion", "malibu_mansion", InteractionData.Plot),
+                    }) },
+            };
+
             // ── Parse Tiled map ──────────────────────────────────────────────
             string mapPath = Path.Combine(Content.RootDirectory, "room_map.json");
-            MapParser.Parse(mapPath, out _solidBoundaries, out var triggers);
+            MapParser.Parse(mapPath, out _solidBoundaries, out var triggers, out _interactables);
 
             // ── Wire trigger zones to props ───────────────────────────────────
             var deskTrigger    = new Rectangle(230, 490, 280, 210); // fallback
@@ -157,8 +214,34 @@ namespace CatDetective
 
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            _cat.Update(gameTime);
-            _cat.MoveWithCollision(dt, _solidBoundaries);
+            if (_isDialogueActive)
+            {
+                // Consume the interact check so the key-state advances in Cat.
+                // If Space is pressed while dialogue is open, dismiss it.
+                if (_cat.IsInteractPressed())
+                    _isDialogueActive = false;
+            }
+            else
+            {
+                _cat.Update(gameTime);
+                _cat.MoveWithCollision(dt, _solidBoundaries);
+
+                // Check whether the cat stepped into an interactable zone.
+                var zone = _cat.GetActiveInteractionZone(_interactables);
+                if (zone != null && _cat.IsInteractPressed())
+                {
+                    if (_interactionDatabase.TryGetValue(zone.Value.Name, out var data))
+                    {
+                        _currentInteraction = data;
+                        _isDialogueActive   = true;
+
+                        // Collect any new clue IDs.
+                        foreach (var kw in data.Keywords)
+                            if (!_collectedClues.Contains(kw.Id))
+                                _collectedClues.Add(kw.Id);
+                    }
+                }
+            }
 
             _desk.CheckFadeTrigger(_cat.CollisionBox);
             _cabinet.CheckFadeTrigger(_cat.CollisionBox);
@@ -225,6 +308,49 @@ namespace CatDetective
                 _spriteBatch.End();
             }
 
+            // ════════════════════════════════════════════════════════════════
+            // PASS 6 — DIALOGUE UI
+            // AlphaBlend, drawn last so it overlays everything.
+            // ════════════════════════════════════════════════════════════════
+            if (_isDialogueActive && _currentInteraction != null)
+            {
+                const int BOX_PADDING  = 20;
+                const int BOX_HEIGHT   = 130;
+                const int BOX_MARGIN   = 16;
+                var boxRect = new Rectangle(
+                    BOX_MARGIN,
+                    SCREEN_HEIGHT - BOX_HEIGHT - BOX_MARGIN,
+                    SCREEN_WIDTH - BOX_MARGIN * 2,
+                    BOX_HEIGHT);
+
+                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
+                // Semi-transparent dark background panel.
+                _spriteBatch.Draw(_debugPixel, boxRect, Color.Black * 0.75f);
+
+                // Rich-text dialogue — [keywords] are tinted by their Keyword.Color.
+                DrawRichText(
+                    _spriteBatch,
+                    _dialogueFont,
+                    _currentInteraction.Text,
+                    _currentInteraction.Keywords,
+                    new Vector2(boxRect.X + BOX_PADDING, boxRect.Y + BOX_PADDING),
+                    boxRect.Width - BOX_PADDING * 2);
+
+                // "Press Space to continue" hint, bottom-right of the box.
+                const string hint     = "[ Space ] to continue";
+                var          hintSize = _dialogueFont.MeasureString(hint);
+                _spriteBatch.DrawString(
+                    _dialogueFont,
+                    hint,
+                    new Vector2(
+                        boxRect.Right  - BOX_PADDING - hintSize.X,
+                        boxRect.Bottom - BOX_PADDING - hintSize.Y),
+                    Color.LightGray);
+
+                _spriteBatch.End();
+            }
+
             // ── Blit render target to the OS window at display scale ─────────
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
@@ -237,6 +363,106 @@ namespace CatDetective
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        // ── Helpers ────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Splits <paramref name="text"/> into plain/coloured spans by scanning for
+        /// <c>[bracket]</c> tokens and matching them against <paramref name="keywords"/>.
+        /// Returns a list of <c>(string segment, Color color)</c> in source order.
+        /// </summary>
+        private static List<(string Text, Color Color)> ParseSpans(
+            string text, Keyword[] keywords)
+        {
+            var result = new List<(string, Color)>();
+            int i = 0;
+            while (i < text.Length)
+            {
+                int open = text.IndexOf('[', i);
+                if (open == -1)
+                {
+                    result.Add((text[i..], Color.White));
+                    break;
+                }
+                if (open > i)
+                    result.Add((text[i..open], Color.White));
+
+                int close = text.IndexOf(']', open + 1);
+                if (close == -1)
+                {
+                    result.Add((text[open..], Color.White));
+                    break;
+                }
+
+                string bracketText = text[(open + 1)..close];
+                var kwColor = Color.White;
+                foreach (var kw in keywords)
+                {
+                    if (string.Equals(kw.DisplayText, bracketText,
+                            System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        kwColor = kw.Color;
+                        break;
+                    }
+                }
+                result.Add((bracketText, kwColor));
+                i = close + 1;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Draws <paramref name="text"/> word-wrapped to <paramref name="maxWidth"/>,
+        /// colouring any <c>[bracketed]</c> tokens using their matching
+        /// <see cref="Keyword.Color"/>.
+        /// </summary>
+        private void DrawRichText(
+            SpriteBatch spriteBatch,
+            SpriteFont  font,
+            string      text,
+            Keyword[]   keywords,
+            Vector2     origin,
+            float       maxWidth)
+        {
+            var   spans   = ParseSpans(text, keywords);
+            float x       = origin.X;
+            float y       = origin.Y;
+            float lineH   = font.LineSpacing;
+
+            foreach (var (spanText, color) in spans)
+            {
+                // Walk through the span as alternating runs of spaces / non-spaces
+                // so we can measure and wrap word by word while keeping inter-word
+                // spacing tight rather than adding a hard space prefix each time.
+                int pos = 0;
+                while (pos < spanText.Length)
+                {
+                    bool isSpace = spanText[pos] == ' ';
+                    int  start   = pos;
+                    while (pos < spanText.Length && (spanText[pos] == ' ') == isSpace)
+                        pos++;
+                    string token = spanText[start..pos];
+                    float  tokenW = font.MeasureString(token).X;
+
+                    if (isSpace)
+                    {
+                        // Apply spacing only when not at the start of a fresh line.
+                        if (x > origin.X) x += tokenW;
+                    }
+                    else
+                    {
+                        // Wrap before the word if it would overflow.
+                        if (x > origin.X && x + tokenW > origin.X + maxWidth)
+                        {
+                            x  = origin.X;
+                            y += lineH;
+                        }
+                        spriteBatch.DrawString(font, token, new Vector2(x, y), color);
+                        x += tokenW;
+                    }
+                }
+            }
         }
     }
 }

@@ -83,7 +83,7 @@ namespace CatDetective.Map
         };
 
         /// <summary>
-        /// Parses <paramref name="jsonPath"/> and populates the two output lists.
+        /// Parses <paramref name="jsonPath"/> and populates the three output lists.
         /// If the file is missing the method logs a warning and returns empty lists
         /// so the game can still run without a map (useful during early prototyping).
         /// </summary>
@@ -96,13 +96,19 @@ namespace CatDetective.Map
         ///   Output: all (name, rect) pairs from the "Triggers" layer.
         ///   Match names to props ("desk_fade", "cabinet_fade") in LoadContent().
         /// </param>
+        /// <param name="interactables">
+        ///   Output: all (name, rect) pairs from the "Interactables" layer.
+        ///   Match names to <c>_interactionDatabase</c> keys in Game1.
+        /// </param>
         public static void Parse(
             string jsonPath,
             out List<Rectangle> solidBoundaries,
-            out List<(string Name, Rectangle Rect)> triggers)
+            out List<(string Name, Rectangle Rect)> triggers,
+            out List<(string Name, Rectangle Rect)> interactables)
         {
             solidBoundaries = new List<Rectangle>();
             triggers        = new List<(string, Rectangle)>();
+            interactables   = new List<(string, Rectangle)>();
 
             if (!File.Exists(jsonPath))
             {
@@ -141,12 +147,18 @@ namespace CatDetective.Map
                         foreach (var obj in layer.Objects)
                             triggers.Add((obj.Name, ToRect(obj)));
                         break;
+
+                    case "Interactables":
+                        foreach (var obj in layer.Objects)
+                            interactables.Add((obj.Name, ToRect(obj)));
+                        break;
                 }
             }
 
             Console.WriteLine(
                 $"[MapParser] Loaded {solidBoundaries.Count} collision(s), " +
-                $"{triggers.Count} trigger(s) from '{jsonPath}'.");
+                $"{triggers.Count} trigger(s), " +
+                $"{interactables.Count} interactable(s) from '{jsonPath}'.");
         }
 
         private static Rectangle ToRect(TiledObject obj) =>

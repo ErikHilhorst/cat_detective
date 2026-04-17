@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png</SourceFile>
-  <SourceTime>2026-04-16T19:31:11.7515029+02:00</SourceTime>
+  <SourceTime>2026-04-17T17:37:26.4820061+02:00</SourceTime>
   <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/shadow_blob.xnb</DestFile>
-  <DestTime>2026-04-16T19:56:13.2681755+02:00</DestTime>
+  <DestTime>2026-04-17T17:37:52.0376171+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

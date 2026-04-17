@@ -62,6 +62,9 @@ namespace CatDetective.Entities
         private bool          _isFacingLeft;         // remembers last horizontal direction
         private SpriteEffects _spriteFlip = SpriteEffects.None;
 
+        // ── Interaction input tracking ─────────────────────────────────────────
+        private KeyboardState _prevInteractKbState;
+
         // ── Shadow ─────────────────────────────────────────────────────────────
         /// <summary>Assign shadow_blob.png after construction.</summary>
         public Texture2D? ShadowTexture { get; set; }
@@ -177,6 +180,35 @@ namespace CatDetective.Entities
                 scale:      new Vector2(CurrentScale),
                 effects:    _spriteFlip,
                 layerDepth: LayerDepth);
+        }
+
+        // ── Interaction helpers ────────────────────────────────────────────────
+
+        /// <summary>
+        /// Returns the first interactable zone the cat's collision box overlaps,
+        /// or null if the cat is not inside any zone.
+        /// </summary>
+        public (string Name, Rectangle Rect)? GetActiveInteractionZone(
+            List<(string Name, Rectangle Rect)> interactables)
+        {
+            foreach (var zone in interactables)
+            {
+                if (CollisionBox.Intersects(zone.Rect))
+                    return zone;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns true on the exact frame the Spacebar is pressed (not held).
+        /// Call once per Update tick so the state advances correctly.
+        /// </summary>
+        public bool IsInteractPressed()
+        {
+            var kb = Keyboard.GetState();
+            bool pressed = kb.IsKeyDown(Keys.Space) && !_prevInteractKbState.IsKeyDown(Keys.Space);
+            _prevInteractKbState = kb;
+            return pressed;
         }
 
         /// <summary>
