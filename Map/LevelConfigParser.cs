@@ -11,8 +11,19 @@ namespace CatDetective.Map
 {
     // ── JSON data models (internal — only MapParser layer sees these) ─────────
 
+    public sealed class PropConfigData
+    {
+        [JsonPropertyName("id")]          public string Id          { get; set; } = "";
+        [JsonPropertyName("texture")]     public string Texture     { get; set; } = "";
+        [JsonPropertyName("sortY")]       public float  SortY       { get; set; }
+        [JsonPropertyName("triggerName")] public string TriggerName { get; set; } = "";
+    }
+
     internal sealed class LevelConfigData
     {
+        [JsonPropertyName("props")]
+        public List<PropConfigData> Props { get; set; } = new();
+
         [JsonPropertyName("clues")]
         public List<ClueConfigData> Clues { get; set; } = new();
 
@@ -35,6 +46,10 @@ namespace CatDetective.Map
         [JsonPropertyName("id")]       public string                  Id       { get; set; } = "";
         [JsonPropertyName("text")]     public string                  Text     { get; set; } = "";
         [JsonPropertyName("keywords")] public List<KeywordConfigData> Keywords { get; set; } = new();
+        [JsonPropertyName("scale")]    public float                   Scale    { get; set; } = 1.0f;
+        [JsonPropertyName("align")]    public string                  Align    { get; set; } = "BottomCenter";
+        [JsonPropertyName("offsetX")]  public int                     OffsetX  { get; set; } = 0;
+        [JsonPropertyName("offsetY")]  public int                     OffsetY  { get; set; } = 0;
     }
 
     internal sealed class KeywordConfigData
@@ -60,6 +75,9 @@ namespace CatDetective.Map
     /// <summary>All level data loaded from <c>level_config.json</c>.</summary>
     public sealed class LevelConfig
     {
+        /// <summary>Foreground prop definitions (texture, sortY, trigger name).</summary>
+        public List<PropConfigData> Props { get; }
+
         /// <summary>Master clue database for <see cref="NotebookManager"/>.</summary>
         public Dictionary<string, Clue> Clues { get; }
 
@@ -70,10 +88,12 @@ namespace CatDetective.Map
         public List<DeductionSlot> DeductionSlots { get; }
 
         public LevelConfig(
+            List<PropConfigData>                props,
             Dictionary<string, Clue>            clues,
             Dictionary<string, InteractionData> interactables,
             List<DeductionSlot>                 deductionSlots)
         {
+            Props          = props;
             Clues          = clues;
             Interactables  = interactables;
             DeductionSlots = deductionSlots;
@@ -105,6 +125,7 @@ namespace CatDetective.Map
                     $"[LevelConfigParser] Failed to parse: '{jsonPath}'");
 
             return new LevelConfig(
+                raw.Props,
                 ParseClues(raw.Clues),
                 ParseInteractables(raw.Interactables),
                 ParseDeductionSlots(raw.DeductionSlots));
@@ -132,7 +153,8 @@ namespace CatDetective.Map
                     var kw = i.Keywords[k];
                     keywords[k] = new Keyword(kw.DisplayText, kw.Id, ParseColor(kw.Color));
                 }
-                dict[i.Id] = new InteractionData(i.Text, keywords);
+                dict[i.Id] = new InteractionData(i.Text, keywords,
+                    i.Scale, i.Align, i.OffsetX, i.OffsetY);
             }
             return dict;
         }

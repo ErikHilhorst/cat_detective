@@ -4,6 +4,7 @@ using CatDetective.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -39,9 +40,6 @@ namespace CatDetective
         // ── Internal resolution — 16:9 canvas (1136 × 16/9 ≈ 2020) ─────────────
         private const int   SCREEN_WIDTH   = 2020;
         private const int   SCREEN_HEIGHT  = 1136;
-        // Original room art width; the art is centred inside the wider canvas.
-        private const int   ROOM_WIDTH     = 1072;
-
         // ── Display scale — shrinks the OS window while keeping proportions ────
         // Change this one constant to resize the window (e.g. 0.5 for half size).
         private const float DISPLAY_SCALE  = 0.6f;
@@ -60,9 +58,8 @@ namespace CatDetective
         private Texture2D _sunbeamsMask = null!;
 
         // ── Entities ───────────────────────────────────────────────────────────
-        private Cat  _cat     = null!;
-        private Prop _desk    = null!;
-        private Prop _cabinet = null!;
+        private Cat        _cat             = null!;
+        private List<Prop> _foregroundProps = new();
 
         // ── World data from Tiled ──────────────────────────────────────────────
         private List<Rectangle>          _solidBoundaries = new();
@@ -134,6 +131,11 @@ namespace CatDetective
         private bool         _showDebug   = true;   // F1 toggles
         private KeyboardState _prevKbState;
 
+        // ── Hot-reload (level_config.json) ─────────────────────────────────────
+        private string   _levelConfigSourcePath = "";
+        private DateTime _levelConfigLastWrite;
+        private float    _hotReloadTimer;
+
         // ══════════════════════════════════════════════════════════════════════
         public Game1()
         {
@@ -151,9 +153,6 @@ namespace CatDetective
         {
             GameObject.SetScreenHeight(SCREEN_HEIGHT);
 
-            float offsetX = (SCREEN_WIDTH - ROOM_WIDTH) / 2f;
-            _cameraTransform = Matrix.CreateTranslation(offsetX, 0, 0);
-
             base.Initialize();
         }
 
@@ -166,6 +165,9 @@ namespace CatDetective
             // ── Scene textures ───────────────────────────────────────────────
             _bgBase       = Content.Load<Texture2D>("Levels/detective_office/bg_base");
             _sunbeamsMask = Content.Load<Texture2D>("Shared/mask_sunbeams");
+
+            float offsetX = (SCREEN_WIDTH - _bgBase.Width) / 2f;
+            _cameraTransform = Matrix.CreateTranslation(offsetX, 0, 0);
 
             // ── Cat ──────────────────────────────────────────────────────────
             // Sprite sheet: 2100 × 700 px, 11 frames in a 6×2 grid.
@@ -181,13 +183,6 @@ namespace CatDetective
             {
                 ShadowTexture = shadow
             };
-
-            // ── Props ────────────────────────────────────────────────────────
-            // Full-room overlay PNGs: same 1072 × 1136 canvas as bg_base.
-            // sortY is the approximate Y of each prop's floor contact point within
-            // the image. Tune these values after reviewing the art in-engine.
-            var deskTex    = Content.Load<Texture2D>("Levels/detective_office/prop_desk");
-            var cabinetTex = Content.Load<Texture2D>("Levels/detective_office/prop_cabinet");
 
             // ── Debug pixel ─────────────────────────────────────────────────
             _debugPixel = new Texture2D(GraphicsDevice, 1, 1);
@@ -205,6 +200,14 @@ namespace CatDetective
             _notebook            = new NotebookManager(levelConfig.Clues);
             _deduction           = new DeductionManager(levelConfig.DeductionSlots);
 
+            // Source file path for hot-reload (3 dirs up from bin/Debug/net8.0/).
+            _levelConfigSourcePath = Path.GetFullPath(Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "..", "..", "..", "Content", "Levels", "detective_office", "level_config.json"));
+            _levelConfigLastWrite  = File.Exists(_levelConfigSourcePath)
+                ? File.GetLastWriteTime(_levelConfigSourcePath)
+                : DateTime.MinValue;
+
             // ── Scene config ─────────────────────────────────────────────────
             string configPath = Path.Combine(Content.RootDirectory, "scenes_config.json");
             _ambientColor = SceneConfigParser.GetAmbientColor(configPath, "detective_office");
@@ -215,21 +218,25 @@ namespace CatDetective
             MapParser.Parse(mapPath, Content, "detective_office", _interactionDatabase,
                 out _solidBoundaries, out var triggers, out _interactables);
 
-            // ── Wire trigger zones to props ───────────────────────────────────
-            var deskTrigger    = new Rectangle(230, 490, 280, 210); // fallback
-            var cabinetTrigger = new Rectangle(590, 340, 220, 200); // fallback
-
-            foreach (var (name, rect) in triggers)
+            // ── Build foreground props from level config ───────────────────────
+            foreach (var propConfig in levelConfig.Props)
             {
-                var lower = name.ToLowerInvariant();
-                if (lower.Contains("desk"))    deskTrigger    = rect;
-                if (lower.Contains("cabinet")) cabinetTrigger = rect;
-            }
+                var tex = Content.Load<Texture2D>(
+                    "Levels/detective_office/" + propConfig.Texture);
 
-            // sortY values: approximate Y of each prop's floor contact in the
-            // full-room overlay image. Tune after reviewing in-engine.
-            _desk    = new Prop(deskTex,    sortY: 750f, deskTrigger);
-            _cabinet = new Prop(cabinetTex, sortY: 580f, cabinetTrigger);
+                var triggerRect = Rectangle.Empty;
+                foreach (var (name, rect) in triggers)
+                {
+                    if (name.Equals(propConfig.TriggerName,
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        triggerRect = rect;
+                        break;
+                    }
+                }
+
+                _foregroundProps.Add(new Prop(tex, propConfig.SortY, triggerRect));
+            }
         }
 
         // ══════════════════════════════════════════════════════════════════════
@@ -367,10 +374,40 @@ namespace CatDetective
                 }
             }
 
-            _desk.CheckFadeTrigger(_cat.CollisionBox);
-            _cabinet.CheckFadeTrigger(_cat.CollisionBox);
-            _desk.Update(gameTime);
-            _cabinet.Update(gameTime);
+            foreach (var prop in _foregroundProps)
+            {
+                prop.CheckFadeTrigger(_cat.CollisionBox);
+                prop.Update(gameTime);
+            }
+
+            // ── Hot-reload: poll level_config.json every 0.5 s ────────────────
+            _hotReloadTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (_hotReloadTimer >= 0.5f)
+            {
+                _hotReloadTimer = 0f;
+                if (File.Exists(_levelConfigSourcePath))
+                {
+                    var writeTime = File.GetLastWriteTime(_levelConfigSourcePath);
+                    if (writeTime > _levelConfigLastWrite)
+                    {
+                        _levelConfigLastWrite = writeTime;
+                        try
+                        {
+                            var fresh = LevelConfigParser.Load(_levelConfigSourcePath);
+                            foreach (var entity in _interactables)
+                            {
+                                if (fresh.Interactables.TryGetValue(entity.Id, out var data))
+                                    entity.Data = data;
+                            }
+                            Console.WriteLine("[HotReload] level_config.json reloaded.");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"[HotReload] Skipped (file locked?): {ex.Message}");
+                        }
+                    }
+                }
+            }
 
             base.Update(gameTime);
         }
@@ -405,8 +442,8 @@ namespace CatDetective
             // ════════════════════════════════════════════════════════════════
             _spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.NonPremultiplied,
                 transformMatrix: _cameraTransform);
-            _desk.Draw(_spriteBatch);
-            _cabinet.Draw(_spriteBatch);
+            foreach (var prop in _foregroundProps)
+                prop.Draw(_spriteBatch);
             _cat.Draw(_spriteBatch);
             foreach (var entity in _interactables)
                 entity.Draw(_spriteBatch,

@@ -46,36 +46,43 @@ The content is organized as follows:
 .claude/settings.local.json
 bin/Debug/net8.0/CatDetective.deps.json
 bin/Debug/net8.0/CatDetective.runtimeconfig.json
-bin/Debug/net8.0/Content/room_map.json
+bin/Debug/net8.0/Content/Levels/detective_office/level_config.json
+bin/Debug/net8.0/Content/Levels/detective_office/room_map.json
 bin/Debug/net8.0/Content/scenes_config.json
 cat detective GDD.txt
 CatDetective.csproj
 CLAUDE.md
 Content/Content.mgcb
-Content/dialogue_font.spritefont
+Content/Levels/detective_office/level_config.json
+Content/Levels/detective_office/room_map.json
 Content/obj/DesktopGL/net8.0/Content/.mgcontent
 Content/obj/DesktopGL/net8.0/Content/.mgstats
-Content/obj/DesktopGL/net8.0/Content/bg_base.mgcontent
-Content/obj/DesktopGL/net8.0/Content/dialogue_font.mgcontent
-Content/obj/DesktopGL/net8.0/Content/mask_sunbeams.mgcontent
-Content/obj/DesktopGL/net8.0/Content/prop_cabinet.mgcontent
-Content/obj/DesktopGL/net8.0/Content/prop_desk.mgcontent
-Content/obj/DesktopGL/net8.0/Content/shadow_blob.mgcontent
-Content/obj/DesktopGL/net8.0/Content/spr_cat_walk_down.mgcontent
-Content/obj/DesktopGL/net8.0/Content/spr_cat_walk_up.mgcontent
-Content/obj/DesktopGL/net8.0/Content/walk_animation_forward.mgcontent
-Content/obj/DesktopGL/net8.0/Content/walk_animation_upward.mgcontent
-Content/room_map.json
+Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/bg_base.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/Interactables/inspect_answering_machine.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/Interactables/inspect_calendar.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/Interactables/inspect_newspaper.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/Interactables/inspect_takeout_bag.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/Interactables/inspect_trash_can.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/prop_cabinet.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/prop_desk.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Shared/dialogue_font.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Shared/mask_sunbeams.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Shared/shadow_blob.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Shared/walk_animation_forward.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Shared/walk_animation_upward.mgcontent
 Content/scenes_config.json
+Content/Shared/dialogue_font.spritefont
 DebugHelper.cs
 dotnet-tools.json
 Entities/Cat.cs
 Entities/Clue.cs
 Entities/GameObject.cs
+Entities/InteractableEntity.cs
 Entities/InteractionData.cs
 Entities/Prop.cs
 Game1.cs
 GDD followup
+Map/LevelConfigParser.cs
 Map/MapParser.cs
 Map/SceneConfigParser.cs
 obj/CatDetective.csproj.nuget.dgspec.json
@@ -101,75 +108,6 @@ Tiled maps/untitledcat_detective.tiled-session
 
 <files>
 This section contains the contents of the repository's files.
-
-<file path="Systems/DeductionManager.cs">
-using System.Collections.Generic;
-using CatDetective.Entities;
-using Microsoft.Xna.Framework;
-
-namespace CatDetective.Systems
-{
-    public sealed class DeductionSlot
-    {
-        public ClueCategory Category       { get; }
-        public string       CorrectClueId  { get; }
-        public string?      SelectedClueId { get; set; }
-        public Rectangle    Bounds         { get; }
-
-        public DeductionSlot(ClueCategory category, string correctClueId, Rectangle bounds)
-        {
-            Category      = category;
-            CorrectClueId = correctClueId;
-            Bounds        = bounds;
-        }
-    }
-
-    public sealed class DeductionManager
-    {
-        public List<DeductionSlot> Slots             { get; private set; }
-        public string              ValidationMessage { get; set; } = "";
-
-        public DeductionManager()
-        {
-            // Tutorial case: Rudebeak the macaw was stolen (What),
-            // taken to the Malibu Mansion (WhereWhen), the day before the premiere (WhereWhen).
-            Slots = new List<DeductionSlot>
-            {
-                new DeductionSlot(ClueCategory.What,      "stolen_pet",
-                    new Rectangle(710, 410, 600, 60)),
-                new DeductionSlot(ClueCategory.WhereWhen, "malibu_mansion",
-                    new Rectangle(710, 510, 600, 60)),
-                new DeductionSlot(ClueCategory.WhereWhen, "the_day_before_the_premiere",
-                    new Rectangle(710, 610, 600, 60)),
-            };
-        }
-
-        // Returns true only when every slot matches its correct answer.
-        // Sets ValidationMessage in all cases — caller checks the return value.
-        public bool ValidateCase()
-        {
-            foreach (var slot in Slots)
-            {
-                if (slot.SelectedClueId == null)
-                {
-                    ValidationMessage = "Fill all slots!";
-                    return false;
-                }
-            }
-            foreach (var slot in Slots)
-            {
-                if (slot.SelectedClueId != slot.CorrectClueId)
-                {
-                    ValidationMessage = "Incorrect logic.";
-                    return false;
-                }
-            }
-            ValidationMessage = "Correct!";
-            return true;
-        }
-    }
-}
-</file>
 
 <file path=".claude/settings.local.json">
 {
@@ -293,6 +231,624 @@ namespace CatDetective.Systems
       "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false
     }
   }
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/Levels/detective_office/level_config.json">
+{
+  "clues": [
+    { "id": "stolen_pet",                  "category": "What",      "displayText": "Rudebeak the macaw was stolen" },
+    { "id": "fish_tacos",                  "category": "What",      "displayText": "Leftover Fish Tacos in the takeout bag" },
+    { "id": "saturday",                    "category": "WhereWhen", "displayText": "'Pirate Cove 3' premiere is Saturday" },
+    { "id": "sunday",                      "category": "WhereWhen", "displayText": "Someone's birthday falls on Sunday" },
+    { "id": "thursday",                    "category": "WhereWhen", "displayText": "Detective has dentist on Thursday" },
+    { "id": "friday",                      "category": "WhereWhen", "displayText": "Friday is marked with a question mark" },
+    { "id": "the_day_before_the_premiere", "category": "WhereWhen", "displayText": "Manager needed Lance at the house the day before the premiere" },
+    { "id": "downtown_office",             "category": "WhereWhen", "displayText": "Takeout was delivered to the Downtown Office" },
+    { "id": "malibu_mansion",              "category": "WhereWhen", "displayText": "VIP parking pass for a Malibu Mansion in the trash" }
+  ],
+
+  "interactables": [
+    {
+      "id": "inspect_answering_machine",
+      "text": "BEEP. 'Hey, it's Lance's manager. We need you at the house [the day before the premiere]! Don't be late!' BEEP. 'Hi honey, don't forget my birthday on [Sunday]!'",
+      "keywords": [
+        { "displayText": "the day before the premiere", "id": "the_day_before_the_premiere", "color": "plot" },
+        { "displayText": "Sunday",                      "id": "sunday",                      "color": "plot" }
+      ]
+    },
+    {
+      "id": "inspect_takeout_bag",
+      "text": "Smells like leftover [Fish Tacos]. The delivery receipt says it was brought to the [Downtown Office].",
+      "keywords": [
+        { "displayText": "Fish Tacos",      "id": "fish_tacos",      "color": "misc" },
+        { "displayText": "Downtown Office", "id": "downtown_office", "color": "plot" }
+      ]
+    },
+    {
+      "id": "inspect_calendar",
+      "text": "The month is almost over. The detective has circled [Thursday] for the dentist, and [Friday] is marked with a giant question mark.",
+      "keywords": [
+        { "displayText": "Thursday", "id": "thursday", "color": "plot" },
+        { "displayText": "Friday",   "id": "friday",   "color": "plot" }
+      ]
+    },
+    {
+      "id": "inspect_newspaper",
+      "text": "'Pirate Cove 3' premieres this [Saturday]! But production halts as Lance's prized macaw, Rudebeak, is reported as a [stolen pet]!",
+      "keywords": [
+        { "displayText": "Saturday",   "id": "saturday",   "color": "plot"  },
+        { "displayText": "stolen pet", "id": "stolen_pet", "color": "crime" }
+      ]
+    },
+    {
+      "id": "inspect_trash_can",
+      "text": "A bunch of unpaid bills, and a shiny VIP parking pass for a [Malibu Mansion].",
+      "keywords": [
+        { "displayText": "Malibu Mansion", "id": "malibu_mansion", "color": "plot" }
+      ]
+    }
+  ],
+
+  "deductionSlots": [
+    { "category": "What",      "correctClueId": "stolen_pet",                  "x": 710, "y": 410, "width": 600, "height": 60 },
+    { "category": "WhereWhen", "correctClueId": "malibu_mansion",              "x": 710, "y": 510, "width": 600, "height": 60 },
+    { "category": "WhereWhen", "correctClueId": "the_day_before_the_premiere", "x": 710, "y": 610, "width": 600, "height": 60 }
+  ]
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/Levels/detective_office/room_map.json">
+{ "compressionlevel":-1,
+ "height":35,
+ "infinite":false,
+ "layers":[
+        {
+         "id":3,
+         "image":"full scene.png",
+         "imageheight":1136,
+         "imagewidth":1072,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "id":6,
+         "image":"",
+         "name":"bg",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":1,
+         "name":"Collisions",
+         "objects":[
+                {
+                 "height":46,
+                 "id":1,
+                 "name":"wall_bottom",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1072,
+                 "x":19.8068366793271,
+                 "y":1135.0388341989
+                }, 
+                {
+                 "height":160,
+                 "id":2,
+                 "name":"wall_top",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1072,
+                 "x":13.0600728625689,
+                 "y":2.87156034415899
+                }, 
+                {
+                 "height":1136,
+                 "id":3,
+                 "name":"wall_left",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":80,
+                 "x":8,
+                 "y":126
+                }, 
+                {
+                 "height":1136,
+                 "id":4,
+                 "name":"wall_right",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":80,
+                 "x":1060.72087435083,
+                 "y":2.87156034415899
+                }, 
+                {
+                 "height":75.9999999999999,
+                 "id":24,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":5.99999999999999,
+                 "x":71.133090458104,
+                 "y":1029.39219181976
+                }, 
+                {
+                 "height":60.6666666666666,
+                 "id":25,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":280,
+                 "x":39.133090458104,
+                 "y":760.725525153089
+                }, 
+                {
+                 "height":210,
+                 "id":26,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":91.3333333333333,
+                 "x":65.7997571247707,
+                 "y":781.392191819756
+                }, 
+                {
+                 "height":90.6666666666666,
+                 "id":27,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":70.6666666666667,
+                 "x":104.466423791437,
+                 "y":936.725525153089
+                }, 
+                {
+                 "height":96,
+                 "id":28,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":63.3333333333333,
+                 "x":173.799757124771,
+                 "y":920.058858486422
+                }, 
+                {
+                 "height":62.6666666666666,
+                 "id":55,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":200,
+                 "x":329.799757124771,
+                 "y":762.725525153089
+                }, 
+                {
+                 "height":89.3333333333334,
+                 "id":56,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":218.666666666667,
+                 "x":264.466423791437,
+                 "y":764.058858486422
+                }, 
+                {
+                 "height":103.333333333333,
+                 "id":58,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":470,
+                 "x":223.799757124771,
+                 "y":685.392191819756
+                }, 
+                {
+                 "height":34.0000000000001,
+                 "id":59,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":8,
+                 "x":781.799757124771,
+                 "y":603.392191819755
+                }, 
+                {
+                 "height":46.6666666666667,
+                 "id":60,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":22.6666666666667,
+                 "x":760.466423791437,
+                 "y":625.392191819755
+                }, 
+                {
+                 "height":21.3333333333333,
+                 "id":61,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":34.6666666666666,
+                 "x":739.133090458104,
+                 "y":658.725525153089
+                }, 
+                {
+                 "height":14.6666666666666,
+                 "id":62,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":65.3333333333333,
+                 "x":703.133090458104,
+                 "y":685.392191819756
+                }, 
+                {
+                 "height":16,
+                 "id":63,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":68,
+                 "x":707.133090458104,
+                 "y":676.058858486422
+                }, 
+                {
+                 "height":102.666666666667,
+                 "id":64,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":26.6666666666666,
+                 "x":665.799757124771,
+                 "y":689.392191819756
+                }, 
+                {
+                 "height":36,
+                 "id":65,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":54.6666666666667,
+                 "x":680.466423791437,
+                 "y":680.058858486422
+                }, 
+                {
+                 "height":78.6666666666666,
+                 "id":70,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":88,
+                 "x":989.799757124771,
+                 "y":434.725525153089
+                }, 
+                {
+                 "height":80,
+                 "id":71,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":154.666666666667,
+                 "x":925.799757124771,
+                 "y":360.058858486422
+                }, 
+                {
+                 "height":101.333333333333,
+                 "id":72,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":118.666666666667,
+                 "x":812.466423791437,
+                 "y":321.392191819756
+                }, 
+                {
+                 "height":58.6666666666666,
+                 "id":73,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":236,
+                 "x":668.466423791437,
+                 "y":293.392191819756
+                }, 
+                {
+                 "height":32,
+                 "id":74,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":157.333333333333,
+                 "x":723.133090458104,
+                 "y":357.392191819756
+                }, 
+                {
+                 "height":18.6666666666667,
+                 "id":75,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":81.3333333333333,
+                 "x":771.133090458104,
+                 "y":393.392191819756
+                }, 
+                {
+                 "height":46.6666666666667,
+                 "id":76,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":121.333333333333,
+                 "x":560.466423791437,
+                 "y":268.058858486422
+                }, 
+                {
+                 "height":92,
+                 "id":77,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":84,
+                 "x":475.133090458104,
+                 "y":253.392191819756
+                }, 
+                {
+                 "height":408,
+                 "id":78,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":88,
+                 "x":181.799757124771,
+                 "y":366.725525153089
+                }, 
+                {
+                 "height":180,
+                 "id":79,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":61.3333333333333,
+                 "x":267.133090458104,
+                 "y":601.392191819755
+                }, 
+                {
+                 "height":142.666666666667,
+                 "id":81,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":97.3333333333333,
+                 "x":371.133090458104,
+                 "y":269.392191819756
+                }, 
+                {
+                 "height":140,
+                 "id":82,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":85.3333333333333,
+                 "x":412.466423791437,
+                 "y":252.058858486422
+                }, 
+                {
+                 "height":57.3333333333334,
+                 "id":83,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":141.333333333333,
+                 "x":251.133090458104,
+                 "y":361.392191819756
+                }, 
+                {
+                 "height":49.3333333333333,
+                 "id":84,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":77.3333333333333,
+                 "x":288.466423791437,
+                 "y":418.725525153089
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[
+                {
+                 "height":128.666666666667,
+                 "id":85,
+                 "name":"inspect_answering_machine",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":144,
+                 "x":246.666666666667,
+                 "y":346.666666666667
+                }, 
+                {
+                 "height":152.666666666667,
+                 "id":86,
+                 "name":"inspect_takeout_bag",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":106.666666666667,
+                 "x":799,
+                 "y":326.666666666667
+                }, 
+                {
+                 "height":172.666666666667,
+                 "id":87,
+                 "name":"inspect_calendar",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":120,
+                 "x":940.666666666667,
+                 "y":769.333333333333
+                }, 
+                {
+                 "height":95.3333333333334,
+                 "id":88,
+                 "name":"inspect_newspaper",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":94.6666666666666,
+                 "x":662.666666666667,
+                 "y":505.333333333333
+                }, 
+                {
+                 "height":136.666666666667,
+                 "id":89,
+                 "name":"inspect_trash_can",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":121.333333333333,
+                 "x":171.333333333333,
+                 "y":918.666666666667
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Triggers",
+         "objects":[
+                {
+                 "height":403.634912022324,
+                 "id":10,
+                 "name":"desk_fade",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":466.417073611865,
+                 "x":253.505464692659,
+                 "y":335.271839392295
+                }, 
+                {
+                 "height":624.432447097128,
+                 "id":11,
+                 "name":"cabinet_fade",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":307.64785675529,
+                 "x":854.92132392871,
+                 "y":514.24959305504
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":7,
+ "nextobjectid":90,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":33
 }
 </file>
 
@@ -507,32 +1063,631 @@ with the appropriate KNI platform packages. No C# source changes are needed.
 - Do not commit art assets to git as large binaries — use Git LFS or keep them out of the repo.
 </file>
 
-<file path="Content/dialogue_font.spritefont">
-<?xml version="1.0" encoding="utf-8"?>
-<XnaContent xmlns:Graphics="Microsoft.Xna.Framework.Content.Pipeline.Graphics">
-  <Asset Type="Graphics:FontDescription">
-    <FontName>Arial</FontName>
-    <Size>18</Size>
-    <Spacing>2</Spacing>
-    <UseKerning>true</UseKerning>
-    <Style>Regular</Style>
-    <CharacterRegions>
-      <CharacterRegion>
-        <Start>&#32;</Start>
-        <End>&#126;</End>
-      </CharacterRegion>
-    </CharacterRegions>
-  </Asset>
-</XnaContent>
+<file path="Content/Levels/detective_office/level_config.json">
+{
+  "clues": [
+    { "id": "stolen_pet",                  "category": "What",      "displayText": "Rudebeak the macaw was stolen" },
+    { "id": "fish_tacos",                  "category": "What",      "displayText": "Leftover Fish Tacos in the takeout bag" },
+    { "id": "saturday",                    "category": "WhereWhen", "displayText": "'Pirate Cove 3' premiere is Saturday" },
+    { "id": "sunday",                      "category": "WhereWhen", "displayText": "Someone's birthday falls on Sunday" },
+    { "id": "thursday",                    "category": "WhereWhen", "displayText": "Detective has dentist on Thursday" },
+    { "id": "friday",                      "category": "WhereWhen", "displayText": "Friday is marked with a question mark" },
+    { "id": "the_day_before_the_premiere", "category": "WhereWhen", "displayText": "Manager needed Lance at the house the day before the premiere" },
+    { "id": "downtown_office",             "category": "WhereWhen", "displayText": "Takeout was delivered to the Downtown Office" },
+    { "id": "malibu_mansion",              "category": "WhereWhen", "displayText": "VIP parking pass for a Malibu Mansion in the trash" }
+  ],
+
+  "interactables": [
+    {
+      "id": "inspect_answering_machine",
+      "text": "BEEP. 'Hey, it's Lance's manager. We need you at the house [the day before the premiere]! Don't be late!' BEEP. 'Hi honey, don't forget my birthday on [Sunday]!'",
+      "keywords": [
+        { "displayText": "the day before the premiere", "id": "the_day_before_the_premiere", "color": "plot" },
+        { "displayText": "Sunday",                      "id": "sunday",                      "color": "plot" }
+      ]
+    },
+    {
+      "id": "inspect_takeout_bag",
+      "text": "Smells like leftover [Fish Tacos]. The delivery receipt says it was brought to the [Downtown Office].",
+      "keywords": [
+        { "displayText": "Fish Tacos",      "id": "fish_tacos",      "color": "misc" },
+        { "displayText": "Downtown Office", "id": "downtown_office", "color": "plot" }
+      ]
+    },
+    {
+      "id": "inspect_calendar",
+      "text": "The month is almost over. The detective has circled [Thursday] for the dentist, and [Friday] is marked with a giant question mark.",
+      "keywords": [
+        { "displayText": "Thursday", "id": "thursday", "color": "plot" },
+        { "displayText": "Friday",   "id": "friday",   "color": "plot" }
+      ]
+    },
+    {
+      "id": "inspect_newspaper",
+      "text": "'Pirate Cove 3' premieres this [Saturday]! But production halts as Lance's prized macaw, Rudebeak, is reported as a [stolen pet]!",
+      "keywords": [
+        { "displayText": "Saturday",   "id": "saturday",   "color": "plot"  },
+        { "displayText": "stolen pet", "id": "stolen_pet", "color": "crime" }
+      ]
+    },
+    {
+      "id": "inspect_trash_can",
+      "text": "A bunch of unpaid bills, and a shiny VIP parking pass for a [Malibu Mansion].",
+      "keywords": [
+        { "displayText": "Malibu Mansion", "id": "malibu_mansion", "color": "plot" }
+      ]
+    }
+  ],
+
+  "deductionSlots": [
+    { "category": "What",      "correctClueId": "stolen_pet",                  "x": 710, "y": 410, "width": 600, "height": 60 },
+    { "category": "WhereWhen", "correctClueId": "malibu_mansion",              "x": 710, "y": 510, "width": 600, "height": 60 },
+    { "category": "WhereWhen", "correctClueId": "the_day_before_the_premiere", "x": 710, "y": 610, "width": 600, "height": 60 }
+  ]
+}
 </file>
 
-<file path="Content/obj/DesktopGL/net8.0/Content/bg_base.mgcontent">
+<file path="Content/Levels/detective_office/room_map.json">
+{ "compressionlevel":-1,
+ "height":35,
+ "infinite":false,
+ "layers":[
+        {
+         "id":3,
+         "image":"full scene.png",
+         "imageheight":1136,
+         "imagewidth":1072,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "id":6,
+         "image":"",
+         "name":"bg",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":1,
+         "name":"Collisions",
+         "objects":[
+                {
+                 "height":46,
+                 "id":1,
+                 "name":"wall_bottom",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1072,
+                 "x":19.8068366793271,
+                 "y":1135.0388341989
+                }, 
+                {
+                 "height":160,
+                 "id":2,
+                 "name":"wall_top",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1072,
+                 "x":13.0600728625689,
+                 "y":2.87156034415899
+                }, 
+                {
+                 "height":1136,
+                 "id":3,
+                 "name":"wall_left",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":80,
+                 "x":8,
+                 "y":126
+                }, 
+                {
+                 "height":1136,
+                 "id":4,
+                 "name":"wall_right",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":80,
+                 "x":1060.72087435083,
+                 "y":2.87156034415899
+                }, 
+                {
+                 "height":75.9999999999999,
+                 "id":24,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":5.99999999999999,
+                 "x":71.133090458104,
+                 "y":1029.39219181976
+                }, 
+                {
+                 "height":60.6666666666666,
+                 "id":25,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":280,
+                 "x":39.133090458104,
+                 "y":760.725525153089
+                }, 
+                {
+                 "height":210,
+                 "id":26,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":91.3333333333333,
+                 "x":65.7997571247707,
+                 "y":781.392191819756
+                }, 
+                {
+                 "height":90.6666666666666,
+                 "id":27,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":70.6666666666667,
+                 "x":104.466423791437,
+                 "y":936.725525153089
+                }, 
+                {
+                 "height":96,
+                 "id":28,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":63.3333333333333,
+                 "x":173.799757124771,
+                 "y":920.058858486422
+                }, 
+                {
+                 "height":62.6666666666666,
+                 "id":55,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":200,
+                 "x":329.799757124771,
+                 "y":762.725525153089
+                }, 
+                {
+                 "height":89.3333333333334,
+                 "id":56,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":218.666666666667,
+                 "x":264.466423791437,
+                 "y":764.058858486422
+                }, 
+                {
+                 "height":103.333333333333,
+                 "id":58,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":470,
+                 "x":223.799757124771,
+                 "y":685.392191819756
+                }, 
+                {
+                 "height":34.0000000000001,
+                 "id":59,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":8,
+                 "x":781.799757124771,
+                 "y":603.392191819755
+                }, 
+                {
+                 "height":46.6666666666667,
+                 "id":60,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":22.6666666666667,
+                 "x":760.466423791437,
+                 "y":625.392191819755
+                }, 
+                {
+                 "height":21.3333333333333,
+                 "id":61,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":34.6666666666666,
+                 "x":739.133090458104,
+                 "y":658.725525153089
+                }, 
+                {
+                 "height":14.6666666666666,
+                 "id":62,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":65.3333333333333,
+                 "x":703.133090458104,
+                 "y":685.392191819756
+                }, 
+                {
+                 "height":16,
+                 "id":63,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":68,
+                 "x":707.133090458104,
+                 "y":676.058858486422
+                }, 
+                {
+                 "height":102.666666666667,
+                 "id":64,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":26.6666666666666,
+                 "x":665.799757124771,
+                 "y":689.392191819756
+                }, 
+                {
+                 "height":36,
+                 "id":65,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":54.6666666666667,
+                 "x":680.466423791437,
+                 "y":680.058858486422
+                }, 
+                {
+                 "height":78.6666666666666,
+                 "id":70,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":88,
+                 "x":989.799757124771,
+                 "y":434.725525153089
+                }, 
+                {
+                 "height":80,
+                 "id":71,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":154.666666666667,
+                 "x":925.799757124771,
+                 "y":360.058858486422
+                }, 
+                {
+                 "height":101.333333333333,
+                 "id":72,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":118.666666666667,
+                 "x":812.466423791437,
+                 "y":321.392191819756
+                }, 
+                {
+                 "height":58.6666666666666,
+                 "id":73,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":236,
+                 "x":668.466423791437,
+                 "y":293.392191819756
+                }, 
+                {
+                 "height":32,
+                 "id":74,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":157.333333333333,
+                 "x":723.133090458104,
+                 "y":357.392191819756
+                }, 
+                {
+                 "height":18.6666666666667,
+                 "id":75,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":81.3333333333333,
+                 "x":771.133090458104,
+                 "y":393.392191819756
+                }, 
+                {
+                 "height":46.6666666666667,
+                 "id":76,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":121.333333333333,
+                 "x":560.466423791437,
+                 "y":268.058858486422
+                }, 
+                {
+                 "height":92,
+                 "id":77,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":84,
+                 "x":475.133090458104,
+                 "y":253.392191819756
+                }, 
+                {
+                 "height":408,
+                 "id":78,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":88,
+                 "x":181.799757124771,
+                 "y":366.725525153089
+                }, 
+                {
+                 "height":180,
+                 "id":79,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":61.3333333333333,
+                 "x":267.133090458104,
+                 "y":601.392191819755
+                }, 
+                {
+                 "height":142.666666666667,
+                 "id":81,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":97.3333333333333,
+                 "x":371.133090458104,
+                 "y":269.392191819756
+                }, 
+                {
+                 "height":140,
+                 "id":82,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":85.3333333333333,
+                 "x":412.466423791437,
+                 "y":252.058858486422
+                }, 
+                {
+                 "height":57.3333333333334,
+                 "id":83,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":141.333333333333,
+                 "x":251.133090458104,
+                 "y":361.392191819756
+                }, 
+                {
+                 "height":49.3333333333333,
+                 "id":84,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":77.3333333333333,
+                 "x":288.466423791437,
+                 "y":418.725525153089
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[
+                {
+                 "height":128.666666666667,
+                 "id":85,
+                 "name":"inspect_answering_machine",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":144,
+                 "x":246.666666666667,
+                 "y":346.666666666667
+                }, 
+                {
+                 "height":152.666666666667,
+                 "id":86,
+                 "name":"inspect_takeout_bag",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":106.666666666667,
+                 "x":799,
+                 "y":326.666666666667
+                }, 
+                {
+                 "height":172.666666666667,
+                 "id":87,
+                 "name":"inspect_calendar",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":120,
+                 "x":940.666666666667,
+                 "y":769.333333333333
+                }, 
+                {
+                 "height":95.3333333333334,
+                 "id":88,
+                 "name":"inspect_newspaper",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":94.6666666666666,
+                 "x":662.666666666667,
+                 "y":505.333333333333
+                }, 
+                {
+                 "height":136.666666666667,
+                 "id":89,
+                 "name":"inspect_trash_can",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":121.333333333333,
+                 "x":171.333333333333,
+                 "y":918.666666666667
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Triggers",
+         "objects":[
+                {
+                 "height":403.634912022324,
+                 "id":10,
+                 "name":"desk_fade",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":466.417073611865,
+                 "x":253.505464692659,
+                 "y":335.271839392295
+                }, 
+                {
+                 "height":624.432447097128,
+                 "id":11,
+                 "name":"cabinet_fade",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":307.64785675529,
+                 "x":854.92132392871,
+                 "y":514.24959305504
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":7,
+ "nextobjectid":90,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":33
+}
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/bg_base.mgcontent">
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/bg_base.png</SourceFile>
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/bg_base.png</SourceFile>
   <SourceTime>2026-04-16T19:56:22.0394545+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/bg_base.xnb</DestFile>
-  <DestTime>2026-04-16T19:57:28.7409509+02:00</DestTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/bg_base.xnb</DestFile>
+  <DestTime>2026-04-18T08:41:54.6775196+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
@@ -571,13 +1726,308 @@ with the appropriate KNI platform packages. No C# source changes are needed.
 </PipelineBuildEvent>
 </file>
 
-<file path="Content/obj/DesktopGL/net8.0/Content/dialogue_font.mgcontent">
+<file path="Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/Interactables/inspect_answering_machine.mgcontent">
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/dialogue_font.spritefont</SourceFile>
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_answering_machine.png</SourceFile>
+  <SourceTime>2026-04-18T09:42:26.3964594+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/Interactables/inspect_answering_machine.xnb</DestFile>
+  <DestTime>2026-04-18T09:46:19.6281876+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/Interactables/inspect_calendar.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_calendar.png</SourceFile>
+  <SourceTime>2026-04-18T09:33:11.5700083+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/Interactables/inspect_calendar.xnb</DestFile>
+  <DestTime>2026-04-18T09:46:19.6920633+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/Interactables/inspect_newspaper.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_newspaper.png</SourceFile>
+  <SourceTime>2026-04-18T09:33:31.505587+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/Interactables/inspect_newspaper.xnb</DestFile>
+  <DestTime>2026-04-18T09:46:19.7014848+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/Interactables/inspect_takeout_bag.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_takeout_bag.png</SourceFile>
+  <SourceTime>2026-04-18T09:41:43.5905687+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/Interactables/inspect_takeout_bag.xnb</DestFile>
+  <DestTime>2026-04-18T09:46:19.7084072+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/Interactables/inspect_trash_can.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_trash_can.png</SourceFile>
+  <SourceTime>2026-04-18T09:34:04.644622+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/Interactables/inspect_trash_can.xnb</DestFile>
+  <DestTime>2026-04-18T09:46:19.7154026+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/prop_cabinet.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/prop_cabinet.png</SourceFile>
+  <SourceTime>2026-04-16T19:16:50.4983489+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/prop_cabinet.xnb</DestFile>
+  <DestTime>2026-04-18T08:41:55.0723159+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,0,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/prop_desk.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/prop_desk.png</SourceFile>
+  <SourceTime>2026-04-17T17:22:38.3650537+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/prop_desk.xnb</DestFile>
+  <DestTime>2026-04-18T08:41:54.8401365+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,0,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/Shared/dialogue_font.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Shared/dialogue_font.spritefont</SourceFile>
   <SourceTime>2026-04-17T17:28:39.4481323+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/dialogue_font.xnb</DestFile>
-  <DestTime>2026-04-17T17:29:43.477566+02:00</DestTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Shared/dialogue_font.xnb</DestFile>
+  <DestTime>2026-04-18T08:41:54.4429389+02:00</DestTime>
   <Importer>FontDescriptionImporter</Importer>
   <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
   <Processor>FontDescriptionProcessor</Processor>
@@ -596,13 +2046,13 @@ with the appropriate KNI platform packages. No C# source changes are needed.
 </PipelineBuildEvent>
 </file>
 
-<file path="Content/obj/DesktopGL/net8.0/Content/mask_sunbeams.mgcontent">
+<file path="Content/obj/DesktopGL/net8.0/Content/Shared/mask_sunbeams.mgcontent">
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png</SourceFile>
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Shared/mask_sunbeams.png</SourceFile>
   <SourceTime>2026-04-17T08:08:04.1417441+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/mask_sunbeams.xnb</DestFile>
-  <DestTime>2026-04-17T08:08:39.4715286+02:00</DestTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Shared/mask_sunbeams.xnb</DestFile>
+  <DestTime>2026-04-18T08:41:53.9849277+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
@@ -641,13 +2091,13 @@ with the appropriate KNI platform packages. No C# source changes are needed.
 </PipelineBuildEvent>
 </file>
 
-<file path="Content/obj/DesktopGL/net8.0/Content/prop_cabinet.mgcontent">
+<file path="Content/obj/DesktopGL/net8.0/Content/Shared/shadow_blob.mgcontent">
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/prop_cabinet.png</SourceFile>
-  <SourceTime>2026-04-16T19:16:50.4983489+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_cabinet.xnb</DestFile>
-  <DestTime>2026-04-16T19:56:13.0540194+02:00</DestTime>
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Shared/shadow_blob.png</SourceFile>
+  <SourceTime>2026-04-17T17:37:26.4820061+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Shared/shadow_blob.xnb</DestFile>
+  <DestTime>2026-04-18T08:41:54.0813909+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
@@ -686,103 +2136,13 @@ with the appropriate KNI platform packages. No C# source changes are needed.
 </PipelineBuildEvent>
 </file>
 
-<file path="Content/obj/DesktopGL/net8.0/Content/spr_cat_walk_down.mgcontent">
+<file path="Content/obj/DesktopGL/net8.0/Content/Shared/walk_animation_forward.mgcontent">
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_down.png</SourceFile>
-  <SourceTime>2026-04-16T19:33:26.3515291+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_down.xnb</DestFile>
-  <DestTime>2026-04-16T20:06:15.5857599+02:00</DestTime>
-  <Importer>TextureImporter</Importer>
-  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
-  <Processor>TextureProcessor</Processor>
-  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
-  <Parameters>
-    <Key>ColorKeyColor</Key>
-    <Value>255,255,255,255</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ColorKeyEnabled</Key>
-    <Value>True</Value>
-  </Parameters>
-  <Parameters>
-    <Key>GenerateMipmaps</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>PremultiplyAlpha</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ResizeToPowerOfTwo</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>MakeSquare</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>TextureFormat</Key>
-    <Value>Color</Value>
-  </Parameters>
-  <Dependencies />
-  <BuildAsset />
-  <BuildOutput />
-</PipelineBuildEvent>
-</file>
-
-<file path="Content/obj/DesktopGL/net8.0/Content/spr_cat_walk_up.mgcontent">
-<?xml version="1.0" encoding="utf-8"?>
-<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png</SourceFile>
-  <SourceTime>2026-04-16T19:38:54.0734022+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_up.xnb</DestFile>
-  <DestTime>2026-04-16T20:06:15.6140976+02:00</DestTime>
-  <Importer>TextureImporter</Importer>
-  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
-  <Processor>TextureProcessor</Processor>
-  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
-  <Parameters>
-    <Key>ColorKeyColor</Key>
-    <Value>255,255,255,255</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ColorKeyEnabled</Key>
-    <Value>True</Value>
-  </Parameters>
-  <Parameters>
-    <Key>GenerateMipmaps</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>PremultiplyAlpha</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ResizeToPowerOfTwo</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>MakeSquare</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>TextureFormat</Key>
-    <Value>Color</Value>
-  </Parameters>
-  <Dependencies />
-  <BuildAsset />
-  <BuildOutput />
-</PipelineBuildEvent>
-</file>
-
-<file path="Content/obj/DesktopGL/net8.0/Content/walk_animation_forward.mgcontent">
-<?xml version="1.0" encoding="utf-8"?>
-<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png</SourceFile>
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Shared/walk_animation_forward.png</SourceFile>
   <SourceTime>2026-04-17T15:14:14.7000275+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/walk_animation_forward.xnb</DestFile>
-  <DestTime>2026-04-17T15:14:43.4249727+02:00</DestTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Shared/walk_animation_forward.xnb</DestFile>
+  <DestTime>2026-04-18T08:41:54.246413+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
@@ -817,13 +2177,13 @@ with the appropriate KNI platform packages. No C# source changes are needed.
 </PipelineBuildEvent>
 </file>
 
-<file path="Content/obj/DesktopGL/net8.0/Content/walk_animation_upward.mgcontent">
+<file path="Content/obj/DesktopGL/net8.0/Content/Shared/walk_animation_upward.mgcontent">
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_upward.png</SourceFile>
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Shared/walk_animation_upward.png</SourceFile>
   <SourceTime>2026-04-17T15:00:19.5351484+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/walk_animation_upward.xnb</DestFile>
-  <DestTime>2026-04-17T15:04:22.804101+02:00</DestTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Shared/walk_animation_upward.xnb</DestFile>
+  <DestTime>2026-04-18T08:41:54.2999423+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
@@ -869,6 +2229,25 @@ with the appropriate KNI platform packages. No C# source changes are needed.
     }
   }
 }
+</file>
+
+<file path="Content/Shared/dialogue_font.spritefont">
+<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Graphics="Microsoft.Xna.Framework.Content.Pipeline.Graphics">
+  <Asset Type="Graphics:FontDescription">
+    <FontName>Arial</FontName>
+    <Size>18</Size>
+    <Spacing>2</Spacing>
+    <UseKerning>true</UseKerning>
+    <Style>Regular</Style>
+    <CharacterRegions>
+      <CharacterRegion>
+        <Start>&#32;</Start>
+        <End>&#126;</End>
+      </CharacterRegion>
+    </CharacterRegions>
+  </Asset>
+</XnaContent>
 </file>
 
 <file path="DebugHelper.cs">
@@ -1007,6 +2386,68 @@ namespace CatDetective.Entities
         // ── Abstract interface ─────────────────────────────────────────────────
         public virtual void Update(GameTime gameTime) { }
         public abstract void Draw(SpriteBatch spriteBatch);
+    }
+}
+</file>
+
+<file path="Entities/InteractableEntity.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+
+namespace CatDetective.Entities
+{
+    /// <summary>
+    /// A named, Y-sorted interactable object derived from a Tiled "Interactables" object.
+    /// Position is the bottom-center floor contact point derived from the Tiled rect.
+    /// </summary>
+    public class InteractableEntity : GameObject
+    {
+        public string Id { get; }
+
+        /// <summary>Raw Tiled rect used for overlap/collision detection.</summary>
+        public Rectangle TriggerZone { get; }
+
+        /// <summary>Dialogue and keyword data; null if this object has no dialogue entry.</summary>
+        public InteractionData? Data { get; set; }
+
+        public InteractableEntity(string id, Rectangle triggerZone, Texture2D? sprite, Vector2 position)
+        {
+            Id          = id;
+            TriggerZone = triggerZone;
+            Texture     = sprite;
+            Position    = position;           // bottom-center floor contact point
+            LayerDepth  = CalculateLayerDepth();
+        }
+
+        // ── GameObject override (non-highlighted) ──────────────────────────────
+        public override void Draw(SpriteBatch spriteBatch)
+            => Draw(spriteBatch, isHighlighted: false, totalSeconds: 0.0);
+
+        /// <param name="isHighlighted">True when the cat overlaps this entity's TriggerZone.</param>
+        /// <param name="totalSeconds">gameTime.TotalGameTime.TotalSeconds — drives the pulse.</param>
+        public void Draw(SpriteBatch spriteBatch, bool isHighlighted, double totalSeconds)
+        {
+            if (Texture == null) return;
+
+            var tint = Color.White;
+            if (isHighlighted)
+            {
+                float pulse = (float)(Math.Sin(totalSeconds * 5.0) * 0.5 + 0.5);
+                tint = Color.Lerp(Color.White, new Color(200, 255, 200), pulse * 0.4f);
+            }
+
+            spriteBatch.Draw(
+                Texture,
+                position:        Position,
+                sourceRectangle: null,
+                color:           tint,
+                rotation:        0f,
+                origin:          new Vector2(Texture.Width * 0.5f, Texture.Height),
+                scale:           Vector2.One,
+                effects:         SpriteEffects.None,
+                layerDepth:      LayerDepth);
+        }
     }
 }
 </file>
@@ -1215,6 +2656,177 @@ The player must naturally walk the cat behind the furniture. The furniture's alp
 Cases are solved by connecting isolated facts. The game will rarely spell out the answer. Instead, it relies on A + B = C logic.
 Example: The player finds a Torn Glove (A) hidden behind a cabinet. An NPC mentions they saw Chad wearing bandages (B). The player deduces that Chad was bitten by the stolen parrot (C).
 Win State: Upon correct submission, the Detective realizes the truth based on the cat's actions (e.g., the cat knocks over the evidence, triggering the human's "Eureka" moment). Case closed.
+</file>
+
+<file path="Map/LevelConfigParser.cs">
+using CatDetective.Entities;
+using CatDetective.Systems;
+using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace CatDetective.Map
+{
+    // ── JSON data models (internal — only MapParser layer sees these) ─────────
+
+    internal sealed class LevelConfigData
+    {
+        [JsonPropertyName("clues")]
+        public List<ClueConfigData> Clues { get; set; } = new();
+
+        [JsonPropertyName("interactables")]
+        public List<InteractableConfigData> Interactables { get; set; } = new();
+
+        [JsonPropertyName("deductionSlots")]
+        public List<DeductionSlotConfigData> DeductionSlots { get; set; } = new();
+    }
+
+    internal sealed class ClueConfigData
+    {
+        [JsonPropertyName("id")]          public string Id          { get; set; } = "";
+        [JsonPropertyName("category")]    public string Category    { get; set; } = "";
+        [JsonPropertyName("displayText")] public string DisplayText { get; set; } = "";
+    }
+
+    internal sealed class InteractableConfigData
+    {
+        [JsonPropertyName("id")]       public string                  Id       { get; set; } = "";
+        [JsonPropertyName("text")]     public string                  Text     { get; set; } = "";
+        [JsonPropertyName("keywords")] public List<KeywordConfigData> Keywords { get; set; } = new();
+    }
+
+    internal sealed class KeywordConfigData
+    {
+        [JsonPropertyName("displayText")] public string DisplayText { get; set; } = "";
+        [JsonPropertyName("id")]          public string Id          { get; set; } = "";
+        /// <summary>"plot", "crime", or "misc"</summary>
+        [JsonPropertyName("color")]       public string Color       { get; set; } = "misc";
+    }
+
+    internal sealed class DeductionSlotConfigData
+    {
+        [JsonPropertyName("category")]      public string Category      { get; set; } = "";
+        [JsonPropertyName("correctClueId")] public string CorrectClueId { get; set; } = "";
+        [JsonPropertyName("x")]             public int    X             { get; set; }
+        [JsonPropertyName("y")]             public int    Y             { get; set; }
+        [JsonPropertyName("width")]         public int    Width         { get; set; }
+        [JsonPropertyName("height")]        public int    Height        { get; set; }
+    }
+
+    // ── Parsed result returned to Game1 ──────────────────────────────────────
+
+    /// <summary>All level data loaded from <c>level_config.json</c>.</summary>
+    public sealed class LevelConfig
+    {
+        /// <summary>Master clue database for <see cref="NotebookManager"/>.</summary>
+        public Dictionary<string, Clue> Clues { get; }
+
+        /// <summary>Dialogue + keyword data keyed by Tiled object name.</summary>
+        public Dictionary<string, InteractionData> Interactables { get; }
+
+        /// <summary>Correct-answer slots for <see cref="DeductionManager"/>.</summary>
+        public List<DeductionSlot> DeductionSlots { get; }
+
+        public LevelConfig(
+            Dictionary<string, Clue>            clues,
+            Dictionary<string, InteractionData> interactables,
+            List<DeductionSlot>                 deductionSlots)
+        {
+            Clues          = clues;
+            Interactables  = interactables;
+            DeductionSlots = deductionSlots;
+        }
+    }
+
+    // ── Parser ────────────────────────────────────────────────────────────────
+
+    public static class LevelConfigParser
+    {
+        private static readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        /// <summary>
+        /// Loads and deserializes <paramref name="jsonPath"/> into a <see cref="LevelConfig"/>.
+        /// Throws <see cref="InvalidOperationException"/> if the file is missing or malformed.
+        /// </summary>
+        public static LevelConfig Load(string jsonPath)
+        {
+            if (!File.Exists(jsonPath))
+                throw new InvalidOperationException(
+                    $"[LevelConfigParser] Level config not found: '{jsonPath}'");
+
+            var raw = JsonSerializer.Deserialize<LevelConfigData>(
+                File.ReadAllText(jsonPath), _jsonOptions)
+                ?? throw new InvalidOperationException(
+                    $"[LevelConfigParser] Failed to parse: '{jsonPath}'");
+
+            return new LevelConfig(
+                ParseClues(raw.Clues),
+                ParseInteractables(raw.Interactables),
+                ParseDeductionSlots(raw.DeductionSlots));
+        }
+
+        // ── Private helpers ───────────────────────────────────────────────────
+
+        private static Dictionary<string, Clue> ParseClues(List<ClueConfigData> raw)
+        {
+            var dict = new Dictionary<string, Clue>(raw.Count);
+            foreach (var c in raw)
+                dict[c.Id] = new Clue(c.Id, ParseCategory(c.Category), c.DisplayText);
+            return dict;
+        }
+
+        private static Dictionary<string, InteractionData> ParseInteractables(
+            List<InteractableConfigData> raw)
+        {
+            var dict = new Dictionary<string, InteractionData>(raw.Count);
+            foreach (var i in raw)
+            {
+                var keywords = new Keyword[i.Keywords.Count];
+                for (int k = 0; k < i.Keywords.Count; k++)
+                {
+                    var kw = i.Keywords[k];
+                    keywords[k] = new Keyword(kw.DisplayText, kw.Id, ParseColor(kw.Color));
+                }
+                dict[i.Id] = new InteractionData(i.Text, keywords);
+            }
+            return dict;
+        }
+
+        private static List<DeductionSlot> ParseDeductionSlots(List<DeductionSlotConfigData> raw)
+        {
+            var list = new List<DeductionSlot>(raw.Count);
+            foreach (var s in raw)
+                list.Add(new DeductionSlot(
+                    ParseCategory(s.Category),
+                    s.CorrectClueId,
+                    new Rectangle(s.X, s.Y, s.Width, s.Height)));
+            return list;
+        }
+
+        private static ClueCategory ParseCategory(string value) => value switch
+        {
+            "Who"       => ClueCategory.Who,
+            "What"      => ClueCategory.What,
+            "Why"       => ClueCategory.Why,
+            "WhereWhen" => ClueCategory.WhereWhen,
+            _ => throw new InvalidOperationException($"Unknown clue category: '{value}'")
+        };
+
+        private static Microsoft.Xna.Framework.Color ParseColor(string value) => value switch
+        {
+            "plot"  => InteractionData.Plot,
+            "crime" => InteractionData.Crime,
+            "misc"  => InteractionData.Misc,
+            _ => Microsoft.Xna.Framework.Color.White
+        };
+    }
+}
 </file>
 
 <file path="Map/SceneConfigParser.cs">
@@ -1723,53 +3335,65 @@ dotnet build
 dotnet run
 </file>
 
-<file path="Systems/NotebookManager.cs">
+<file path="Systems/DeductionManager.cs">
 using System.Collections.Generic;
 using CatDetective.Entities;
+using Microsoft.Xna.Framework;
 
 namespace CatDetective.Systems
 {
-    /// <summary>
-    /// Owns the master clue database and tracks which clues the player has found.
-    /// Call <see cref="UnlockClue"/> with a keyword ID whenever an interaction fires.
-    /// </summary>
-    public sealed class NotebookManager
+    public sealed class DeductionSlot
     {
-        // ── Master database — every clue that can ever be found ───────────────
-        private static readonly Dictionary<string, Clue> _database = new()
+        public ClueCategory Category       { get; }
+        public string       CorrectClueId  { get; }
+        public string?      SelectedClueId { get; set; }
+        public Rectangle    Bounds         { get; }
+
+        public DeductionSlot(ClueCategory category, string correctClueId, Rectangle bounds)
         {
-            // Who
-            // (no suspects yet — placeholder so the Who tab isn't empty forever)
+            Category      = category;
+            CorrectClueId = correctClueId;
+            Bounds        = bounds;
+        }
+    }
 
-            // What
-            { "stolen_pet",     new Clue("stolen_pet",     ClueCategory.What,      "Rudebeak the macaw was stolen") },
-            { "fish_tacos",     new Clue("fish_tacos",     ClueCategory.What,      "Leftover Fish Tacos in the takeout bag") },
+    public sealed class DeductionManager
+    {
+        public List<DeductionSlot> Slots             { get; }
+        public string              ValidationMessage { get; set; } = "";
 
-            // Why
-            // (motives TBD — placeholder)
-
-            // WhereWhen
-            { "saturday",                    new Clue("saturday",                    ClueCategory.WhereWhen, "'Pirate Cove 3' premiere is Saturday") },
-            { "sunday",                      new Clue("sunday",                      ClueCategory.WhereWhen, "Someone's birthday falls on Sunday") },
-            { "thursday",                    new Clue("thursday",                    ClueCategory.WhereWhen, "Detective has dentist on Thursday") },
-            { "friday",                      new Clue("friday",                      ClueCategory.WhereWhen, "Friday is marked with a question mark") },
-            { "the_day_before_the_premiere", new Clue("the_day_before_the_premiere", ClueCategory.WhereWhen, "Manager needed Lance at the house the day before the premiere") },
-            { "downtown_office",             new Clue("downtown_office",             ClueCategory.WhereWhen, "Takeout was delivered to the Downtown Office") },
-            { "malibu_mansion",              new Clue("malibu_mansion",              ClueCategory.WhereWhen, "VIP parking pass for a Malibu Mansion in the trash") },
-        };
-
-        public List<Clue> UnlockedClues { get; } = new();
+        /// <param name="slots">
+        ///   Correct-answer slots loaded from <c>level_config.json</c>.
+        /// </param>
+        public DeductionManager(List<DeductionSlot> slots)
+        {
+            Slots = slots;
+        }
 
         /// <summary>
-        /// Adds the clue with <paramref name="clueId"/> to <see cref="UnlockedClues"/>
-        /// if it exists in the master database and has not been found yet.
-        /// Silently ignores unknown or duplicate IDs.
+        /// Returns true only when every slot matches its correct answer.
+        /// Sets <see cref="ValidationMessage"/> in all cases.
         /// </summary>
-        public void UnlockClue(string clueId)
+        public bool ValidateCase()
         {
-            if (!_database.TryGetValue(clueId, out var clue)) return;
-            if (UnlockedClues.Exists(c => c.Id == clueId))    return;
-            UnlockedClues.Add(clue);
+            foreach (var slot in Slots)
+            {
+                if (slot.SelectedClueId == null)
+                {
+                    ValidationMessage = "Fill all slots!";
+                    return false;
+                }
+            }
+            foreach (var slot in Slots)
+            {
+                if (slot.SelectedClueId != slot.CorrectClueId)
+                {
+                    ValidationMessage = "Incorrect logic.";
+                    return false;
+                }
+            }
+            ValidationMessage = "Correct!";
+            return true;
         }
     }
 }
@@ -1789,6 +3413,43 @@ namespace CatDetective.Systems
     ],
     "propertyTypes": [
     ]
+}
+</file>
+
+<file path="Systems/NotebookManager.cs">
+using System.Collections.Generic;
+using CatDetective.Entities;
+
+namespace CatDetective.Systems
+{
+    /// <summary>
+    /// Owns the master clue database and tracks which clues the player has found.
+    /// The database is loaded from <c>level_config.json</c> via <see cref="LevelConfig"/>
+    /// and passed in at construction time — nothing is hardcoded here.
+    /// </summary>
+    public sealed class NotebookManager
+    {
+        private readonly Dictionary<string, Clue> _database;
+
+        public List<Clue> UnlockedClues { get; } = new();
+
+        public NotebookManager(Dictionary<string, Clue> database)
+        {
+            _database = database;
+        }
+
+        /// <summary>
+        /// Adds the clue with <paramref name="clueId"/> to <see cref="UnlockedClues"/>
+        /// if it exists in the database and has not been found yet.
+        /// Silently ignores unknown or duplicate IDs.
+        /// </summary>
+        public void UnlockClue(string clueId)
+        {
+            if (!_database.TryGetValue(clueId, out var clue)) return;
+            if (UnlockedClues.Exists(c => c.Id == clueId))    return;
+            UnlockedClues.Add(clue);
+        }
+    }
 }
 </file>
 
@@ -1815,550 +3476,6 @@ namespace CatDetective.Systems
     "recentFiles": [
         "C:/Users/larry/Projecten/cat_detective/Content/room_map.json"
     ]
-}
-</file>
-
-<file path="bin/Debug/net8.0/Content/room_map.json">
-{ "compressionlevel":-1,
- "height":35,
- "infinite":false,
- "layers":[
-        {
-         "id":3,
-         "image":"..\/first art ideas\/full scene.png",
-         "imageheight":1136,
-         "imagewidth":1072,
-         "name":"background",
-         "opacity":1,
-         "type":"imagelayer",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":1,
-         "name":"Collisions",
-         "objects":[
-                {
-                 "height":46,
-                 "id":1,
-                 "name":"wall_bottom",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":1072,
-                 "x":19.8068366793271,
-                 "y":1135.0388341989
-                }, 
-                {
-                 "height":160,
-                 "id":2,
-                 "name":"wall_top",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":1072,
-                 "x":13.0600728625689,
-                 "y":2.87156034415899
-                }, 
-                {
-                 "height":1136,
-                 "id":3,
-                 "name":"wall_left",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":80,
-                 "x":8,
-                 "y":126
-                }, 
-                {
-                 "height":1136,
-                 "id":4,
-                 "name":"wall_right",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":80,
-                 "x":1060.72087435083,
-                 "y":2.87156034415899
-                }, 
-                {
-                 "height":75.9999999999999,
-                 "id":24,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":5.99999999999999,
-                 "x":71.133090458104,
-                 "y":1029.39219181976
-                }, 
-                {
-                 "height":60.6666666666666,
-                 "id":25,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":280,
-                 "x":39.133090458104,
-                 "y":760.725525153089
-                }, 
-                {
-                 "height":210,
-                 "id":26,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":91.3333333333333,
-                 "x":65.7997571247707,
-                 "y":781.392191819756
-                }, 
-                {
-                 "height":90.6666666666666,
-                 "id":27,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":70.6666666666667,
-                 "x":104.466423791437,
-                 "y":936.725525153089
-                }, 
-                {
-                 "height":96,
-                 "id":28,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":63.3333333333333,
-                 "x":173.799757124771,
-                 "y":920.058858486422
-                }, 
-                {
-                 "height":62.6666666666666,
-                 "id":55,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":200,
-                 "x":329.799757124771,
-                 "y":762.725525153089
-                }, 
-                {
-                 "height":89.3333333333334,
-                 "id":56,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":218.666666666667,
-                 "x":264.466423791437,
-                 "y":764.058858486422
-                }, 
-                {
-                 "height":103.333333333333,
-                 "id":58,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":470,
-                 "x":223.799757124771,
-                 "y":685.392191819756
-                }, 
-                {
-                 "height":92.0000000000001,
-                 "id":59,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":8,
-                 "x":781.799757124771,
-                 "y":545.392191819755
-                }, 
-                {
-                 "height":46.6666666666667,
-                 "id":60,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":22.6666666666667,
-                 "x":760.466423791437,
-                 "y":625.392191819755
-                }, 
-                {
-                 "height":21.3333333333333,
-                 "id":61,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":34.6666666666666,
-                 "x":739.133090458104,
-                 "y":658.725525153089
-                }, 
-                {
-                 "height":14.6666666666666,
-                 "id":62,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":65.3333333333333,
-                 "x":703.133090458104,
-                 "y":685.392191819756
-                }, 
-                {
-                 "height":16,
-                 "id":63,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":68,
-                 "x":707.133090458104,
-                 "y":676.058858486422
-                }, 
-                {
-                 "height":102.666666666667,
-                 "id":64,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":26.6666666666666,
-                 "x":665.799757124771,
-                 "y":689.392191819756
-                }, 
-                {
-                 "height":36,
-                 "id":65,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":54.6666666666667,
-                 "x":680.466423791437,
-                 "y":680.058858486422
-                }, 
-                {
-                 "height":78.6666666666666,
-                 "id":70,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":88,
-                 "x":989.799757124771,
-                 "y":434.725525153089
-                }, 
-                {
-                 "height":80,
-                 "id":71,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":154.666666666667,
-                 "x":925.799757124771,
-                 "y":360.058858486422
-                }, 
-                {
-                 "height":101.333333333333,
-                 "id":72,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":118.666666666667,
-                 "x":812.466423791437,
-                 "y":321.392191819756
-                }, 
-                {
-                 "height":58.6666666666666,
-                 "id":73,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":236,
-                 "x":668.466423791437,
-                 "y":293.392191819756
-                }, 
-                {
-                 "height":32,
-                 "id":74,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":157.333333333333,
-                 "x":723.133090458104,
-                 "y":357.392191819756
-                }, 
-                {
-                 "height":18.6666666666667,
-                 "id":75,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":81.3333333333333,
-                 "x":771.133090458104,
-                 "y":393.392191819756
-                }, 
-                {
-                 "height":46.6666666666667,
-                 "id":76,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":121.333333333333,
-                 "x":560.466423791437,
-                 "y":268.058858486422
-                }, 
-                {
-                 "height":92,
-                 "id":77,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":84,
-                 "x":475.133090458104,
-                 "y":253.392191819756
-                }, 
-                {
-                 "height":408,
-                 "id":78,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":88,
-                 "x":181.799757124771,
-                 "y":366.725525153089
-                }, 
-                {
-                 "height":180,
-                 "id":79,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":61.3333333333333,
-                 "x":267.133090458104,
-                 "y":601.392191819755
-                }, 
-                {
-                 "height":142.666666666667,
-                 "id":81,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":97.3333333333333,
-                 "x":371.133090458104,
-                 "y":269.392191819756
-                }, 
-                {
-                 "height":140,
-                 "id":82,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":85.3333333333333,
-                 "x":412.466423791437,
-                 "y":252.058858486422
-                }, 
-                {
-                 "height":57.3333333333334,
-                 "id":83,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":141.333333333333,
-                 "x":251.133090458104,
-                 "y":361.392191819756
-                }, 
-                {
-                 "height":49.3333333333333,
-                 "id":84,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":77.3333333333333,
-                 "x":288.466423791437,
-                 "y":418.725525153089
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":false,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":5,
-         "name":"Interactables",
-         "objects":[
-                {
-                 "height":128.666666666667,
-                 "id":85,
-                 "name":"inspect_answering_machine",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":144,
-                 "x":246.666666666667,
-                 "y":346.666666666667
-                }, 
-                {
-                 "height":152.666666666667,
-                 "id":86,
-                 "name":"inspect_takeout_bag",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":106.666666666667,
-                 "x":799,
-                 "y":326.666666666667
-                }, 
-                {
-                 "height":172.666666666667,
-                 "id":87,
-                 "name":"inspect_calendar",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":120,
-                 "x":940.666666666667,
-                 "y":769.333333333333
-                }, 
-                {
-                 "height":95.3333333333334,
-                 "id":88,
-                 "name":"inspect_newspaper",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":94.6666666666666,
-                 "x":662.666666666667,
-                 "y":505.333333333333
-                }, 
-                {
-                 "height":136.666666666667,
-                 "id":89,
-                 "name":"inspect_trash_can",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":121.333333333333,
-                 "x":171.333333333333,
-                 "y":918.666666666667
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":2,
-         "name":"Triggers",
-         "objects":[
-                {
-                 "height":403.634912022324,
-                 "id":10,
-                 "name":"desk_fade",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":466.417073611865,
-                 "x":253.505464692659,
-                 "y":335.271839392295
-                }, 
-                {
-                 "height":624.432447097128,
-                 "id":11,
-                 "name":"cabinet_fade",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":307.64785675529,
-                 "x":854.92132392871,
-                 "y":514.24959305504
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":false,
-         "x":0,
-         "y":0
-        }],
- "nextlayerid":6,
- "nextobjectid":90,
- "orientation":"orthogonal",
- "renderorder":"right-down",
- "tiledversion":"1.12.1",
- "tileheight":32,
- "tilesets":[],
- "tilewidth":32,
- "type":"map",
- "version":"1.10",
- "width":33
 }
 </file>
 
@@ -2395,7 +3512,10 @@ namespace CatDetective.Systems
     content pipeline, so we copy it to the output directory directly.
   -->
   <ItemGroup>
-    <Content Include="Content\room_map.json">
+    <Content Include="Content\Levels\detective_office\room_map.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Levels\detective_office\level_config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\scenes_config.json">
@@ -2404,1012 +3524,6 @@ namespace CatDetective.Systems
   </ItemGroup>
 
 </Project>
-</file>
-
-<file path="Content/obj/DesktopGL/net8.0/Content/prop_desk.mgcontent">
-<?xml version="1.0" encoding="utf-8"?>
-<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/prop_desk.png</SourceFile>
-  <SourceTime>2026-04-17T17:22:38.3650537+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_desk.xnb</DestFile>
-  <DestTime>2026-04-17T17:29:43.3670074+02:00</DestTime>
-  <Importer>TextureImporter</Importer>
-  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
-  <Processor>TextureProcessor</Processor>
-  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
-  <Parameters>
-    <Key>ColorKeyColor</Key>
-    <Value>255,0,255,255</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ColorKeyEnabled</Key>
-    <Value>True</Value>
-  </Parameters>
-  <Parameters>
-    <Key>GenerateMipmaps</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>PremultiplyAlpha</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ResizeToPowerOfTwo</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>MakeSquare</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>TextureFormat</Key>
-    <Value>Color</Value>
-  </Parameters>
-  <Dependencies />
-  <BuildAsset />
-  <BuildOutput />
-</PipelineBuildEvent>
-</file>
-
-<file path="Content/obj/DesktopGL/net8.0/Content/shadow_blob.mgcontent">
-<?xml version="1.0" encoding="utf-8"?>
-<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png</SourceFile>
-  <SourceTime>2026-04-17T17:37:26.4820061+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/shadow_blob.xnb</DestFile>
-  <DestTime>2026-04-17T17:37:52.0376171+02:00</DestTime>
-  <Importer>TextureImporter</Importer>
-  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
-  <Processor>TextureProcessor</Processor>
-  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
-  <Parameters>
-    <Key>ColorKeyColor</Key>
-    <Value>255,0,255,255</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ColorKeyEnabled</Key>
-    <Value>True</Value>
-  </Parameters>
-  <Parameters>
-    <Key>GenerateMipmaps</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>PremultiplyAlpha</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ResizeToPowerOfTwo</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>MakeSquare</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>TextureFormat</Key>
-    <Value>Color</Value>
-  </Parameters>
-  <Dependencies />
-  <BuildAsset />
-  <BuildOutput />
-</PipelineBuildEvent>
-</file>
-
-<file path="Content/room_map.json">
-{ "compressionlevel":-1,
- "height":35,
- "infinite":false,
- "layers":[
-        {
-         "id":3,
-         "image":"..\/first art ideas\/full scene.png",
-         "imageheight":1136,
-         "imagewidth":1072,
-         "name":"background",
-         "opacity":1,
-         "type":"imagelayer",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":1,
-         "name":"Collisions",
-         "objects":[
-                {
-                 "height":46,
-                 "id":1,
-                 "name":"wall_bottom",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":1072,
-                 "x":19.8068366793271,
-                 "y":1135.0388341989
-                }, 
-                {
-                 "height":160,
-                 "id":2,
-                 "name":"wall_top",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":1072,
-                 "x":13.0600728625689,
-                 "y":2.87156034415899
-                }, 
-                {
-                 "height":1136,
-                 "id":3,
-                 "name":"wall_left",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":80,
-                 "x":8,
-                 "y":126
-                }, 
-                {
-                 "height":1136,
-                 "id":4,
-                 "name":"wall_right",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":80,
-                 "x":1060.72087435083,
-                 "y":2.87156034415899
-                }, 
-                {
-                 "height":75.9999999999999,
-                 "id":24,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":5.99999999999999,
-                 "x":71.133090458104,
-                 "y":1029.39219181976
-                }, 
-                {
-                 "height":60.6666666666666,
-                 "id":25,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":280,
-                 "x":39.133090458104,
-                 "y":760.725525153089
-                }, 
-                {
-                 "height":210,
-                 "id":26,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":91.3333333333333,
-                 "x":65.7997571247707,
-                 "y":781.392191819756
-                }, 
-                {
-                 "height":90.6666666666666,
-                 "id":27,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":70.6666666666667,
-                 "x":104.466423791437,
-                 "y":936.725525153089
-                }, 
-                {
-                 "height":96,
-                 "id":28,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":63.3333333333333,
-                 "x":173.799757124771,
-                 "y":920.058858486422
-                }, 
-                {
-                 "height":62.6666666666666,
-                 "id":55,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":200,
-                 "x":329.799757124771,
-                 "y":762.725525153089
-                }, 
-                {
-                 "height":89.3333333333334,
-                 "id":56,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":218.666666666667,
-                 "x":264.466423791437,
-                 "y":764.058858486422
-                }, 
-                {
-                 "height":103.333333333333,
-                 "id":58,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":470,
-                 "x":223.799757124771,
-                 "y":685.392191819756
-                }, 
-                {
-                 "height":92.0000000000001,
-                 "id":59,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":8,
-                 "x":781.799757124771,
-                 "y":545.392191819755
-                }, 
-                {
-                 "height":46.6666666666667,
-                 "id":60,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":22.6666666666667,
-                 "x":760.466423791437,
-                 "y":625.392191819755
-                }, 
-                {
-                 "height":21.3333333333333,
-                 "id":61,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":34.6666666666666,
-                 "x":739.133090458104,
-                 "y":658.725525153089
-                }, 
-                {
-                 "height":14.6666666666666,
-                 "id":62,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":65.3333333333333,
-                 "x":703.133090458104,
-                 "y":685.392191819756
-                }, 
-                {
-                 "height":16,
-                 "id":63,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":68,
-                 "x":707.133090458104,
-                 "y":676.058858486422
-                }, 
-                {
-                 "height":102.666666666667,
-                 "id":64,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":26.6666666666666,
-                 "x":665.799757124771,
-                 "y":689.392191819756
-                }, 
-                {
-                 "height":36,
-                 "id":65,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":54.6666666666667,
-                 "x":680.466423791437,
-                 "y":680.058858486422
-                }, 
-                {
-                 "height":78.6666666666666,
-                 "id":70,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":88,
-                 "x":989.799757124771,
-                 "y":434.725525153089
-                }, 
-                {
-                 "height":80,
-                 "id":71,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":154.666666666667,
-                 "x":925.799757124771,
-                 "y":360.058858486422
-                }, 
-                {
-                 "height":101.333333333333,
-                 "id":72,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":118.666666666667,
-                 "x":812.466423791437,
-                 "y":321.392191819756
-                }, 
-                {
-                 "height":58.6666666666666,
-                 "id":73,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":236,
-                 "x":668.466423791437,
-                 "y":293.392191819756
-                }, 
-                {
-                 "height":32,
-                 "id":74,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":157.333333333333,
-                 "x":723.133090458104,
-                 "y":357.392191819756
-                }, 
-                {
-                 "height":18.6666666666667,
-                 "id":75,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":81.3333333333333,
-                 "x":771.133090458104,
-                 "y":393.392191819756
-                }, 
-                {
-                 "height":46.6666666666667,
-                 "id":76,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":121.333333333333,
-                 "x":560.466423791437,
-                 "y":268.058858486422
-                }, 
-                {
-                 "height":92,
-                 "id":77,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":84,
-                 "x":475.133090458104,
-                 "y":253.392191819756
-                }, 
-                {
-                 "height":408,
-                 "id":78,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":88,
-                 "x":181.799757124771,
-                 "y":366.725525153089
-                }, 
-                {
-                 "height":180,
-                 "id":79,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":61.3333333333333,
-                 "x":267.133090458104,
-                 "y":601.392191819755
-                }, 
-                {
-                 "height":142.666666666667,
-                 "id":81,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":97.3333333333333,
-                 "x":371.133090458104,
-                 "y":269.392191819756
-                }, 
-                {
-                 "height":140,
-                 "id":82,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":85.3333333333333,
-                 "x":412.466423791437,
-                 "y":252.058858486422
-                }, 
-                {
-                 "height":57.3333333333334,
-                 "id":83,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":141.333333333333,
-                 "x":251.133090458104,
-                 "y":361.392191819756
-                }, 
-                {
-                 "height":49.3333333333333,
-                 "id":84,
-                 "name":"",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":77.3333333333333,
-                 "x":288.466423791437,
-                 "y":418.725525153089
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":false,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":5,
-         "name":"Interactables",
-         "objects":[
-                {
-                 "height":128.666666666667,
-                 "id":85,
-                 "name":"inspect_answering_machine",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":144,
-                 "x":246.666666666667,
-                 "y":346.666666666667
-                }, 
-                {
-                 "height":152.666666666667,
-                 "id":86,
-                 "name":"inspect_takeout_bag",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":106.666666666667,
-                 "x":799,
-                 "y":326.666666666667
-                }, 
-                {
-                 "height":172.666666666667,
-                 "id":87,
-                 "name":"inspect_calendar",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":120,
-                 "x":940.666666666667,
-                 "y":769.333333333333
-                }, 
-                {
-                 "height":95.3333333333334,
-                 "id":88,
-                 "name":"inspect_newspaper",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":94.6666666666666,
-                 "x":662.666666666667,
-                 "y":505.333333333333
-                }, 
-                {
-                 "height":136.666666666667,
-                 "id":89,
-                 "name":"inspect_trash_can",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":121.333333333333,
-                 "x":171.333333333333,
-                 "y":918.666666666667
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":2,
-         "name":"Triggers",
-         "objects":[
-                {
-                 "height":403.634912022324,
-                 "id":10,
-                 "name":"desk_fade",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":466.417073611865,
-                 "x":253.505464692659,
-                 "y":335.271839392295
-                }, 
-                {
-                 "height":624.432447097128,
-                 "id":11,
-                 "name":"cabinet_fade",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":307.64785675529,
-                 "x":854.92132392871,
-                 "y":514.24959305504
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":false,
-         "x":0,
-         "y":0
-        }],
- "nextlayerid":6,
- "nextobjectid":90,
- "orientation":"orthogonal",
- "renderorder":"right-down",
- "tiledversion":"1.12.1",
- "tileheight":32,
- "tilesets":[],
- "tilewidth":32,
- "type":"map",
- "version":"1.10",
- "width":33
-}
-</file>
-
-<file path="Map/MapParser.cs">
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-namespace CatDetective.Map
-{
-    // ─────────────────────────────────────────────────────────────────────────
-    // Minimal Tiled JSON data models
-    //
-    // We only care about "objectgroup" layers that contain simple rectangle
-    // objects.  Tile layers and tilesets are intentionally ignored — the GDD
-    // uses pre-rendered background PNGs, not tile-based rendering.
-    // ─────────────────────────────────────────────────────────────────────────
-
-    /// <summary>Root of the Tiled .json export.</summary>
-    internal sealed class TiledMapData
-    {
-        [JsonPropertyName("layers")]
-        public List<TiledLayer> Layers { get; set; } = new();
-    }
-
-    /// <summary>One layer inside the map (we only process type == "objectgroup").</summary>
-    internal sealed class TiledLayer
-    {
-        [JsonPropertyName("name")]
-        public string Name { get; set; } = string.Empty;
-
-        [JsonPropertyName("type")]
-        public string Type { get; set; } = string.Empty;
-
-        [JsonPropertyName("objects")]
-        public List<TiledObject> Objects { get; set; } = new();
-    }
-
-    /// <summary>
-    /// One rectangle object inside an objectgroup layer.
-    /// Tiled stores X/Y as float (supports sub-pixel placement in the editor).
-    /// </summary>
-    internal sealed class TiledObject
-    {
-        [JsonPropertyName("id")]
-        public int Id { get; set; }
-
-        [JsonPropertyName("name")]
-        public string Name { get; set; } = string.Empty;
-
-        [JsonPropertyName("x")]
-        public float X { get; set; }
-
-        [JsonPropertyName("y")]
-        public float Y { get; set; }
-
-        [JsonPropertyName("width")]
-        public float Width { get; set; }
-
-        [JsonPropertyName("height")]
-        public float Height { get; set; }
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Parses a Tiled JSON export and extracts:
-    ///   • Solid collision rectangles from the layer named <c>Collisions</c>.
-    ///   • Named trigger rectangles from the layer named <c>Triggers</c>.
-    ///
-    /// Usage from Game1.LoadContent():
-    /// <code>
-    ///   MapParser.Parse(
-    ///       Path.Combine(Content.RootDirectory, "room_map.json"),
-    ///       out solidBoundaries,
-    ///       out triggers);
-    /// </code>
-    /// </summary>
-    public static class MapParser
-    {
-        private static readonly JsonSerializerOptions _jsonOptions = new()
-        {
-            PropertyNameCaseInsensitive = true
-        };
-
-        /// <summary>
-        /// Parses <paramref name="jsonPath"/> and populates the three output lists.
-        /// If the file is missing the method logs a warning and returns empty lists
-        /// so the game can still run without a map (useful during early prototyping).
-        /// </summary>
-        /// <param name="jsonPath">Absolute or relative path to the Tiled JSON file.</param>
-        /// <param name="solidBoundaries">
-        ///   Output: all rectangles from the "Collisions" layer.
-        ///   Feed these into <c>Cat.MoveWithCollision()</c> each frame.
-        /// </param>
-        /// <param name="triggers">
-        ///   Output: all (name, rect) pairs from the "Triggers" layer.
-        ///   Match names to props ("desk_fade", "cabinet_fade") in LoadContent().
-        /// </param>
-        /// <param name="interactables">
-        ///   Output: all (name, rect) pairs from the "Interactables" layer.
-        ///   Match names to <c>_interactionDatabase</c> keys in Game1.
-        /// </param>
-        public static void Parse(
-            string jsonPath,
-            out List<Rectangle> solidBoundaries,
-            out List<(string Name, Rectangle Rect)> triggers,
-            out List<(string Name, Rectangle Rect)> interactables)
-        {
-            solidBoundaries = new List<Rectangle>();
-            triggers        = new List<(string, Rectangle)>();
-            interactables   = new List<(string, Rectangle)>();
-
-            if (!File.Exists(jsonPath))
-            {
-                Console.WriteLine($"[MapParser] WARNING: '{jsonPath}' not found. " +
-                                  "No collision or trigger data loaded.");
-                return;
-            }
-
-            string json;
-            try
-            {
-                json = File.ReadAllText(jsonPath);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[MapParser] ERROR reading map file: {ex.Message}");
-                return;
-            }
-
-            var mapData = JsonSerializer.Deserialize<TiledMapData>(json, _jsonOptions);
-            if (mapData == null) return;
-
-            foreach (var layer in mapData.Layers)
-            {
-                // Skip tile layers and any non-object layers
-                if (layer.Type != "objectgroup") continue;
-
-                switch (layer.Name)
-                {
-                    case "Collisions":
-                        foreach (var obj in layer.Objects)
-                            solidBoundaries.Add(ToRect(obj));
-                        break;
-
-                    case "Triggers":
-                        foreach (var obj in layer.Objects)
-                            triggers.Add((obj.Name, ToRect(obj)));
-                        break;
-
-                    case "Interactables":
-                        foreach (var obj in layer.Objects)
-                            interactables.Add((obj.Name, ToRect(obj)));
-                        break;
-                }
-            }
-
-            Console.WriteLine(
-                $"[MapParser] Loaded {solidBoundaries.Count} collision(s), " +
-                $"{triggers.Count} trigger(s), " +
-                $"{interactables.Count} interactable(s) from '{jsonPath}'.");
-        }
-
-        private static Rectangle ToRect(TiledObject obj) =>
-            new Rectangle((int)obj.X, (int)obj.Y, (int)obj.Width, (int)obj.Height);
-    }
-}
-</file>
-
-<file path="Content/Content.mgcb">
-#----------------------------- Global Properties ----------------------------#
-
-/outputDir:bin/$(Platform)
-/intermediateDir:obj/$(Platform)
-/platform:DesktopGL
-/config:
-/profile:Reach
-/compress:False
-
-#-------------------------------- References --------------------------------#
-
-#---------------------------------- Content ---------------------------------#
-
-# ═══════════════════════════════════════════════════════════════════════════
-# PremultiplyAlpha=False on every asset.
-#
-# All sprites are rendered in Pass 3 with BlendState.NonPremultiplied, so
-# they must be stored with straight (non-premultiplied) alpha.  Keeping
-# everything consistent here avoids subtle colour differences if assets are
-# moved between passes later.
-# ═══════════════════════════════════════════════════════════════════════════
-
-# ── Background (1072 x 1136) ───────────────────────────────────────────────
-#begin bg_base.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:bg_base.png
-
-# ── Props — full-room overlays (1072 x 1136 each) ─────────────────────────
-#begin prop_desk.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:prop_desk.png
-
-#begin prop_cabinet.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:prop_cabinet.png
-
-# ── VFX ────────────────────────────────────────────────────────────────────
-# mask_sunbeams is drawn with BlendState.Additive (Pass 4).
-# shadow_blob is drawn with BlendState.AlphaBlend (Pass 2).
-# Both still use straight alpha for consistency.
-
-#begin mask_sunbeams.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:mask_sunbeams.png
-
-#begin shadow_blob.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:shadow_blob.png
-
-# ── Cat sprite sheets (single-frame placeholders) ─────────────────────────
-# Placeholder images have a white background; ColorKeyColor is set to White.
-# frameCount is 1 in Game1.cs until real sprite sheets are available.
-
-#begin spr_cat_walk_down.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,255,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:spr_cat_walk_down.png
-
-#begin spr_cat_walk_up.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,255,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:spr_cat_walk_up.png
-
-# ── Walk animation (2100 x 700, 11 frames in a 6×2 grid) ─────────────────
-# Native PNG transparency — ColorKey disabled.
-
-#begin walk_animation_forward.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:walk_animation_forward.png
-
-#begin walk_animation_upward.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyEnabled=False
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=False
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:walk_animation_upward.png
-
-# ── Dialogue font ─────────────────────────────────────────────────────────
-#begin dialogue_font.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:dialogue_font.spritefont
-
-# ── NOTE: room_map.json ────────────────────────────────────────────────────
-# Copied verbatim by the .csproj <Content> ItemGroup; not processed here.
-</file>
-
-<file path="Content/obj/DesktopGL/net8.0/Content/.mgcontent">
-<?xml version="1.0" encoding="utf-8"?>
-<SourceFileCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Profile>Reach</Profile>
-  <Platform>DesktopGL</Platform>
-  <Config />
-  <SourceFiles>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/bg_base.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/prop_desk.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/prop_cabinet.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_down.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_upward.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/dialogue_font.spritefont</File>
-  </SourceFiles>
-  <DestFiles>
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-  </DestFiles>
-</SourceFileCollection>
-</file>
-
-<file path="Content/obj/DesktopGL/net8.0/Content/.mgstats">
-Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
-"C:/Users/larry/Projecten/cat_detective/Content/bg_base.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/bg_base.xnb","TextureProcessor","Texture2DContent",2147366,4871253,0.2628493
-"C:/Users/larry/Projecten/cat_detective/Content/dialogue_font.spritefont","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/dialogue_font.xnb","FontDescriptionProcessor","SpriteFontContent",474,37913,0.1019042
-"C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/mask_sunbeams.xnb","TextureProcessor","Texture2DContent",83310,4871253,0.5379857
-"C:/Users/larry/Projecten/cat_detective/Content/prop_cabinet.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_cabinet.xnb","TextureProcessor","Texture2DContent",240216,4871253,0.1396972
-"C:/Users/larry/Projecten/cat_detective/Content/prop_desk.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_desk.xnb","TextureProcessor","Texture2DContent",360186,4871253,0.229271
-"C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/shadow_blob.xnb","TextureProcessor","Texture2DContent",6842,1430485,0.1711014
-"C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_down.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_down.xnb","TextureProcessor","Texture2DContent",104992,633037,0.1324254
-"C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_up.xnb","TextureProcessor","Texture2DContent",105940,633037,0.0234247
-"C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/walk_animation_forward.xnb","TextureProcessor","Texture2DContent",1247913,5880085,0.3191753
-"C:/Users/larry/Projecten/cat_detective/Content/walk_animation_upward.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/walk_animation_upward.xnb","TextureProcessor","Texture2DContent",967587,5880085,0.3191212
 </file>
 
 <file path="Entities/Cat.cs">
@@ -3730,8 +3844,454 @@ namespace CatDetective.Entities
 }
 </file>
 
+<file path="Map/MapParser.cs">
+using CatDetective.Entities;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace CatDetective.Map
+{
+    // ─────────────────────────────────────────────────────────────────────────
+    // Minimal Tiled JSON data models
+    //
+    // We only care about "objectgroup" layers that contain simple rectangle
+    // objects.  Tile layers and tilesets are intentionally ignored — the GDD
+    // uses pre-rendered background PNGs, not tile-based rendering.
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /// <summary>Root of the Tiled .json export.</summary>
+    internal sealed class TiledMapData
+    {
+        [JsonPropertyName("layers")]
+        public List<TiledLayer> Layers { get; set; } = new();
+    }
+
+    /// <summary>One layer inside the map (we only process type == "objectgroup").</summary>
+    internal sealed class TiledLayer
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = string.Empty;
+
+        [JsonPropertyName("type")]
+        public string Type { get; set; } = string.Empty;
+
+        [JsonPropertyName("objects")]
+        public List<TiledObject> Objects { get; set; } = new();
+    }
+
+    /// <summary>
+    /// One rectangle object inside an objectgroup layer.
+    /// Tiled stores X/Y as float (supports sub-pixel placement in the editor).
+    /// </summary>
+    internal sealed class TiledObject
+    {
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = string.Empty;
+
+        [JsonPropertyName("x")]
+        public float X { get; set; }
+
+        [JsonPropertyName("y")]
+        public float Y { get; set; }
+
+        [JsonPropertyName("width")]
+        public float Width { get; set; }
+
+        [JsonPropertyName("height")]
+        public float Height { get; set; }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Parses a Tiled JSON export and extracts:
+    ///   • Solid collision rectangles from the layer named <c>Collisions</c>.
+    ///   • Named trigger rectangles from the layer named <c>Triggers</c>.
+    ///   • <see cref="InteractableEntity"/> instances from the layer named
+    ///     <c>Interactables</c>, auto-loading their sprites from the content
+    ///     pipeline and looking up dialogue data from <paramref name="levelData"/>.
+    /// </summary>
+    public static class MapParser
+    {
+        private static readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        /// <summary>
+        /// Parses <paramref name="jsonPath"/> and populates the three output lists.
+        /// If the file is missing the method logs a warning and returns empty lists
+        /// so the game can still run without a map (useful during early prototyping).
+        /// </summary>
+        /// <param name="jsonPath">Absolute or relative path to the Tiled JSON file.</param>
+        /// <param name="content">
+        ///   The game's <see cref="ContentManager"/>; used to load interactable sprites.
+        /// </param>
+        /// <param name="levelId">
+        ///   The level folder name (e.g. "detective_office"). Sprites are loaded from
+        ///   <c>Levels/{levelId}/Interactables/{objectName}</c>.
+        /// </param>
+        /// <param name="levelData">
+        ///   Map from Tiled object name → <see cref="InteractionData"/>.
+        ///   Each matched interactable has its <c>Data</c> property set; unmatched
+        ///   objects log a console warning so missing entries are easy to spot.
+        /// </param>
+        /// <param name="solidBoundaries">
+        ///   Output: all rectangles from the "Collisions" layer.
+        /// </param>
+        /// <param name="triggers">
+        ///   Output: all (name, rect) pairs from the "Triggers" layer.
+        /// </param>
+        /// <param name="interactables">
+        ///   Output: fully-populated <see cref="InteractableEntity"/> instances from
+        ///   the "Interactables" layer.
+        /// </param>
+        public static void Parse(
+            string jsonPath,
+            ContentManager content,
+            string levelId,
+            Dictionary<string, InteractionData> levelData,
+            out List<Rectangle> solidBoundaries,
+            out List<(string Name, Rectangle Rect)> triggers,
+            out List<InteractableEntity> interactables)
+        {
+            solidBoundaries = new List<Rectangle>();
+            triggers        = new List<(string, Rectangle)>();
+            interactables   = new List<InteractableEntity>();
+
+            if (!File.Exists(jsonPath))
+            {
+                Console.WriteLine($"[MapParser] WARNING: '{jsonPath}' not found. " +
+                                  "No collision or trigger data loaded.");
+                return;
+            }
+
+            string json;
+            try
+            {
+                json = File.ReadAllText(jsonPath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[MapParser] ERROR reading map file: {ex.Message}");
+                return;
+            }
+
+            var mapData = JsonSerializer.Deserialize<TiledMapData>(json, _jsonOptions);
+            if (mapData == null) return;
+
+            foreach (var layer in mapData.Layers)
+            {
+                if (layer.Type != "objectgroup") continue;
+
+                switch (layer.Name)
+                {
+                    case "Collisions":
+                        foreach (var obj in layer.Objects)
+                            solidBoundaries.Add(ToRect(obj));
+                        break;
+
+                    case "Triggers":
+                        foreach (var obj in layer.Objects)
+                            triggers.Add((obj.Name, ToRect(obj)));
+                        break;
+
+                    case "Interactables":
+                        foreach (var obj in layer.Objects)
+                        {
+                            Texture2D? sprite    = null;
+                            string     assetPath = $"Levels/{levelId}/Interactables/{obj.Name}";
+                            try
+                            {
+                                sprite = content.Load<Texture2D>(assetPath);
+                            }
+                            catch (ContentLoadException)
+                            {
+                                Console.WriteLine(
+                                    $"[MapParser] No sprite for '{obj.Name}' at '{assetPath}' — " +
+                                    "entity will be invisible (trigger zone only).");
+                            }
+
+                            // Position = bottom-center floor contact point of the Tiled rect.
+                            var position = new Vector2(
+                                obj.X + obj.Width  * 0.5f,
+                                obj.Y + obj.Height);
+
+                            var entity = new InteractableEntity(obj.Name, ToRect(obj), sprite, position);
+
+                            if (levelData.TryGetValue(obj.Name, out var data))
+                                entity.Data = data;
+                            else
+                                Console.WriteLine(
+                                    $"[MapParser] WARNING: No dialogue data for interactable '{obj.Name}'. " +
+                                    "Add an entry to the level's interaction database.");
+
+                            interactables.Add(entity);
+                        }
+                        break;
+                }
+            }
+
+            Console.WriteLine(
+                $"[MapParser] Loaded {solidBoundaries.Count} collision(s), " +
+                $"{triggers.Count} trigger(s), " +
+                $"{interactables.Count} interactable(s) from '{jsonPath}'.");
+        }
+
+        private static Rectangle ToRect(TiledObject obj) =>
+            new Rectangle((int)obj.X, (int)obj.Y, (int)obj.Width, (int)obj.Height);
+    }
+}
+</file>
+
+<file path="Content/Content.mgcb">
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:bin/$(Platform)
+/intermediateDir:obj/$(Platform)
+/platform:DesktopGL
+/config:
+/profile:Reach
+/compress:False
+
+#-------------------------------- References --------------------------------#
+
+#---------------------------------- Content ---------------------------------#
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PremultiplyAlpha=False on every asset.
+#
+# All sprites are rendered in Pass 3 with BlendState.NonPremultiplied, so
+# they must be stored with straight (non-premultiplied) alpha.  Keeping
+# everything consistent here avoids subtle colour differences if assets are
+# moved between passes later.
+# ═══════════════════════════════════════════════════════════════════════════
+
+# ── Shared assets (cross-level) ────────────────────────────────────────────
+
+#begin Shared/mask_sunbeams.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Shared/mask_sunbeams.png
+
+#begin Shared/shadow_blob.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Shared/shadow_blob.png
+
+# ── Cat sprite sheets ──────────────────────────────────────────────────────
+
+#begin Shared/walk_animation_forward.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Shared/walk_animation_forward.png
+
+#begin Shared/walk_animation_upward.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Shared/walk_animation_upward.png
+
+# ── Dialogue font ─────────────────────────────────────────────────────────
+#begin Shared/dialogue_font.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Shared/dialogue_font.spritefont
+
+# ── Level: detective_office ────────────────────────────────────────────────
+
+#begin Levels/detective_office/bg_base.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/detective_office/bg_base.png
+
+#begin Levels/detective_office/prop_desk.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/detective_office/prop_desk.png
+
+#begin Levels/detective_office/prop_cabinet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/detective_office/prop_cabinet.png
+
+# ── Level: detective_office — Interactables ────────────────────────────────
+
+#begin Levels/detective_office/Interactables/inspect_answering_machine.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/detective_office/Interactables/inspect_answering_machine.png
+
+#begin Levels/detective_office/Interactables/inspect_calendar.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/detective_office/Interactables/inspect_calendar.png
+
+#begin Levels/detective_office/Interactables/inspect_newspaper.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/detective_office/Interactables/inspect_newspaper.png
+
+#begin Levels/detective_office/Interactables/inspect_takeout_bag.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/detective_office/Interactables/inspect_takeout_bag.png
+
+#begin Levels/detective_office/Interactables/inspect_trash_can.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/detective_office/Interactables/inspect_trash_can.png
+
+# ── NOTE: room_map.json ────────────────────────────────────────────────────
+# Copied verbatim by the .csproj <Content> ItemGroup; not processed here.
+# Path: Levels/detective_office/room_map.json
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Profile>Reach</Profile>
+  <Platform>DesktopGL</Platform>
+  <Config />
+  <SourceFiles>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/mask_sunbeams.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/shadow_blob.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/walk_animation_forward.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/walk_animation_upward.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/dialogue_font.spritefont</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/bg_base.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/prop_desk.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/prop_cabinet.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_answering_machine.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_calendar.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_newspaper.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_takeout_bag.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_trash_can.png</File>
+  </SourceFiles>
+  <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+  </DestFiles>
+</SourceFileCollection>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/.mgstats">
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/bg_base.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/bg_base.xnb","TextureProcessor","Texture2DContent",2147366,4871253,0.2357246
+"C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_answering_machine.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/Interactables/inspect_answering_machine.xnb","TextureProcessor","Texture2DContent",48378,160085,0.1732057
+"C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_calendar.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/Interactables/inspect_calendar.xnb","TextureProcessor","Texture2DContent",41430,160085,0.0470682
+"C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_newspaper.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/Interactables/inspect_newspaper.xnb","TextureProcessor","Texture2DContent",50590,160085,0.0086568
+"C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_takeout_bag.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/Interactables/inspect_takeout_bag.xnb","TextureProcessor","Texture2DContent",39831,160085,0.0063807
+"C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_trash_can.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/Interactables/inspect_trash_can.xnb","TextureProcessor","Texture2DContent",34422,160085,0.0059195
+"C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/prop_cabinet.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/prop_cabinet.xnb","TextureProcessor","Texture2DContent",240216,4871253,0.2333729
+"C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/prop_desk.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/prop_desk.xnb","TextureProcessor","Texture2DContent",360186,4871253,0.1612166
+"C:/Users/larry/Projecten/cat_detective/Content/Shared/dialogue_font.spritefont","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Shared/dialogue_font.xnb","FontDescriptionProcessor","SpriteFontContent",474,37913,0.1390843
+"C:/Users/larry/Projecten/cat_detective/Content/Shared/mask_sunbeams.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Shared/mask_sunbeams.xnb","TextureProcessor","Texture2DContent",83310,4871253,0.5331722
+"C:/Users/larry/Projecten/cat_detective/Content/Shared/shadow_blob.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Shared/shadow_blob.xnb","TextureProcessor","Texture2DContent",6842,1430485,0.0841935
+"C:/Users/larry/Projecten/cat_detective/Content/Shared/walk_animation_forward.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Shared/walk_animation_forward.xnb","TextureProcessor","Texture2DContent",1247913,5880085,0.161802
+"C:/Users/larry/Projecten/cat_detective/Content/Shared/walk_animation_upward.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Shared/walk_animation_upward.xnb","TextureProcessor","Texture2DContent",967587,5880085,0.0535805
+</file>
+
 <file path="obj/Debug/net8.0/CatDetective.csproj.CoreCompileInputs.cache">
-439a9b12107b6aefe08f2303b077e7fb3446338307751ff3e99fa14bbd9cbd2c
+cfee2aec6e931c0d89fc155253343935af6ee25ade2ec8393636720121dce1d0
 </file>
 
 <file path="Game1.cs">
@@ -3802,8 +4362,11 @@ namespace CatDetective
         private Prop _cabinet = null!;
 
         // ── World data from Tiled ──────────────────────────────────────────────
-        private List<Rectangle>                   _solidBoundaries = new();
-        private List<(string Name, Rectangle Rect)> _interactables = new();
+        private List<Rectangle>          _solidBoundaries = new();
+        private List<InteractableEntity> _interactables   = new();
+
+        // ── Active interactable (updated each frame for highlighting) ──────────
+        private InteractableEntity? _activeInteractable;
 
         // ── Interaction system ─────────────────────────────────────────────────
         private Dictionary<string, InteractionData> _interactionDatabase = null!;
@@ -3811,13 +4374,13 @@ namespace CatDetective
         private InteractionData? _currentInteraction;
 
         // ── Notebook / inventory ───────────────────────────────────────────────
-        private NotebookManager _notebook = new();
+        private NotebookManager _notebook       = null!;
         private bool         _isNotebookOpen = false;
         private ClueCategory _selectedTab    = ClueCategory.Who;
         private MouseState   _prevMouseState;
 
         // ── Deduction board ────────────────────────────────────────────────────
-        private DeductionManager _deduction              = new();
+        private DeductionManager _deduction              = null!;
         private bool             _isDeductionBoardOpen   = false;
         private int              _activeDropdownSlotIndex = -1;
         private bool             _isGameWon              = false;
@@ -3898,15 +4461,15 @@ namespace CatDetective
             _renderTarget = new RenderTarget2D(GraphicsDevice, SCREEN_WIDTH, SCREEN_HEIGHT);
 
             // ── Scene textures ───────────────────────────────────────────────
-            _bgBase       = Content.Load<Texture2D>("bg_base");
-            _sunbeamsMask = Content.Load<Texture2D>("mask_sunbeams");
+            _bgBase       = Content.Load<Texture2D>("Levels/detective_office/bg_base");
+            _sunbeamsMask = Content.Load<Texture2D>("Shared/mask_sunbeams");
 
             // ── Cat ──────────────────────────────────────────────────────────
             // Sprite sheet: 2100 × 700 px, 11 frames in a 6×2 grid.
             // Both directions use the forward sheet until the up-facing sheet is ready.
-            var walkForward = Content.Load<Texture2D>("walk_animation_forward");
-            var walkUpward  = Content.Load<Texture2D>("walk_animation_upward");
-            var shadow      = Content.Load<Texture2D>("shadow_blob");
+            var walkForward = Content.Load<Texture2D>("Shared/walk_animation_forward");
+            var walkUpward  = Content.Load<Texture2D>("Shared/walk_animation_upward");
+            var shadow      = Content.Load<Texture2D>("Shared/shadow_blob");
 
             // Start position: centre-X, lower floor area.
             // Adjust Y once the room art is reviewed in-engine.
@@ -3920,67 +4483,34 @@ namespace CatDetective
             // Full-room overlay PNGs: same 1072 × 1136 canvas as bg_base.
             // sortY is the approximate Y of each prop's floor contact point within
             // the image. Tune these values after reviewing the art in-engine.
-            var deskTex    = Content.Load<Texture2D>("prop_desk");
-            var cabinetTex = Content.Load<Texture2D>("prop_cabinet");
+            var deskTex    = Content.Load<Texture2D>("Levels/detective_office/prop_desk");
+            var cabinetTex = Content.Load<Texture2D>("Levels/detective_office/prop_cabinet");
 
             // ── Debug pixel ─────────────────────────────────────────────────
             _debugPixel = new Texture2D(GraphicsDevice, 1, 1);
             _debugPixel.SetData(new[] { Color.White });
 
             // ── Dialogue font ────────────────────────────────────────────────
-            _dialogueFont = Content.Load<SpriteFont>("dialogue_font");
+            _dialogueFont = Content.Load<SpriteFont>("Shared/dialogue_font");
 
-            // ── Interaction database (hardcoded; swap for data file later) ───
-            // [bracket] tokens in Text are tinted using the matching Keyword.Color.
-            _interactionDatabase = new Dictionary<string, InteractionData>
-            {
-                { "inspect_answering_machine", new InteractionData(
-                    "BEEP. 'Hey, it's Lance's manager. We need you at the house " +
-                    "[the day before the premiere]! Don't be late!' " +
-                    "BEEP. 'Hi honey, don't forget my birthday on [Sunday]!'",
-                    new[] {
-                        new Keyword("the day before the premiere", "the_day_before_the_premiere", InteractionData.Plot),
-                        new Keyword("Sunday",                      "sunday",                      InteractionData.Plot),
-                    }) },
+            // ── Level config (clues, interactables, deduction solution) ─────
+            string levelConfigPath = Path.Combine(
+                Content.RootDirectory, "Levels", "detective_office", "level_config.json");
+            var levelConfig = LevelConfigParser.Load(levelConfigPath);
 
-                { "inspect_takeout_bag", new InteractionData(
-                    "Smells like leftover [Fish Tacos]. The delivery receipt says it " +
-                    "was brought to the [Downtown Office].",
-                    new[] {
-                        new Keyword("Fish Tacos",      "fish_tacos",      InteractionData.Misc),
-                        new Keyword("Downtown Office", "downtown_office", InteractionData.Plot),
-                    }) },
-
-                { "inspect_calendar", new InteractionData(
-                    "The month is almost over. The detective has circled [Thursday] " +
-                    "for the dentist, and [Friday] is marked with a giant question mark.",
-                    new[] {
-                        new Keyword("Thursday", "thursday", InteractionData.Plot),
-                        new Keyword("Friday",   "friday",   InteractionData.Plot),
-                    }) },
-
-                { "inspect_newspaper", new InteractionData(
-                    "'Pirate Cove 3' premieres this [Saturday]! But production halts " +
-                    "as Lance's prized macaw, Rudebeak, is reported as a [stolen pet]!",
-                    new[] {
-                        new Keyword("Saturday",   "saturday",   InteractionData.Plot),
-                        new Keyword("stolen pet", "stolen_pet", InteractionData.Crime),
-                    }) },
-
-                { "inspect_trash_can", new InteractionData(
-                    "A bunch of unpaid bills, and a shiny VIP parking pass for a [Malibu Mansion].",
-                    new[] {
-                        new Keyword("Malibu Mansion", "malibu_mansion", InteractionData.Plot),
-                    }) },
-            };
+            _interactionDatabase = levelConfig.Interactables;
+            _notebook            = new NotebookManager(levelConfig.Clues);
+            _deduction           = new DeductionManager(levelConfig.DeductionSlots);
 
             // ── Scene config ─────────────────────────────────────────────────
             string configPath = Path.Combine(Content.RootDirectory, "scenes_config.json");
             _ambientColor = SceneConfigParser.GetAmbientColor(configPath, "detective_office");
 
             // ── Parse Tiled map ──────────────────────────────────────────────
-            string mapPath = Path.Combine(Content.RootDirectory, "room_map.json");
-            MapParser.Parse(mapPath, out _solidBoundaries, out var triggers, out _interactables);
+            string mapPath = Path.Combine(
+                Content.RootDirectory, "Levels", "detective_office", "room_map.json");
+            MapParser.Parse(mapPath, Content, "detective_office", _interactionDatabase,
+                out _solidBoundaries, out var triggers, out _interactables);
 
             // ── Wire trigger zones to props ───────────────────────────────────
             var deskTrigger    = new Rectangle(230, 490, 280, 210); // fallback
@@ -4113,19 +4643,24 @@ namespace CatDetective
                 _cat.Update(gameTime);
                 _cat.MoveWithCollision(dt, _solidBoundaries);
 
-                // Check whether the cat stepped into an interactable zone.
-                var zone = _cat.GetActiveInteractionZone(_interactables);
-                if (zone != null && _cat.IsInteractPressed())
+                // Find the first interactable the cat overlaps (for highlight + input).
+                _activeInteractable = null;
+                foreach (var entity in _interactables)
                 {
-                    if (_interactionDatabase.TryGetValue(zone.Value.Name, out var data))
+                    if (_cat.CollisionBox.Intersects(entity.TriggerZone))
                     {
-                        _currentInteraction = data;
-                        _isDialogueActive   = true;
-
-                        // Unlock any clues attached to this interaction's keywords.
-                        foreach (var kw in data.Keywords)
-                            _notebook.UnlockClue(kw.Id);
+                        _activeInteractable = entity;
+                        break;
                     }
+                }
+
+                if (_activeInteractable != null && _cat.IsInteractPressed()
+                    && _activeInteractable.Data != null)
+                {
+                    _currentInteraction = _activeInteractable.Data;
+                    _isDialogueActive   = true;
+                    foreach (var kw in _activeInteractable.Data.Keywords)
+                        _notebook.UnlockClue(kw.Id);
                 }
             }
 
@@ -4170,6 +4705,10 @@ namespace CatDetective
             _desk.Draw(_spriteBatch);
             _cabinet.Draw(_spriteBatch);
             _cat.Draw(_spriteBatch);
+            foreach (var entity in _interactables)
+                entity.Draw(_spriteBatch,
+                    isHighlighted: entity == _activeInteractable,
+                    totalSeconds:  gameTime.TotalGameTime.TotalSeconds);
             _spriteBatch.End();
 
             // ════════════════════════════════════════════════════════════════
@@ -4692,7 +5231,6 @@ using System.Reflection;
 </file>
 
 <file path="obj/Debug/net8.0/CatDetective.csproj.FileListAbsolute.txt">
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\room_map.json
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.exe
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.deps.json
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\CatDetective.runtimeconfig.json
@@ -4719,17 +5257,22 @@ C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\refint\CatDetective.dll
 C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.pdb
 C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\CatDetective.genruntimeconfig.cache
 C:\Users\larry\Projecten\cat_detective\obj\Debug\net8.0\ref\CatDetective.dll
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\bg_base.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\mask_sunbeams.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\prop_cabinet.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\prop_desk.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\shadow_blob.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\spr_cat_walk_down.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\spr_cat_walk_up.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\walk_animation_forward.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\walk_animation_upward.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\dialogue_font.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\scenes_config.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\room_map.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\bg_base.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\prop_cabinet.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\prop_desk.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\dialogue_font.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\mask_sunbeams.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\shadow_blob.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\walk_animation_forward.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\walk_animation_upward.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\level_config.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\Interactables\inspect_answering_machine.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\Interactables\inspect_calendar.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\Interactables\inspect_newspaper.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\Interactables\inspect_takeout_bag.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\Interactables\inspect_trash_can.xnb
 </file>
 
 <file path="obj/Debug/net8.0/CatDetective.sourcelink.json">

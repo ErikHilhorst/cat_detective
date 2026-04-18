@@ -126,16 +126,16 @@
                  "y":936.725525153089
                 }, 
                 {
-                 "height":96,
+                 "height":101.5,
                  "id":28,
-                 "name":"",
+                 "name":"trashcan",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":63.3333333333333,
-                 "x":173.799757124771,
-                 "y":920.058858486422
+                 "width":105.333333333333,
+                 "x":175.799757124771,
+                 "y":890.058858486422
                 }, 
                 {
                  "height":62.6666666666666,
@@ -424,6 +424,19 @@
                  "width":77.3333333333333,
                  "x":288.466423791437,
                  "y":418.725525153089
+                },
+            
+                {
+                 "height":181.5,
+                 "id":90,
+                 "name":"",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":141,
+                 "x":556,
+                 "y":770
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -437,14 +450,14 @@
          "name":"Interactables",
          "objects":[
                 {
-                 "height":128.666666666667,
+                 "height":160.666666666667,
                  "id":85,
                  "name":"inspect_answering_machine",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":144,
+                 "width":207,
                  "x":246.666666666667,
                  "y":346.666666666667
                 }, 
@@ -485,7 +498,7 @@
                  "y":505.333333333333
                 }, 
                 {
-                 "height":136.666666666667,
+                 "height":169.166666666667,
                  "id":89,
                  "name":"inspect_trash_can",
                  "opacity":1,
@@ -493,12 +506,12 @@
                  "type":"",
                  "visible":true,
                  "width":121.333333333333,
-                 "x":171.333333333333,
-                 "y":918.666666666667
+                 "x":175.833333333333,
+                 "y":887.166666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -538,7 +551,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":90,
+ "nextobjectid":91,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",

@@ -1,4 +1,9 @@
 {
+  "props": [
+    { "id": "prop_desk",    "texture": "prop_desk",    "sortY": 850,  "triggerName": "desk_fade"    },
+    { "id": "prop_cabinet", "texture": "prop_cabinet", "sortY": 1100, "triggerName": "cabinet_fade" }
+  ],
+
   "clues": [
     { "id": "stolen_pet",                  "category": "What",      "displayText": "Rudebeak the macaw was stolen" },
     { "id": "fish_tacos",                  "category": "What",      "displayText": "Leftover Fish Tacos in the takeout bag" },
@@ -18,7 +23,10 @@
       "keywords": [
         { "displayText": "the day before the premiere", "id": "the_day_before_the_premiere", "color": "plot" },
         { "displayText": "Sunday",                      "id": "sunday",                      "color": "plot" }
-      ]
+      ],
+      "scale": 0.5,
+      "align": "Center",
+      "offsetY": -40
     },
     {
       "id": "inspect_takeout_bag",

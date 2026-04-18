@@ -30,10 +30,22 @@ namespace CatDetective.Entities
         /// <summary>Keywords in this dialogue, each with its display text, clue ID, and tint.</summary>
         public Keyword[] Keywords { get; }
 
-        public InteractionData(string text, Keyword[] keywords)
+        // ── Visual overrides (applied in InteractableEntity.Draw, never to Position/LayerDepth) ──
+        public float  Scale   { get; }   // default 1.0
+        public string Align   { get; }   // "BottomCenter" | "Center" | "TopLeft"
+        public int    OffsetX { get; }
+        public int    OffsetY { get; }
+
+        public InteractionData(string text, Keyword[] keywords,
+            float scale = 1.0f, string align = "BottomCenter",
+            int offsetX = 0, int offsetY = 0)
         {
             Text     = text;
             Keywords = keywords;
+            Scale    = scale;
+            Align    = align;
+            OffsetX  = offsetX;
+            OffsetY  = offsetY;
         }
 
         // ── Shared colour palette ──────────────────────────────────────────────
