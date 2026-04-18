@@ -112,7 +112,14 @@ namespace CatDetective
             { "Who", "What", "Why", "Where/When" };
 
         // ── UI ─────────────────────────────────────────────────────────────────
-        private SpriteFont _dialogueFont = null!;
+        private SpriteFont  _dialogueFont    = null!;
+        private Texture2D   _dialogueBoxTex  = null!;
+
+        // ── Dialogue pagination & typewriter ──────────────────────────────────
+        private string[] _dialoguePages        = Array.Empty<string>();
+        private int      _currentDialoguePage  = 0;
+        private float    _typewriterTimer       = 0f;
+        private const float TYPEWRITER_SPEED    = 45f;
 
         // ── Debug overlay ──────────────────────────────────────────────────────
         private Texture2D     _debugPixel  = null!;
@@ -167,7 +174,8 @@ namespace CatDetective
             _debugPixel = new Texture2D(GraphicsDevice, 1, 1);
             _debugPixel.SetData(new[] { Color.White });
 
-            _dialogueFont = Content.Load<SpriteFont>("Shared/dialogue_font");
+            _dialogueFont   = Content.Load<SpriteFont>("Shared/dialogue_font");
+            _dialogueBoxTex = Content.Load<Texture2D>("Shared/ui_dialogue_box");
 
             string configPath = Path.Combine(Content.RootDirectory, "scenes_config.json");
             _availableScenes = SceneConfigParser.GetAvailableScenes(configPath);
@@ -371,8 +379,32 @@ namespace CatDetective
 
                 if (_isDialogueActive)
                 {
+                    int totalChars = _dialoguePages[_currentDialoguePage]
+                        .Replace("[", "").Replace("]", "").Length;
+
                     if (_cat.IsInteractPressed())
-                        _isDialogueActive = false;
+                    {
+                        if (_typewriterTimer < totalChars)
+                        {
+                            _typewriterTimer = totalChars;
+                        }
+                        else
+                        {
+                            if (_currentDialoguePage < _dialoguePages.Length - 1)
+                            {
+                                _currentDialoguePage++;
+                                _typewriterTimer = 0f;
+                            }
+                            else
+                            {
+                                _isDialogueActive = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _typewriterTimer += (float)gameTime.ElapsedGameTime.TotalSeconds * TYPEWRITER_SPEED;
+                    }
                 }
                 else
                 {
@@ -392,8 +424,11 @@ namespace CatDetective
                     if (_activeInteractable != null && _cat.IsInteractPressed()
                         && _activeInteractable.Data != null)
                     {
-                        _currentInteraction = _activeInteractable.Data;
-                        _isDialogueActive   = true;
+                        _currentInteraction  = _activeInteractable.Data;
+                        _dialoguePages       = _currentInteraction.Text.Split('|');
+                        _currentDialoguePage = 0;
+                        _typewriterTimer     = 0f;
+                        _isDialogueActive    = true;
                         foreach (var kw in _activeInteractable.Data.Keywords)
                             _notebook.UnlockClue(kw.Id);
                     }
@@ -535,129 +570,139 @@ namespace CatDetective
                 // ════════════════════════════════════════════════════════════════
                 if (_isDialogueActive && _currentInteraction != null)
                 {
-                    const int BOX_PADDING = 20;
-                    const int BOX_HEIGHT  = 130;
-                    const int BOX_MARGIN  = 16;
                     var boxRect = new Rectangle(
-                        BOX_MARGIN,
-                        SCREEN_HEIGHT - BOX_HEIGHT - BOX_MARGIN,
-                        SCREEN_WIDTH - BOX_MARGIN * 2,
-                        BOX_HEIGHT);
+                        (SCREEN_WIDTH - 1400) / 2,
+                        SCREEN_HEIGHT - 450 - 40,
+                        1400, 450);
+
+                    const int PAD_X = 140;
+                    const int PAD_Y = 100;
 
                     _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-                    _spriteBatch.Draw(_debugPixel, boxRect, Color.Black * 0.75f);
+                    _spriteBatch.Draw(_dialogueBoxTex, boxRect, Color.White);
+
+                    int totalCharsOnPage = _dialoguePages[_currentDialoguePage]
+                        .Replace("[", "").Replace("]", "").Length;
+                    bool typingDone = _typewriterTimer >= totalCharsOnPage;
 
                     DrawRichText(
                         _spriteBatch,
                         _dialogueFont,
-                        _currentInteraction.Text,
+                        _dialoguePages[_currentDialoguePage],
                         _currentInteraction.Keywords,
-                        new Vector2(boxRect.X + BOX_PADDING, boxRect.Y + BOX_PADDING),
-                        boxRect.Width - BOX_PADDING * 2);
+                        new Vector2(boxRect.X + PAD_X, boxRect.Y + PAD_Y),
+                        boxRect.Width - PAD_X * 2,
+                        (int)_typewriterTimer);
 
-                    const string hint     = "[ Space ] to continue";
-                    var          hintSize = _dialogueFont.MeasureString(hint);
+                    bool isLastPage = _currentDialoguePage >= _dialoguePages.Length - 1;
+                    string hint     = typingDone
+                        ? (isLastPage ? "[ Space ] to dismiss" : "[ Space ] to continue")
+                        : "[ Space ] to skip";
+                    var    hintSize = _dialogueFont.MeasureString(hint);
                     _spriteBatch.DrawString(
                         _dialogueFont,
                         hint,
                         new Vector2(
-                            boxRect.Right  - BOX_PADDING - hintSize.X,
-                            boxRect.Bottom - BOX_PADDING - hintSize.Y),
-                        Color.LightGray);
+                            boxRect.Right  - PAD_X - hintSize.X,
+                            boxRect.Bottom - PAD_Y * 0.6f - hintSize.Y),
+                        new Color(90, 70, 50));
                     _spriteBatch.End();
                 }
 
                 // ════════════════════════════════════════════════════════════════
-                // PASS 7 — NOTEBOOK UI
+                // PASS 7 — NOTEBOOK UI  (hidden while dialogue is open)
                 // ════════════════════════════════════════════════════════════════
-                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-
-                if (!_isGameWon)
+                if (!_isDialogueActive)
                 {
-                    _spriteBatch.Draw(_debugPixel, _solveButtonRect, Color.DarkGoldenrod);
-                    var solveLbl = "SOLVE";
-                    var solveSz  = _dialogueFont.MeasureString(solveLbl);
-                    _spriteBatch.DrawString(
-                        _dialogueFont, solveLbl,
-                        new Vector2(
-                            _solveButtonRect.X + (_solveButtonRect.Width  - solveSz.X) * 0.5f,
-                            _solveButtonRect.Y + (_solveButtonRect.Height - solveSz.Y) * 0.5f),
-                        Color.White);
-                }
+                    _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-                _spriteBatch.Draw(_debugPixel, _notebookButtonRect, Color.DimGray);
-                var btnLabel     = "Notes";
-                var btnLabelSize = _dialogueFont.MeasureString(btnLabel);
-                _spriteBatch.DrawString(
-                    _dialogueFont, btnLabel,
-                    new Vector2(
-                        _notebookButtonRect.X + (_notebookButtonRect.Width  - btnLabelSize.X) * 0.5f,
-                        _notebookButtonRect.Y + (_notebookButtonRect.Height - btnLabelSize.Y) * 0.5f),
-                    Color.White);
-
-                if (_isNotebookOpen)
-                {
-                    var contentRect = new Rectangle(
-                        _notebookPanelRect.X,
-                        _notebookPanelRect.Y + 60,
-                        _notebookPanelRect.Width,
-                        _notebookPanelRect.Height - 60);
-                    _spriteBatch.Draw(_debugPixel, contentRect, Color.Black * 0.82f);
-
-                    for (int i = 0; i < _tabRects.Length; i++)
+                    if (!_isGameWon)
                     {
-                        bool active = (ClueCategory)i == _selectedTab;
-                        var tr = active
-                            ? new Rectangle(_tabRects[i].X, _tabRects[i].Y - 8,
-                                            _tabRects[i].Width, _tabRects[i].Height + 8)
-                            : _tabRects[i];
-
-                        _spriteBatch.Draw(_debugPixel, tr,
-                            active ? _tabColors[i] : _tabColors[i] * 0.55f);
-
-                        var labelSize = _dialogueFont.MeasureString(_tabLabels[i]);
+                        _spriteBatch.Draw(_debugPixel, _solveButtonRect, Color.DarkGoldenrod);
+                        var solveLbl = "SOLVE";
+                        var solveSz  = _dialogueFont.MeasureString(solveLbl);
                         _spriteBatch.DrawString(
-                            _dialogueFont, _tabLabels[i],
+                            _dialogueFont, solveLbl,
                             new Vector2(
-                                tr.X + (tr.Width  - labelSize.X) * 0.5f,
-                                tr.Y + (tr.Height - labelSize.Y) * 0.5f),
+                                _solveButtonRect.X + (_solveButtonRect.Width  - solveSz.X) * 0.5f,
+                                _solveButtonRect.Y + (_solveButtonRect.Height - solveSz.Y) * 0.5f),
                             Color.White);
                     }
 
-                    const int CLUE_PADDING = 16;
-                    float cx    = contentRect.X + CLUE_PADDING;
-                    float cy    = contentRect.Y + CLUE_PADDING;
-                    float maxW  = contentRect.Width - CLUE_PADDING * 2;
-                    float lineH = _dialogueFont.LineSpacing + 6;
+                    _spriteBatch.Draw(_debugPixel, _notebookButtonRect, Color.DimGray);
+                    var btnLabel     = "Notes";
+                    var btnLabelSize = _dialogueFont.MeasureString(btnLabel);
+                    _spriteBatch.DrawString(
+                        _dialogueFont, btnLabel,
+                        new Vector2(
+                            _notebookButtonRect.X + (_notebookButtonRect.Width  - btnLabelSize.X) * 0.5f,
+                            _notebookButtonRect.Y + (_notebookButtonRect.Height - btnLabelSize.Y) * 0.5f),
+                        Color.White);
 
-                    bool any = false;
-                    foreach (var clue in _notebook.UnlockedClues)
+                    if (_isNotebookOpen)
                     {
-                        if (clue.Category != _selectedTab) continue;
-                        any = true;
-                        _spriteBatch.DrawString(_dialogueFont, "* ", new Vector2(cx, cy), Color.LightGray);
-                        float bulletW = _dialogueFont.MeasureString("* ").X;
-                        cy = DrawWrappedString(_spriteBatch, _dialogueFont, $"{clue.Name.ToUpper()} - {clue.Context}",
-                                 new Vector2(cx + bulletW, cy),
-                                 maxW - bulletW, lineH,
-                                 Color.White);
-                        cy += 4f;
+                        var contentRect = new Rectangle(
+                            _notebookPanelRect.X,
+                            _notebookPanelRect.Y + 60,
+                            _notebookPanelRect.Width,
+                            _notebookPanelRect.Height - 60);
+                        _spriteBatch.Draw(_debugPixel, contentRect, Color.Black * 0.82f);
+
+                        for (int i = 0; i < _tabRects.Length; i++)
+                        {
+                            bool active = (ClueCategory)i == _selectedTab;
+                            var tr = active
+                                ? new Rectangle(_tabRects[i].X, _tabRects[i].Y - 8,
+                                                _tabRects[i].Width, _tabRects[i].Height + 8)
+                                : _tabRects[i];
+
+                            _spriteBatch.Draw(_debugPixel, tr,
+                                active ? _tabColors[i] : _tabColors[i] * 0.55f);
+
+                            var labelSize = _dialogueFont.MeasureString(_tabLabels[i]);
+                            _spriteBatch.DrawString(
+                                _dialogueFont, _tabLabels[i],
+                                new Vector2(
+                                    tr.X + (tr.Width  - labelSize.X) * 0.5f,
+                                    tr.Y + (tr.Height - labelSize.Y) * 0.5f),
+                                Color.White);
+                        }
+
+                        const int CLUE_PADDING = 16;
+                        float cx    = contentRect.X + CLUE_PADDING;
+                        float cy    = contentRect.Y + CLUE_PADDING;
+                        float maxW  = contentRect.Width - CLUE_PADDING * 2;
+                        float lineH = _dialogueFont.LineSpacing + 6;
+
+                        bool any = false;
+                        foreach (var clue in _notebook.UnlockedClues)
+                        {
+                            if (clue.Category != _selectedTab) continue;
+                            any = true;
+                            _spriteBatch.DrawString(_dialogueFont, "* ", new Vector2(cx, cy), Color.LightGray);
+                            float bulletW = _dialogueFont.MeasureString("* ").X;
+                            cy = DrawWrappedString(_spriteBatch, _dialogueFont, $"{clue.Name.ToUpper()} - {clue.Context}",
+                                     new Vector2(cx + bulletW, cy),
+                                     maxW - bulletW, lineH,
+                                     Color.White);
+                            cy += 4f;
+                        }
+
+                        if (!any)
+                        {
+                            _spriteBatch.DrawString(
+                                _dialogueFont, "- nothing yet -",
+                                new Vector2(cx, cy), Color.Gray);
+                        }
                     }
 
-                    if (!any)
-                    {
-                        _spriteBatch.DrawString(
-                            _dialogueFont, "- nothing yet -",
-                            new Vector2(cx, cy), Color.Gray);
-                    }
+                    _spriteBatch.End();
                 }
 
-                _spriteBatch.End();
-
                 // ════════════════════════════════════════════════════════════════
-                // PASS 8 — DEDUCTION BOARD / WIN STATE
+                // PASS 8 — DEDUCTION BOARD / WIN STATE  (hidden while dialogue is open)
                 // ════════════════════════════════════════════════════════════════
-                if (_isDeductionBoardOpen || _isGameWon)
+                if ((_isDeductionBoardOpen || _isGameWon) && !_isDialogueActive)
                 {
                     _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
@@ -860,7 +905,9 @@ namespace CatDetective
             return y + lineHeight;
         }
 
-        private static List<(string Text, Color Color)> ParseSpans(
+        private static readonly Color _inkColor = new Color(40, 30, 20);
+
+        private static List<(string Text, Color HighlightColor)> ParseSpans(
             string text, Keyword[] keywords)
         {
             var result = new List<(string, Color)>();
@@ -870,21 +917,21 @@ namespace CatDetective
                 int open = text.IndexOf('[', i);
                 if (open == -1)
                 {
-                    result.Add((text[i..], Color.White));
+                    result.Add((text[i..], Color.Transparent));
                     break;
                 }
                 if (open > i)
-                    result.Add((text[i..open], Color.White));
+                    result.Add((text[i..open], Color.Transparent));
 
                 int close = text.IndexOf(']', open + 1);
                 if (close == -1)
                 {
-                    result.Add((text[open..], Color.White));
+                    result.Add((text[open..], Color.Transparent));
                     break;
                 }
 
                 string bracketText = text[(open + 1)..close];
-                var kwColor = Color.White;
+                var kwColor = Color.Transparent;
                 foreach (var kw in keywords)
                 {
                     if (string.Equals(kw.DisplayText, bracketText,
@@ -906,14 +953,16 @@ namespace CatDetective
             string      text,
             Keyword[]   keywords,
             Vector2     origin,
-            float       maxWidth)
+            float       maxWidth,
+            int         maxChars = int.MaxValue)
         {
-            var   spans = ParseSpans(text, keywords);
-            float x     = origin.X;
-            float y     = origin.Y;
-            float lineH = font.LineSpacing;
+            var   spans      = ParseSpans(text, keywords);
+            float x          = origin.X;
+            float y          = origin.Y;
+            float lineH      = font.LineSpacing;
+            int   charsDrawn = 0;
 
-            foreach (var (spanText, color) in spans)
+            foreach (var (spanText, highlightColor) in spans)
             {
                 int pos = 0;
                 while (pos < spanText.Length)
@@ -936,8 +985,23 @@ namespace CatDetective
                             x  = origin.X;
                             y += lineH;
                         }
-                        spriteBatch.DrawString(font, token, new Vector2(x, y), color);
-                        x += tokenW;
+
+                        if (charsDrawn >= maxChars) return;
+
+                        string drawToken  = charsDrawn + token.Length > maxChars
+                            ? token.Substring(0, maxChars - charsDrawn)
+                            : token;
+                        float  drawTokenW = font.MeasureString(drawToken).X;
+
+                        if (highlightColor != Color.Transparent)
+                        {
+                            spriteBatch.Draw(_debugPixel,
+                                new Rectangle((int)x, (int)y + 8, (int)drawTokenW, (int)lineH - 12),
+                                highlightColor * 0.4f);
+                        }
+                        spriteBatch.DrawString(font, drawToken, new Vector2(x, y), _inkColor);
+                        x          += tokenW;
+                        charsDrawn += token.Length;
                     }
                 }
             }

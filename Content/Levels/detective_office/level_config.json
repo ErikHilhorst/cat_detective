@@ -7,10 +7,15 @@
   "clues": [
     { "id": "stolen_pet",                  "category": "What",      "name": "Stolen Macaw",         "context": "Rudebeak, Lance's prized macaw, was reported stolen." },
     { "id": "fish_tacos",                  "category": "What",      "name": "Fish Tacos",           "context": "Leftover takeout found in the bag at the office." },
+    { "id": "monday",                      "category": "WhereWhen", "name": "Monday",               "context": "A date in the detectives calendar." },
+    { "id": "tuesday",                      "category": "WhereWhen", "name": "Tuesday",               "context": "A date in the detectives calendar." },
+    { "id": "wednesday",                      "category": "WhereWhen", "name": "Wednesday",               "context": "A date in the detectives calendar." },
+    { "id": "thursday",                    "category": "WhereWhen", "name": "Thursday",             "context": "Detective has a dentist appointment this day." },
+    { "id": "friday",                      "category": "WhereWhen", "name": "Friday",               "context": "A date in the detectives calendar." },
+
     { "id": "saturday",                    "category": "WhereWhen", "name": "Saturday",             "context": "'Pirate Cove 3' premieres this day." },
     { "id": "sunday",                      "category": "WhereWhen", "name": "Sunday",               "context": "Someone's birthday falls on this day." },
-    { "id": "thursday",                    "category": "WhereWhen", "name": "Thursday",             "context": "Detective has a dentist appointment this day." },
-    { "id": "friday",                      "category": "WhereWhen", "name": "Friday",               "context": "Marked with a giant question mark on the calendar." },
+    
     { "id": "the_day_before_the_premiere", "category": "WhereWhen", "name": "Day Before Premiere",  "context": "Manager needed Lance at the house this day." },
     { "id": "downtown_office",             "category": "WhereWhen", "name": "Downtown Office",      "context": "The takeout delivery was brought here." },
     { "id": "malibu_mansion",              "category": "WhereWhen", "name": "Malibu Mansion",       "context": "VIP parking pass for this location found in the trash." }
@@ -38,10 +43,16 @@
     },
     {
       "id": "inspect_calendar",
-      "text": "The month is almost over. The detective has circled [Thursday] for the dentist, and [Friday] is marked with a giant question mark.",
+      "text": "The month is almost over. The detective has circled [Thursday] for the dentist. [Monday], [Tuesday], [Wednesday] and [Friday] are marked with various motivational phrases. [Saturday] is left empty and [Sunday] reads 'call mom'.",
       "keywords": [
+        { "displayText": "Monday", "id": "monday", "color": "plot" },
+                { "displayText": "Tuesday", "id": "tuesday", "color": "plot" },
+        { "displayText": "Wednesday", "id": "wednesday", "color": "plot" },
+  
         { "displayText": "Thursday", "id": "thursday", "color": "plot" },
-        { "displayText": "Friday",   "id": "friday",   "color": "plot" }
+        { "displayText": "Friday",   "id": "friday",   "color": "plot" },
+              { "displayText": "Saturday", "id": "saturday", "color": "plot" },
+        { "displayText": "Sunday", "id": "sunday", "color": "plot" }
       ],
       "scale": 0.5,
       "align": "Center",

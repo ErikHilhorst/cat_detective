@@ -23,6 +23,18 @@
 
 # ── Shared assets (cross-level) ────────────────────────────────────────────
 
+#begin Shared/ui_dialogue_box.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Shared/ui_dialogue_box.png
+
 #begin Shared/mask_sunbeams.png
 /importer:TextureImporter
 /processor:TextureProcessor

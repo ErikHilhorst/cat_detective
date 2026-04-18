@@ -40,3 +40,4 @@ C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\Interactables\inspect_newspaper.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\Interactables\inspect_takeout_bag.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\Interactables\inspect_trash_can.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\ui_dialogue_box.xnb

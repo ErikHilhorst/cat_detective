@@ -4,6 +4,7 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/ui_dialogue_box.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/mask_sunbeams.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/shadow_blob.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/walk_animation_forward.png</File>
@@ -19,6 +20,7 @@
     <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_trash_can.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
