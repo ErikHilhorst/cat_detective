@@ -34,7 +34,7 @@ namespace CatDetective.Entities
         private const float Y_SPEED = 125f;
 
         // ── Collision box ──────────────────────────────────────────────────────
-        private const int   FEET_BOX_HEIGHT = 14;   // px, covers only the paws on the floor
+        private const int   FEET_BOX_HEIGHT = 45;   // px, covers only the paws on the floor
 
         // ── Sprite scale ───────────────────────────────────────────────────────
         private const float SPRITE_SCALE_DOWN = 0.5f;

@@ -637,7 +637,7 @@ namespace CatDetective
                         any = true;
                         _spriteBatch.DrawString(_dialogueFont, "* ", new Vector2(cx, cy), Color.LightGray);
                         float bulletW = _dialogueFont.MeasureString("* ").X;
-                        cy = DrawWrappedString(_spriteBatch, _dialogueFont, clue.DisplayText,
+                        cy = DrawWrappedString(_spriteBatch, _dialogueFont, $"{clue.Name.ToUpper()} - {clue.Context}",
                                  new Vector2(cx + bulletW, cy),
                                  maxW - bulletW, lineH,
                                  Color.White);
@@ -741,7 +741,7 @@ namespace CatDetective
                                 var found = _notebook.UnlockedClues.Find(c => c.Id == slot.SelectedClueId);
                                 if (found != null)
                                 {
-                                    slotText  = found.DisplayText;
+                                    slotText  = found.Name;
                                     textColor = Color.White;
                                 }
                             }
@@ -802,9 +802,9 @@ namespace CatDetective
                                         activeSlot.Bounds.Width, 60);
                                     _spriteBatch.Draw(_debugPixel, itemRect,
                                         i % 2 == 0 ? new Color(25, 40, 80) : new Color(35, 52, 100));
-                                    var itemSz = _dialogueFont.MeasureString(filtered[i].DisplayText);
+                                    var itemSz = _dialogueFont.MeasureString(filtered[i].Name);
                                     _spriteBatch.DrawString(
-                                        _dialogueFont, filtered[i].DisplayText,
+                                        _dialogueFont, filtered[i].Name,
                                         new Vector2(
                                             itemRect.X + 12,
                                             itemRect.Y + (itemRect.Height - itemSz.Y) * 0.5f),

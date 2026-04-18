@@ -36,9 +36,10 @@ namespace CatDetective.Map
 
     internal sealed class ClueConfigData
     {
-        [JsonPropertyName("id")]          public string Id          { get; set; } = "";
-        [JsonPropertyName("category")]    public string Category    { get; set; } = "";
-        [JsonPropertyName("displayText")] public string DisplayText { get; set; } = "";
+        [JsonPropertyName("id")]       public string Id       { get; set; } = "";
+        [JsonPropertyName("category")] public string Category { get; set; } = "";
+        [JsonPropertyName("name")]     public string Name     { get; set; } = "";
+        [JsonPropertyName("context")]  public string Context  { get; set; } = "";
     }
 
     internal sealed class InteractableConfigData
@@ -137,7 +138,7 @@ namespace CatDetective.Map
         {
             var dict = new Dictionary<string, Clue>(raw.Count);
             foreach (var c in raw)
-                dict[c.Id] = new Clue(c.Id, ParseCategory(c.Category), c.DisplayText);
+                dict[c.Id] = new Clue(c.Id, ParseCategory(c.Category), c.Name, c.Context);
             return dict;
         }
 

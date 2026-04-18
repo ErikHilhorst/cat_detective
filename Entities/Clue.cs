@@ -4,15 +4,17 @@ namespace CatDetective.Entities
 
     public sealed class Clue
     {
-        public string       Id          { get; }
-        public ClueCategory Category    { get; }
-        public string       DisplayText { get; }
+        public string       Id       { get; }
+        public ClueCategory Category { get; }
+        public string       Name     { get; }
+        public string       Context  { get; }
 
-        public Clue(string id, ClueCategory category, string displayText)
+        public Clue(string id, ClueCategory category, string name, string context)
         {
-            Id          = id;
-            Category    = category;
-            DisplayText = displayText;
+            Id       = id;
+            Category = category;
+            Name     = name;
+            Context  = context;
         }
     }
 }
