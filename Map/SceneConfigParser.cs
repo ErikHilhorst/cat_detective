@@ -42,6 +42,28 @@ namespace CatDetective.Map
         };
 
         /// <summary>
+        /// Returns the list of scene IDs defined in scenes_config.json.
+        /// Returns an empty list if the file is missing or malformed.
+        /// </summary>
+        public static List<string> GetAvailableScenes(string configPath)
+        {
+            if (!File.Exists(configPath))
+                return new List<string>();
+
+            try
+            {
+                var data = JsonSerializer.Deserialize<SceneConfigData>(
+                    File.ReadAllText(configPath), _jsonOptions);
+                return data != null ? new List<string>(data.Scenes.Keys) : new List<string>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[SceneConfigParser] ERROR reading config file: {ex.Message}");
+                return new List<string>();
+            }
+        }
+
+        /// <summary>
         /// Returns the ambient background <see cref="Color"/> for the given scene ID.
         /// Falls back to <see cref="Color.Black"/> if the file or scene is missing.
         /// </summary>

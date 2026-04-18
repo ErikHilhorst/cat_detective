@@ -126,7 +126,7 @@
                  "y":936.725525153089
                 }, 
                 {
-                 "height":64.5,
+                 "height":101.5,
                  "id":28,
                  "name":"trashcan",
                  "opacity":1,
@@ -134,8 +134,8 @@
                  "type":"",
                  "visible":true,
                  "width":105.333333333333,
-                 "x":173.799757124771,
-                 "y":983.058858486422
+                 "x":175.799757124771,
+                 "y":890.058858486422
                 }, 
                 {
                  "height":62.6666666666666,
@@ -427,7 +427,7 @@
                 },
             
                 {
-                 "height":181.5,
+                 "height":30,
                  "id":90,
                  "name":"",
                  "opacity":1,
@@ -440,7 +440,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -498,7 +498,7 @@
                  "y":505.333333333333
                 }, 
                 {
-                 "height":136.666666666667,
+                 "height":169.166666666667,
                  "id":89,
                  "name":"inspect_trash_can",
                  "opacity":1,
@@ -511,7 +511,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -549,9 +549,32 @@
          "visible":false,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":7,
+         "name":"Spawn",
+         "objects":[
+                {
+                 "height":96,
+                 "id":91,
+                 "name":"spawn",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":157.5,
+                 "x":518.5,
+                 "y":1040
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":7,
- "nextobjectid":91,
+ "nextlayerid":8,
+ "nextobjectid":92,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",

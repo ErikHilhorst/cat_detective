@@ -427,7 +427,7 @@
                 },
             
                 {
-                 "height":181.5,
+                 "height":30,
                  "id":90,
                  "name":"",
                  "opacity":1,
@@ -440,7 +440,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -511,7 +511,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -549,9 +549,32 @@
          "visible":false,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":7,
+         "name":"Spawn",
+         "objects":[
+                {
+                 "height":96,
+                 "id":91,
+                 "name":"spawn",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":157.5,
+                 "x":518.5,
+                 "y":1040
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":7,
- "nextobjectid":91,
+ "nextlayerid":8,
+ "nextobjectid":92,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",

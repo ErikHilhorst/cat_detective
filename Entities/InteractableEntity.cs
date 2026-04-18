@@ -32,30 +32,45 @@ namespace CatDetective.Entities
             => Draw(spriteBatch, isHighlighted: false, totalSeconds: 0.0);
 
         /// <param name="isHighlighted">True when the cat overlaps this entity's TriggerZone.</param>
-        /// <param name="totalSeconds">gameTime.TotalGameTime.TotalSeconds — drives the pulse.</param>
         public void Draw(SpriteBatch spriteBatch, bool isHighlighted, double totalSeconds)
         {
             if (Texture == null) return;
 
-            var tint = Color.White;
-            if (isHighlighted)
-            {
-                float pulse = (float)(Math.Sin(totalSeconds * 5.0) * 0.5 + 0.5);
-                tint = Color.Lerp(Color.White, new Color(200, 255, 200), pulse * 0.4f);
-            }
-
-            float    scale    = Data?.Scale ?? 1.0f;
-            Vector2  origin   = Data == null ? new Vector2(Texture.Width * 0.5f, Texture.Height)
-                                             : CalcOrigin(Data.Align, Texture.Width, Texture.Height);
-            Vector2  drawPos  = Position;
+            float   scale   = Data?.Scale ?? 1.0f;
+            Vector2 origin  = Data == null ? new Vector2(Texture.Width * 0.5f, Texture.Height)
+                                           : CalcOrigin(Data.Align, Texture.Width, Texture.Height);
+            Vector2 drawPos = Position;
             if (Data != null)
                 drawPos += new Vector2(Data.OffsetX, Data.OffsetY);
+
+            if (isHighlighted)
+            {
+                scale   *= 1.03f;
+                drawPos  = new Vector2(drawPos.X, drawPos.Y - 4f);
+
+                var outlineColor = new Color(255, 250, 200);
+                float outlineDepth = Math.Max(0f, LayerDepth - 0.0001f);
+                Vector2[] offsets = [new(-2, 0), new(2, 0), new(0, -2), new(0, 2)];
+                foreach (var off in offsets)
+                {
+                    spriteBatch.Draw(
+                        Texture,
+                        position:        drawPos + off,
+                        sourceRectangle: null,
+                        color:           outlineColor,
+                        rotation:        0f,
+                        origin:          origin,
+                        scale:           new Vector2(scale),
+                        effects:         SpriteEffects.None,
+                        layerDepth:      outlineDepth);
+                }
+            }
 
             spriteBatch.Draw(
                 Texture,
                 position:        drawPos,
                 sourceRectangle: null,
-                color:           tint,
+                color:           Color.White,
                 rotation:        0f,
                 origin:          origin,
                 scale:           new Vector2(scale),

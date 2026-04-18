@@ -26,7 +26,7 @@
       ],
       "scale": 0.5,
       "align": "Center",
-      "offsetY": -40
+      "offsetY": -175
     },
     {
       "id": "inspect_takeout_bag",
@@ -42,7 +42,10 @@
       "keywords": [
         { "displayText": "Thursday", "id": "thursday", "color": "plot" },
         { "displayText": "Friday",   "id": "friday",   "color": "plot" }
-      ]
+      ],
+      "scale": 0.5,
+      "align": "Center",
+      "offsetY": 0
     },
     {
       "id": "inspect_newspaper",

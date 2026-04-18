@@ -115,11 +115,13 @@ namespace CatDetective.Map
             Dictionary<string, InteractionData> levelData,
             out List<Rectangle> solidBoundaries,
             out List<(string Name, Rectangle Rect)> triggers,
-            out List<InteractableEntity> interactables)
+            out List<InteractableEntity> interactables,
+            out Vector2? spawnPoint)
         {
             solidBoundaries = new List<Rectangle>();
             triggers        = new List<(string, Rectangle)>();
             interactables   = new List<InteractableEntity>();
+            spawnPoint      = null;
 
             if (!File.Exists(jsonPath))
             {
@@ -145,6 +147,13 @@ namespace CatDetective.Map
             foreach (var layer in mapData.Layers)
             {
                 if (layer.Type != "objectgroup") continue;
+
+                foreach (var obj in layer.Objects)
+                {
+                    if (spawnPoint == null &&
+                        obj.Name.Equals("spawn", StringComparison.OrdinalIgnoreCase))
+                        spawnPoint = new Vector2(obj.X, obj.Y);
+                }
 
                 switch (layer.Name)
                 {
