@@ -4,18 +4,24 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/bg_base.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/prop_desk.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/prop_cabinet.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_down.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_upward.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/dialogue_font.spritefont</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/mask_sunbeams.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/shadow_blob.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/walk_animation_forward.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/walk_animation_upward.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/dialogue_font.spritefont</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/bg_base.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/prop_desk.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/prop_cabinet.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_answering_machine.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_calendar.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_newspaper.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_takeout_bag.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_trash_can.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

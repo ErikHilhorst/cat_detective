@@ -65,8 +65,11 @@ namespace CatDetective
         private Prop _cabinet = null!;
 
         // ── World data from Tiled ──────────────────────────────────────────────
-        private List<Rectangle>                   _solidBoundaries = new();
-        private List<(string Name, Rectangle Rect)> _interactables = new();
+        private List<Rectangle>          _solidBoundaries = new();
+        private List<InteractableEntity> _interactables   = new();
+
+        // ── Active interactable (updated each frame for highlighting) ──────────
+        private InteractableEntity? _activeInteractable;
 
         // ── Interaction system ─────────────────────────────────────────────────
         private Dictionary<string, InteractionData> _interactionDatabase = null!;
@@ -74,10 +77,23 @@ namespace CatDetective
         private InteractionData? _currentInteraction;
 
         // ── Notebook / inventory ───────────────────────────────────────────────
-        private NotebookManager _notebook = new();
+        private NotebookManager _notebook       = null!;
         private bool         _isNotebookOpen = false;
         private ClueCategory _selectedTab    = ClueCategory.Who;
         private MouseState   _prevMouseState;
+
+        // ── Deduction board ────────────────────────────────────────────────────
+        private DeductionManager _deduction              = null!;
+        private bool             _isDeductionBoardOpen   = false;
+        private int              _activeDropdownSlotIndex = -1;
+        private bool             _isGameWon              = false;
+
+        private static readonly Rectangle _solveButtonRect =
+            new Rectangle(2020 - 160, 1136 - 160, 120, 120);
+        private static readonly Rectangle _deductionPanelRect =
+            new Rectangle(650, 340, 720, 620);
+        private static readonly Rectangle _submitButtonRect =
+            new Rectangle(860, 820, 300, 80);
 
         // Notebook UI rectangles — all in virtual 2020×1136 screen space.
         private static readonly Rectangle _notebookButtonRect =
@@ -148,15 +164,15 @@ namespace CatDetective
             _renderTarget = new RenderTarget2D(GraphicsDevice, SCREEN_WIDTH, SCREEN_HEIGHT);
 
             // ── Scene textures ───────────────────────────────────────────────
-            _bgBase       = Content.Load<Texture2D>("bg_base");
-            _sunbeamsMask = Content.Load<Texture2D>("mask_sunbeams");
+            _bgBase       = Content.Load<Texture2D>("Levels/detective_office/bg_base");
+            _sunbeamsMask = Content.Load<Texture2D>("Shared/mask_sunbeams");
 
             // ── Cat ──────────────────────────────────────────────────────────
             // Sprite sheet: 2100 × 700 px, 11 frames in a 6×2 grid.
             // Both directions use the forward sheet until the up-facing sheet is ready.
-            var walkForward = Content.Load<Texture2D>("walk_animation_forward");
-            var walkUpward  = Content.Load<Texture2D>("walk_animation_upward");
-            var shadow      = Content.Load<Texture2D>("shadow_blob");
+            var walkForward = Content.Load<Texture2D>("Shared/walk_animation_forward");
+            var walkUpward  = Content.Load<Texture2D>("Shared/walk_animation_upward");
+            var shadow      = Content.Load<Texture2D>("Shared/shadow_blob");
 
             // Start position: centre-X, lower floor area.
             // Adjust Y once the room art is reviewed in-engine.
@@ -170,67 +186,34 @@ namespace CatDetective
             // Full-room overlay PNGs: same 1072 × 1136 canvas as bg_base.
             // sortY is the approximate Y of each prop's floor contact point within
             // the image. Tune these values after reviewing the art in-engine.
-            var deskTex    = Content.Load<Texture2D>("prop_desk");
-            var cabinetTex = Content.Load<Texture2D>("prop_cabinet");
+            var deskTex    = Content.Load<Texture2D>("Levels/detective_office/prop_desk");
+            var cabinetTex = Content.Load<Texture2D>("Levels/detective_office/prop_cabinet");
 
             // ── Debug pixel ─────────────────────────────────────────────────
             _debugPixel = new Texture2D(GraphicsDevice, 1, 1);
             _debugPixel.SetData(new[] { Color.White });
 
             // ── Dialogue font ────────────────────────────────────────────────
-            _dialogueFont = Content.Load<SpriteFont>("dialogue_font");
+            _dialogueFont = Content.Load<SpriteFont>("Shared/dialogue_font");
 
-            // ── Interaction database (hardcoded; swap for data file later) ───
-            // [bracket] tokens in Text are tinted using the matching Keyword.Color.
-            _interactionDatabase = new Dictionary<string, InteractionData>
-            {
-                { "inspect_answering_machine", new InteractionData(
-                    "BEEP. 'Hey, it's Lance's manager. We need you at the house " +
-                    "[the day before the premiere]! Don't be late!' " +
-                    "BEEP. 'Hi honey, don't forget my birthday on [Sunday]!'",
-                    new[] {
-                        new Keyword("the day before the premiere", "the_day_before_the_premiere", InteractionData.Plot),
-                        new Keyword("Sunday",                      "sunday",                      InteractionData.Plot),
-                    }) },
+            // ── Level config (clues, interactables, deduction solution) ─────
+            string levelConfigPath = Path.Combine(
+                Content.RootDirectory, "Levels", "detective_office", "level_config.json");
+            var levelConfig = LevelConfigParser.Load(levelConfigPath);
 
-                { "inspect_takeout_bag", new InteractionData(
-                    "Smells like leftover [Fish Tacos]. The delivery receipt says it " +
-                    "was brought to the [Downtown Office].",
-                    new[] {
-                        new Keyword("Fish Tacos",      "fish_tacos",      InteractionData.Misc),
-                        new Keyword("Downtown Office", "downtown_office", InteractionData.Plot),
-                    }) },
-
-                { "inspect_calendar", new InteractionData(
-                    "The month is almost over. The detective has circled [Thursday] " +
-                    "for the dentist, and [Friday] is marked with a giant question mark.",
-                    new[] {
-                        new Keyword("Thursday", "thursday", InteractionData.Plot),
-                        new Keyword("Friday",   "friday",   InteractionData.Plot),
-                    }) },
-
-                { "inspect_newspaper", new InteractionData(
-                    "'Pirate Cove 3' premieres this [Saturday]! But production halts " +
-                    "as Lance's prized macaw, Rudebeak, is reported as a [stolen pet]!",
-                    new[] {
-                        new Keyword("Saturday",   "saturday",   InteractionData.Plot),
-                        new Keyword("stolen pet", "stolen_pet", InteractionData.Crime),
-                    }) },
-
-                { "inspect_trash_can", new InteractionData(
-                    "A bunch of unpaid bills, and a shiny VIP parking pass for a [Malibu Mansion].",
-                    new[] {
-                        new Keyword("Malibu Mansion", "malibu_mansion", InteractionData.Plot),
-                    }) },
-            };
+            _interactionDatabase = levelConfig.Interactables;
+            _notebook            = new NotebookManager(levelConfig.Clues);
+            _deduction           = new DeductionManager(levelConfig.DeductionSlots);
 
             // ── Scene config ─────────────────────────────────────────────────
             string configPath = Path.Combine(Content.RootDirectory, "scenes_config.json");
             _ambientColor = SceneConfigParser.GetAmbientColor(configPath, "detective_office");
 
             // ── Parse Tiled map ──────────────────────────────────────────────
-            string mapPath = Path.Combine(Content.RootDirectory, "room_map.json");
-            MapParser.Parse(mapPath, out _solidBoundaries, out var triggers, out _interactables);
+            string mapPath = Path.Combine(
+                Content.RootDirectory, "Levels", "detective_office", "room_map.json");
+            MapParser.Parse(mapPath, Content, "detective_office", _interactionDatabase,
+                out _solidBoundaries, out var triggers, out _interactables);
 
             // ── Wire trigger zones to props ───────────────────────────────────
             var deskTrigger    = new Rectangle(230, 490, 280, 210); // fallback
@@ -271,18 +254,78 @@ namespace CatDetective
                     (int)(mouseState.X / DISPLAY_SCALE),
                     (int)(mouseState.Y / DISPLAY_SCALE));
 
-                if (_notebookButtonRect.Contains(vm))
+                if (!_isGameWon)
                 {
-                    _isNotebookOpen = !_isNotebookOpen;
-                }
-                else if (_isNotebookOpen)
-                {
-                    for (int i = 0; i < _tabRects.Length; i++)
+                    if (_isDeductionBoardOpen)
                     {
-                        if (_tabRects[i].Contains(vm))
+                        if (_activeDropdownSlotIndex >= 0)
                         {
-                            _selectedTab = (ClueCategory)i;
-                            break;
+                            // Player is picking a clue from the dropdown.
+                            var slot     = _deduction.Slots[_activeDropdownSlotIndex];
+                            var filtered = _notebook.UnlockedClues.FindAll(c => c.Category == slot.Category);
+                            bool hit     = false;
+                            for (int i = 0; i < filtered.Count; i++)
+                            {
+                                var itemRect = new Rectangle(
+                                    slot.Bounds.X, slot.Bounds.Bottom + i * 60,
+                                    slot.Bounds.Width, 60);
+                                if (itemRect.Contains(vm))
+                                {
+                                    slot.SelectedClueId      = filtered[i].Id;
+                                    _activeDropdownSlotIndex = -1;
+                                    hit = true;
+                                    break;
+                                }
+                            }
+                            if (!hit)
+                                _activeDropdownSlotIndex = -1;
+                        }
+                        else
+                        {
+                            if (_submitButtonRect.Contains(vm))
+                            {
+                                if (_deduction.ValidateCase())
+                                    _isGameWon = true;
+                            }
+                            else
+                            {
+                                bool hitSlot = false;
+                                for (int i = 0; i < _deduction.Slots.Count; i++)
+                                {
+                                    if (_deduction.Slots[i].Bounds.Contains(vm))
+                                    {
+                                        _activeDropdownSlotIndex = i;
+                                        hitSlot = true;
+                                        break;
+                                    }
+                                }
+                                // Click outside the panel closes the board.
+                                if (!hitSlot && !_deductionPanelRect.Contains(vm))
+                                    _isDeductionBoardOpen = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (_solveButtonRect.Contains(vm))
+                        {
+                            _isDeductionBoardOpen = true;
+                            _isNotebookOpen       = false;
+                        }
+                        else if (_notebookButtonRect.Contains(vm))
+                        {
+                            _isNotebookOpen = !_isNotebookOpen;
+                        }
+                        else if (_isNotebookOpen)
+                        {
+                            for (int i = 0; i < _tabRects.Length; i++)
+                            {
+                                if (_tabRects[i].Contains(vm))
+                                {
+                                    _selectedTab = (ClueCategory)i;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
@@ -303,19 +346,24 @@ namespace CatDetective
                 _cat.Update(gameTime);
                 _cat.MoveWithCollision(dt, _solidBoundaries);
 
-                // Check whether the cat stepped into an interactable zone.
-                var zone = _cat.GetActiveInteractionZone(_interactables);
-                if (zone != null && _cat.IsInteractPressed())
+                // Find the first interactable the cat overlaps (for highlight + input).
+                _activeInteractable = null;
+                foreach (var entity in _interactables)
                 {
-                    if (_interactionDatabase.TryGetValue(zone.Value.Name, out var data))
+                    if (_cat.CollisionBox.Intersects(entity.TriggerZone))
                     {
-                        _currentInteraction = data;
-                        _isDialogueActive   = true;
-
-                        // Unlock any clues attached to this interaction's keywords.
-                        foreach (var kw in data.Keywords)
-                            _notebook.UnlockClue(kw.Id);
+                        _activeInteractable = entity;
+                        break;
                     }
+                }
+
+                if (_activeInteractable != null && _cat.IsInteractPressed()
+                    && _activeInteractable.Data != null)
+                {
+                    _currentInteraction = _activeInteractable.Data;
+                    _isDialogueActive   = true;
+                    foreach (var kw in _activeInteractable.Data.Keywords)
+                        _notebook.UnlockClue(kw.Id);
                 }
             }
 
@@ -360,6 +408,10 @@ namespace CatDetective
             _desk.Draw(_spriteBatch);
             _cabinet.Draw(_spriteBatch);
             _cat.Draw(_spriteBatch);
+            foreach (var entity in _interactables)
+                entity.Draw(_spriteBatch,
+                    isHighlighted: entity == _activeInteractable,
+                    totalSeconds:  gameTime.TotalGameTime.TotalSeconds);
             _spriteBatch.End();
 
             // ════════════════════════════════════════════════════════════════
@@ -438,6 +490,20 @@ namespace CatDetective
             // ════════════════════════════════════════════════════════════════
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
+            // Solve button — bottom-right corner, always visible.
+            if (!_isGameWon)
+            {
+                _spriteBatch.Draw(_debugPixel, _solveButtonRect, Color.DarkGoldenrod);
+                var solveLbl  = "SOLVE";
+                var solveSz   = _dialogueFont.MeasureString(solveLbl);
+                _spriteBatch.DrawString(
+                    _dialogueFont, solveLbl,
+                    new Vector2(
+                        _solveButtonRect.X + (_solveButtonRect.Width  - solveSz.X) * 0.5f,
+                        _solveButtonRect.Y + (_solveButtonRect.Height - solveSz.Y) * 0.5f),
+                    Color.White);
+            }
+
             // Toggle button — always visible.
             _spriteBatch.Draw(_debugPixel, _notebookButtonRect, Color.DimGray);
             var btnLabel     = "Notes";
@@ -513,6 +579,183 @@ namespace CatDetective
             }
 
             _spriteBatch.End();
+
+            // ════════════════════════════════════════════════════════════════
+            // PASS 8 — DEDUCTION BOARD / WIN STATE
+            // AlphaBlend, NO camera transform — fixed to virtual screen coords.
+            // ════════════════════════════════════════════════════════════════
+            if (_isDeductionBoardOpen || _isGameWon)
+            {
+                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
+                if (_isGameWon)
+                {
+                    _spriteBatch.Draw(_debugPixel,
+                        new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
+                        Color.Black * 0.85f);
+
+                    const string banner      = "CASE CLOSED!";
+                    const float  bannerScale = 3f;
+                    var          bannerSz    = _dialogueFont.MeasureString(banner) * bannerScale;
+                    var          bannerPos   = new Vector2(
+                        (SCREEN_WIDTH  - bannerSz.X) * 0.5f,
+                        (SCREEN_HEIGHT - bannerSz.Y) * 0.5f);
+
+                    // Shadow
+                    _spriteBatch.DrawString(_dialogueFont, banner,
+                        bannerPos + new Vector2(6, 6), Color.Black * 0.8f,
+                        0f, Vector2.Zero, bannerScale, SpriteEffects.None, 0f);
+                    // Main text
+                    _spriteBatch.DrawString(_dialogueFont, banner,
+                        bannerPos, Color.Gold,
+                        0f, Vector2.Zero, bannerScale, SpriteEffects.None, 0f);
+
+                    const string sub    = "Press Escape to quit";
+                    var          subSz  = _dialogueFont.MeasureString(sub);
+                    _spriteBatch.DrawString(
+                        _dialogueFont, sub,
+                        new Vector2((SCREEN_WIDTH - subSz.X) * 0.5f, bannerPos.Y + bannerSz.Y + 20),
+                        Color.LightGray);
+                }
+                else
+                {
+                    // Full-screen dim overlay
+                    _spriteBatch.Draw(_debugPixel,
+                        new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
+                        Color.Black * 0.7f);
+
+                    // Panel background
+                    _spriteBatch.Draw(_debugPixel, _deductionPanelRect, new Color(15, 25, 55));
+
+                    // Panel title
+                    const string panelTitle = "DEDUCTION BOARD";
+                    var          titleSz    = _dialogueFont.MeasureString(panelTitle);
+                    _spriteBatch.DrawString(
+                        _dialogueFont, panelTitle,
+                        new Vector2(
+                            _deductionPanelRect.X + (_deductionPanelRect.Width - titleSz.X) * 0.5f,
+                            _deductionPanelRect.Y + 12),
+                        Color.White);
+
+                    // Instruction line
+                    const string instr   = "Tap a slot to fill it, then submit your deduction.";
+                    var          instrSz = _dialogueFont.MeasureString(instr);
+                    _spriteBatch.DrawString(
+                        _dialogueFont, instr,
+                        new Vector2(
+                            _deductionPanelRect.X + (_deductionPanelRect.Width - instrSz.X) * 0.5f,
+                            _deductionPanelRect.Y + 12 + titleSz.Y + 4),
+                        Color.LightGray);
+
+                    // Slots
+                    string[] catLabels = { "WHO", "WHAT", "WHY", "WHERE/WHEN" };
+                    const int BADGE_W  = 130;
+                    for (int i = 0; i < _deduction.Slots.Count; i++)
+                    {
+                        var slot      = _deduction.Slots[i];
+                        var slotColor = _tabColors[(int)slot.Category];
+
+                        // Slot background
+                        _spriteBatch.Draw(_debugPixel, slot.Bounds, slotColor * 0.25f);
+
+                        // Category badge (left strip)
+                        var badgeRect = new Rectangle(
+                            slot.Bounds.X, slot.Bounds.Y, BADGE_W, slot.Bounds.Height);
+                        _spriteBatch.Draw(_debugPixel, badgeRect, slotColor);
+                        var catLblSz = _dialogueFont.MeasureString(catLabels[(int)slot.Category]);
+                        _spriteBatch.DrawString(
+                            _dialogueFont, catLabels[(int)slot.Category],
+                            new Vector2(
+                                badgeRect.X + (badgeRect.Width  - catLblSz.X) * 0.5f,
+                                badgeRect.Y + (badgeRect.Height - catLblSz.Y) * 0.5f),
+                            Color.White);
+
+                        // Clue text (right portion)
+                        string slotText  = "[ TAP TO SELECT ]";
+                        Color  textColor = Color.DimGray;
+                        if (slot.SelectedClueId != null)
+                        {
+                            var found = _notebook.UnlockedClues.Find(c => c.Id == slot.SelectedClueId);
+                            if (found != null)
+                            {
+                                slotText  = found.DisplayText;
+                                textColor = Color.White;
+                            }
+                        }
+                        var slotTextSz = _dialogueFont.MeasureString(slotText);
+                        _spriteBatch.DrawString(
+                            _dialogueFont, slotText,
+                            new Vector2(
+                                slot.Bounds.X + BADGE_W + 10,
+                                slot.Bounds.Y + (slot.Bounds.Height - slotTextSz.Y) * 0.5f),
+                            textColor);
+                    }
+
+                    // Validation message (above submit button)
+                    if (!string.IsNullOrEmpty(_deduction.ValidationMessage))
+                    {
+                        var msgSz    = _dialogueFont.MeasureString(_deduction.ValidationMessage);
+                        bool correct = _deduction.ValidationMessage == "Correct!";
+                        _spriteBatch.DrawString(
+                            _dialogueFont, _deduction.ValidationMessage,
+                            new Vector2(
+                                _submitButtonRect.X + (_submitButtonRect.Width  - msgSz.X) * 0.5f,
+                                _submitButtonRect.Y - msgSz.Y - 10),
+                            correct ? Color.LimeGreen : Color.OrangeRed);
+                    }
+
+                    // Submit button
+                    _spriteBatch.Draw(_debugPixel, _submitButtonRect, new Color(20, 100, 40));
+                    var submitLbl  = "SUBMIT";
+                    var submitSz   = _dialogueFont.MeasureString(submitLbl);
+                    _spriteBatch.DrawString(
+                        _dialogueFont, submitLbl,
+                        new Vector2(
+                            _submitButtonRect.X + (_submitButtonRect.Width  - submitSz.X) * 0.5f,
+                            _submitButtonRect.Y + (_submitButtonRect.Height - submitSz.Y) * 0.5f),
+                        Color.White);
+
+                    // Dropdown (drawn last so it sits on top of slots)
+                    if (_activeDropdownSlotIndex >= 0)
+                    {
+                        var activeSlot = _deduction.Slots[_activeDropdownSlotIndex];
+                        var filtered   = _notebook.UnlockedClues
+                            .FindAll(c => c.Category == activeSlot.Category);
+
+                        if (filtered.Count == 0)
+                        {
+                            var emptyRect = new Rectangle(
+                                activeSlot.Bounds.X, activeSlot.Bounds.Bottom,
+                                activeSlot.Bounds.Width, 60);
+                            _spriteBatch.Draw(_debugPixel, emptyRect, new Color(50, 50, 60));
+                            _spriteBatch.DrawString(
+                                _dialogueFont, "No clues found yet.",
+                                new Vector2(emptyRect.X + 12, emptyRect.Y + 10),
+                                Color.Gray);
+                        }
+                        else
+                        {
+                            for (int i = 0; i < filtered.Count; i++)
+                            {
+                                var itemRect = new Rectangle(
+                                    activeSlot.Bounds.X, activeSlot.Bounds.Bottom + i * 60,
+                                    activeSlot.Bounds.Width, 60);
+                                _spriteBatch.Draw(_debugPixel, itemRect,
+                                    i % 2 == 0 ? new Color(25, 40, 80) : new Color(35, 52, 100));
+                                var itemSz = _dialogueFont.MeasureString(filtered[i].DisplayText);
+                                _spriteBatch.DrawString(
+                                    _dialogueFont, filtered[i].DisplayText,
+                                    new Vector2(
+                                        itemRect.X + 12,
+                                        itemRect.Y + (itemRect.Height - itemSz.Y) * 0.5f),
+                                    Color.White);
+                            }
+                        }
+                    }
+                }
+
+                _spriteBatch.End();
+            }
 
             // ── Blit render target to the OS window at display scale ─────────
             GraphicsDevice.SetRenderTarget(null);

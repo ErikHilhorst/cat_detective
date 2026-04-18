@@ -47,13 +47,16 @@ The content is organized as follows:
 bin/Debug/net8.0/CatDetective.deps.json
 bin/Debug/net8.0/CatDetective.runtimeconfig.json
 bin/Debug/net8.0/Content/room_map.json
+bin/Debug/net8.0/Content/scenes_config.json
 cat detective GDD.txt
 CatDetective.csproj
 CLAUDE.md
 Content/Content.mgcb
+Content/dialogue_font.spritefont
 Content/obj/DesktopGL/net8.0/Content/.mgcontent
 Content/obj/DesktopGL/net8.0/Content/.mgstats
 Content/obj/DesktopGL/net8.0/Content/bg_base.mgcontent
+Content/obj/DesktopGL/net8.0/Content/dialogue_font.mgcontent
 Content/obj/DesktopGL/net8.0/Content/mask_sunbeams.mgcontent
 Content/obj/DesktopGL/net8.0/Content/prop_cabinet.mgcontent
 Content/obj/DesktopGL/net8.0/Content/prop_desk.mgcontent
@@ -63,13 +66,18 @@ Content/obj/DesktopGL/net8.0/Content/spr_cat_walk_up.mgcontent
 Content/obj/DesktopGL/net8.0/Content/walk_animation_forward.mgcontent
 Content/obj/DesktopGL/net8.0/Content/walk_animation_upward.mgcontent
 Content/room_map.json
+Content/scenes_config.json
 DebugHelper.cs
 dotnet-tools.json
 Entities/Cat.cs
+Entities/Clue.cs
 Entities/GameObject.cs
+Entities/InteractionData.cs
 Entities/Prop.cs
 Game1.cs
+GDD followup
 Map/MapParser.cs
+Map/SceneConfigParser.cs
 obj/CatDetective.csproj.nuget.dgspec.json
 obj/CatDetective.csproj.nuget.g.props
 obj/CatDetective.csproj.nuget.g.targets
@@ -85,12 +93,83 @@ obj/project.assets.json
 obj/project.nuget.cache
 Program.cs
 run_game.md
+Systems/DeductionManager.cs
+Systems/NotebookManager.cs
 Tiled maps/untitledcat_detective.tiled-project
 Tiled maps/untitledcat_detective.tiled-session
 </directory_structure>
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="Systems/DeductionManager.cs">
+using System.Collections.Generic;
+using CatDetective.Entities;
+using Microsoft.Xna.Framework;
+
+namespace CatDetective.Systems
+{
+    public sealed class DeductionSlot
+    {
+        public ClueCategory Category       { get; }
+        public string       CorrectClueId  { get; }
+        public string?      SelectedClueId { get; set; }
+        public Rectangle    Bounds         { get; }
+
+        public DeductionSlot(ClueCategory category, string correctClueId, Rectangle bounds)
+        {
+            Category      = category;
+            CorrectClueId = correctClueId;
+            Bounds        = bounds;
+        }
+    }
+
+    public sealed class DeductionManager
+    {
+        public List<DeductionSlot> Slots             { get; private set; }
+        public string              ValidationMessage { get; set; } = "";
+
+        public DeductionManager()
+        {
+            // Tutorial case: Rudebeak the macaw was stolen (What),
+            // taken to the Malibu Mansion (WhereWhen), the day before the premiere (WhereWhen).
+            Slots = new List<DeductionSlot>
+            {
+                new DeductionSlot(ClueCategory.What,      "stolen_pet",
+                    new Rectangle(710, 410, 600, 60)),
+                new DeductionSlot(ClueCategory.WhereWhen, "malibu_mansion",
+                    new Rectangle(710, 510, 600, 60)),
+                new DeductionSlot(ClueCategory.WhereWhen, "the_day_before_the_premiere",
+                    new Rectangle(710, 610, 600, 60)),
+            };
+        }
+
+        // Returns true only when every slot matches its correct answer.
+        // Sets ValidationMessage in all cases — caller checks the return value.
+        public bool ValidateCase()
+        {
+            foreach (var slot in Slots)
+            {
+                if (slot.SelectedClueId == null)
+                {
+                    ValidationMessage = "Fill all slots!";
+                    return false;
+                }
+            }
+            foreach (var slot in Slots)
+            {
+                if (slot.SelectedClueId != slot.CorrectClueId)
+                {
+                    ValidationMessage = "Incorrect logic.";
+                    return false;
+                }
+            }
+            ValidationMessage = "Correct!";
+            return true;
+        }
+    }
+}
+</file>
 
 <file path=".claude/settings.local.json">
 {
@@ -214,6 +293,1528 @@ This section contains the contents of the repository's files.
       "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false
     }
   }
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/scenes_config.json">
+{
+  "scenes": {
+    "detective_office": {
+      "ambientColor": "#D8CBB8"
+    },
+    "malibu_mansion": {
+      "ambientColor": "#FAD6A5"
+    }
+  }
+}
+</file>
+
+<file path="cat detective GDD.txt">
+GAME DESIGN DOCUMENT: "Cat Detective" (Working Title)
+1. GAME OVERVIEW
+Concept: A cozy, narrative-driven isometric mystery game where the player controls a housecat solving human crimes (e.g., stolen diamonds, poisoning, murder).
+Genre: Point-and-Click / Isometric Detective Adventure.
+Perspective: 2.5D Isometric (Fixed-camera, pre-rendered backgrounds).
+Platform: Web browser (HTML5/WASM) via MonoGame (KNI framework).
+Target Scope: Short, highly polished indie experience meant to be developed solo over a few months.
+2. CORE GAMEPLAY LOOP
+The game relies on environmental storytelling and logical deduction rather than complex inventory management or branching dialogue trees. It is broken into two distinct phases:
+Phase 1: Information Gathering (The Map)
+Exploration: The cat explores a static, highly detailed isometric room.
+Smell Mode: The player can activate a "Smell Mode" (applying a dark blue tint to the screen) which highlights hidden clues like footprints, dropped items, or lingering scents.
+Inspection: Clicking on an item pops up a high-resolution, LLM-generated close-up image of the clue with a single line of descriptive text (e.g., "A torn piece of red fabric. It smells like cheap cologne.").
+Keyword Acquisition: Discovering clues automatically adds "Keywords" to the player’s notebook (e.g., [Red Fabric],[Poison], [10:00 PM]).
+Phase 2: Synthesis (The Deduction Board)
+Inspired by Return of the Obra Dinn and The Case of the Golden Idol.
+The player presses a button to open the "Deduction Board"—a UI screen displaying a "Mad Libs" style fill-in-the-blank sentence:
+"The diamond was stolen by ______, who entered through the ______ at ______."
+The player drags and drops their collected keywords into the slots.
+Win Condition: A simple boolean logic check. If the keywords match the expected solution, the case is solved, triggering a success animation and unlocking the next level.
+3. ART & AESTHETIC DIRECTION
+Visual Style: "Studio Ghibli Painted Diorama." Warm, cozy, detailed watercolor/digital painting with baked-in soft lighting.
+Backgrounds: Flat, pre-rendered 2D images generated via LLMs (Midjourney/DALL-E), depicting isolated isometric rooms on a clean background.
+Character Design: A chubby, stylized grey-and-white tabby cat with bright green eyes.
+Animation Approach:
+4-Directional movement achieved using only 2 walk cycles (Diagonally Down, Diagonally Up). The Left variations are achieved purely in code via SpriteEffects.FlipHorizontally.
+Walk cycles are derived from AI-generated sprite sheets, cut out in Photoshop, with shadows manually removed.
+4. TECHNICAL IMPLEMENTATION
+Engine & Framework
+Framework: MonoGame (using the KNI fork). KNI is chosen specifically for its robust support for Web/WASM builds, allowing the game to be easily shared and played in a browser.
+Language: C#.
+Map Editor: Tiled (.tmx / .json export).
+Rendering & Depth (The 2.5D Illusion)
+The game mimics a 3D isometric environment using purely 2D assets and logic.
+Y-Sorting: The core rendering trick. In the MonoGame Update() loop, the layerDepth of the Cat sprite is constantly updated based on its bottom Y-coordinate. If the cat walks "up" the screen, its Y-value decreases, automatically drawing it behind foreground furniture.
+The "Matryoshka" Layering: Rooms are split into:
+Base Canvas (Floor & Back walls).
+Y-Sorted Props (Desks, chairs).
+Front Wall Cutouts (Walls closest to the camera).
+Wall Fading: Tiled NavMesh trigger zones will be placed behind front-facing walls. When the cat's collision box intersects this zone, MonoGame uses MathHelper.Lerp to smoothly fade the front wall's alpha to 0.4f, revealing the cat behind it.
+Level Design Structure
+The "Movie Set" Approach: To avoid the complex Z-axis collision math of multi-story buildings, all rooms for a specific case (e.g., Exterior, 1st Floor, 2nd Floor) will be drawn side-by-side on a single massive, flat map.
+When the cat enters a door, their X/Y coordinates are instantly teleported to the adjacent "room" on the canvas, creating a seamless, no-load-screen transition.
+"El Mariachi" Lighting Hacks
+To ensure the uniformly colored Cat sprite blends into the richly lit AI backgrounds without expensive 3D shaders:
+Tint Zones: Tiled invisible collision boxes placed over dark areas of the map. Entering them Lerps the Cat’s SpriteBatch color to a moody blue/grey.
+Additive Light Masks: Sunbeams or lamp glows are exported from Photoshop as standalone semi-transparent PNGs and drawn on top of the Cat in MonoGame to wash the sprite out naturally.
+Blob Shadow: A simple, semi-transparent black oval drawn directly under the Cat's X/Y coordinates to ground the sprite to the floor at all times.
+5. DEVELOPMENT WORKFLOW (Asset Pipeline)
+Generate Environment: Use LLM to generate the isometric room ("empty room, isolated on white background, Studio Ghibli style").
+Photoshop Prep: Cut out the floor, separate the foreground walls/props, paint over sunbeams for additive masks. Export as labeled PNGs.
+Tiled Mapping: Load the Base Floor PNG into Tiled. Draw NavMesh collision polygons for walls, interactive trigger zones for clues, and lighting zones. Export to MonoGame.
+Code Logic: Hook up the Tiled coordinates to MonoGame collision events, populate the Deduction Board logic, and playtest.
+6. SCOPE & MILESTONES (3-Month Solo Plan)
+Month 1: The Engine & Core Systems. Get MonoGame KNI running. Implement Y-sorting, Tiled map importing, basic cat movement, wall fading, and the "Blob Shadow".
+Month 2: The Gameplay Loop. Build the UI for the "Smell Mode" shader, Clue pop-ups, and the Mad Libs Deduction Board. Create one fully playable test room.
+Month 3: Content & Web Export. Generate the art for 3 distinct cases (e.g., The Mansion, The Train cabin, The Museum). Implement sound effects. Export and test the WASM web build.
+</file>
+
+<file path="CLAUDE.md">
+# Cat Detective — CLAUDE.md
+
+## Project overview
+
+A 2.5D isometric detective adventure game where a cat solves human crimes.
+Cozy Studio Ghibli aesthetic, pre-rendered backgrounds, point-and-click/free-roam gameplay.
+Built in C# using **MonoGame (KNI fork)**, targeting **Web/WASM** as the final platform.
+
+Current state: prototype — movement, Y-sorting, prop fading, and the render pipeline are implemented.
+Real art assets are not yet present; placeholder PNGs in `Content/` are needed to build.
+
+---
+
+## Tech stack
+
+| Layer | Choice |
+|-------|--------|
+| Language | C# (.NET 8) |
+| Framework | MonoGame.Framework.DesktopGL (dev) → KNI WASM (ship) |
+| Map editor | Tiled — JSON export only |
+| JSON parsing | System.Text.Json (built-in, no extra packages) |
+| Content pipeline | MonoGame Content Builder (`.mgcb`) |
+
+---
+
+## File structure
+
+```
+CatDetective.csproj       — Project file; swap package for KNI to target WASM
+Program.cs                — Entry point ([STAThread])
+Game1.cs                  — Main loop; owns the 4-pass render pipeline
+
+Entities/
+  GameObject.cs           — Abstract base: Position (bottom-center), LayerDepth, CollisionBox
+  Prop.cs                 — Foreground furniture; fades when cat walks behind it
+  Cat.cs                  — Player character; sprite-sheet animator, AABB movement
+
+Map/
+  MapParser.cs            — Reads Tiled JSON; extracts "Collisions" and "Triggers" layers
+
+Content/
+  Content.mgcb            — Asset pipeline config (ALL sprites: PremultiplyAlpha=False)
+  room_map.json           — Tiled map; copied verbatim to output, not pipeline-processed
+
+  bg_base.png             — Full-room pre-rendered background (no desk/cabinet)
+  prop_desk.png           — Desk cutout sprite
+  prop_cabinet.png        — Cabinet cutout sprite
+  mask_sunbeams.png       — Sunbeam VFX: black BG + warm-white beams (used additively)
+  shadow_blob.png         — Blurred black oval for the blob shadow under the cat
+  spr_cat_walk_down.png   — Horizontal sprite sheet, 4 frames, walk toward camera
+  spr_cat_walk_up.png     — Horizontal sprite sheet, 4 frames, walk away from camera
+```
+
+---
+
+## Architecture rules
+
+### Pivot / origin — NEVER change this
+All entities use **bottom-center** as the draw origin. `Position` = the floor contact point.
+Changing this to top-left breaks Y-sorting for every entity in the scene.
+`TextureOrigin` in `GameObject` computes `(width/2, height)` automatically.
+
+### Layer depth formula — keep it normalised
+```csharp
+layerDepth = Math.Clamp(Position.Y / screenHeight, 0f, 1f);
+```
+`SpriteSortMode.FrontToBack` → higher depth = drawn in front. Do not invert this.
+
+### Render pipeline — keep passes in order
+| Pass | Blend | Content |
+|------|-------|---------|
+| 1 | AlphaBlend | `bg_base` at (0,0) |
+| 2 | AlphaBlend | Blob shadow (before cat, so it sits under) |
+| 3 | **NonPremultiplied**, FrontToBack | Cat + all props |
+| 4 | **Additive** | `mask_sunbeams` at (0,0) |
+
+Inserting a new entity: decide which pass it belongs to and draw it there.
+New lighting overlays → Pass 4 (additive). New floor decals → Pass 1 or 2. New Y-sortable objects → Pass 3.
+
+### Content pipeline — PremultiplyAlpha=False
+Every sprite used in Pass 3 (NonPremultiplied) must be built with `PremultiplyAlpha=False` in `Content.mgcb`.
+If a new sprite is added, add its entry to the `.mgcb` with this flag.
+The background and sunbeam mask can use either setting; keep them False for consistency.
+
+### Cat update — two-phase
+`Cat.Update()` reads input and advances animation. It does NOT move the cat.
+`Cat.MoveWithCollision()` applies velocity with per-axis AABB resolution.
+Call them in that order from `Game1.Update()`. Do not merge them.
+
+---
+
+## Map / Tiled conventions
+
+- Only **object layers** are parsed. Tile layers are ignored.
+- Layer named `Collisions` → feeds `_solidBoundaries` (blocks cat movement).
+- Layer named `Triggers` → fade zones; matched to props by name substring (`"desk"`, `"cabinet"`).
+- The JSON file is read at runtime with `File.ReadAllText`. Edit it without rebuilding `.mgcb`.
+- Object rectangles only. Tiled polygons and ellipses are not supported yet.
+
+---
+
+## Build & run
+
+```bash
+dotnet restore
+dotnet run
+```
+
+Controls: WASD or arrow keys. Escape to quit.
+
+To rebuild content assets after changing `.mgcb`:
+```bash
+dotnet build   # MonoGame.Content.Builder.Task runs mgcb automatically
+```
+
+---
+
+## Switching to KNI / WASM
+
+In `CatDetective.csproj`, replace:
+```xml
+<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
+<PackageReference Include="MonoGame.Content.Builder.Task"  Version="3.8.1.303" />
+```
+with the appropriate KNI platform packages. No C# source changes are needed.
+
+---
+
+## What NOT to do
+
+- Do not use `SpriteSortMode.BackToFront` — the entire depth system assumes `FrontToBack`.
+- Do not set `PremultiplyAlpha=True` for Pass 3 sprites — it will cause darkening when props fade.
+- Do not parse Tiled tilesets — the GDD uses pre-rendered PNGs, not tile-based rendering.
+- Do not add collision logic inside `Cat.Update()` — keep movement and collision in `MoveWithCollision()`.
+- Do not commit art assets to git as large binaries — use Git LFS or keep them out of the repo.
+</file>
+
+<file path="Content/dialogue_font.spritefont">
+<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Graphics="Microsoft.Xna.Framework.Content.Pipeline.Graphics">
+  <Asset Type="Graphics:FontDescription">
+    <FontName>Arial</FontName>
+    <Size>18</Size>
+    <Spacing>2</Spacing>
+    <UseKerning>true</UseKerning>
+    <Style>Regular</Style>
+    <CharacterRegions>
+      <CharacterRegion>
+        <Start>&#32;</Start>
+        <End>&#126;</End>
+      </CharacterRegion>
+    </CharacterRegions>
+  </Asset>
+</XnaContent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/bg_base.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/bg_base.png</SourceFile>
+  <SourceTime>2026-04-16T19:56:22.0394545+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/bg_base.xnb</DestFile>
+  <DestTime>2026-04-16T19:57:28.7409509+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,0,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/dialogue_font.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/dialogue_font.spritefont</SourceFile>
+  <SourceTime>2026-04-17T17:28:39.4481323+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/dialogue_font.xnb</DestFile>
+  <DestTime>2026-04-17T17:29:43.477566+02:00</DestTime>
+  <Importer>FontDescriptionImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>FontDescriptionProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Compressed</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/mask_sunbeams.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png</SourceFile>
+  <SourceTime>2026-04-17T08:08:04.1417441+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/mask_sunbeams.xnb</DestFile>
+  <DestTime>2026-04-17T08:08:39.4715286+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,0,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/prop_cabinet.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/prop_cabinet.png</SourceFile>
+  <SourceTime>2026-04-16T19:16:50.4983489+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_cabinet.xnb</DestFile>
+  <DestTime>2026-04-16T19:56:13.0540194+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,0,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/spr_cat_walk_down.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_down.png</SourceFile>
+  <SourceTime>2026-04-16T19:33:26.3515291+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_down.xnb</DestFile>
+  <DestTime>2026-04-16T20:06:15.5857599+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,255,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/spr_cat_walk_up.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png</SourceFile>
+  <SourceTime>2026-04-16T19:38:54.0734022+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_up.xnb</DestFile>
+  <DestTime>2026-04-16T20:06:15.6140976+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,255,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/walk_animation_forward.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png</SourceFile>
+  <SourceTime>2026-04-17T15:14:14.7000275+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/walk_animation_forward.xnb</DestFile>
+  <DestTime>2026-04-17T15:14:43.4249727+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/walk_animation_upward.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_upward.png</SourceFile>
+  <SourceTime>2026-04-17T15:00:19.5351484+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/walk_animation_upward.xnb</DestFile>
+  <DestTime>2026-04-17T15:04:22.804101+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/scenes_config.json">
+{
+  "scenes": {
+    "detective_office": {
+      "ambientColor": "#D8CBB8"
+    },
+    "malibu_mansion": {
+      "ambientColor": "#FAD6A5"
+    }
+  }
+}
+</file>
+
+<file path="DebugHelper.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+
+namespace CatDetective
+{
+    public static class DebugHelper
+    {
+        public static void DrawLine(SpriteBatch spriteBatch, Texture2D pixel, Vector2 p1, Vector2 p2, Color color, int thickness = 2)
+        {
+            float length = Vector2.Distance(p1, p2);
+            float angle = (float)Math.Atan2(p2.Y - p1.Y, p2.X - p1.X);
+            spriteBatch.Draw(pixel, p1, null, color, angle, Vector2.Zero, new Vector2(length, thickness), SpriteEffects.None, 0f);
+        }
+
+        public static void DrawHollowRect(SpriteBatch spriteBatch, Texture2D pixel, Rectangle rect, Color color, int thickness = 2)
+        {
+            DrawLine(spriteBatch, pixel, new Vector2(rect.Left,  rect.Top),    new Vector2(rect.Right, rect.Top),    color, thickness);
+            DrawLine(spriteBatch, pixel, new Vector2(rect.Right, rect.Top),    new Vector2(rect.Right, rect.Bottom), color, thickness);
+            DrawLine(spriteBatch, pixel, new Vector2(rect.Right, rect.Bottom), new Vector2(rect.Left,  rect.Bottom), color, thickness);
+            DrawLine(spriteBatch, pixel, new Vector2(rect.Left,  rect.Bottom), new Vector2(rect.Left,  rect.Top),   color, thickness);
+        }
+    }
+}
+</file>
+
+<file path="dotnet-tools.json">
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "dotnet-mgcb": {
+      "version": "3.8.4.1",
+      "commands": [
+        "mgcb"
+      ],
+      "rollForward": false
+    }
+  }
+}
+</file>
+
+<file path="Entities/Clue.cs">
+namespace CatDetective.Entities
+{
+    public enum ClueCategory { Who, What, Why, WhereWhen }
+
+    public sealed class Clue
+    {
+        public string       Id          { get; }
+        public ClueCategory Category    { get; }
+        public string       DisplayText { get; }
+
+        public Clue(string id, ClueCategory category, string displayText)
+        {
+            Id          = id;
+            Category    = category;
+            DisplayText = displayText;
+        }
+    }
+}
+</file>
+
+<file path="Entities/GameObject.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+
+namespace CatDetective.Entities
+{
+    /// <summary>
+    /// Base class for every visible, positionable entity in the scene.
+    ///
+    /// PIVOT RULE (CRITICAL):
+    ///   All rendering uses the BOTTOM-CENTER of the sprite as its origin/pivot.
+    ///   This means <see cref="Position"/> represents the point where the entity
+    ///   "touches the floor". Y-sorting then correctly sorts by the floor contact
+    ///   point rather than the top-left corner of the texture.
+    ///
+    /// LAYER DEPTH:
+    ///   MonoGame's SpriteSortMode.FrontToBack draws higher depth values in front.
+    ///   We normalise Position.Y to [0..1] using the screen height so the cat
+    ///   slides naturally in front of or behind props as it moves up or down.
+    /// </summary>
+    public abstract class GameObject
+    {
+        // ── Static screen height used by all instances for depth normalisation ──
+        private static int _screenHeight = 720;
+
+        /// <summary>Call once from Game1.Initialize() before any entities are created.</summary>
+        public static void SetScreenHeight(int height) => _screenHeight = height;
+
+        // ── Core properties ────────────────────────────────────────────────────
+        /// <summary>
+        /// World position of this entity's BOTTOM-CENTER (floor contact point).
+        /// </summary>
+        public Vector2 Position { get; set; }
+
+        /// <summary>Current sprite texture (may be swapped per animation state).</summary>
+        public Texture2D? Texture { get; set; }
+
+        /// <summary>Axis-aligned bounding box used for collision detection.</summary>
+        public Rectangle CollisionBox { get; protected set; }
+
+        /// <summary>
+        /// Depth in [0..1]. Higher = rendered in front when using FrontToBack sort.
+        /// Updated each frame via <see cref="CalculateLayerDepth"/>.
+        /// </summary>
+        public float LayerDepth { get; protected set; }
+
+        // ── Helpers ────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// The bottom-center pivot in TEXTURE space.
+        /// For a full-texture draw this is (width/2, height).
+        /// Subclasses that draw from a source rectangle should compute their own.
+        /// </summary>
+        protected Vector2 TextureOrigin =>
+            Texture != null
+                ? new Vector2(Texture.Width * 0.5f, Texture.Height)
+                : Vector2.Zero;
+
+        /// <summary>
+        /// Normalises a floor Y-coordinate to a [0..1] depth value.
+        /// Pass an explicit <paramref name="sortY"/> when the draw position differs
+        /// from the logical floor contact point (e.g. full-room overlay props that
+        /// always draw at (0,0) but must sort by where the object stands in the scene).
+        /// Defaults to <see cref="Position"/>.Y when not supplied.
+        /// </summary>
+        protected float CalculateLayerDepth(float? sortY = null) =>
+            Math.Clamp((sortY ?? Position.Y) / _screenHeight, 0f, 1f);
+
+        // ── Abstract interface ─────────────────────────────────────────────────
+        public virtual void Update(GameTime gameTime) { }
+        public abstract void Draw(SpriteBatch spriteBatch);
+    }
+}
+</file>
+
+<file path="Entities/InteractionData.cs">
+using Microsoft.Xna.Framework;
+
+namespace CatDetective.Entities
+{
+    /// <summary>
+    /// A single bracketed keyword inside a dialogue string.
+    /// <para>
+    /// <c>DisplayText</c> must match the text inside the <c>[brackets]</c> in
+    /// <see cref="InteractionData.Text"/> exactly (case-insensitive).
+    /// </para>
+    /// </summary>
+    public readonly record struct Keyword(
+        string DisplayText,
+        string Id,
+        Color  Color);
+
+    /// <summary>
+    /// Holds the content for a single interactable zone.
+    /// Keyed by Tiled object name in <c>Game1._interactionDatabase</c>.
+    /// </summary>
+    public sealed class InteractionData
+    {
+        /// <summary>
+        /// Dialogue text shown in the UI box.
+        /// Tokens in [brackets] are rendered in the matching <see cref="Keyword.Color"/>;
+        /// unmatched brackets fall back to white.
+        /// </summary>
+        public string Text { get; }
+
+        /// <summary>Keywords in this dialogue, each with its display text, clue ID, and tint.</summary>
+        public Keyword[] Keywords { get; }
+
+        public InteractionData(string text, Keyword[] keywords)
+        {
+            Text     = text;
+            Keywords = keywords;
+        }
+
+        // ── Shared colour palette ──────────────────────────────────────────────
+        /// <summary>Plot / time / location clues — lavender.</summary>
+        public static readonly Color Plot  = new Color(180, 120, 255);
+        /// <summary>Crime / suspect clues — amber.</summary>
+        public static readonly Color Crime = new Color(255, 160,  60);
+        /// <summary>Miscellaneous / flavour clues — green.</summary>
+        public static readonly Color Misc  = new Color( 80, 200, 100);
+    }
+}
+</file>
+
+<file path="Entities/Prop.cs">
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace CatDetective.Entities
+{
+    /// <summary>
+    /// A foreground prop (desk, cabinet, etc.) that:
+    ///   1. Y-sorts correctly with the cat via <see cref="LayerDepth"/>.
+    ///   2. Smoothly fades to semi-transparent when the cat walks behind it.
+    ///
+    /// FULL-ROOM OVERLAY
+    ///   Prop textures are the same pixel dimensions as the background (1072 × 1136).
+    ///   The PNG contains the prop painted in the correct isometric position over a
+    ///   fully transparent background, so it is always drawn at (0, 0) — no
+    ///   position offset needed.
+    ///
+    ///   Because the draw position is always (0,0), <see cref="LayerDepth"/> is
+    ///   calculated from a separate <see cref="_sortY"/> value — the approximate
+    ///   Y coordinate (in screen space) of the prop's floor contact point within
+    ///   the full-room image.  Tune this in Game1 to control when the cat passes
+    ///   in front of or behind the prop.
+    ///
+    /// FADE TRIGGER ZONE
+    ///   An AABB placed in the area visually "behind" the prop (lower screen Y =
+    ///   further from camera in isometric view).  When the cat's feet enter this
+    ///   zone, <see cref="TargetAlpha"/> drops to 0.4f.
+    /// </summary>
+    public class Prop : GameObject
+    {
+        private const float FADE_SPEED = 5f;
+
+        private readonly float _sortY;   // logical floor Y used for depth, not draw position
+
+        // ── Fade state ─────────────────────────────────────────────────────────
+        public float CurrentAlpha { get; private set; } = 1.0f;
+        public float TargetAlpha  { get; private set; } = 1.0f;
+
+        /// <summary>
+        /// AABB that triggers the fade when intersected by the player's CollisionBox.
+        /// Populated from the Tiled "Triggers" layer at load time.
+        /// </summary>
+        public Rectangle FadeTriggerZone { get; set; }
+
+        // ── Constructor ────────────────────────────────────────────────────────
+        /// <param name="texture">Full-room overlay texture (same size as bg_base).</param>
+        /// <param name="sortY">
+        ///   The Y screen coordinate of this prop's floor contact point.
+        ///   Used only for depth sorting — the texture always draws at (0, 0).
+        ///   A good starting value: roughly the Y of the prop's bottom edge in the image.
+        /// </param>
+        /// <param name="fadeTriggerZone">AABB that triggers the fade when the cat enters.</param>
+        public Prop(Texture2D texture, float sortY, Rectangle fadeTriggerZone)
+        {
+            Texture          = texture;
+            _sortY           = sortY;
+            FadeTriggerZone  = fadeTriggerZone;
+            Position         = Vector2.Zero;      // draw position is always top-left
+            LayerDepth       = CalculateLayerDepth(_sortY);
+        }
+
+        // ── Public API ─────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Call every frame (before Update) with the player's current CollisionBox.
+        /// Sets <see cref="TargetAlpha"/> based on whether the player is inside
+        /// the fade trigger zone.
+        /// </summary>
+        public void CheckFadeTrigger(Rectangle playerBounds)
+        {
+            TargetAlpha = FadeTriggerZone.Intersects(playerBounds) ? 0.4f : 1.0f;
+        }
+
+        // ── GameObject overrides ───────────────────────────────────────────────
+
+        public override void Update(GameTime gameTime)
+        {
+            CurrentAlpha = MathHelper.Lerp(
+                CurrentAlpha,
+                TargetAlpha,
+                (float)gameTime.ElapsedGameTime.TotalSeconds * FADE_SPEED);
+
+            // If the prop is transparent or currently fading, force it to the very front (LayerDepth = 1.0f)
+            // so the cat is always drawn behind it and seen through the transparency.
+            if (TargetAlpha < 1.0f || CurrentAlpha < 0.99f)
+            {
+                LayerDepth = 1.0f;
+            }
+            else
+            {
+                // Otherwise, sort normally based on its floor contact point.
+                LayerDepth = CalculateLayerDepth(_sortY);
+            }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            if (Texture == null) return;
+
+            // Full-room overlay: draw at (0,0) with no origin offset.
+            // The texture's transparent regions show the background underneath;
+            // only the painted prop pixels are visible.
+            spriteBatch.Draw(
+                Texture,
+                position:        Vector2.Zero,
+                sourceRectangle: null,
+                color:           Color.White * CurrentAlpha,
+                rotation:        0f,
+                origin:          Vector2.Zero,
+                scale:           Vector2.One,
+                effects:         SpriteEffects.None,
+                layerDepth:      LayerDepth);
+        }
+    }
+}
+</file>
+
+<file path="GDD followup">
+Game Design Document: Addendum I - Core Loop & UI
+
+1. Aesthetic & Display Constraints
+Vibe: Present-day California, sunny, highly detailed anime/Studio Ghibli style (rich watercolors, warm lighting, sunbeams). Cozy, low-stress, no gore.
+Aspect Ratio & Layout: The game operates on a fixed 16:9 layout.
+Ambient Pillarboxing: The pre-rendered isometric room art (e.g., 1072x1136) is centered vertically. The remaining horizontal screen space (left/right margins) is filled with a solid hex color defined in the Tiled map data (e.g., "AmbientColor": "#2A3B4C"). This dead space is explicitly used to house UI elements so the room art is never obscured.
+Sprited Interactables: While the background is pre-rendered, items of interest (clues) are rendered as separate sprites layered on top, giving them a slight visual pop to guide the player's eye without needing glowing outlines.
+2. The Single-Button Interaction System
+To maximize mobile compatibility and ease of play, the cat uses a single contextual "Interact" input ( tap/click/Spacebar ) when overlapping a collision trigger.
+Look (Objects): Pops up a high-res image and a short line of descriptive text.
+Listen (NPCs): Pops up a dialogue box with a character portrait.
+Consult (The Detective): Interacts with the "Doofus Detective" (the human owner) to open the Deduction Board and attempt to solve the case.
+Note: The previously pitched "Smell Mode" shader and physical mid-level puzzles (pushing blocks, etc.) have been cut to keep development scope ruthlessly tight and focused on narrative deduction.
+3. Clue System & "The Noise"
+To prevent brute-forcing, the game utilizes a signal-to-noise ratio. The player will collect many keywords, including red herrings, inflating the mathematical permutations of the final puzzle.
+Auto-Extraction: Clues are automatically added to the player's Notebook after an interaction.
+Color-Coded Logic: Clues belong to strict categories, visually represented in both the dialogue text and the UI.
+🟦 [WHO] (People, Suspects) - Blue
+🟩 [WHAT] (Evidence, Objects, Items) - Green
+🟧 [WHY] (Motives, Context) - Orange
+🟪 [WHEN/WHERE] (Times, Locations) - Purple
+Transformation: Dialogue text parses raw tags ({who:agatha}) into colored text. In the Notebook, this tag translates into a clear, objective statement (e.g., "Lady Agatha" or "Roderick insulted her").
+4. UI & The Deduction Board (Tap-to-Fill)
+The UI is designed to be completely tap/click driven. Drag-and-drop mechanics are explicitly avoided to ensure flawless mobile web performance.
+The Notebook: Accessed via a pulsing icon in the ambient margin. Opens a clean, scrollable list of collected clues sorted into four colored tabs (Blue, Green, Orange, Purple).
+The Deduction Board (Tester): Initiated by talking to the Detective. Displays a "Mad Libs" sentence with colored, empty slots.
+Mechanic: The player taps an empty slot. A dropdown menu appears containing only the collected clues of that matching color. The player taps a clue to fill the slot.
+The Obra Dinn Rule: The game never validates a single slot. Logic is only checked when the player hits a global "Submit" button.
+5. Level Design Mechanics: The "Hide & Seek" Alpha Fade
+To create a sense of exploration without a 3D camera, the Y-Sorting alpha-fade mechanic is repurposed as a core puzzle element.
+By placing key objects physically behind tall foreground props (like desks or cabinets), the player cannot see the clue by default.
+The player must naturally walk the cat behind the furniture. The furniture's alpha lerps to 0.4f (transparency), revealing the hidden object sprite underneath, rewarding spatial exploration.
+6. The "Triangle Method" Deduction Formula
+Cases are solved by connecting isolated facts. The game will rarely spell out the answer. Instead, it relies on A + B = C logic.
+Example: The player finds a Torn Glove (A) hidden behind a cabinet. An NPC mentions they saw Chad wearing bandages (B). The player deduces that Chad was bitten by the stolen parrot (C).
+Win State: Upon correct submission, the Detective realizes the truth based on the cat's actions (e.g., the cat knocks over the evidence, triggering the human's "Eureka" moment). Case closed.
+</file>
+
+<file path="Map/SceneConfigParser.cs">
+using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace CatDetective.Map
+{
+    // ─────────────────────────────────────────────────────────────────────────
+    // JSON data models for scenes_config.json
+    // ─────────────────────────────────────────────────────────────────────────
+
+    internal sealed class SceneConfigData
+    {
+        [JsonPropertyName("scenes")]
+        public Dictionary<string, SceneSettings> Scenes { get; set; } = new();
+    }
+
+    internal sealed class SceneSettings
+    {
+        [JsonPropertyName("ambientColor")]
+        public string AmbientColor { get; set; } = "#000000";
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Reads scenes_config.json and returns per-scene settings.
+    ///
+    /// Usage from Game1.LoadContent():
+    /// <code>
+    ///   string configPath = Path.Combine(Content.RootDirectory, "scenes_config.json");
+    ///   _ambientColor = SceneConfigParser.GetAmbientColor(configPath, "detective_office");
+    /// </code>
+    /// </summary>
+    public static class SceneConfigParser
+    {
+        private static readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        /// <summary>
+        /// Returns the ambient background <see cref="Color"/> for the given scene ID.
+        /// Falls back to <see cref="Color.Black"/> if the file or scene is missing.
+        /// </summary>
+        public static Color GetAmbientColor(string configPath, string sceneId)
+        {
+            if (!File.Exists(configPath))
+            {
+                Console.WriteLine($"[SceneConfigParser] WARNING: '{configPath}' not found. " +
+                                  "Defaulting to Black.");
+                return Color.Black;
+            }
+
+            string json;
+            try
+            {
+                json = File.ReadAllText(configPath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[SceneConfigParser] ERROR reading config file: {ex.Message}");
+                return Color.Black;
+            }
+
+            var data = JsonSerializer.Deserialize<SceneConfigData>(json, _jsonOptions);
+            if (data == null || !data.Scenes.TryGetValue(sceneId, out var settings))
+            {
+                Console.WriteLine($"[SceneConfigParser] WARNING: scene '{sceneId}' not found. " +
+                                  "Defaulting to Black.");
+                return Color.Black;
+            }
+
+            return ParseHexColor(settings.AmbientColor);
+        }
+
+        /// <summary>
+        /// Converts a CSS-style hex string (<c>"#RRGGBB"</c> or <c>"#RRGGBBAA"</c>)
+        /// into a MonoGame <see cref="Color"/>.
+        /// </summary>
+        private static Color ParseHexColor(string hex)
+        {
+            hex = hex.TrimStart('#');
+
+            try
+            {
+                byte r = Convert.ToByte(hex.Substring(0, 2), 16);
+                byte g = Convert.ToByte(hex.Substring(2, 2), 16);
+                byte b = Convert.ToByte(hex.Substring(4, 2), 16);
+                byte a = hex.Length >= 8 ? Convert.ToByte(hex.Substring(6, 2), 16) : (byte)255;
+                return new Color(r, g, b, a);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[SceneConfigParser] WARNING: could not parse color '{hex}': " +
+                                  $"{ex.Message}. Defaulting to Black.");
+                return Color.Black;
+            }
+        }
+    }
+}
+</file>
+
+<file path="obj/CatDetective.csproj.nuget.dgspec.json">
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj",
+        "projectName": "CatDetective",
+        "projectPath": "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj",
+        "packagesPath": "C:\\Users\\larry\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\larry\\Projecten\\cat_detective\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\larry\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "MonoGame.Content.Builder.Task": {
+              "target": "Package",
+              "version": "[3.8.1.303, )"
+            },
+            "MonoGame.Framework.DesktopGL": {
+              "target": "Package",
+              "version": "[3.8.1.303, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.23, 8.0.23]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[8.0.23, 8.0.23]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.23, 8.0.23]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.23, 8.0.23]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
+</file>
+
+<file path="obj/CatDetective.csproj.nuget.g.props">
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <RestoreSuccess Condition=" '$(RestoreSuccess)' == '' ">True</RestoreSuccess>
+    <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
+    <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">$(MSBuildThisFileDirectory)project.assets.json</ProjectAssetsFile>
+    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
+    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">C:\Users\larry\.nuget\packages\</NuGetPackageFolders>
+    <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
+    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">7.0.0</NuGetToolVersion>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <SourceRoot Include="C:\Users\larry\.nuget\packages\" />
+  </ItemGroup>
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)monogame.content.builder.task\3.8.1.303\build\MonoGame.Content.Builder.Task.props" Condition="Exists('$(NuGetPackageRoot)monogame.content.builder.task\3.8.1.303\build\MonoGame.Content.Builder.Task.props')" />
+  </ImportGroup>
+</Project>
+</file>
+
+<file path="obj/CatDetective.csproj.nuget.g.targets">
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)monogame.framework.desktopgl\3.8.1.303\build\MonoGame.Framework.DesktopGL.targets" Condition="Exists('$(NuGetPackageRoot)monogame.framework.desktopgl\3.8.1.303\build\MonoGame.Framework.DesktopGL.targets')" />
+    <Import Project="$(NuGetPackageRoot)monogame.content.builder.task\3.8.1.303\build\MonoGame.Content.Builder.Task.targets" Condition="Exists('$(NuGetPackageRoot)monogame.content.builder.task\3.8.1.303\build\MonoGame.Content.Builder.Task.targets')" />
+  </ImportGroup>
+</Project>
+</file>
+
+<file path="obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs">
+// <autogenerated />
+using System;
+using System.Reflection;
+[assembly: global::System.Runtime.Versioning.TargetFrameworkAttribute(".NETCoreApp,Version=v8.0", FrameworkDisplayName = ".NET 8.0")]
+</file>
+
+<file path="obj/Debug/net8.0/CatDetective.GeneratedMSBuildEditorConfig.editorconfig">
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = CatDetective
+build_property.ProjectDir = C:\Users\larry\Projecten\cat_detective\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity =
+</file>
+
+<file path="obj/Debug/net8.0/CatDetective.genruntimeconfig.cache">
+9242b68c503066df1bd576ac962275a4b2ad5e1c28efc5bbc3334b67134ceec6
+</file>
+
+<file path="obj/project.assets.json">
+{
+  "version": 3,
+  "targets": {
+    "net8.0": {
+      "MonoGame.Content.Builder.Task/3.8.1.303": {
+        "type": "package",
+        "build": {
+          "build/MonoGame.Content.Builder.Task.props": {},
+          "build/MonoGame.Content.Builder.Task.targets": {}
+        }
+      },
+      "MonoGame.Framework.DesktopGL/3.8.1.303": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/MonoGame.Framework.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/MonoGame.Framework.dll": {}
+        },
+        "build": {
+          "build/MonoGame.Framework.DesktopGL.targets": {}
+        },
+        "runtimeTargets": {
+          "runtimes/linux-x64/native/libSDL2-2.0.so.0": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/linux-x64/native/libopenal.so.1": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/osx/native/libSDL2.dylib": {
+            "assetType": "native",
+            "rid": "osx"
+          },
+          "runtimes/osx/native/libopenal.1.dylib": {
+            "assetType": "native",
+            "rid": "osx"
+          },
+          "runtimes/win-x64/native/SDL2.dll": {
+            "assetType": "native",
+            "rid": "win-x64"
+          },
+          "runtimes/win-x64/native/soft_oal.dll": {
+            "assetType": "native",
+            "rid": "win-x64"
+          },
+          "runtimes/win-x86/native/SDL2.dll": {
+            "assetType": "native",
+            "rid": "win-x86"
+          },
+          "runtimes/win-x86/native/soft_oal.dll": {
+            "assetType": "native",
+            "rid": "win-x86"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "MonoGame.Content.Builder.Task/3.8.1.303": {
+      "sha512": "9Ilzzje62LhWElbPNEl7vh7XsRSbze+lvCJdZtTZUGu48FRgvYN6THURwIB9PN98EI33/Wnf6iuShNUtD7hL4Q==",
+      "type": "package",
+      "path": "monogame.content.builder.task/3.8.1.303",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "build/MonoGame.Content.Builder.Task.props",
+        "build/MonoGame.Content.Builder.Task.targets",
+        "monogame.content.builder.task.3.8.1.303.nupkg.sha512",
+        "monogame.content.builder.task.nuspec"
+      ]
+    },
+    "MonoGame.Framework.DesktopGL/3.8.1.303": {
+      "sha512": "eGYhqn0n1olk8MNYeE9EuBmoNNECN1T18rPMaQpkzsEQ0H3nVyFPXC+uCo78v5pi5juQpJ3PSFnSkjzZJ1U58A==",
+      "type": "package",
+      "path": "monogame.framework.desktopgl/3.8.1.303",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "build/MonoGame.Framework.DesktopGL.targets",
+        "lib/net6.0/MonoGame.Framework.dll",
+        "monogame.framework.desktopgl.3.8.1.303.nupkg.sha512",
+        "monogame.framework.desktopgl.nuspec",
+        "runtimes/linux-x64/native/libSDL2-2.0.so.0",
+        "runtimes/linux-x64/native/libopenal.so.1",
+        "runtimes/osx/native/libSDL2.dylib",
+        "runtimes/osx/native/libopenal.1.dylib",
+        "runtimes/win-x64/native/SDL2.dll",
+        "runtimes/win-x64/native/soft_oal.dll",
+        "runtimes/win-x86/native/SDL2.dll",
+        "runtimes/win-x86/native/soft_oal.dll"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net8.0": [
+      "MonoGame.Content.Builder.Task >= 3.8.1.303",
+      "MonoGame.Framework.DesktopGL >= 3.8.1.303"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\larry\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj",
+      "projectName": "CatDetective",
+      "projectPath": "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj",
+      "packagesPath": "C:\\Users\\larry\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\larry\\Projecten\\cat_detective\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\larry\\AppData\\Roaming\\NuGet\\NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "net8.0"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "10.0.100"
+    },
+    "frameworks": {
+      "net8.0": {
+        "targetAlias": "net8.0",
+        "dependencies": {
+          "MonoGame.Content.Builder.Task": {
+            "target": "Package",
+            "version": "[3.8.1.303, )"
+          },
+          "MonoGame.Framework.DesktopGL": {
+            "target": "Package",
+            "version": "[3.8.1.303, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.23, 8.0.23]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[8.0.23, 8.0.23]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.23, 8.0.23]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.23, 8.0.23]"
+          }
+        ],
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}
+</file>
+
+<file path="obj/project.nuget.cache">
+{
+  "version": 2,
+  "dgSpecHash": "e1CPmxW4KJw=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\larry\\.nuget\\packages\\monogame.content.builder.task\\3.8.1.303\\monogame.content.builder.task.3.8.1.303.nupkg.sha512",
+    "C:\\Users\\larry\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.1.303\\monogame.framework.desktopgl.3.8.1.303.nupkg.sha512",
+    "C:\\Users\\larry\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.23\\microsoft.netcore.app.ref.8.0.23.nupkg.sha512",
+    "C:\\Users\\larry\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.23\\microsoft.windowsdesktop.app.ref.8.0.23.nupkg.sha512",
+    "C:\\Users\\larry\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.23\\microsoft.aspnetcore.app.ref.8.0.23.nupkg.sha512",
+    "C:\\Users\\larry\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.23\\microsoft.netcore.app.host.win-x64.8.0.23.nupkg.sha512"
+  ],
+  "logs": []
+}
+</file>
+
+<file path="Program.cs">
+using System;
+
+namespace CatDetective
+{
+    /// <summary>
+    /// Entry point. MonoGame requires [STAThread] on Windows for COM interop.
+    /// </summary>
+    internal static class Program
+    {
+        [STAThread]
+        private static void Main()
+        {
+            using var game = new Game1();
+            game.Run();
+        }
+    }
+}
+</file>
+
+<file path="run_game.md">
+dotnet build
+dotnet run
+</file>
+
+<file path="Systems/NotebookManager.cs">
+using System.Collections.Generic;
+using CatDetective.Entities;
+
+namespace CatDetective.Systems
+{
+    /// <summary>
+    /// Owns the master clue database and tracks which clues the player has found.
+    /// Call <see cref="UnlockClue"/> with a keyword ID whenever an interaction fires.
+    /// </summary>
+    public sealed class NotebookManager
+    {
+        // ── Master database — every clue that can ever be found ───────────────
+        private static readonly Dictionary<string, Clue> _database = new()
+        {
+            // Who
+            // (no suspects yet — placeholder so the Who tab isn't empty forever)
+
+            // What
+            { "stolen_pet",     new Clue("stolen_pet",     ClueCategory.What,      "Rudebeak the macaw was stolen") },
+            { "fish_tacos",     new Clue("fish_tacos",     ClueCategory.What,      "Leftover Fish Tacos in the takeout bag") },
+
+            // Why
+            // (motives TBD — placeholder)
+
+            // WhereWhen
+            { "saturday",                    new Clue("saturday",                    ClueCategory.WhereWhen, "'Pirate Cove 3' premiere is Saturday") },
+            { "sunday",                      new Clue("sunday",                      ClueCategory.WhereWhen, "Someone's birthday falls on Sunday") },
+            { "thursday",                    new Clue("thursday",                    ClueCategory.WhereWhen, "Detective has dentist on Thursday") },
+            { "friday",                      new Clue("friday",                      ClueCategory.WhereWhen, "Friday is marked with a question mark") },
+            { "the_day_before_the_premiere", new Clue("the_day_before_the_premiere", ClueCategory.WhereWhen, "Manager needed Lance at the house the day before the premiere") },
+            { "downtown_office",             new Clue("downtown_office",             ClueCategory.WhereWhen, "Takeout was delivered to the Downtown Office") },
+            { "malibu_mansion",              new Clue("malibu_mansion",              ClueCategory.WhereWhen, "VIP parking pass for a Malibu Mansion in the trash") },
+        };
+
+        public List<Clue> UnlockedClues { get; } = new();
+
+        /// <summary>
+        /// Adds the clue with <paramref name="clueId"/> to <see cref="UnlockedClues"/>
+        /// if it exists in the master database and has not been found yet.
+        /// Silently ignores unknown or duplicate IDs.
+        /// </summary>
+        public void UnlockClue(string clueId)
+        {
+            if (!_database.TryGetValue(clueId, out var clue)) return;
+            if (UnlockedClues.Exists(c => c.Id == clueId))    return;
+            UnlockedClues.Add(clue);
+        }
+    }
+}
+</file>
+
+<file path="Tiled maps/untitledcat_detective.tiled-project">
+{
+    "automappingRulesFile": "",
+    "commands": [
+    ],
+    "compatibilityVersion": 1100,
+    "extensionsPath": "extensions",
+    "folders": [
+        "."
+    ],
+    "properties": [
+    ],
+    "propertyTypes": [
+    ]
+}
+</file>
+
+<file path="Tiled maps/untitledcat_detective.tiled-session">
+{
+    "activeFile": "C:/Users/larry/Projecten/cat_detective/Content/room_map.json",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "C:/Users/larry/Projecten/cat_detective/Content/room_map.json": {
+            "scale": 0.75,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 496,
+                "y": 597.9999999999999
+            }
+        }
+    },
+    "openFiles": [
+        "C:/Users/larry/Projecten/cat_detective/Content/room_map.json"
+    ],
+    "project": "untitledcat_detective.tiled-project",
+    "recentFiles": [
+        "C:/Users/larry/Projecten/cat_detective/Content/room_map.json"
+    ]
 }
 </file>
 
@@ -637,6 +2238,77 @@ This section contains the contents of the repository's files.
                 }],
          "opacity":1,
          "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[
+                {
+                 "height":128.666666666667,
+                 "id":85,
+                 "name":"inspect_answering_machine",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":144,
+                 "x":246.666666666667,
+                 "y":346.666666666667
+                }, 
+                {
+                 "height":152.666666666667,
+                 "id":86,
+                 "name":"inspect_takeout_bag",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":106.666666666667,
+                 "x":799,
+                 "y":326.666666666667
+                }, 
+                {
+                 "height":172.666666666667,
+                 "id":87,
+                 "name":"inspect_calendar",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":120,
+                 "x":940.666666666667,
+                 "y":769.333333333333
+                }, 
+                {
+                 "height":95.3333333333334,
+                 "id":88,
+                 "name":"inspect_newspaper",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":94.6666666666666,
+                 "x":662.666666666667,
+                 "y":505.333333333333
+                }, 
+                {
+                 "height":136.666666666667,
+                 "id":89,
+                 "name":"inspect_trash_can",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":121.333333333333,
+                 "x":171.333333333333,
+                 "y":918.666666666667
+                }],
+         "opacity":1,
+         "type":"objectgroup",
          "visible":true,
          "x":0,
          "y":0
@@ -676,8 +2348,8 @@ This section contains the contents of the repository's files.
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":85,
+ "nextlayerid":6,
+ "nextobjectid":90,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",
@@ -688,66 +2360,6 @@ This section contains the contents of the repository's files.
  "version":"1.10",
  "width":33
 }
-</file>
-
-<file path="cat detective GDD.txt">
-GAME DESIGN DOCUMENT: "Cat Detective" (Working Title)
-1. GAME OVERVIEW
-Concept: A cozy, narrative-driven isometric mystery game where the player controls a housecat solving human crimes (e.g., stolen diamonds, poisoning, murder).
-Genre: Point-and-Click / Isometric Detective Adventure.
-Perspective: 2.5D Isometric (Fixed-camera, pre-rendered backgrounds).
-Platform: Web browser (HTML5/WASM) via MonoGame (KNI framework).
-Target Scope: Short, highly polished indie experience meant to be developed solo over a few months.
-2. CORE GAMEPLAY LOOP
-The game relies on environmental storytelling and logical deduction rather than complex inventory management or branching dialogue trees. It is broken into two distinct phases:
-Phase 1: Information Gathering (The Map)
-Exploration: The cat explores a static, highly detailed isometric room.
-Smell Mode: The player can activate a "Smell Mode" (applying a dark blue tint to the screen) which highlights hidden clues like footprints, dropped items, or lingering scents.
-Inspection: Clicking on an item pops up a high-resolution, LLM-generated close-up image of the clue with a single line of descriptive text (e.g., "A torn piece of red fabric. It smells like cheap cologne.").
-Keyword Acquisition: Discovering clues automatically adds "Keywords" to the player’s notebook (e.g., [Red Fabric],[Poison], [10:00 PM]).
-Phase 2: Synthesis (The Deduction Board)
-Inspired by Return of the Obra Dinn and The Case of the Golden Idol.
-The player presses a button to open the "Deduction Board"—a UI screen displaying a "Mad Libs" style fill-in-the-blank sentence:
-"The diamond was stolen by ______, who entered through the ______ at ______."
-The player drags and drops their collected keywords into the slots.
-Win Condition: A simple boolean logic check. If the keywords match the expected solution, the case is solved, triggering a success animation and unlocking the next level.
-3. ART & AESTHETIC DIRECTION
-Visual Style: "Studio Ghibli Painted Diorama." Warm, cozy, detailed watercolor/digital painting with baked-in soft lighting.
-Backgrounds: Flat, pre-rendered 2D images generated via LLMs (Midjourney/DALL-E), depicting isolated isometric rooms on a clean background.
-Character Design: A chubby, stylized grey-and-white tabby cat with bright green eyes.
-Animation Approach:
-4-Directional movement achieved using only 2 walk cycles (Diagonally Down, Diagonally Up). The Left variations are achieved purely in code via SpriteEffects.FlipHorizontally.
-Walk cycles are derived from AI-generated sprite sheets, cut out in Photoshop, with shadows manually removed.
-4. TECHNICAL IMPLEMENTATION
-Engine & Framework
-Framework: MonoGame (using the KNI fork). KNI is chosen specifically for its robust support for Web/WASM builds, allowing the game to be easily shared and played in a browser.
-Language: C#.
-Map Editor: Tiled (.tmx / .json export).
-Rendering & Depth (The 2.5D Illusion)
-The game mimics a 3D isometric environment using purely 2D assets and logic.
-Y-Sorting: The core rendering trick. In the MonoGame Update() loop, the layerDepth of the Cat sprite is constantly updated based on its bottom Y-coordinate. If the cat walks "up" the screen, its Y-value decreases, automatically drawing it behind foreground furniture.
-The "Matryoshka" Layering: Rooms are split into:
-Base Canvas (Floor & Back walls).
-Y-Sorted Props (Desks, chairs).
-Front Wall Cutouts (Walls closest to the camera).
-Wall Fading: Tiled NavMesh trigger zones will be placed behind front-facing walls. When the cat's collision box intersects this zone, MonoGame uses MathHelper.Lerp to smoothly fade the front wall's alpha to 0.4f, revealing the cat behind it.
-Level Design Structure
-The "Movie Set" Approach: To avoid the complex Z-axis collision math of multi-story buildings, all rooms for a specific case (e.g., Exterior, 1st Floor, 2nd Floor) will be drawn side-by-side on a single massive, flat map.
-When the cat enters a door, their X/Y coordinates are instantly teleported to the adjacent "room" on the canvas, creating a seamless, no-load-screen transition.
-"El Mariachi" Lighting Hacks
-To ensure the uniformly colored Cat sprite blends into the richly lit AI backgrounds without expensive 3D shaders:
-Tint Zones: Tiled invisible collision boxes placed over dark areas of the map. Entering them Lerps the Cat’s SpriteBatch color to a moody blue/grey.
-Additive Light Masks: Sunbeams or lamp glows are exported from Photoshop as standalone semi-transparent PNGs and drawn on top of the Cat in MonoGame to wash the sprite out naturally.
-Blob Shadow: A simple, semi-transparent black oval drawn directly under the Cat's X/Y coordinates to ground the sprite to the floor at all times.
-5. DEVELOPMENT WORKFLOW (Asset Pipeline)
-Generate Environment: Use LLM to generate the isometric room ("empty room, isolated on white background, Studio Ghibli style").
-Photoshop Prep: Cut out the floor, separate the foreground walls/props, paint over sunbeams for additive masks. Export as labeled PNGs.
-Tiled Mapping: Load the Base Floor PNG into Tiled. Draw NavMesh collision polygons for walls, interactive trigger zones for clues, and lighting zones. Export to MonoGame.
-Code Logic: Hook up the Tiled coordinates to MonoGame collision events, populate the Deduction Board logic, and playtest.
-6. SCOPE & MILESTONES (3-Month Solo Plan)
-Month 1: The Engine & Core Systems. Get MonoGame KNI running. Implement Y-sorting, Tiled map importing, basic cat movement, wall fading, and the "Blob Shadow".
-Month 2: The Gameplay Loop. Build the UI for the "Smell Mode" shader, Clue pop-ups, and the Mad Libs Deduction Board. Create one fully playable test room.
-Month 3: Content & Web Export. Generate the art for 3 distinct cases (e.g., The Mansion, The Train cabin, The Museum). Implement sound effects. Export and test the WASM web build.
 </file>
 
 <file path="CatDetective.csproj">
@@ -786,291 +2398,21 @@ Month 3: Content & Web Export. Generate the art for 3 distinct cases (e.g., The 
     <Content Include="Content\room_map.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\scenes_config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
-</file>
-
-<file path="CLAUDE.md">
-# Cat Detective — CLAUDE.md
-
-## Project overview
-
-A 2.5D isometric detective adventure game where a cat solves human crimes.
-Cozy Studio Ghibli aesthetic, pre-rendered backgrounds, point-and-click/free-roam gameplay.
-Built in C# using **MonoGame (KNI fork)**, targeting **Web/WASM** as the final platform.
-
-Current state: prototype — movement, Y-sorting, prop fading, and the render pipeline are implemented.
-Real art assets are not yet present; placeholder PNGs in `Content/` are needed to build.
-
----
-
-## Tech stack
-
-| Layer | Choice |
-|-------|--------|
-| Language | C# (.NET 8) |
-| Framework | MonoGame.Framework.DesktopGL (dev) → KNI WASM (ship) |
-| Map editor | Tiled — JSON export only |
-| JSON parsing | System.Text.Json (built-in, no extra packages) |
-| Content pipeline | MonoGame Content Builder (`.mgcb`) |
-
----
-
-## File structure
-
-```
-CatDetective.csproj       — Project file; swap package for KNI to target WASM
-Program.cs                — Entry point ([STAThread])
-Game1.cs                  — Main loop; owns the 4-pass render pipeline
-
-Entities/
-  GameObject.cs           — Abstract base: Position (bottom-center), LayerDepth, CollisionBox
-  Prop.cs                 — Foreground furniture; fades when cat walks behind it
-  Cat.cs                  — Player character; sprite-sheet animator, AABB movement
-
-Map/
-  MapParser.cs            — Reads Tiled JSON; extracts "Collisions" and "Triggers" layers
-
-Content/
-  Content.mgcb            — Asset pipeline config (ALL sprites: PremultiplyAlpha=False)
-  room_map.json           — Tiled map; copied verbatim to output, not pipeline-processed
-
-  bg_base.png             — Full-room pre-rendered background (no desk/cabinet)
-  prop_desk.png           — Desk cutout sprite
-  prop_cabinet.png        — Cabinet cutout sprite
-  mask_sunbeams.png       — Sunbeam VFX: black BG + warm-white beams (used additively)
-  shadow_blob.png         — Blurred black oval for the blob shadow under the cat
-  spr_cat_walk_down.png   — Horizontal sprite sheet, 4 frames, walk toward camera
-  spr_cat_walk_up.png     — Horizontal sprite sheet, 4 frames, walk away from camera
-```
-
----
-
-## Architecture rules
-
-### Pivot / origin — NEVER change this
-All entities use **bottom-center** as the draw origin. `Position` = the floor contact point.
-Changing this to top-left breaks Y-sorting for every entity in the scene.
-`TextureOrigin` in `GameObject` computes `(width/2, height)` automatically.
-
-### Layer depth formula — keep it normalised
-```csharp
-layerDepth = Math.Clamp(Position.Y / screenHeight, 0f, 1f);
-```
-`SpriteSortMode.FrontToBack` → higher depth = drawn in front. Do not invert this.
-
-### Render pipeline — keep passes in order
-| Pass | Blend | Content |
-|------|-------|---------|
-| 1 | AlphaBlend | `bg_base` at (0,0) |
-| 2 | AlphaBlend | Blob shadow (before cat, so it sits under) |
-| 3 | **NonPremultiplied**, FrontToBack | Cat + all props |
-| 4 | **Additive** | `mask_sunbeams` at (0,0) |
-
-Inserting a new entity: decide which pass it belongs to and draw it there.
-New lighting overlays → Pass 4 (additive). New floor decals → Pass 1 or 2. New Y-sortable objects → Pass 3.
-
-### Content pipeline — PremultiplyAlpha=False
-Every sprite used in Pass 3 (NonPremultiplied) must be built with `PremultiplyAlpha=False` in `Content.mgcb`.
-If a new sprite is added, add its entry to the `.mgcb` with this flag.
-The background and sunbeam mask can use either setting; keep them False for consistency.
-
-### Cat update — two-phase
-`Cat.Update()` reads input and advances animation. It does NOT move the cat.
-`Cat.MoveWithCollision()` applies velocity with per-axis AABB resolution.
-Call them in that order from `Game1.Update()`. Do not merge them.
-
----
-
-## Map / Tiled conventions
-
-- Only **object layers** are parsed. Tile layers are ignored.
-- Layer named `Collisions` → feeds `_solidBoundaries` (blocks cat movement).
-- Layer named `Triggers` → fade zones; matched to props by name substring (`"desk"`, `"cabinet"`).
-- The JSON file is read at runtime with `File.ReadAllText`. Edit it without rebuilding `.mgcb`.
-- Object rectangles only. Tiled polygons and ellipses are not supported yet.
-
----
-
-## Build & run
-
-```bash
-dotnet restore
-dotnet run
-```
-
-Controls: WASD or arrow keys. Escape to quit.
-
-To rebuild content assets after changing `.mgcb`:
-```bash
-dotnet build   # MonoGame.Content.Builder.Task runs mgcb automatically
-```
-
----
-
-## Switching to KNI / WASM
-
-In `CatDetective.csproj`, replace:
-```xml
-<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
-<PackageReference Include="MonoGame.Content.Builder.Task"  Version="3.8.1.303" />
-```
-with the appropriate KNI platform packages. No C# source changes are needed.
-
----
-
-## What NOT to do
-
-- Do not use `SpriteSortMode.BackToFront` — the entire depth system assumes `FrontToBack`.
-- Do not set `PremultiplyAlpha=True` for Pass 3 sprites — it will cause darkening when props fade.
-- Do not parse Tiled tilesets — the GDD uses pre-rendered PNGs, not tile-based rendering.
-- Do not add collision logic inside `Cat.Update()` — keep movement and collision in `MoveWithCollision()`.
-- Do not commit art assets to git as large binaries — use Git LFS or keep them out of the repo.
-</file>
-
-<file path="Content/obj/DesktopGL/net8.0/Content/bg_base.mgcontent">
-<?xml version="1.0" encoding="utf-8"?>
-<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/bg_base.png</SourceFile>
-  <SourceTime>2026-04-16T19:56:22.0394545+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/bg_base.xnb</DestFile>
-  <DestTime>2026-04-16T19:57:28.7409509+02:00</DestTime>
-  <Importer>TextureImporter</Importer>
-  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
-  <Processor>TextureProcessor</Processor>
-  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
-  <Parameters>
-    <Key>ColorKeyColor</Key>
-    <Value>255,0,255,255</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ColorKeyEnabled</Key>
-    <Value>True</Value>
-  </Parameters>
-  <Parameters>
-    <Key>GenerateMipmaps</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>PremultiplyAlpha</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ResizeToPowerOfTwo</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>MakeSquare</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>TextureFormat</Key>
-    <Value>Color</Value>
-  </Parameters>
-  <Dependencies />
-  <BuildAsset />
-  <BuildOutput />
-</PipelineBuildEvent>
-</file>
-
-<file path="Content/obj/DesktopGL/net8.0/Content/mask_sunbeams.mgcontent">
-<?xml version="1.0" encoding="utf-8"?>
-<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png</SourceFile>
-  <SourceTime>2026-04-17T08:08:04.1417441+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/mask_sunbeams.xnb</DestFile>
-  <DestTime>2026-04-17T08:08:39.4715286+02:00</DestTime>
-  <Importer>TextureImporter</Importer>
-  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
-  <Processor>TextureProcessor</Processor>
-  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
-  <Parameters>
-    <Key>ColorKeyColor</Key>
-    <Value>255,0,255,255</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ColorKeyEnabled</Key>
-    <Value>True</Value>
-  </Parameters>
-  <Parameters>
-    <Key>GenerateMipmaps</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>PremultiplyAlpha</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ResizeToPowerOfTwo</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>MakeSquare</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>TextureFormat</Key>
-    <Value>Color</Value>
-  </Parameters>
-  <Dependencies />
-  <BuildAsset />
-  <BuildOutput />
-</PipelineBuildEvent>
-</file>
-
-<file path="Content/obj/DesktopGL/net8.0/Content/prop_cabinet.mgcontent">
-<?xml version="1.0" encoding="utf-8"?>
-<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/prop_cabinet.png</SourceFile>
-  <SourceTime>2026-04-16T19:16:50.4983489+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_cabinet.xnb</DestFile>
-  <DestTime>2026-04-16T19:56:13.0540194+02:00</DestTime>
-  <Importer>TextureImporter</Importer>
-  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
-  <Processor>TextureProcessor</Processor>
-  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
-  <Parameters>
-    <Key>ColorKeyColor</Key>
-    <Value>255,0,255,255</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ColorKeyEnabled</Key>
-    <Value>True</Value>
-  </Parameters>
-  <Parameters>
-    <Key>GenerateMipmaps</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>PremultiplyAlpha</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ResizeToPowerOfTwo</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>MakeSquare</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>TextureFormat</Key>
-    <Value>Color</Value>
-  </Parameters>
-  <Dependencies />
-  <BuildAsset />
-  <BuildOutput />
-</PipelineBuildEvent>
 </file>
 
 <file path="Content/obj/DesktopGL/net8.0/Content/prop_desk.mgcontent">
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/prop_desk.png</SourceFile>
-  <SourceTime>2026-04-16T19:17:14.7102561+02:00</SourceTime>
+  <SourceTime>2026-04-17T17:22:38.3650537+02:00</SourceTime>
   <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_desk.xnb</DestFile>
-  <DestTime>2026-04-16T19:56:12.9128116+02:00</DestTime>
+  <DestTime>2026-04-17T17:29:43.3670074+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
@@ -1113,9 +2455,9 @@ with the appropriate KNI platform packages. No C# source changes are needed.
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png</SourceFile>
-  <SourceTime>2026-04-17T15:30:59.4264439+02:00</SourceTime>
+  <SourceTime>2026-04-17T17:37:26.4820061+02:00</SourceTime>
   <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/shadow_blob.xnb</DestFile>
-  <DestTime>2026-04-17T15:31:24.3247863+02:00</DestTime>
+  <DestTime>2026-04-17T17:37:52.0376171+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
@@ -1127,178 +2469,6 @@ with the appropriate KNI platform packages. No C# source changes are needed.
   <Parameters>
     <Key>ColorKeyEnabled</Key>
     <Value>True</Value>
-  </Parameters>
-  <Parameters>
-    <Key>GenerateMipmaps</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>PremultiplyAlpha</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ResizeToPowerOfTwo</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>MakeSquare</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>TextureFormat</Key>
-    <Value>Color</Value>
-  </Parameters>
-  <Dependencies />
-  <BuildAsset />
-  <BuildOutput />
-</PipelineBuildEvent>
-</file>
-
-<file path="Content/obj/DesktopGL/net8.0/Content/spr_cat_walk_down.mgcontent">
-<?xml version="1.0" encoding="utf-8"?>
-<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_down.png</SourceFile>
-  <SourceTime>2026-04-16T19:33:26.3515291+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_down.xnb</DestFile>
-  <DestTime>2026-04-16T20:06:15.5857599+02:00</DestTime>
-  <Importer>TextureImporter</Importer>
-  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
-  <Processor>TextureProcessor</Processor>
-  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
-  <Parameters>
-    <Key>ColorKeyColor</Key>
-    <Value>255,255,255,255</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ColorKeyEnabled</Key>
-    <Value>True</Value>
-  </Parameters>
-  <Parameters>
-    <Key>GenerateMipmaps</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>PremultiplyAlpha</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ResizeToPowerOfTwo</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>MakeSquare</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>TextureFormat</Key>
-    <Value>Color</Value>
-  </Parameters>
-  <Dependencies />
-  <BuildAsset />
-  <BuildOutput />
-</PipelineBuildEvent>
-</file>
-
-<file path="Content/obj/DesktopGL/net8.0/Content/spr_cat_walk_up.mgcontent">
-<?xml version="1.0" encoding="utf-8"?>
-<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png</SourceFile>
-  <SourceTime>2026-04-16T19:38:54.0734022+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_up.xnb</DestFile>
-  <DestTime>2026-04-16T20:06:15.6140976+02:00</DestTime>
-  <Importer>TextureImporter</Importer>
-  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
-  <Processor>TextureProcessor</Processor>
-  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
-  <Parameters>
-    <Key>ColorKeyColor</Key>
-    <Value>255,255,255,255</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ColorKeyEnabled</Key>
-    <Value>True</Value>
-  </Parameters>
-  <Parameters>
-    <Key>GenerateMipmaps</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>PremultiplyAlpha</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ResizeToPowerOfTwo</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>MakeSquare</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>TextureFormat</Key>
-    <Value>Color</Value>
-  </Parameters>
-  <Dependencies />
-  <BuildAsset />
-  <BuildOutput />
-</PipelineBuildEvent>
-</file>
-
-<file path="Content/obj/DesktopGL/net8.0/Content/walk_animation_forward.mgcontent">
-<?xml version="1.0" encoding="utf-8"?>
-<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png</SourceFile>
-  <SourceTime>2026-04-17T15:14:14.7000275+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/walk_animation_forward.xnb</DestFile>
-  <DestTime>2026-04-17T15:14:43.4249727+02:00</DestTime>
-  <Importer>TextureImporter</Importer>
-  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
-  <Processor>TextureProcessor</Processor>
-  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
-  <Parameters>
-    <Key>ColorKeyEnabled</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>GenerateMipmaps</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>PremultiplyAlpha</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>ResizeToPowerOfTwo</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>MakeSquare</Key>
-    <Value>False</Value>
-  </Parameters>
-  <Parameters>
-    <Key>TextureFormat</Key>
-    <Value>Color</Value>
-  </Parameters>
-  <Dependencies />
-  <BuildAsset />
-  <BuildOutput />
-</PipelineBuildEvent>
-</file>
-
-<file path="Content/obj/DesktopGL/net8.0/Content/walk_animation_upward.mgcontent">
-<?xml version="1.0" encoding="utf-8"?>
-<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_upward.png</SourceFile>
-  <SourceTime>2026-04-17T15:00:19.5351484+02:00</SourceTime>
-  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/walk_animation_upward.xnb</DestFile>
-  <DestTime>2026-04-17T15:04:22.804101+02:00</DestTime>
-  <Importer>TextureImporter</Importer>
-  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
-  <Processor>TextureProcessor</Processor>
-  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
-  <Parameters>
-    <Key>ColorKeyEnabled</Key>
-    <Value>False</Value>
   </Parameters>
   <Parameters>
     <Key>GenerateMipmaps</Key>
@@ -1746,6 +2916,77 @@ with the appropriate KNI platform packages. No C# source changes are needed.
                 }],
          "opacity":1,
          "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[
+                {
+                 "height":128.666666666667,
+                 "id":85,
+                 "name":"inspect_answering_machine",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":144,
+                 "x":246.666666666667,
+                 "y":346.666666666667
+                }, 
+                {
+                 "height":152.666666666667,
+                 "id":86,
+                 "name":"inspect_takeout_bag",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":106.666666666667,
+                 "x":799,
+                 "y":326.666666666667
+                }, 
+                {
+                 "height":172.666666666667,
+                 "id":87,
+                 "name":"inspect_calendar",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":120,
+                 "x":940.666666666667,
+                 "y":769.333333333333
+                }, 
+                {
+                 "height":95.3333333333334,
+                 "id":88,
+                 "name":"inspect_newspaper",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":94.6666666666666,
+                 "x":662.666666666667,
+                 "y":505.333333333333
+                }, 
+                {
+                 "height":136.666666666667,
+                 "id":89,
+                 "name":"inspect_trash_can",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":121.333333333333,
+                 "x":171.333333333333,
+                 "y":918.666666666667
+                }],
+         "opacity":1,
+         "type":"objectgroup",
          "visible":true,
          "x":0,
          "y":0
@@ -1785,8 +3026,8 @@ with the appropriate KNI platform packages. No C# source changes are needed.
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":85,
+ "nextlayerid":6,
+ "nextobjectid":90,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",
@@ -1796,242 +3037,6 @@ with the appropriate KNI platform packages. No C# source changes are needed.
  "type":"map",
  "version":"1.10",
  "width":33
-}
-</file>
-
-<file path="DebugHelper.cs">
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-
-namespace CatDetective
-{
-    public static class DebugHelper
-    {
-        public static void DrawLine(SpriteBatch spriteBatch, Texture2D pixel, Vector2 p1, Vector2 p2, Color color, int thickness = 2)
-        {
-            float length = Vector2.Distance(p1, p2);
-            float angle = (float)Math.Atan2(p2.Y - p1.Y, p2.X - p1.X);
-            spriteBatch.Draw(pixel, p1, null, color, angle, Vector2.Zero, new Vector2(length, thickness), SpriteEffects.None, 0f);
-        }
-
-        public static void DrawHollowRect(SpriteBatch spriteBatch, Texture2D pixel, Rectangle rect, Color color, int thickness = 2)
-        {
-            DrawLine(spriteBatch, pixel, new Vector2(rect.Left,  rect.Top),    new Vector2(rect.Right, rect.Top),    color, thickness);
-            DrawLine(spriteBatch, pixel, new Vector2(rect.Right, rect.Top),    new Vector2(rect.Right, rect.Bottom), color, thickness);
-            DrawLine(spriteBatch, pixel, new Vector2(rect.Right, rect.Bottom), new Vector2(rect.Left,  rect.Bottom), color, thickness);
-            DrawLine(spriteBatch, pixel, new Vector2(rect.Left,  rect.Bottom), new Vector2(rect.Left,  rect.Top),   color, thickness);
-        }
-    }
-}
-</file>
-
-<file path="dotnet-tools.json">
-{
-  "version": 1,
-  "isRoot": true,
-  "tools": {
-    "dotnet-mgcb": {
-      "version": "3.8.4.1",
-      "commands": [
-        "mgcb"
-      ],
-      "rollForward": false
-    }
-  }
-}
-</file>
-
-<file path="Entities/GameObject.cs">
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-
-namespace CatDetective.Entities
-{
-    /// <summary>
-    /// Base class for every visible, positionable entity in the scene.
-    ///
-    /// PIVOT RULE (CRITICAL):
-    ///   All rendering uses the BOTTOM-CENTER of the sprite as its origin/pivot.
-    ///   This means <see cref="Position"/> represents the point where the entity
-    ///   "touches the floor". Y-sorting then correctly sorts by the floor contact
-    ///   point rather than the top-left corner of the texture.
-    ///
-    /// LAYER DEPTH:
-    ///   MonoGame's SpriteSortMode.FrontToBack draws higher depth values in front.
-    ///   We normalise Position.Y to [0..1] using the screen height so the cat
-    ///   slides naturally in front of or behind props as it moves up or down.
-    /// </summary>
-    public abstract class GameObject
-    {
-        // ── Static screen height used by all instances for depth normalisation ──
-        private static int _screenHeight = 720;
-
-        /// <summary>Call once from Game1.Initialize() before any entities are created.</summary>
-        public static void SetScreenHeight(int height) => _screenHeight = height;
-
-        // ── Core properties ────────────────────────────────────────────────────
-        /// <summary>
-        /// World position of this entity's BOTTOM-CENTER (floor contact point).
-        /// </summary>
-        public Vector2 Position { get; set; }
-
-        /// <summary>Current sprite texture (may be swapped per animation state).</summary>
-        public Texture2D? Texture { get; set; }
-
-        /// <summary>Axis-aligned bounding box used for collision detection.</summary>
-        public Rectangle CollisionBox { get; protected set; }
-
-        /// <summary>
-        /// Depth in [0..1]. Higher = rendered in front when using FrontToBack sort.
-        /// Updated each frame via <see cref="CalculateLayerDepth"/>.
-        /// </summary>
-        public float LayerDepth { get; protected set; }
-
-        // ── Helpers ────────────────────────────────────────────────────────────
-
-        /// <summary>
-        /// The bottom-center pivot in TEXTURE space.
-        /// For a full-texture draw this is (width/2, height).
-        /// Subclasses that draw from a source rectangle should compute their own.
-        /// </summary>
-        protected Vector2 TextureOrigin =>
-            Texture != null
-                ? new Vector2(Texture.Width * 0.5f, Texture.Height)
-                : Vector2.Zero;
-
-        /// <summary>
-        /// Normalises a floor Y-coordinate to a [0..1] depth value.
-        /// Pass an explicit <paramref name="sortY"/> when the draw position differs
-        /// from the logical floor contact point (e.g. full-room overlay props that
-        /// always draw at (0,0) but must sort by where the object stands in the scene).
-        /// Defaults to <see cref="Position"/>.Y when not supplied.
-        /// </summary>
-        protected float CalculateLayerDepth(float? sortY = null) =>
-            Math.Clamp((sortY ?? Position.Y) / _screenHeight, 0f, 1f);
-
-        // ── Abstract interface ─────────────────────────────────────────────────
-        public virtual void Update(GameTime gameTime) { }
-        public abstract void Draw(SpriteBatch spriteBatch);
-    }
-}
-</file>
-
-<file path="Entities/Prop.cs">
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
-namespace CatDetective.Entities
-{
-    /// <summary>
-    /// A foreground prop (desk, cabinet, etc.) that:
-    ///   1. Y-sorts correctly with the cat via <see cref="LayerDepth"/>.
-    ///   2. Smoothly fades to semi-transparent when the cat walks behind it.
-    ///
-    /// FULL-ROOM OVERLAY
-    ///   Prop textures are the same pixel dimensions as the background (1072 × 1136).
-    ///   The PNG contains the prop painted in the correct isometric position over a
-    ///   fully transparent background, so it is always drawn at (0, 0) — no
-    ///   position offset needed.
-    ///
-    ///   Because the draw position is always (0,0), <see cref="LayerDepth"/> is
-    ///   calculated from a separate <see cref="_sortY"/> value — the approximate
-    ///   Y coordinate (in screen space) of the prop's floor contact point within
-    ///   the full-room image.  Tune this in Game1 to control when the cat passes
-    ///   in front of or behind the prop.
-    ///
-    /// FADE TRIGGER ZONE
-    ///   An AABB placed in the area visually "behind" the prop (lower screen Y =
-    ///   further from camera in isometric view).  When the cat's feet enter this
-    ///   zone, <see cref="TargetAlpha"/> drops to 0.4f.
-    /// </summary>
-    public class Prop : GameObject
-    {
-        private const float FADE_SPEED = 5f;
-
-        private readonly float _sortY;   // logical floor Y used for depth, not draw position
-
-        // ── Fade state ─────────────────────────────────────────────────────────
-        public float CurrentAlpha { get; private set; } = 1.0f;
-        public float TargetAlpha  { get; private set; } = 1.0f;
-
-        /// <summary>
-        /// AABB that triggers the fade when intersected by the player's CollisionBox.
-        /// Populated from the Tiled "Triggers" layer at load time.
-        /// </summary>
-        public Rectangle FadeTriggerZone { get; set; }
-
-        // ── Constructor ────────────────────────────────────────────────────────
-        /// <param name="texture">Full-room overlay texture (same size as bg_base).</param>
-        /// <param name="sortY">
-        ///   The Y screen coordinate of this prop's floor contact point.
-        ///   Used only for depth sorting — the texture always draws at (0, 0).
-        ///   A good starting value: roughly the Y of the prop's bottom edge in the image.
-        /// </param>
-        /// <param name="fadeTriggerZone">AABB that triggers the fade when the cat enters.</param>
-        public Prop(Texture2D texture, float sortY, Rectangle fadeTriggerZone)
-        {
-            Texture          = texture;
-            _sortY           = sortY;
-            FadeTriggerZone  = fadeTriggerZone;
-            Position         = Vector2.Zero;      // draw position is always top-left
-            LayerDepth       = CalculateLayerDepth(_sortY);
-        }
-
-        // ── Public API ─────────────────────────────────────────────────────────
-
-        /// <summary>
-        /// Call every frame (before Update) with the player's current CollisionBox.
-        /// Sets <see cref="TargetAlpha"/> based on whether the player is inside
-        /// the fade trigger zone.
-        /// </summary>
-        public void CheckFadeTrigger(Rectangle playerBounds)
-        {
-            TargetAlpha = FadeTriggerZone.Intersects(playerBounds) ? 0.4f : 1.0f;
-        }
-
-        // ── GameObject overrides ───────────────────────────────────────────────
-
-        public override void Update(GameTime gameTime)
-        {
-            CurrentAlpha = MathHelper.Lerp(
-                CurrentAlpha,
-                TargetAlpha,
-                (float)gameTime.ElapsedGameTime.TotalSeconds * FADE_SPEED);
-
-            // If the prop is transparent or currently fading, force it to the very front (LayerDepth = 1.0f)
-            // so the cat is always drawn behind it and seen through the transparency.
-            if (TargetAlpha < 1.0f || CurrentAlpha < 0.99f)
-            {
-                LayerDepth = 1.0f;
-            }
-            else
-            {
-                // Otherwise, sort normally based on its floor contact point.
-                LayerDepth = CalculateLayerDepth(_sortY);
-            }
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            if (Texture == null) return;
-
-            // Full-room overlay: draw at (0,0) with no origin offset.
-            // The texture's transparent regions show the background underneath;
-            // only the painted prop pixels are visible.
-            spriteBatch.Draw(
-                Texture,
-                position:        Vector2.Zero,
-                sourceRectangle: null,
-                color:           Color.White * CurrentAlpha,
-                rotation:        0f,
-                origin:          Vector2.Zero,
-                scale:           Vector2.One,
-                effects:         SpriteEffects.None,
-                layerDepth:      LayerDepth);
-        }
-    }
 }
 </file>
 
@@ -2121,7 +3126,7 @@ namespace CatDetective.Map
         };
 
         /// <summary>
-        /// Parses <paramref name="jsonPath"/> and populates the two output lists.
+        /// Parses <paramref name="jsonPath"/> and populates the three output lists.
         /// If the file is missing the method logs a warning and returns empty lists
         /// so the game can still run without a map (useful during early prototyping).
         /// </summary>
@@ -2134,13 +3139,19 @@ namespace CatDetective.Map
         ///   Output: all (name, rect) pairs from the "Triggers" layer.
         ///   Match names to props ("desk_fade", "cabinet_fade") in LoadContent().
         /// </param>
+        /// <param name="interactables">
+        ///   Output: all (name, rect) pairs from the "Interactables" layer.
+        ///   Match names to <c>_interactionDatabase</c> keys in Game1.
+        /// </param>
         public static void Parse(
             string jsonPath,
             out List<Rectangle> solidBoundaries,
-            out List<(string Name, Rectangle Rect)> triggers)
+            out List<(string Name, Rectangle Rect)> triggers,
+            out List<(string Name, Rectangle Rect)> interactables)
         {
             solidBoundaries = new List<Rectangle>();
             triggers        = new List<(string, Rectangle)>();
+            interactables   = new List<(string, Rectangle)>();
 
             if (!File.Exists(jsonPath))
             {
@@ -2179,464 +3190,23 @@ namespace CatDetective.Map
                         foreach (var obj in layer.Objects)
                             triggers.Add((obj.Name, ToRect(obj)));
                         break;
+
+                    case "Interactables":
+                        foreach (var obj in layer.Objects)
+                            interactables.Add((obj.Name, ToRect(obj)));
+                        break;
                 }
             }
 
             Console.WriteLine(
                 $"[MapParser] Loaded {solidBoundaries.Count} collision(s), " +
-                $"{triggers.Count} trigger(s) from '{jsonPath}'.");
+                $"{triggers.Count} trigger(s), " +
+                $"{interactables.Count} interactable(s) from '{jsonPath}'.");
         }
 
         private static Rectangle ToRect(TiledObject obj) =>
             new Rectangle((int)obj.X, (int)obj.Y, (int)obj.Width, (int)obj.Height);
     }
-}
-</file>
-
-<file path="obj/CatDetective.csproj.nuget.dgspec.json">
-{
-  "format": 1,
-  "restore": {
-    "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj": {}
-  },
-  "projects": {
-    "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj",
-        "projectName": "CatDetective",
-        "projectPath": "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj",
-        "packagesPath": "C:\\Users\\larry\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\larry\\Projecten\\cat_detective\\obj\\",
-        "projectStyle": "PackageReference",
-        "configFilePaths": [
-          "C:\\Users\\larry\\AppData\\Roaming\\NuGet\\NuGet.Config"
-        ],
-        "originalTargetFrameworks": [
-          "net8.0"
-        ],
-        "sources": {
-          "https://api.nuget.org/v3/index.json": {}
-        },
-        "frameworks": {
-          "net8.0": {
-            "targetAlias": "net8.0",
-            "projectReferences": {}
-          }
-        },
-        "warningProperties": {
-          "warnAsError": [
-            "NU1605"
-          ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.100"
-      },
-      "frameworks": {
-        "net8.0": {
-          "targetAlias": "net8.0",
-          "dependencies": {
-            "MonoGame.Content.Builder.Task": {
-              "target": "Package",
-              "version": "[3.8.1.303, )"
-            },
-            "MonoGame.Framework.DesktopGL": {
-              "target": "Package",
-              "version": "[3.8.1.303, )"
-            }
-          },
-          "imports": [
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48",
-            "net481"
-          ],
-          "assetTargetFallback": true,
-          "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.23, 8.0.23]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[8.0.23, 8.0.23]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.23, 8.0.23]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.23, 8.0.23]"
-            }
-          ],
-          "frameworkReferences": {
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
-        }
-      }
-    }
-  }
-}
-</file>
-
-<file path="obj/CatDetective.csproj.nuget.g.props">
-<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <RestoreSuccess Condition=" '$(RestoreSuccess)' == '' ">True</RestoreSuccess>
-    <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
-    <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">$(MSBuildThisFileDirectory)project.assets.json</ProjectAssetsFile>
-    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
-    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">C:\Users\larry\.nuget\packages\</NuGetPackageFolders>
-    <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
-    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">7.0.0</NuGetToolVersion>
-  </PropertyGroup>
-  <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <SourceRoot Include="C:\Users\larry\.nuget\packages\" />
-  </ItemGroup>
-  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <Import Project="$(NuGetPackageRoot)monogame.content.builder.task\3.8.1.303\build\MonoGame.Content.Builder.Task.props" Condition="Exists('$(NuGetPackageRoot)monogame.content.builder.task\3.8.1.303\build\MonoGame.Content.Builder.Task.props')" />
-  </ImportGroup>
-</Project>
-</file>
-
-<file path="obj/CatDetective.csproj.nuget.g.targets">
-<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <Import Project="$(NuGetPackageRoot)monogame.framework.desktopgl\3.8.1.303\build\MonoGame.Framework.DesktopGL.targets" Condition="Exists('$(NuGetPackageRoot)monogame.framework.desktopgl\3.8.1.303\build\MonoGame.Framework.DesktopGL.targets')" />
-    <Import Project="$(NuGetPackageRoot)monogame.content.builder.task\3.8.1.303\build\MonoGame.Content.Builder.Task.targets" Condition="Exists('$(NuGetPackageRoot)monogame.content.builder.task\3.8.1.303\build\MonoGame.Content.Builder.Task.targets')" />
-  </ImportGroup>
-</Project>
-</file>
-
-<file path="obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs">
-// <autogenerated />
-using System;
-using System.Reflection;
-[assembly: global::System.Runtime.Versioning.TargetFrameworkAttribute(".NETCoreApp,Version=v8.0", FrameworkDisplayName = ".NET 8.0")]
-</file>
-
-<file path="obj/Debug/net8.0/CatDetective.csproj.CoreCompileInputs.cache">
-b4787cfcc9b002b0a051b9c39bf21bc774f844360597298fadbe7bf5a7efe84c
-</file>
-
-<file path="obj/Debug/net8.0/CatDetective.GeneratedMSBuildEditorConfig.editorconfig">
-is_global = true
-build_property.TargetFramework = net8.0
-build_property.TargetFrameworkIdentifier = .NETCoreApp
-build_property.TargetFrameworkVersion = v8.0
-build_property.TargetPlatformMinVersion = 
-build_property.UsingMicrosoftNETSdkWeb = 
-build_property.ProjectTypeGuids = 
-build_property.InvariantGlobalization = 
-build_property.PlatformNeutralAssembly = 
-build_property.EnforceExtendedAnalyzerRules = 
-build_property._SupportedPlatformList = Linux,macOS,Windows
-build_property.RootNamespace = CatDetective
-build_property.ProjectDir = C:\Users\larry\Projecten\cat_detective\
-build_property.EnableComHosting = 
-build_property.EnableGeneratedComInterfaceComImportInterop = 
-build_property.EffectiveAnalysisLevelStyle = 8.0
-build_property.EnableCodeStyleSeverity =
-</file>
-
-<file path="obj/Debug/net8.0/CatDetective.genruntimeconfig.cache">
-9242b68c503066df1bd576ac962275a4b2ad5e1c28efc5bbc3334b67134ceec6
-</file>
-
-<file path="obj/project.assets.json">
-{
-  "version": 3,
-  "targets": {
-    "net8.0": {
-      "MonoGame.Content.Builder.Task/3.8.1.303": {
-        "type": "package",
-        "build": {
-          "build/MonoGame.Content.Builder.Task.props": {},
-          "build/MonoGame.Content.Builder.Task.targets": {}
-        }
-      },
-      "MonoGame.Framework.DesktopGL/3.8.1.303": {
-        "type": "package",
-        "compile": {
-          "lib/net6.0/MonoGame.Framework.dll": {}
-        },
-        "runtime": {
-          "lib/net6.0/MonoGame.Framework.dll": {}
-        },
-        "build": {
-          "build/MonoGame.Framework.DesktopGL.targets": {}
-        },
-        "runtimeTargets": {
-          "runtimes/linux-x64/native/libSDL2-2.0.so.0": {
-            "assetType": "native",
-            "rid": "linux-x64"
-          },
-          "runtimes/linux-x64/native/libopenal.so.1": {
-            "assetType": "native",
-            "rid": "linux-x64"
-          },
-          "runtimes/osx/native/libSDL2.dylib": {
-            "assetType": "native",
-            "rid": "osx"
-          },
-          "runtimes/osx/native/libopenal.1.dylib": {
-            "assetType": "native",
-            "rid": "osx"
-          },
-          "runtimes/win-x64/native/SDL2.dll": {
-            "assetType": "native",
-            "rid": "win-x64"
-          },
-          "runtimes/win-x64/native/soft_oal.dll": {
-            "assetType": "native",
-            "rid": "win-x64"
-          },
-          "runtimes/win-x86/native/SDL2.dll": {
-            "assetType": "native",
-            "rid": "win-x86"
-          },
-          "runtimes/win-x86/native/soft_oal.dll": {
-            "assetType": "native",
-            "rid": "win-x86"
-          }
-        }
-      }
-    }
-  },
-  "libraries": {
-    "MonoGame.Content.Builder.Task/3.8.1.303": {
-      "sha512": "9Ilzzje62LhWElbPNEl7vh7XsRSbze+lvCJdZtTZUGu48FRgvYN6THURwIB9PN98EI33/Wnf6iuShNUtD7hL4Q==",
-      "type": "package",
-      "path": "monogame.content.builder.task/3.8.1.303",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "Icon.png",
-        "build/MonoGame.Content.Builder.Task.props",
-        "build/MonoGame.Content.Builder.Task.targets",
-        "monogame.content.builder.task.3.8.1.303.nupkg.sha512",
-        "monogame.content.builder.task.nuspec"
-      ]
-    },
-    "MonoGame.Framework.DesktopGL/3.8.1.303": {
-      "sha512": "eGYhqn0n1olk8MNYeE9EuBmoNNECN1T18rPMaQpkzsEQ0H3nVyFPXC+uCo78v5pi5juQpJ3PSFnSkjzZJ1U58A==",
-      "type": "package",
-      "path": "monogame.framework.desktopgl/3.8.1.303",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "Icon.png",
-        "build/MonoGame.Framework.DesktopGL.targets",
-        "lib/net6.0/MonoGame.Framework.dll",
-        "monogame.framework.desktopgl.3.8.1.303.nupkg.sha512",
-        "monogame.framework.desktopgl.nuspec",
-        "runtimes/linux-x64/native/libSDL2-2.0.so.0",
-        "runtimes/linux-x64/native/libopenal.so.1",
-        "runtimes/osx/native/libSDL2.dylib",
-        "runtimes/osx/native/libopenal.1.dylib",
-        "runtimes/win-x64/native/SDL2.dll",
-        "runtimes/win-x64/native/soft_oal.dll",
-        "runtimes/win-x86/native/SDL2.dll",
-        "runtimes/win-x86/native/soft_oal.dll"
-      ]
-    }
-  },
-  "projectFileDependencyGroups": {
-    "net8.0": [
-      "MonoGame.Content.Builder.Task >= 3.8.1.303",
-      "MonoGame.Framework.DesktopGL >= 3.8.1.303"
-    ]
-  },
-  "packageFolders": {
-    "C:\\Users\\larry\\.nuget\\packages\\": {}
-  },
-  "project": {
-    "version": "1.0.0",
-    "restore": {
-      "projectUniqueName": "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj",
-      "projectName": "CatDetective",
-      "projectPath": "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj",
-      "packagesPath": "C:\\Users\\larry\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\larry\\Projecten\\cat_detective\\obj\\",
-      "projectStyle": "PackageReference",
-      "configFilePaths": [
-        "C:\\Users\\larry\\AppData\\Roaming\\NuGet\\NuGet.Config"
-      ],
-      "originalTargetFrameworks": [
-        "net8.0"
-      ],
-      "sources": {
-        "https://api.nuget.org/v3/index.json": {}
-      },
-      "frameworks": {
-        "net8.0": {
-          "targetAlias": "net8.0",
-          "projectReferences": {}
-        }
-      },
-      "warningProperties": {
-        "warnAsError": [
-          "NU1605"
-        ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "10.0.100"
-    },
-    "frameworks": {
-      "net8.0": {
-        "targetAlias": "net8.0",
-        "dependencies": {
-          "MonoGame.Content.Builder.Task": {
-            "target": "Package",
-            "version": "[3.8.1.303, )"
-          },
-          "MonoGame.Framework.DesktopGL": {
-            "target": "Package",
-            "version": "[3.8.1.303, )"
-          }
-        },
-        "imports": [
-          "net461",
-          "net462",
-          "net47",
-          "net471",
-          "net472",
-          "net48",
-          "net481"
-        ],
-        "assetTargetFallback": true,
-        "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.23, 8.0.23]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Host.win-x64",
-            "version": "[8.0.23, 8.0.23]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[8.0.23, 8.0.23]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[8.0.23, 8.0.23]"
-          }
-        ],
-        "frameworkReferences": {
-          "Microsoft.NETCore.App": {
-            "privateAssets": "all"
-          }
-        },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
-      }
-    }
-  }
-}
-</file>
-
-<file path="obj/project.nuget.cache">
-{
-  "version": 2,
-  "dgSpecHash": "e1CPmxW4KJw=",
-  "success": true,
-  "projectFilePath": "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\larry\\.nuget\\packages\\monogame.content.builder.task\\3.8.1.303\\monogame.content.builder.task.3.8.1.303.nupkg.sha512",
-    "C:\\Users\\larry\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.1.303\\monogame.framework.desktopgl.3.8.1.303.nupkg.sha512",
-    "C:\\Users\\larry\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.23\\microsoft.netcore.app.ref.8.0.23.nupkg.sha512",
-    "C:\\Users\\larry\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.23\\microsoft.windowsdesktop.app.ref.8.0.23.nupkg.sha512",
-    "C:\\Users\\larry\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.23\\microsoft.aspnetcore.app.ref.8.0.23.nupkg.sha512",
-    "C:\\Users\\larry\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.23\\microsoft.netcore.app.host.win-x64.8.0.23.nupkg.sha512"
-  ],
-  "logs": []
-}
-</file>
-
-<file path="Program.cs">
-using System;
-
-namespace CatDetective
-{
-    /// <summary>
-    /// Entry point. MonoGame requires [STAThread] on Windows for COM interop.
-    /// </summary>
-    internal static class Program
-    {
-        [STAThread]
-        private static void Main()
-        {
-            using var game = new Game1();
-            game.Run();
-        }
-    }
-}
-</file>
-
-<file path="run_game.md">
-dotnet build
-dotnet run
-</file>
-
-<file path="Tiled maps/untitledcat_detective.tiled-project">
-{
-    "automappingRulesFile": "",
-    "commands": [
-    ],
-    "compatibilityVersion": 1100,
-    "extensionsPath": "extensions",
-    "folders": [
-        "."
-    ],
-    "properties": [
-    ],
-    "propertyTypes": [
-    ]
-}
-</file>
-
-<file path="Tiled maps/untitledcat_detective.tiled-session">
-{
-    "activeFile": "C:/Users/larry/Projecten/cat_detective/Content/room_map.json",
-    "expandedProjectPaths": [
-    ],
-    "file.lastUsedOpenFilter": "All Files (*)",
-    "fileStates": {
-        "C:/Users/larry/Projecten/cat_detective/Content/room_map.json": {
-            "scale": 0.592876838235294,
-            "selectedLayer": 2,
-            "viewCenter": {
-                "x": 807.9249670568175,
-                "y": 444.443066428959
-            }
-        }
-    },
-    "openFiles": [
-        "C:/Users/larry/Projecten/cat_detective/Content/room_map.json"
-    ],
-    "project": "untitledcat_detective.tiled-project",
-    "recentFiles": [
-        "C:/Users/larry/Projecten/cat_detective/Content/room_map.json"
-    ]
 }
 </file>
 
@@ -2783,6 +3353,14 @@ dotnet run
 /processorParam:TextureFormat=Color
 /build:walk_animation_upward.png
 
+# ── Dialogue font ─────────────────────────────────────────────────────────
+#begin dialogue_font.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:dialogue_font.spritefont
+
 # ── NOTE: room_map.json ────────────────────────────────────────────────────
 # Copied verbatim by the .csproj <Content> ItemGroup; not processed here.
 </file>
@@ -2803,8 +3381,10 @@ dotnet run
     <File>C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/walk_animation_upward.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/dialogue_font.spritefont</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
@@ -2821,10 +3401,11 @@ dotnet run
 <file path="Content/obj/DesktopGL/net8.0/Content/.mgstats">
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
 "C:/Users/larry/Projecten/cat_detective/Content/bg_base.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/bg_base.xnb","TextureProcessor","Texture2DContent",2147366,4871253,0.2628493
+"C:/Users/larry/Projecten/cat_detective/Content/dialogue_font.spritefont","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/dialogue_font.xnb","FontDescriptionProcessor","SpriteFontContent",474,37913,0.1019042
 "C:/Users/larry/Projecten/cat_detective/Content/mask_sunbeams.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/mask_sunbeams.xnb","TextureProcessor","Texture2DContent",83310,4871253,0.5379857
 "C:/Users/larry/Projecten/cat_detective/Content/prop_cabinet.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_cabinet.xnb","TextureProcessor","Texture2DContent",240216,4871253,0.1396972
-"C:/Users/larry/Projecten/cat_detective/Content/prop_desk.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_desk.xnb","TextureProcessor","Texture2DContent",375223,4871253,0.1434539
-"C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/shadow_blob.xnb","TextureProcessor","Texture2DContent",121682,1430485,0.3164453
+"C:/Users/larry/Projecten/cat_detective/Content/prop_desk.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/prop_desk.xnb","TextureProcessor","Texture2DContent",360186,4871253,0.229271
+"C:/Users/larry/Projecten/cat_detective/Content/shadow_blob.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/shadow_blob.xnb","TextureProcessor","Texture2DContent",6842,1430485,0.1711014
 "C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_down.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_down.xnb","TextureProcessor","Texture2DContent",104992,633037,0.1324254
 "C:/Users/larry/Projecten/cat_detective/Content/spr_cat_walk_up.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/spr_cat_walk_up.xnb","TextureProcessor","Texture2DContent",105940,633037,0.0234247
 "C:/Users/larry/Projecten/cat_detective/Content/walk_animation_forward.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/walk_animation_forward.xnb","TextureProcessor","Texture2DContent",1247913,5880085,0.3191753
@@ -2895,6 +3476,9 @@ namespace CatDetective.Entities
         private bool          _facingUp;             // true → use walk-up sheet
         private bool          _isFacingLeft;         // remembers last horizontal direction
         private SpriteEffects _spriteFlip = SpriteEffects.None;
+
+        // ── Interaction input tracking ─────────────────────────────────────────
+        private KeyboardState _prevInteractKbState;
 
         // ── Shadow ─────────────────────────────────────────────────────────────
         /// <summary>Assign shadow_blob.png after construction.</summary>
@@ -3013,6 +3597,35 @@ namespace CatDetective.Entities
                 layerDepth: LayerDepth);
         }
 
+        // ── Interaction helpers ────────────────────────────────────────────────
+
+        /// <summary>
+        /// Returns the first interactable zone the cat's collision box overlaps,
+        /// or null if the cat is not inside any zone.
+        /// </summary>
+        public (string Name, Rectangle Rect)? GetActiveInteractionZone(
+            List<(string Name, Rectangle Rect)> interactables)
+        {
+            foreach (var zone in interactables)
+            {
+                if (CollisionBox.Intersects(zone.Rect))
+                    return zone;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns true on the exact frame the Spacebar is pressed (not held).
+        /// Call once per Update tick so the state advances correctly.
+        /// </summary>
+        public bool IsInteractPressed()
+        {
+            var kb = Keyboard.GetState();
+            bool pressed = kb.IsKeyDown(Keys.Space) && !_prevInteractKbState.IsKeyDown(Keys.Space);
+            _prevInteractKbState = kb;
+            return pressed;
+        }
+
         /// <summary>
         /// Draws the blob shadow beneath the cat's feet.
         /// Must be called inside a separate SpriteBatch pass with AlphaBlend
@@ -3117,9 +3730,14 @@ namespace CatDetective.Entities
 }
 </file>
 
+<file path="obj/Debug/net8.0/CatDetective.csproj.CoreCompileInputs.cache">
+439a9b12107b6aefe08f2303b077e7fb3446338307751ff3e99fa14bbd9cbd2c
+</file>
+
 <file path="Game1.cs">
 using CatDetective.Entities;
 using CatDetective.Map;
+using CatDetective.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -3155,9 +3773,11 @@ namespace CatDetective
     /// </summary>
     public class Game1 : Game
     {
-        // ── Internal resolution — matches bg_base.png / prop overlay dimensions ─
-        private const int   SCREEN_WIDTH   = 1072;
+        // ── Internal resolution — 16:9 canvas (1136 × 16/9 ≈ 2020) ─────────────
+        private const int   SCREEN_WIDTH   = 2020;
         private const int   SCREEN_HEIGHT  = 1136;
+        // Original room art width; the art is centred inside the wider canvas.
+        private const int   ROOM_WIDTH     = 1072;
 
         // ── Display scale — shrinks the OS window while keeping proportions ────
         // Change this one constant to resize the window (e.g. 0.5 for half size).
@@ -3167,8 +3787,10 @@ namespace CatDetective
 
         // ── MonoGame core ──────────────────────────────────────────────────────
         private readonly GraphicsDeviceManager _graphics;
-        private SpriteBatch     _spriteBatch   = null!;
-        private RenderTarget2D  _renderTarget  = null!;
+        private SpriteBatch     _spriteBatch      = null!;
+        private RenderTarget2D  _renderTarget     = null!;
+        private Matrix          _cameraTransform;
+        private Color           _ambientColor     = Color.Black;
 
         // ── Scene textures ─────────────────────────────────────────────────────
         private Texture2D _bgBase       = null!;
@@ -3180,7 +3802,66 @@ namespace CatDetective
         private Prop _cabinet = null!;
 
         // ── World data from Tiled ──────────────────────────────────────────────
-        private List<Rectangle> _solidBoundaries = new();
+        private List<Rectangle>                   _solidBoundaries = new();
+        private List<(string Name, Rectangle Rect)> _interactables = new();
+
+        // ── Interaction system ─────────────────────────────────────────────────
+        private Dictionary<string, InteractionData> _interactionDatabase = null!;
+        private bool            _isDialogueActive;
+        private InteractionData? _currentInteraction;
+
+        // ── Notebook / inventory ───────────────────────────────────────────────
+        private NotebookManager _notebook = new();
+        private bool         _isNotebookOpen = false;
+        private ClueCategory _selectedTab    = ClueCategory.Who;
+        private MouseState   _prevMouseState;
+
+        // ── Deduction board ────────────────────────────────────────────────────
+        private DeductionManager _deduction              = new();
+        private bool             _isDeductionBoardOpen   = false;
+        private int              _activeDropdownSlotIndex = -1;
+        private bool             _isGameWon              = false;
+
+        private static readonly Rectangle _solveButtonRect =
+            new Rectangle(2020 - 160, 1136 - 160, 120, 120);
+        private static readonly Rectangle _deductionPanelRect =
+            new Rectangle(650, 340, 720, 620);
+        private static readonly Rectangle _submitButtonRect =
+            new Rectangle(860, 820, 300, 80);
+
+        // Notebook UI rectangles — all in virtual 2020×1136 screen space.
+        private static readonly Rectangle _notebookButtonRect =
+            new Rectangle(2020 - 120, 20, 100, 100);
+        private static readonly Rectangle _notebookPanelRect  =
+            new Rectangle(2020 - 450, 140, 430, 950);
+        // Four equal tabs across the top of the panel (107 px each).
+        private static readonly Rectangle[] _tabRects = BuildTabRects();
+        private static Rectangle[] BuildTabRects()
+        {
+            const int tabH = 60;
+            int       tabW = _notebookPanelRect.Width / 4;   // 107
+            int       y    = _notebookPanelRect.Y;
+            return new[]
+            {
+                new Rectangle(_notebookPanelRect.X + 0 * tabW, y, tabW, tabH),
+                new Rectangle(_notebookPanelRect.X + 1 * tabW, y, tabW, tabH),
+                new Rectangle(_notebookPanelRect.X + 2 * tabW, y, tabW, tabH),
+                new Rectangle(_notebookPanelRect.X + 3 * tabW, y, tabW, tabH),
+            };
+        }
+        // One tint per tab category (index matches ClueCategory enum order).
+        private static readonly Color[] _tabColors = new[]
+        {
+            new Color( 80, 120, 230),   // Who       — blue
+            new Color( 80, 200, 100),   // What      — green
+            new Color(230, 140,  40),   // Why       — orange
+            new Color(160,  80, 220),   // WhereWhen — purple
+        };
+        private static readonly string[] _tabLabels =
+            { "Who", "What", "Why", "Where/When" };
+
+        // ── UI ─────────────────────────────────────────────────────────────────
+        private SpriteFont _dialogueFont = null!;
 
         // ── Debug overlay ──────────────────────────────────────────────────────
         private Texture2D    _debugPixel  = null!;
@@ -3203,6 +3884,10 @@ namespace CatDetective
         protected override void Initialize()
         {
             GameObject.SetScreenHeight(SCREEN_HEIGHT);
+
+            float offsetX = (SCREEN_WIDTH - ROOM_WIDTH) / 2f;
+            _cameraTransform = Matrix.CreateTranslation(offsetX, 0, 0);
+
             base.Initialize();
         }
 
@@ -3242,9 +3927,60 @@ namespace CatDetective
             _debugPixel = new Texture2D(GraphicsDevice, 1, 1);
             _debugPixel.SetData(new[] { Color.White });
 
+            // ── Dialogue font ────────────────────────────────────────────────
+            _dialogueFont = Content.Load<SpriteFont>("dialogue_font");
+
+            // ── Interaction database (hardcoded; swap for data file later) ───
+            // [bracket] tokens in Text are tinted using the matching Keyword.Color.
+            _interactionDatabase = new Dictionary<string, InteractionData>
+            {
+                { "inspect_answering_machine", new InteractionData(
+                    "BEEP. 'Hey, it's Lance's manager. We need you at the house " +
+                    "[the day before the premiere]! Don't be late!' " +
+                    "BEEP. 'Hi honey, don't forget my birthday on [Sunday]!'",
+                    new[] {
+                        new Keyword("the day before the premiere", "the_day_before_the_premiere", InteractionData.Plot),
+                        new Keyword("Sunday",                      "sunday",                      InteractionData.Plot),
+                    }) },
+
+                { "inspect_takeout_bag", new InteractionData(
+                    "Smells like leftover [Fish Tacos]. The delivery receipt says it " +
+                    "was brought to the [Downtown Office].",
+                    new[] {
+                        new Keyword("Fish Tacos",      "fish_tacos",      InteractionData.Misc),
+                        new Keyword("Downtown Office", "downtown_office", InteractionData.Plot),
+                    }) },
+
+                { "inspect_calendar", new InteractionData(
+                    "The month is almost over. The detective has circled [Thursday] " +
+                    "for the dentist, and [Friday] is marked with a giant question mark.",
+                    new[] {
+                        new Keyword("Thursday", "thursday", InteractionData.Plot),
+                        new Keyword("Friday",   "friday",   InteractionData.Plot),
+                    }) },
+
+                { "inspect_newspaper", new InteractionData(
+                    "'Pirate Cove 3' premieres this [Saturday]! But production halts " +
+                    "as Lance's prized macaw, Rudebeak, is reported as a [stolen pet]!",
+                    new[] {
+                        new Keyword("Saturday",   "saturday",   InteractionData.Plot),
+                        new Keyword("stolen pet", "stolen_pet", InteractionData.Crime),
+                    }) },
+
+                { "inspect_trash_can", new InteractionData(
+                    "A bunch of unpaid bills, and a shiny VIP parking pass for a [Malibu Mansion].",
+                    new[] {
+                        new Keyword("Malibu Mansion", "malibu_mansion", InteractionData.Plot),
+                    }) },
+            };
+
+            // ── Scene config ─────────────────────────────────────────────────
+            string configPath = Path.Combine(Content.RootDirectory, "scenes_config.json");
+            _ambientColor = SceneConfigParser.GetAmbientColor(configPath, "detective_office");
+
             // ── Parse Tiled map ──────────────────────────────────────────────
             string mapPath = Path.Combine(Content.RootDirectory, "room_map.json");
-            MapParser.Parse(mapPath, out _solidBoundaries, out var triggers);
+            MapParser.Parse(mapPath, out _solidBoundaries, out var triggers, out _interactables);
 
             // ── Wire trigger zones to props ───────────────────────────────────
             var deskTrigger    = new Rectangle(230, 490, 280, 210); // fallback
@@ -3275,10 +4011,123 @@ namespace CatDetective
                 _showDebug = !_showDebug;
             _prevKbState = kbState;
 
+            // ── Notebook mouse input ──────────────────────────────────────────
+            // Convert OS-window mouse coords to virtual 2020×1136 screen space.
+            var mouseState = Mouse.GetState();
+            if (mouseState.LeftButton == ButtonState.Pressed &&
+                _prevMouseState.LeftButton == ButtonState.Released)
+            {
+                var vm = new Point(
+                    (int)(mouseState.X / DISPLAY_SCALE),
+                    (int)(mouseState.Y / DISPLAY_SCALE));
+
+                if (!_isGameWon)
+                {
+                    if (_isDeductionBoardOpen)
+                    {
+                        if (_activeDropdownSlotIndex >= 0)
+                        {
+                            // Player is picking a clue from the dropdown.
+                            var slot     = _deduction.Slots[_activeDropdownSlotIndex];
+                            var filtered = _notebook.UnlockedClues.FindAll(c => c.Category == slot.Category);
+                            bool hit     = false;
+                            for (int i = 0; i < filtered.Count; i++)
+                            {
+                                var itemRect = new Rectangle(
+                                    slot.Bounds.X, slot.Bounds.Bottom + i * 60,
+                                    slot.Bounds.Width, 60);
+                                if (itemRect.Contains(vm))
+                                {
+                                    slot.SelectedClueId      = filtered[i].Id;
+                                    _activeDropdownSlotIndex = -1;
+                                    hit = true;
+                                    break;
+                                }
+                            }
+                            if (!hit)
+                                _activeDropdownSlotIndex = -1;
+                        }
+                        else
+                        {
+                            if (_submitButtonRect.Contains(vm))
+                            {
+                                if (_deduction.ValidateCase())
+                                    _isGameWon = true;
+                            }
+                            else
+                            {
+                                bool hitSlot = false;
+                                for (int i = 0; i < _deduction.Slots.Count; i++)
+                                {
+                                    if (_deduction.Slots[i].Bounds.Contains(vm))
+                                    {
+                                        _activeDropdownSlotIndex = i;
+                                        hitSlot = true;
+                                        break;
+                                    }
+                                }
+                                // Click outside the panel closes the board.
+                                if (!hitSlot && !_deductionPanelRect.Contains(vm))
+                                    _isDeductionBoardOpen = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (_solveButtonRect.Contains(vm))
+                        {
+                            _isDeductionBoardOpen = true;
+                            _isNotebookOpen       = false;
+                        }
+                        else if (_notebookButtonRect.Contains(vm))
+                        {
+                            _isNotebookOpen = !_isNotebookOpen;
+                        }
+                        else if (_isNotebookOpen)
+                        {
+                            for (int i = 0; i < _tabRects.Length; i++)
+                            {
+                                if (_tabRects[i].Contains(vm))
+                                {
+                                    _selectedTab = (ClueCategory)i;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            _prevMouseState = mouseState;
+
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            _cat.Update(gameTime);
-            _cat.MoveWithCollision(dt, _solidBoundaries);
+            if (_isDialogueActive)
+            {
+                // Consume the interact check so the key-state advances in Cat.
+                // If Space is pressed while dialogue is open, dismiss it.
+                if (_cat.IsInteractPressed())
+                    _isDialogueActive = false;
+            }
+            else
+            {
+                _cat.Update(gameTime);
+                _cat.MoveWithCollision(dt, _solidBoundaries);
+
+                // Check whether the cat stepped into an interactable zone.
+                var zone = _cat.GetActiveInteractionZone(_interactables);
+                if (zone != null && _cat.IsInteractPressed())
+                {
+                    if (_interactionDatabase.TryGetValue(zone.Value.Name, out var data))
+                    {
+                        _currentInteraction = data;
+                        _isDialogueActive   = true;
+
+                        // Unlock any clues attached to this interaction's keywords.
+                        foreach (var kw in data.Keywords)
+                            _notebook.UnlockClue(kw.Id);
+                    }
+                }
+            }
 
             _desk.CheckFadeTrigger(_cat.CollisionBox);
             _cabinet.CheckFadeTrigger(_cat.CollisionBox);
@@ -3293,19 +4142,21 @@ namespace CatDetective
         {
             // ── Render all passes into the full-resolution render target ─────
             GraphicsDevice.SetRenderTarget(_renderTarget);
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(_ambientColor);
 
             // ════════════════════════════════════════════════════════════════
             // PASS 1 — BASE BACKGROUND
             // ════════════════════════════════════════════════════════════════
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                transformMatrix: _cameraTransform);
             _spriteBatch.Draw(_bgBase, Vector2.Zero, Color.White);
             _spriteBatch.End();
 
             // ════════════════════════════════════════════════════════════════
             // PASS 2 — BLOB SHADOW
             // ════════════════════════════════════════════════════════════════
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                transformMatrix: _cameraTransform);
             _cat.DrawShadow(_spriteBatch);
             _spriteBatch.End();
 
@@ -3314,7 +4165,8 @@ namespace CatDetective
             // NonPremultiplied required: textures have straight alpha (see .mgcb),
             // and prop alpha modulation must fade cleanly without colour darkening.
             // ════════════════════════════════════════════════════════════════
-            _spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.NonPremultiplied);
+            _spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.NonPremultiplied,
+                transformMatrix: _cameraTransform);
             _desk.Draw(_spriteBatch);
             _cabinet.Draw(_spriteBatch);
             _cat.Draw(_spriteBatch);
@@ -3323,17 +4175,19 @@ namespace CatDetective
             // ════════════════════════════════════════════════════════════════
             // PASS 4 — LIGHTING / SUNBEAMS  (additive — El Mariachi trick)
             // ════════════════════════════════════════════════════════════════
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive,
+                transformMatrix: _cameraTransform);
             _spriteBatch.Draw(_sunbeamsMask, Vector2.Zero, Color.White);
             _spriteBatch.End();
 
             // ════════════════════════════════════════════════════════════════
             // PASS 5 — DEBUG OVERLAY  (F1 to toggle)
-            // AlphaBlend + Deferred; drawn last so it sits on top of everything.
+            // Uses _cameraTransform so debug rectangles align with the art.
             // ════════════════════════════════════════════════════════════════
             if (_showDebug)
             {
-                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                    transformMatrix: _cameraTransform);
 
                 // Collision walls — red
                 foreach (var wall in _solidBoundaries)
@@ -3341,6 +4195,322 @@ namespace CatDetective
 
                 // Cat feet collision box — cyan
                 DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, _cat.CollisionBox, Color.Cyan);
+
+                _spriteBatch.End();
+            }
+
+            // ════════════════════════════════════════════════════════════════
+            // PASS 6 — DIALOGUE UI
+            // AlphaBlend, drawn last so it overlays everything.
+            // ════════════════════════════════════════════════════════════════
+            if (_isDialogueActive && _currentInteraction != null)
+            {
+                const int BOX_PADDING  = 20;
+                const int BOX_HEIGHT   = 130;
+                const int BOX_MARGIN   = 16;
+                var boxRect = new Rectangle(
+                    BOX_MARGIN,
+                    SCREEN_HEIGHT - BOX_HEIGHT - BOX_MARGIN,
+                    SCREEN_WIDTH - BOX_MARGIN * 2,
+                    BOX_HEIGHT);
+
+                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
+                // Semi-transparent dark background panel.
+                _spriteBatch.Draw(_debugPixel, boxRect, Color.Black * 0.75f);
+
+                // Rich-text dialogue — [keywords] are tinted by their Keyword.Color.
+                DrawRichText(
+                    _spriteBatch,
+                    _dialogueFont,
+                    _currentInteraction.Text,
+                    _currentInteraction.Keywords,
+                    new Vector2(boxRect.X + BOX_PADDING, boxRect.Y + BOX_PADDING),
+                    boxRect.Width - BOX_PADDING * 2);
+
+                // "Press Space to continue" hint, bottom-right of the box.
+                const string hint     = "[ Space ] to continue";
+                var          hintSize = _dialogueFont.MeasureString(hint);
+                _spriteBatch.DrawString(
+                    _dialogueFont,
+                    hint,
+                    new Vector2(
+                        boxRect.Right  - BOX_PADDING - hintSize.X,
+                        boxRect.Bottom - BOX_PADDING - hintSize.Y),
+                    Color.LightGray);
+
+                _spriteBatch.End();
+            }
+
+            // ════════════════════════════════════════════════════════════════
+            // PASS 7 — NOTEBOOK UI
+            // AlphaBlend, NO camera transform — fixed to virtual screen coords.
+            // ════════════════════════════════════════════════════════════════
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
+            // Solve button — bottom-right corner, always visible.
+            if (!_isGameWon)
+            {
+                _spriteBatch.Draw(_debugPixel, _solveButtonRect, Color.DarkGoldenrod);
+                var solveLbl  = "SOLVE";
+                var solveSz   = _dialogueFont.MeasureString(solveLbl);
+                _spriteBatch.DrawString(
+                    _dialogueFont, solveLbl,
+                    new Vector2(
+                        _solveButtonRect.X + (_solveButtonRect.Width  - solveSz.X) * 0.5f,
+                        _solveButtonRect.Y + (_solveButtonRect.Height - solveSz.Y) * 0.5f),
+                    Color.White);
+            }
+
+            // Toggle button — always visible.
+            _spriteBatch.Draw(_debugPixel, _notebookButtonRect, Color.DimGray);
+            var btnLabel     = "Notes";
+            var btnLabelSize = _dialogueFont.MeasureString(btnLabel);
+            _spriteBatch.DrawString(
+                _dialogueFont, btnLabel,
+                new Vector2(
+                    _notebookButtonRect.X + (_notebookButtonRect.Width  - btnLabelSize.X) * 0.5f,
+                    _notebookButtonRect.Y + (_notebookButtonRect.Height - btnLabelSize.Y) * 0.5f),
+                Color.White);
+
+            if (_isNotebookOpen)
+            {
+                // Panel background — drawn below the tabs.
+                var contentRect = new Rectangle(
+                    _notebookPanelRect.X,
+                    _notebookPanelRect.Y + 60,              // below tabs
+                    _notebookPanelRect.Width,
+                    _notebookPanelRect.Height - 60);
+                _spriteBatch.Draw(_debugPixel, contentRect, Color.Black * 0.82f);
+
+                // Tabs.
+                for (int i = 0; i < _tabRects.Length; i++)
+                {
+                    bool active = (ClueCategory)i == _selectedTab;
+                    // Active tab is taller (grows upward) to look "selected".
+                    var tr = active
+                        ? new Rectangle(_tabRects[i].X, _tabRects[i].Y - 8,
+                                        _tabRects[i].Width, _tabRects[i].Height + 8)
+                        : _tabRects[i];
+
+                    _spriteBatch.Draw(_debugPixel, tr,
+                        active ? _tabColors[i] : _tabColors[i] * 0.55f);
+
+                    var labelSize = _dialogueFont.MeasureString(_tabLabels[i]);
+                    _spriteBatch.DrawString(
+                        _dialogueFont, _tabLabels[i],
+                        new Vector2(
+                            tr.X + (tr.Width  - labelSize.X) * 0.5f,
+                            tr.Y + (tr.Height - labelSize.Y) * 0.5f),
+                        Color.White);
+                }
+
+                // Clue list — filtered to active tab.
+                const int CLUE_PADDING = 16;
+                float cx = contentRect.X + CLUE_PADDING;
+                float cy = contentRect.Y + CLUE_PADDING;
+                float maxW = contentRect.Width - CLUE_PADDING * 2;
+                float lineH = _dialogueFont.LineSpacing + 6;
+
+                bool any = false;
+                foreach (var clue in _notebook.UnlockedClues)
+                {
+                    if (clue.Category != _selectedTab) continue;
+                    any = true;
+                    // Bullet point.
+                    _spriteBatch.DrawString(_dialogueFont, "* ", new Vector2(cx, cy), Color.LightGray);
+                    float bulletW = _dialogueFont.MeasureString("* ").X;
+                    // Word-wrap the display text.
+                    cy = DrawWrappedString(_spriteBatch, _dialogueFont, clue.DisplayText,
+                             new Vector2(cx + bulletW, cy),
+                             maxW - bulletW, lineH,
+                             Color.White);
+                    cy += 4f;   // small gap between entries
+                }
+
+                if (!any)
+                {
+                    _spriteBatch.DrawString(
+                        _dialogueFont, "- nothing yet -",
+                        new Vector2(cx, cy), Color.Gray);
+                }
+            }
+
+            _spriteBatch.End();
+
+            // ════════════════════════════════════════════════════════════════
+            // PASS 8 — DEDUCTION BOARD / WIN STATE
+            // AlphaBlend, NO camera transform — fixed to virtual screen coords.
+            // ════════════════════════════════════════════════════════════════
+            if (_isDeductionBoardOpen || _isGameWon)
+            {
+                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
+                if (_isGameWon)
+                {
+                    _spriteBatch.Draw(_debugPixel,
+                        new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
+                        Color.Black * 0.85f);
+
+                    const string banner      = "CASE CLOSED!";
+                    const float  bannerScale = 3f;
+                    var          bannerSz    = _dialogueFont.MeasureString(banner) * bannerScale;
+                    var          bannerPos   = new Vector2(
+                        (SCREEN_WIDTH  - bannerSz.X) * 0.5f,
+                        (SCREEN_HEIGHT - bannerSz.Y) * 0.5f);
+
+                    // Shadow
+                    _spriteBatch.DrawString(_dialogueFont, banner,
+                        bannerPos + new Vector2(6, 6), Color.Black * 0.8f,
+                        0f, Vector2.Zero, bannerScale, SpriteEffects.None, 0f);
+                    // Main text
+                    _spriteBatch.DrawString(_dialogueFont, banner,
+                        bannerPos, Color.Gold,
+                        0f, Vector2.Zero, bannerScale, SpriteEffects.None, 0f);
+
+                    const string sub    = "Press Escape to quit";
+                    var          subSz  = _dialogueFont.MeasureString(sub);
+                    _spriteBatch.DrawString(
+                        _dialogueFont, sub,
+                        new Vector2((SCREEN_WIDTH - subSz.X) * 0.5f, bannerPos.Y + bannerSz.Y + 20),
+                        Color.LightGray);
+                }
+                else
+                {
+                    // Full-screen dim overlay
+                    _spriteBatch.Draw(_debugPixel,
+                        new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
+                        Color.Black * 0.7f);
+
+                    // Panel background
+                    _spriteBatch.Draw(_debugPixel, _deductionPanelRect, new Color(15, 25, 55));
+
+                    // Panel title
+                    const string panelTitle = "DEDUCTION BOARD";
+                    var          titleSz    = _dialogueFont.MeasureString(panelTitle);
+                    _spriteBatch.DrawString(
+                        _dialogueFont, panelTitle,
+                        new Vector2(
+                            _deductionPanelRect.X + (_deductionPanelRect.Width - titleSz.X) * 0.5f,
+                            _deductionPanelRect.Y + 12),
+                        Color.White);
+
+                    // Instruction line
+                    const string instr   = "Tap a slot to fill it, then submit your deduction.";
+                    var          instrSz = _dialogueFont.MeasureString(instr);
+                    _spriteBatch.DrawString(
+                        _dialogueFont, instr,
+                        new Vector2(
+                            _deductionPanelRect.X + (_deductionPanelRect.Width - instrSz.X) * 0.5f,
+                            _deductionPanelRect.Y + 12 + titleSz.Y + 4),
+                        Color.LightGray);
+
+                    // Slots
+                    string[] catLabels = { "WHO", "WHAT", "WHY", "WHERE/WHEN" };
+                    const int BADGE_W  = 130;
+                    for (int i = 0; i < _deduction.Slots.Count; i++)
+                    {
+                        var slot      = _deduction.Slots[i];
+                        var slotColor = _tabColors[(int)slot.Category];
+
+                        // Slot background
+                        _spriteBatch.Draw(_debugPixel, slot.Bounds, slotColor * 0.25f);
+
+                        // Category badge (left strip)
+                        var badgeRect = new Rectangle(
+                            slot.Bounds.X, slot.Bounds.Y, BADGE_W, slot.Bounds.Height);
+                        _spriteBatch.Draw(_debugPixel, badgeRect, slotColor);
+                        var catLblSz = _dialogueFont.MeasureString(catLabels[(int)slot.Category]);
+                        _spriteBatch.DrawString(
+                            _dialogueFont, catLabels[(int)slot.Category],
+                            new Vector2(
+                                badgeRect.X + (badgeRect.Width  - catLblSz.X) * 0.5f,
+                                badgeRect.Y + (badgeRect.Height - catLblSz.Y) * 0.5f),
+                            Color.White);
+
+                        // Clue text (right portion)
+                        string slotText  = "[ TAP TO SELECT ]";
+                        Color  textColor = Color.DimGray;
+                        if (slot.SelectedClueId != null)
+                        {
+                            var found = _notebook.UnlockedClues.Find(c => c.Id == slot.SelectedClueId);
+                            if (found != null)
+                            {
+                                slotText  = found.DisplayText;
+                                textColor = Color.White;
+                            }
+                        }
+                        var slotTextSz = _dialogueFont.MeasureString(slotText);
+                        _spriteBatch.DrawString(
+                            _dialogueFont, slotText,
+                            new Vector2(
+                                slot.Bounds.X + BADGE_W + 10,
+                                slot.Bounds.Y + (slot.Bounds.Height - slotTextSz.Y) * 0.5f),
+                            textColor);
+                    }
+
+                    // Validation message (above submit button)
+                    if (!string.IsNullOrEmpty(_deduction.ValidationMessage))
+                    {
+                        var msgSz    = _dialogueFont.MeasureString(_deduction.ValidationMessage);
+                        bool correct = _deduction.ValidationMessage == "Correct!";
+                        _spriteBatch.DrawString(
+                            _dialogueFont, _deduction.ValidationMessage,
+                            new Vector2(
+                                _submitButtonRect.X + (_submitButtonRect.Width  - msgSz.X) * 0.5f,
+                                _submitButtonRect.Y - msgSz.Y - 10),
+                            correct ? Color.LimeGreen : Color.OrangeRed);
+                    }
+
+                    // Submit button
+                    _spriteBatch.Draw(_debugPixel, _submitButtonRect, new Color(20, 100, 40));
+                    var submitLbl  = "SUBMIT";
+                    var submitSz   = _dialogueFont.MeasureString(submitLbl);
+                    _spriteBatch.DrawString(
+                        _dialogueFont, submitLbl,
+                        new Vector2(
+                            _submitButtonRect.X + (_submitButtonRect.Width  - submitSz.X) * 0.5f,
+                            _submitButtonRect.Y + (_submitButtonRect.Height - submitSz.Y) * 0.5f),
+                        Color.White);
+
+                    // Dropdown (drawn last so it sits on top of slots)
+                    if (_activeDropdownSlotIndex >= 0)
+                    {
+                        var activeSlot = _deduction.Slots[_activeDropdownSlotIndex];
+                        var filtered   = _notebook.UnlockedClues
+                            .FindAll(c => c.Category == activeSlot.Category);
+
+                        if (filtered.Count == 0)
+                        {
+                            var emptyRect = new Rectangle(
+                                activeSlot.Bounds.X, activeSlot.Bounds.Bottom,
+                                activeSlot.Bounds.Width, 60);
+                            _spriteBatch.Draw(_debugPixel, emptyRect, new Color(50, 50, 60));
+                            _spriteBatch.DrawString(
+                                _dialogueFont, "No clues found yet.",
+                                new Vector2(emptyRect.X + 12, emptyRect.Y + 10),
+                                Color.Gray);
+                        }
+                        else
+                        {
+                            for (int i = 0; i < filtered.Count; i++)
+                            {
+                                var itemRect = new Rectangle(
+                                    activeSlot.Bounds.X, activeSlot.Bounds.Bottom + i * 60,
+                                    activeSlot.Bounds.Width, 60);
+                                _spriteBatch.Draw(_debugPixel, itemRect,
+                                    i % 2 == 0 ? new Color(25, 40, 80) : new Color(35, 52, 100));
+                                var itemSz = _dialogueFont.MeasureString(filtered[i].DisplayText);
+                                _spriteBatch.DrawString(
+                                    _dialogueFont, filtered[i].DisplayText,
+                                    new Vector2(
+                                        itemRect.X + 12,
+                                        itemRect.Y + (itemRect.Height - itemSz.Y) * 0.5f),
+                                    Color.White);
+                            }
+                        }
+                    }
+                }
 
                 _spriteBatch.End();
             }
@@ -3357,6 +4527,137 @@ namespace CatDetective
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        // ── Helpers ────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Draws <paramref name="text"/> word-wrapped within <paramref name="maxWidth"/>
+        /// starting at <paramref name="origin"/>.
+        /// Returns the Y coordinate of the line AFTER the last drawn line.
+        /// </summary>
+        private float DrawWrappedString(
+            SpriteBatch spriteBatch,
+            SpriteFont  font,
+            string      text,
+            Vector2     origin,
+            float       maxWidth,
+            float       lineHeight,
+            Color       color)
+        {
+            float x = origin.X, y = origin.Y;
+            string[] words = text.Split(' ');
+            foreach (var word in words)
+            {
+                float wordW = font.MeasureString(word).X;
+                float spaceW = font.MeasureString(" ").X;
+                if (x > origin.X && x + wordW > origin.X + maxWidth)
+                {
+                    x  = origin.X;
+                    y += lineHeight;
+                }
+                spriteBatch.DrawString(font, word, new Vector2(x, y), color);
+                x += wordW + spaceW;
+            }
+            return y + lineHeight;
+        }
+
+        /// <summary>
+        /// Splits <paramref name="text"/> into plain/coloured spans by scanning for
+        /// <c>[bracket]</c> tokens and matching them against <paramref name="keywords"/>.
+        /// Returns a list of <c>(string segment, Color color)</c> in source order.
+        /// </summary>
+        private static List<(string Text, Color Color)> ParseSpans(
+            string text, Keyword[] keywords)
+        {
+            var result = new List<(string, Color)>();
+            int i = 0;
+            while (i < text.Length)
+            {
+                int open = text.IndexOf('[', i);
+                if (open == -1)
+                {
+                    result.Add((text[i..], Color.White));
+                    break;
+                }
+                if (open > i)
+                    result.Add((text[i..open], Color.White));
+
+                int close = text.IndexOf(']', open + 1);
+                if (close == -1)
+                {
+                    result.Add((text[open..], Color.White));
+                    break;
+                }
+
+                string bracketText = text[(open + 1)..close];
+                var kwColor = Color.White;
+                foreach (var kw in keywords)
+                {
+                    if (string.Equals(kw.DisplayText, bracketText,
+                            System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        kwColor = kw.Color;
+                        break;
+                    }
+                }
+                result.Add((bracketText, kwColor));
+                i = close + 1;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Draws <paramref name="text"/> word-wrapped to <paramref name="maxWidth"/>,
+        /// colouring any <c>[bracketed]</c> tokens using their matching
+        /// <see cref="Keyword.Color"/>.
+        /// </summary>
+        private void DrawRichText(
+            SpriteBatch spriteBatch,
+            SpriteFont  font,
+            string      text,
+            Keyword[]   keywords,
+            Vector2     origin,
+            float       maxWidth)
+        {
+            var   spans   = ParseSpans(text, keywords);
+            float x       = origin.X;
+            float y       = origin.Y;
+            float lineH   = font.LineSpacing;
+
+            foreach (var (spanText, color) in spans)
+            {
+                // Walk through the span as alternating runs of spaces / non-spaces
+                // so we can measure and wrap word by word while keeping inter-word
+                // spacing tight rather than adding a hard space prefix each time.
+                int pos = 0;
+                while (pos < spanText.Length)
+                {
+                    bool isSpace = spanText[pos] == ' ';
+                    int  start   = pos;
+                    while (pos < spanText.Length && (spanText[pos] == ' ') == isSpace)
+                        pos++;
+                    string token = spanText[start..pos];
+                    float  tokenW = font.MeasureString(token).X;
+
+                    if (isSpace)
+                    {
+                        // Apply spacing only when not at the start of a fresh line.
+                        if (x > origin.X) x += tokenW;
+                    }
+                    else
+                    {
+                        // Wrap before the word if it would overflow.
+                        if (x > origin.X && x + tokenW > origin.X + maxWidth)
+                        {
+                            x  = origin.X;
+                            y += lineH;
+                        }
+                        spriteBatch.DrawString(font, token, new Vector2(x, y), color);
+                        x += tokenW;
+                    }
+                }
+            }
         }
     }
 }
@@ -3378,7 +4679,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CatDetective")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d185fe15e40db0a3cf748c4201a2f445f55680db")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+242e2558c35a6a8f20ccf61c7f5ab85a797e33e4")]
 [assembly: System.Reflection.AssemblyProductAttribute("CatDetective")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CatDetective")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
@@ -3387,7 +4688,7 @@ using System.Reflection;
 </file>
 
 <file path="obj/Debug/net8.0/CatDetective.AssemblyInfoInputs.cache">
-600cbb1d514a35254e871f107cef0877495b9dc5aa1bfee3b1419da0c6213585
+7b86c1c1173391cc92811a5affc75acfe152319d17d2f6319bd6aa8d1fb29fb1
 </file>
 
 <file path="obj/Debug/net8.0/CatDetective.csproj.FileListAbsolute.txt">
@@ -3427,10 +4728,12 @@ C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\spr_cat_walk_dow
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\spr_cat_walk_up.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\walk_animation_forward.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\walk_animation_upward.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\dialogue_font.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\scenes_config.json
 </file>
 
 <file path="obj/Debug/net8.0/CatDetective.sourcelink.json">
-{"documents":{"C:\\Users\\larry\\Projecten\\cat_detective\\*":"https://raw.githubusercontent.com/ErikHilhorst/cat_detective/d185fe15e40db0a3cf748c4201a2f445f55680db/*"}}
+{"documents":{"C:\\Users\\larry\\Projecten\\cat_detective\\*":"https://raw.githubusercontent.com/ErikHilhorst/cat_detective/242e2558c35a6a8f20ccf61c7f5ab85a797e33e4/*"}}
 </file>
 
 </files>

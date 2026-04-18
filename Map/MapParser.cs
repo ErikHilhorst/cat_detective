@@ -1,4 +1,7 @@
+using CatDetective.Entities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -66,14 +69,9 @@ namespace CatDetective.Map
     /// Parses a Tiled JSON export and extracts:
     ///   • Solid collision rectangles from the layer named <c>Collisions</c>.
     ///   • Named trigger rectangles from the layer named <c>Triggers</c>.
-    ///
-    /// Usage from Game1.LoadContent():
-    /// <code>
-    ///   MapParser.Parse(
-    ///       Path.Combine(Content.RootDirectory, "room_map.json"),
-    ///       out solidBoundaries,
-    ///       out triggers);
-    /// </code>
+    ///   • <see cref="InteractableEntity"/> instances from the layer named
+    ///     <c>Interactables</c>, auto-loading their sprites from the content
+    ///     pipeline and looking up dialogue data from <paramref name="levelData"/>.
     /// </summary>
     public static class MapParser
     {
@@ -88,27 +86,40 @@ namespace CatDetective.Map
         /// so the game can still run without a map (useful during early prototyping).
         /// </summary>
         /// <param name="jsonPath">Absolute or relative path to the Tiled JSON file.</param>
+        /// <param name="content">
+        ///   The game's <see cref="ContentManager"/>; used to load interactable sprites.
+        /// </param>
+        /// <param name="levelId">
+        ///   The level folder name (e.g. "detective_office"). Sprites are loaded from
+        ///   <c>Levels/{levelId}/Interactables/{objectName}</c>.
+        /// </param>
+        /// <param name="levelData">
+        ///   Map from Tiled object name → <see cref="InteractionData"/>.
+        ///   Each matched interactable has its <c>Data</c> property set; unmatched
+        ///   objects log a console warning so missing entries are easy to spot.
+        /// </param>
         /// <param name="solidBoundaries">
         ///   Output: all rectangles from the "Collisions" layer.
-        ///   Feed these into <c>Cat.MoveWithCollision()</c> each frame.
         /// </param>
         /// <param name="triggers">
         ///   Output: all (name, rect) pairs from the "Triggers" layer.
-        ///   Match names to props ("desk_fade", "cabinet_fade") in LoadContent().
         /// </param>
         /// <param name="interactables">
-        ///   Output: all (name, rect) pairs from the "Interactables" layer.
-        ///   Match names to <c>_interactionDatabase</c> keys in Game1.
+        ///   Output: fully-populated <see cref="InteractableEntity"/> instances from
+        ///   the "Interactables" layer.
         /// </param>
         public static void Parse(
             string jsonPath,
+            ContentManager content,
+            string levelId,
+            Dictionary<string, InteractionData> levelData,
             out List<Rectangle> solidBoundaries,
             out List<(string Name, Rectangle Rect)> triggers,
-            out List<(string Name, Rectangle Rect)> interactables)
+            out List<InteractableEntity> interactables)
         {
             solidBoundaries = new List<Rectangle>();
             triggers        = new List<(string, Rectangle)>();
-            interactables   = new List<(string, Rectangle)>();
+            interactables   = new List<InteractableEntity>();
 
             if (!File.Exists(jsonPath))
             {
@@ -133,7 +144,6 @@ namespace CatDetective.Map
 
             foreach (var layer in mapData.Layers)
             {
-                // Skip tile layers and any non-object layers
                 if (layer.Type != "objectgroup") continue;
 
                 switch (layer.Name)
@@ -150,7 +160,36 @@ namespace CatDetective.Map
 
                     case "Interactables":
                         foreach (var obj in layer.Objects)
-                            interactables.Add((obj.Name, ToRect(obj)));
+                        {
+                            Texture2D? sprite    = null;
+                            string     assetPath = $"Levels/{levelId}/Interactables/{obj.Name}";
+                            try
+                            {
+                                sprite = content.Load<Texture2D>(assetPath);
+                            }
+                            catch (ContentLoadException)
+                            {
+                                Console.WriteLine(
+                                    $"[MapParser] No sprite for '{obj.Name}' at '{assetPath}' — " +
+                                    "entity will be invisible (trigger zone only).");
+                            }
+
+                            // Position = bottom-center floor contact point of the Tiled rect.
+                            var position = new Vector2(
+                                obj.X + obj.Width  * 0.5f,
+                                obj.Y + obj.Height);
+
+                            var entity = new InteractableEntity(obj.Name, ToRect(obj), sprite, position);
+
+                            if (levelData.TryGetValue(obj.Name, out var data))
+                                entity.Data = data;
+                            else
+                                Console.WriteLine(
+                                    $"[MapParser] WARNING: No dialogue data for interactable '{obj.Name}'. " +
+                                    "Add an entry to the level's interaction database.");
+
+                            interactables.Add(entity);
+                        }
                         break;
                 }
             }
