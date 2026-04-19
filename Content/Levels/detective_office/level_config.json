@@ -79,9 +79,6 @@
     }
   ],
 
-  "deductionSlots": [
-    { "category": "What",      "correctClueId": "stolen_pet",                  "x": 710, "y": 410, "width": 600, "height": 60 },
-    { "category": "WhereWhen", "correctClueId": "malibu_mansion",              "x": 710, "y": 510, "width": 600, "height": 60 },
-    { "category": "WhereWhen", "correctClueId": "the_day_before_the_premiere", "x": 710, "y": 610, "width": 600, "height": 60 }
-  ]
+  "deductionSentence": "[WHO] kidnapped the macaw using [HOW] and hid it at the [WHERE] because[WHY]."
+
 }

@@ -1,6 +1,5 @@
 using CatDetective.Entities;
 using CatDetective.Systems;
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,8 +29,8 @@ namespace CatDetective.Map
         [JsonPropertyName("interactables")]
         public List<InteractableConfigData> Interactables { get; set; } = new();
 
-        [JsonPropertyName("deductionSlots")]
-        public List<DeductionSlotConfigData> DeductionSlots { get; set; } = new();
+        [JsonPropertyName("deductionSentence")]
+        public string DeductionSentence { get; set; } = "";
     }
 
     internal sealed class ClueConfigData
@@ -61,16 +60,6 @@ namespace CatDetective.Map
         [JsonPropertyName("color")]       public string Color       { get; set; } = "misc";
     }
 
-    internal sealed class DeductionSlotConfigData
-    {
-        [JsonPropertyName("category")]      public string Category      { get; set; } = "";
-        [JsonPropertyName("correctClueId")] public string CorrectClueId { get; set; } = "";
-        [JsonPropertyName("x")]             public int    X             { get; set; }
-        [JsonPropertyName("y")]             public int    Y             { get; set; }
-        [JsonPropertyName("width")]         public int    Width         { get; set; }
-        [JsonPropertyName("height")]        public int    Height        { get; set; }
-    }
-
     // ── Parsed result returned to Game1 ──────────────────────────────────────
 
     /// <summary>All level data loaded from <c>level_config.json</c>.</summary>
@@ -85,19 +74,19 @@ namespace CatDetective.Map
         /// <summary>Dialogue + keyword data keyed by Tiled object name.</summary>
         public Dictionary<string, InteractionData> Interactables { get; }
 
-        /// <summary>Correct-answer slots for <see cref="DeductionManager"/>.</summary>
-        public List<DeductionSlot> DeductionSlots { get; }
+        /// <summary>Sentence template for <see cref="DeductionManager"/> (e.g. "[WHO] stole the [WHAT]").</summary>
+        public string DeductionSentence { get; }
 
         public LevelConfig(
             List<PropConfigData>                props,
             Dictionary<string, Clue>            clues,
             Dictionary<string, InteractionData> interactables,
-            List<DeductionSlot>                 deductionSlots)
+            string                              deductionSentence)
         {
-            Props          = props;
-            Clues          = clues;
-            Interactables  = interactables;
-            DeductionSlots = deductionSlots;
+            Props             = props;
+            Clues             = clues;
+            Interactables     = interactables;
+            DeductionSentence = deductionSentence;
         }
     }
 
@@ -129,7 +118,7 @@ namespace CatDetective.Map
                 raw.Props,
                 ParseClues(raw.Clues),
                 ParseInteractables(raw.Interactables),
-                ParseDeductionSlots(raw.DeductionSlots));
+                raw.DeductionSentence);
         }
 
         // ── Private helpers ───────────────────────────────────────────────────
@@ -158,17 +147,6 @@ namespace CatDetective.Map
                     i.Scale, i.Align, i.OffsetX, i.OffsetY);
             }
             return dict;
-        }
-
-        private static List<DeductionSlot> ParseDeductionSlots(List<DeductionSlotConfigData> raw)
-        {
-            var list = new List<DeductionSlot>(raw.Count);
-            foreach (var s in raw)
-                list.Add(new DeductionSlot(
-                    ParseCategory(s.Category),
-                    s.CorrectClueId,
-                    new Rectangle(s.X, s.Y, s.Width, s.Height)));
-            return list;
         }
 
         private static ClueCategory ParseCategory(string value) => value switch

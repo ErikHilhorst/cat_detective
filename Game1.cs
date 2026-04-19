@@ -70,17 +70,33 @@ namespace CatDetective
         private MouseState   _prevMouseState;
 
         // ── Deduction board ────────────────────────────────────────────────────
-        private DeductionManager _deduction               = null!;
-        private bool             _isDeductionBoardOpen    = false;
-        private int              _activeDropdownSlotIndex = -1;
-        private bool             _isGameWon               = false;
+        private DeductionManager _deduction            = null!;
+        private bool             _isDeductionBoardOpen = false;
+        private bool             _isGameWon            = false;
+
+        // Journal (two-page deduction board) UI state
+        private ClueCategory _activeTab            = ClueCategory.Who;
+        private Clue?        _selectedWordBankClue = null;
+        private int          _wordBankPage      = 0;
+        private int          _wordBankPageCount = 0; // last page index, written by Draw, read by Update
+        private readonly List<(Rectangle Rect, Clue Clue)> _wordBankClueRects = new();
 
         private static readonly Rectangle _solveButtonRect =
             new Rectangle(2020 - 160, 1136 - 160, 120, 120);
-        private static readonly Rectangle _deductionPanelRect =
-            new Rectangle(650, 340, 720, 620);
-        private static readonly Rectangle _submitButtonRect =
-            new Rectangle(860, 820, 300, 80);
+        private static readonly Rectangle[] _journalTabRects = new[]
+        {
+            new Rectangle(1060, 85, 215, 80),
+            new Rectangle(1275, 85, 215, 80),
+            new Rectangle(1490, 85, 215, 80),
+            new Rectangle(1705, 85, 215, 80),
+        };
+        // Paging: sit just below wordBankArea (Y=280+400=680)
+        private static readonly Rectangle _journalPrevPageRect = new Rectangle(1050, 692,  90, 35);
+        private static readonly Rectangle _journalNextPageRect = new Rectangle(1710, 692,  90, 35);
+        // Insert: bottom-right of inspectorArea (X=1050+700=1750, Y=740+250=990)
+        private static readonly Rectangle _journalInsertRect   = new Rectangle(1610, 940, 140, 50);
+        private static readonly Rectangle _journalSubmitRect   = new Rectangle(1330, 1040, 340, 70);
+        private static readonly Rectangle _journalCloseRect    = new Rectangle(1930,   30,  60, 60);
 
         // Notebook UI rectangles — all in virtual 2020×1136 screen space.
         private static readonly Rectangle _notebookButtonRect =
@@ -114,6 +130,8 @@ namespace CatDetective
         // ── UI ─────────────────────────────────────────────────────────────────
         private SpriteFont  _dialogueFont    = null!;
         private Texture2D   _dialogueBoxTex  = null!;
+        private Texture2D   _notebookBgTex   = null!;
+        private Texture2D   _tabTex          = null!;
 
         // ── Dialogue pagination & typewriter ──────────────────────────────────
         private string[] _dialoguePages        = Array.Empty<string>();
@@ -176,6 +194,8 @@ namespace CatDetective
 
             _dialogueFont   = Content.Load<SpriteFont>("Shared/dialogue_font");
             _dialogueBoxTex = Content.Load<Texture2D>("Shared/ui_dialogue_box");
+            _notebookBgTex  = Content.Load<Texture2D>("Shared/ui_notebook_bg");
+            _tabTex         = Content.Load<Texture2D>("Shared/ui_tab");
 
             string configPath = Path.Combine(Content.RootDirectory, "scenes_config.json");
             _availableScenes = SceneConfigParser.GetAvailableScenes(configPath);
@@ -188,13 +208,15 @@ namespace CatDetective
             _foregroundProps.Clear();
             _solidBoundaries.Clear();
             _interactables.Clear();
-            _isDialogueActive        = false;
-            _currentInteraction      = null;
-            _isNotebookOpen          = false;
-            _isDeductionBoardOpen    = false;
-            _activeDropdownSlotIndex = -1;
-            _isGameWon               = false;
-            _hotReloadTimer          = 0f;
+            _isDialogueActive     = false;
+            _currentInteraction   = null;
+            _isNotebookOpen       = false;
+            _isDeductionBoardOpen = false;
+            _isGameWon            = false;
+            _activeTab            = ClueCategory.Who;
+            _selectedWordBankClue = null;
+            _wordBankPage         = 0;
+            _hotReloadTimer       = 0f;
 
             // Scene-specific textures.
             _bgBase       = Content.Load<Texture2D>($"Levels/{sceneId}/bg_base");
@@ -210,7 +232,7 @@ namespace CatDetective
 
             _interactionDatabase = levelConfig.Interactables;
             _notebook            = new NotebookManager(levelConfig.Clues);
-            _deduction           = new DeductionManager(levelConfig.DeductionSlots);
+            _deduction = new DeductionManager(levelConfig.DeductionSentence);
 
             _levelConfigSourcePath = Path.GetFullPath(Path.Combine(
                 AppDomain.CurrentDomain.BaseDirectory,
@@ -305,48 +327,67 @@ namespace CatDetective
                 {
                     if (_isDeductionBoardOpen)
                     {
-                        if (_activeDropdownSlotIndex >= 0)
+                        if (_journalCloseRect.Contains(vm))
                         {
-                            var slot     = _deduction.Slots[_activeDropdownSlotIndex];
-                            var filtered = _notebook.UnlockedClues.FindAll(c => c.Category == slot.Category);
-                            bool hit     = false;
-                            for (int i = 0; i < filtered.Count; i++)
-                            {
-                                var itemRect = new Rectangle(
-                                    slot.Bounds.X, slot.Bounds.Bottom + i * 60,
-                                    slot.Bounds.Width, 60);
-                                if (itemRect.Contains(vm))
-                                {
-                                    slot.SelectedClueId      = filtered[i].Id;
-                                    _activeDropdownSlotIndex = -1;
-                                    hit = true;
-                                    break;
-                                }
-                            }
-                            if (!hit)
-                                _activeDropdownSlotIndex = -1;
+                            _isDeductionBoardOpen = false;
+                            _selectedWordBankClue = null;
                         }
                         else
                         {
-                            if (_submitButtonRect.Contains(vm))
+                            // Tab clicks
+                            for (int i = 0; i < _journalTabRects.Length; i++)
+                            {
+                                if (_journalTabRects[i].Contains(vm))
+                                {
+                                    _activeTab            = (ClueCategory)i;
+                                    _wordBankPage         = 0;
+                                    _selectedWordBankClue = null;
+                                    break;
+                                }
+                            }
+
+                            // Word bank item clicks
+                            foreach (var (rect, clue) in _wordBankClueRects)
+                            {
+                                if (rect.Contains(vm))
+                                {
+                                    _selectedWordBankClue = clue;
+                                    break;
+                                }
+                            }
+
+                            // Paging
+                            if (_journalPrevPageRect.Contains(vm) && _wordBankPage > 0)
+                                _wordBankPage--;
+                            if (_journalNextPageRect.Contains(vm) && _wordBankPage < _wordBankPageCount)
+                                _wordBankPage++;
+
+                            // Insert selected clue into matching slot
+                            if (_journalInsertRect.Contains(vm) && _selectedWordBankClue != null)
+                            {
+                                var target = _deduction.Slots
+                                    .Find(s => s.Category == _selectedWordBankClue.Category);
+                                if (target != null)
+                                    target.SelectedClueId = _selectedWordBankClue.Id;
+                            }
+
+                            // Submit
+                            if (_journalSubmitRect.Contains(vm))
                             {
                                 if (_deduction.ValidateCase())
                                     _isGameWon = true;
                             }
-                            else
+
+                            // Left page slot clicks -> switch active tab
+                            foreach (var slot in _deduction.Slots)
                             {
-                                bool hitSlot = false;
-                                for (int i = 0; i < _deduction.Slots.Count; i++)
+                                if (slot.Bounds.Contains(vm))
                                 {
-                                    if (_deduction.Slots[i].Bounds.Contains(vm))
-                                    {
-                                        _activeDropdownSlotIndex = i;
-                                        hitSlot = true;
-                                        break;
-                                    }
+                                    _activeTab            = slot.Category;
+                                    _wordBankPage         = 0;
+                                    _selectedWordBankClue = null;
+                                    break;
                                 }
-                                if (!hitSlot && !_deductionPanelRect.Contains(vm))
-                                    _isDeductionBoardOpen = false;
                             }
                         }
                     }
@@ -735,128 +776,251 @@ namespace CatDetective
                     }
                     else
                     {
-                        _spriteBatch.Draw(_debugPixel,
+                        // ── Full-screen journal background ────────────────────
+                        _spriteBatch.Draw(_notebookBgTex,
                             new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
-                            Color.Black * 0.7f);
-
-                        _spriteBatch.Draw(_debugPixel, _deductionPanelRect, new Color(15, 25, 55));
-
-                        const string panelTitle = "DEDUCTION BOARD";
-                        var          titleSz    = _dialogueFont.MeasureString(panelTitle);
-                        _spriteBatch.DrawString(
-                            _dialogueFont, panelTitle,
-                            new Vector2(
-                                _deductionPanelRect.X + (_deductionPanelRect.Width - titleSz.X) * 0.5f,
-                                _deductionPanelRect.Y + 12),
                             Color.White);
 
-                        const string instr   = "Tap a slot to fill it, then submit your deduction.";
-                        var          instrSz = _dialogueFont.MeasureString(instr);
-                        _spriteBatch.DrawString(
-                            _dialogueFont, instr,
-                            new Vector2(
-                                _deductionPanelRect.X + (_deductionPanelRect.Width - instrSz.X) * 0.5f,
-                                _deductionPanelRect.Y + 12 + titleSz.Y + 4),
-                            Color.LightGray);
+                        // Safe zones — tweak to match ui_notebook_bg.png art
+                        var leftPageArea  = new Rectangle(250, 300, 650, 600);
+                        var wordBankArea  = new Rectangle(1050, 280, 750, 400);
+                        var inspectorArea = new Rectangle(1150, 800, 600, 250);
 
-                        string[] catLabels = { "WHO", "WHAT", "WHY", "WHERE/WHEN" };
-                        const int BADGE_W  = 130;
-                        for (int i = 0; i < _deduction.Slots.Count; i++)
+                        // ── LEFT PAGE: Mad-Libs sentence ──────────────────────
+                        float lx      = leftPageArea.X;
+                        float ly      = leftPageArea.Y;
+                        float lineH   = _dialogueFont.LineSpacing + 16;
+                        float spaceW  = _dialogueFont.MeasureString(" ").X;
+                        int   maxRight = leftPageArea.Right;
+
+                        //var sentTitleSz = _dialogueFont.MeasureString("What happened?");
+                        //_spriteBatch.DrawString(_dialogueFont, "What happened?",
+                          //  new Vector2(leftPageArea.X, leftPageArea.Y - sentTitleSz.Y - 12),
+                            //_tabColors[(int)_activeTab]);
+
+                        string[] slotCatLabels = { "WHO", "WHAT", "WHY", "WHERE/WHEN" };
+
+                        foreach (var seg in _deduction.Segments)
                         {
-                            var slot      = _deduction.Slots[i];
-                            var slotColor = _tabColors[(int)slot.Category];
-
-                            _spriteBatch.Draw(_debugPixel, slot.Bounds, slotColor * 0.25f);
-
-                            var badgeRect = new Rectangle(
-                                slot.Bounds.X, slot.Bounds.Y, BADGE_W, slot.Bounds.Height);
-                            _spriteBatch.Draw(_debugPixel, badgeRect, slotColor);
-                            var catLblSz = _dialogueFont.MeasureString(catLabels[(int)slot.Category]);
-                            _spriteBatch.DrawString(
-                                _dialogueFont, catLabels[(int)slot.Category],
-                                new Vector2(
-                                    badgeRect.X + (badgeRect.Width  - catLblSz.X) * 0.5f,
-                                    badgeRect.Y + (badgeRect.Height - catLblSz.Y) * 0.5f),
-                                Color.White);
-
-                            string slotText  = "[ TAP TO SELECT ]";
-                            Color  textColor = Color.DimGray;
-                            if (slot.SelectedClueId != null)
+                            if (seg is TextSegment ts)
                             {
-                                var found = _notebook.UnlockedClues.Find(c => c.Id == slot.SelectedClueId);
-                                if (found != null)
+                                string txt = ts.Text;
+                                int    pos = 0;
+                                while (pos < txt.Length)
                                 {
-                                    slotText  = found.Name;
-                                    textColor = Color.White;
+                                    if (txt[pos] == ' ')
+                                    {
+                                        if (lx > leftPageArea.X) lx += spaceW;
+                                        pos++;
+                                    }
+                                    else
+                                    {
+                                        int end = pos;
+                                        while (end < txt.Length && txt[end] != ' ') end++;
+                                        string word  = txt[pos..end];
+                                        float  wordW = _dialogueFont.MeasureString(word).X;
+                                        if (lx > leftPageArea.X && lx + wordW > maxRight)
+                                        { lx = leftPageArea.X; ly += lineH; }
+                                        _spriteBatch.DrawString(_dialogueFont, word,
+                                            new Vector2(lx, ly), _inkColor);
+                                        lx  += wordW;
+                                        pos  = end;
+                                    }
                                 }
                             }
-                            var slotTextSz = _dialogueFont.MeasureString(slotText);
-                            _spriteBatch.DrawString(
-                                _dialogueFont, slotText,
-                                new Vector2(
-                                    slot.Bounds.X + BADGE_W + 10,
-                                    slot.Bounds.Y + (slot.Bounds.Height - slotTextSz.Y) * 0.5f),
-                                textColor);
+                            else if (seg is SlotSegment ss)
+                            {
+                                var    slot  = ss.Slot;
+                                string label = slot.SelectedClueId != null
+                                    ? (_notebook.UnlockedClues
+                                           .Find(c => c.Id == slot.SelectedClueId)?.Name
+                                       ?? slot.TagLabel)
+                                    : $"[ {slotCatLabels[(int)slot.Category]} ]";
+                                float textW  = _dialogueFont.MeasureString(label).X;
+                                int   slotW  = (int)textW + 24;
+                                int   slotH  = _dialogueFont.LineSpacing + 8;
+                                if (lx > leftPageArea.X && lx + slotW > maxRight)
+                                { lx = leftPageArea.X; ly += lineH; }
+                                var slotColor = _tabColors[(int)slot.Category];
+                                var slotRect  = new Rectangle((int)lx, (int)ly, slotW, slotH);
+                                _spriteBatch.Draw(_debugPixel, slotRect, slotColor * 0.3f);
+                                DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, slotRect, slotColor);
+                                float tX = slotRect.X + (slotRect.Width  - textW) * 0.5f;
+                                float tY = slotRect.Y + (slotRect.Height - _dialogueFont.LineSpacing) * 0.5f;
+                                _spriteBatch.DrawString(_dialogueFont, label, new Vector2(tX, tY), _inkColor);
+                                slot.Bounds = slotRect;
+                                lx += slotW + 8;
+                            }
                         }
 
+                        // ── RIGHT PAGE: Tabs ──────────────────────────────────
+                        for (int i = 0; i < _journalTabRects.Length; i++)
+                        {
+                            bool isActive = (ClueCategory)i == _activeTab;
+                            var  tr       = isActive
+                                ? new Rectangle(
+                                    _journalTabRects[i].X,
+                                    _journalTabRects[i].Y - 10,
+                                    _journalTabRects[i].Width,
+                                    _journalTabRects[i].Height + 10)
+                                : _journalTabRects[i];
+                            _spriteBatch.Draw(_tabTex, tr,
+                                _tabColors[i] * (isActive ? 1f : 0.6f));
+                            var tabLblSz = _dialogueFont.MeasureString(_tabLabels[i]);
+                            _spriteBatch.DrawString(_dialogueFont, _tabLabels[i],
+                                new Vector2(
+                                    tr.X + (tr.Width  - tabLblSz.X) * 0.5f,
+                                    tr.Y + (tr.Height - tabLblSz.Y) * 0.5f),
+                                Color.White);
+                        }
+
+                        // ── RIGHT PAGE: Word Bank (flow layout) ───────────────
+                        const float spacingX  = 16f;
+                        const float spacingY  = 16f;
+                        const float boxHeight = 40f;
+
+                        float currentX   = wordBankArea.X;
+                        float currentY   = wordBankArea.Y;
+                        int   flowPage   = 0;
+
+                        _wordBankClueRects.Clear();
+
+                        var filteredWB = _notebook.UnlockedClues
+                            .FindAll(c => c.Category == _activeTab);
+
+                        foreach (var cl in filteredWB)
+                        {
+                            var   textSz   = _dialogueFont.MeasureString(cl.Name);
+                            float boxWidth = textSz.X + 24f;
+
+                            // Line wrap
+                            if (currentX + boxWidth > wordBankArea.Right)
+                            {
+                                currentX  = wordBankArea.X;
+                                currentY += boxHeight + spacingY;
+                            }
+
+                            // Page wrap (leave 40px for paging arrows)
+                            if (currentY + boxHeight > wordBankArea.Bottom - 40)
+                            {
+                                flowPage++;
+                                currentX = wordBankArea.X;
+                                currentY = wordBankArea.Y;
+                            }
+
+                            if (flowPage == _wordBankPage)
+                            {
+                                var  tagR = new Rectangle((int)currentX, (int)currentY,
+                                                          (int)boxWidth, (int)boxHeight);
+                                bool sel  = cl == _selectedWordBankClue;
+                                _spriteBatch.Draw(_debugPixel, tagR,
+                                    sel ? _tabColors[(int)_activeTab]
+                                        : _tabColors[(int)_activeTab] * 0.25f);
+                                DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, tagR,
+                                    _tabColors[(int)_activeTab] * (sel ? 1f : 0.6f));
+                                float nameX = tagR.X + (tagR.Width  - textSz.X) * 0.5f;
+                                float nameY = tagR.Y + (tagR.Height - textSz.Y) * 0.5f;
+                                _spriteBatch.DrawString(_dialogueFont, cl.Name,
+                                    new Vector2(nameX, nameY),
+                                    sel ? Color.White : _inkColor);
+                                _wordBankClueRects.Add((tagR, cl));
+                            }
+
+                            currentX += boxWidth + spacingX;
+                        }
+
+                        _wordBankPageCount = flowPage; // written here, read by Update
+
+                        if (filteredWB.Count == 0)
+                        {
+                            _spriteBatch.DrawString(_dialogueFont, "-- no clues found yet --",
+                                new Vector2(wordBankArea.X, wordBankArea.Y + 10), Color.Gray);
+                        }
+
+                        // ── Paging controls ───────────────────────────────────
+                        if (_wordBankPageCount > 0)
+                        {
+                            if (_wordBankPage > 0)
+                            {
+                                _spriteBatch.Draw(_debugPixel, _journalPrevPageRect,
+                                    new Color(40, 40, 60));
+                                var prevSz = _dialogueFont.MeasureString("<");
+                                _spriteBatch.DrawString(_dialogueFont, "<",
+                                    new Vector2(
+                                        _journalPrevPageRect.X + (_journalPrevPageRect.Width  - prevSz.X) * 0.5f,
+                                        _journalPrevPageRect.Y + (_journalPrevPageRect.Height - prevSz.Y) * 0.5f),
+                                    Color.White);
+                            }
+                            if (_wordBankPage < _wordBankPageCount)
+                            {
+                                _spriteBatch.Draw(_debugPixel, _journalNextPageRect,
+                                    new Color(40, 40, 60));
+                                var nextSz = _dialogueFont.MeasureString(">");
+                                _spriteBatch.DrawString(_dialogueFont, ">",
+                                    new Vector2(
+                                        _journalNextPageRect.X + (_journalNextPageRect.Width  - nextSz.X) * 0.5f,
+                                        _journalNextPageRect.Y + (_journalNextPageRect.Height - nextSz.Y) * 0.5f),
+                                    Color.White);
+                            }
+                            var pageLbl   = $"{_wordBankPage + 1} / {_wordBankPageCount + 1}";
+                            var pageLblSz = _dialogueFont.MeasureString(pageLbl);
+                            _spriteBatch.DrawString(_dialogueFont, pageLbl,
+                                new Vector2(
+                                    (_journalPrevPageRect.Right + _journalNextPageRect.X) * 0.5f
+                                        - pageLblSz.X * 0.5f,
+                                    _journalPrevPageRect.Y + (_journalPrevPageRect.Height - pageLblSz.Y) * 0.5f),
+                                Color.LightGray);
+                        }
+
+                        // ── Inspector Panel (no debug background) ─────────────
+                        if (_selectedWordBankClue != null)
+                        {
+                            var insertBtn = _journalInsertRect;
+                            _spriteBatch.DrawString(_dialogueFont, _selectedWordBankClue.Name,
+                                new Vector2(inspectorArea.X, inspectorArea.Y),
+                                _tabColors[(int)_selectedWordBankClue.Category]);
+                            DrawWrappedString(_spriteBatch, _dialogueFont,
+                                _selectedWordBankClue.Context,
+                                new Vector2(inspectorArea.X, inspectorArea.Y + 40),
+                                inspectorArea.Width, _dialogueFont.LineSpacing + 4, _inkColor);
+                            _spriteBatch.Draw(_debugPixel, insertBtn,
+                                _tabColors[(int)_selectedWordBankClue.Category]);
+                            var insSz = _dialogueFont.MeasureString("INSERT");
+                            _spriteBatch.DrawString(_dialogueFont, "INSERT",
+                                new Vector2(
+                                    insertBtn.X + (insertBtn.Width  - insSz.X) * 0.5f,
+                                    insertBtn.Y + (insertBtn.Height - insSz.Y) * 0.5f),
+                                Color.White);
+                        }
+
+                        // ── Submit & validation ───────────────────────────────
                         if (!string.IsNullOrEmpty(_deduction.ValidationMessage))
                         {
-                            var  msgSz   = _dialogueFont.MeasureString(_deduction.ValidationMessage);
-                            bool correct = _deduction.ValidationMessage == "Correct!";
-                            _spriteBatch.DrawString(
-                                _dialogueFont, _deduction.ValidationMessage,
+                            bool isCorrect = _deduction.ValidationMessage.StartsWith("Case");
+                            var  vmSz      = _dialogueFont.MeasureString(_deduction.ValidationMessage);
+                            _spriteBatch.DrawString(_dialogueFont, _deduction.ValidationMessage,
                                 new Vector2(
-                                    _submitButtonRect.X + (_submitButtonRect.Width  - msgSz.X) * 0.5f,
-                                    _submitButtonRect.Y - msgSz.Y - 10),
-                                correct ? Color.LimeGreen : Color.OrangeRed);
+                                    _journalSubmitRect.X + (_journalSubmitRect.Width  - vmSz.X) * 0.5f,
+                                    _journalSubmitRect.Y - vmSz.Y - 8),
+                                isCorrect ? Color.LimeGreen : Color.OrangeRed);
                         }
-
-                        _spriteBatch.Draw(_debugPixel, _submitButtonRect, new Color(20, 100, 40));
-                        var submitLbl = "SUBMIT";
-                        var submitSz  = _dialogueFont.MeasureString(submitLbl);
-                        _spriteBatch.DrawString(
-                            _dialogueFont, submitLbl,
+                        _spriteBatch.Draw(_debugPixel, _journalSubmitRect, new Color(20, 100, 40));
+                        var subLbl = "SUBMIT";
+                        var subSz  = _dialogueFont.MeasureString(subLbl);
+                        _spriteBatch.DrawString(_dialogueFont, subLbl,
                             new Vector2(
-                                _submitButtonRect.X + (_submitButtonRect.Width  - submitSz.X) * 0.5f,
-                                _submitButtonRect.Y + (_submitButtonRect.Height - submitSz.Y) * 0.5f),
+                                _journalSubmitRect.X + (_journalSubmitRect.Width  - subSz.X) * 0.5f,
+                                _journalSubmitRect.Y + (_journalSubmitRect.Height - subSz.Y) * 0.5f),
                             Color.White);
 
-                        if (_activeDropdownSlotIndex >= 0)
-                        {
-                            var activeSlot = _deduction.Slots[_activeDropdownSlotIndex];
-                            var filtered   = _notebook.UnlockedClues
-                                .FindAll(c => c.Category == activeSlot.Category);
-
-                            if (filtered.Count == 0)
-                            {
-                                var emptyRect = new Rectangle(
-                                    activeSlot.Bounds.X, activeSlot.Bounds.Bottom,
-                                    activeSlot.Bounds.Width, 60);
-                                _spriteBatch.Draw(_debugPixel, emptyRect, new Color(50, 50, 60));
-                                _spriteBatch.DrawString(
-                                    _dialogueFont, "No clues found yet.",
-                                    new Vector2(emptyRect.X + 12, emptyRect.Y + 10),
-                                    Color.Gray);
-                            }
-                            else
-                            {
-                                for (int i = 0; i < filtered.Count; i++)
-                                {
-                                    var itemRect = new Rectangle(
-                                        activeSlot.Bounds.X, activeSlot.Bounds.Bottom + i * 60,
-                                        activeSlot.Bounds.Width, 60);
-                                    _spriteBatch.Draw(_debugPixel, itemRect,
-                                        i % 2 == 0 ? new Color(25, 40, 80) : new Color(35, 52, 100));
-                                    var itemSz = _dialogueFont.MeasureString(filtered[i].Name);
-                                    _spriteBatch.DrawString(
-                                        _dialogueFont, filtered[i].Name,
-                                        new Vector2(
-                                            itemRect.X + 12,
-                                            itemRect.Y + (itemRect.Height - itemSz.Y) * 0.5f),
-                                        Color.White);
-                                }
-                            }
-                        }
+                        // ── Close button (X) ──────────────────────────────────
+                        _spriteBatch.Draw(_debugPixel, _journalCloseRect, new Color(100, 40, 40));
+                        var closeSz = _dialogueFont.MeasureString("X");
+                        _spriteBatch.DrawString(_dialogueFont, "X",
+                            new Vector2(
+                                _journalCloseRect.X + (_journalCloseRect.Width  - closeSz.X) * 0.5f,
+                                _journalCloseRect.Y + (_journalCloseRect.Height - closeSz.Y) * 0.5f),
+                            Color.White);
                     }
 
                     _spriteBatch.End();

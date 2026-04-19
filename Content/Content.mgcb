@@ -83,6 +83,30 @@
 /processorParam:TextureFormat=Color
 /build:Shared/walk_animation_upward.png
 
+#begin Shared/ui_notebook_bg.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Shared/ui_notebook_bg.png
+
+#begin Shared/ui_tab.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Shared/ui_tab.png
+
 # ── Dialogue font ─────────────────────────────────────────────────────────
 #begin Shared/dialogue_font.spritefont
 /importer:FontDescriptionImporter
