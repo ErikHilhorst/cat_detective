@@ -43,3 +43,7 @@ C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\ui_dialogue_box.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\ui_notebook_bg.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\ui_tab.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\how.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\where.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\who.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\why.xnb

@@ -83,12 +83,24 @@ namespace CatDetective
 
         private static readonly Rectangle _solveButtonRect =
             new Rectangle(2020 - 160, 1136 - 160, 120, 120);
-        private static readonly Rectangle[] _journalTabRects = new[]
+
+        // Hotspot menu: one pre-rendered 800×150 bar per active tab.
+        // Visual order on the image: Who | How(What) | Where(WhereWhen) | Why
+        // This differs from enum order (Who=0,What=1,Why=2,WhereWhen=3), so map explicitly.
+        private static readonly Vector2 _tabImagePos = new Vector2(1050,100);
+        private static readonly Rectangle[] _tabHotspots = new[]
         {
-            new Rectangle(1060, 85, 215, 80),
-            new Rectangle(1275, 85, 215, 80),
-            new Rectangle(1490, 85, 215, 80),
-            new Rectangle(1705, 85, 215, 80),
+            new Rectangle(1060, 50, 200, 150),
+            new Rectangle(1260, 50, 200, 150),
+            new Rectangle(1460, 50, 200, 150),
+            new Rectangle(1660, 50, 200, 150),
+        };
+        private static readonly ClueCategory[] _tabHotspotCategories =
+        {
+            ClueCategory.Who,
+            ClueCategory.What,
+            ClueCategory.WhereWhen,
+            ClueCategory.Why,
         };
         // Paging: sit just below wordBankArea (Y=280+400=680)
         private static readonly Rectangle _journalPrevPageRect = new Rectangle(1050, 692,  90, 35);
@@ -131,7 +143,8 @@ namespace CatDetective
         private SpriteFont  _dialogueFont    = null!;
         private Texture2D   _dialogueBoxTex  = null!;
         private Texture2D   _notebookBgTex   = null!;
-        private Texture2D   _tabTex          = null!;
+        private Texture2D   _tabTex          = null!;  // notebook tabs (Pass 7)
+        private Dictionary<ClueCategory, Texture2D> _tabTextures = new(); // deduction board bar (Pass 8)
 
         // ── Dialogue pagination & typewriter ──────────────────────────────────
         private string[] _dialoguePages        = Array.Empty<string>();
@@ -196,6 +209,11 @@ namespace CatDetective
             _dialogueBoxTex = Content.Load<Texture2D>("Shared/ui_dialogue_box");
             _notebookBgTex  = Content.Load<Texture2D>("Shared/ui_notebook_bg");
             _tabTex         = Content.Load<Texture2D>("Shared/ui_tab");
+
+            _tabTextures[ClueCategory.Who]       = Content.Load<Texture2D>("Shared/who");
+            _tabTextures[ClueCategory.What]      = Content.Load<Texture2D>("Shared/how");
+            _tabTextures[ClueCategory.Why]       = Content.Load<Texture2D>("Shared/why");
+            _tabTextures[ClueCategory.WhereWhen] = Content.Load<Texture2D>("Shared/where");
 
             string configPath = Path.Combine(Content.RootDirectory, "scenes_config.json");
             _availableScenes = SceneConfigParser.GetAvailableScenes(configPath);
@@ -335,11 +353,11 @@ namespace CatDetective
                         else
                         {
                             // Tab clicks
-                            for (int i = 0; i < _journalTabRects.Length; i++)
+                            for (int i = 0; i < _tabHotspots.Length; i++)
                             {
-                                if (_journalTabRects[i].Contains(vm))
+                                if (_tabHotspots[i].Contains(vm))
                                 {
-                                    _activeTab            = (ClueCategory)i;
+                                    _activeTab            = _tabHotspotCategories[i];
                                     _wordBankPage         = 0;
                                     _selectedWordBankClue = null;
                                     break;
@@ -853,26 +871,8 @@ namespace CatDetective
                             }
                         }
 
-                        // ── RIGHT PAGE: Tabs ──────────────────────────────────
-                        for (int i = 0; i < _journalTabRects.Length; i++)
-                        {
-                            bool isActive = (ClueCategory)i == _activeTab;
-                            var  tr       = isActive
-                                ? new Rectangle(
-                                    _journalTabRects[i].X,
-                                    _journalTabRects[i].Y - 10,
-                                    _journalTabRects[i].Width,
-                                    _journalTabRects[i].Height + 10)
-                                : _journalTabRects[i];
-                            _spriteBatch.Draw(_tabTex, tr,
-                                _tabColors[i] * (isActive ? 1f : 0.6f));
-                            var tabLblSz = _dialogueFont.MeasureString(_tabLabels[i]);
-                            _spriteBatch.DrawString(_dialogueFont, _tabLabels[i],
-                                new Vector2(
-                                    tr.X + (tr.Width  - tabLblSz.X) * 0.5f,
-                                    tr.Y + (tr.Height - tabLblSz.Y) * 0.5f),
-                                Color.White);
-                        }
+                        // ── RIGHT PAGE: Tab bar (pre-rendered full-bar image) ──
+                        _spriteBatch.Draw(_tabTextures[_activeTab], _tabImagePos, Color.White);
 
                         // ── RIGHT PAGE: Word Bank (flow layout) ───────────────
                         const float spacingX  = 16f;
