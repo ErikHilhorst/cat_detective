@@ -45,10 +45,26 @@ The content is organized as follows:
 <directory_structure>
 .claude/settings.local.json
 .claude/skills/add-clue-interactable/SKILL.md
+.claude/skills/scaffold-case/SKILL.md
 bin/Debug/net8.0/CatDetective.deps.json
 bin/Debug/net8.0/CatDetective.runtimeconfig.json
 bin/Debug/net8.0/Content/Levels/detective_office/level_config.json
 bin/Debug/net8.0/Content/Levels/detective_office/room_map.json
+bin/Debug/net8.0/Content/Levels/malibu_mansion/bedroom/room_config.json
+bin/Debug/net8.0/Content/Levels/malibu_mansion/bedroom/room_map.json
+bin/Debug/net8.0/Content/Levels/malibu_mansion/case_config.json
+bin/Debug/net8.0/Content/Levels/malibu_mansion/entrance/room_config.json
+bin/Debug/net8.0/Content/Levels/malibu_mansion/entrance/room_map.json
+bin/Debug/net8.0/Content/Levels/malibu_mansion/garden/room_config.json
+bin/Debug/net8.0/Content/Levels/malibu_mansion/garden/room_map.json
+bin/Debug/net8.0/Content/Levels/malibu_mansion/kitchen/room_config.json
+bin/Debug/net8.0/Content/Levels/malibu_mansion/kitchen/room_map.json
+bin/Debug/net8.0/Content/Levels/malibu_mansion/library/room_config.json
+bin/Debug/net8.0/Content/Levels/malibu_mansion/library/room_map.json
+bin/Debug/net8.0/Content/Levels/malibu_mansion/living_room/room_config.json
+bin/Debug/net8.0/Content/Levels/malibu_mansion/living_room/room_map.json
+bin/Debug/net8.0/Content/Levels/malibu_mansion/pool_area/room_config.json
+bin/Debug/net8.0/Content/Levels/malibu_mansion/pool_area/room_map.json
 bin/Debug/net8.0/Content/scenes_config.json
 cat detective GDD.txt
 CatDetective.csproj
@@ -56,6 +72,21 @@ CLAUDE.md
 Content/Content.mgcb
 Content/Levels/detective_office/level_config.json
 Content/Levels/detective_office/room_map.json
+Content/Levels/malibu_mansion/bedroom/room_config.json
+Content/Levels/malibu_mansion/bedroom/room_map.json
+Content/Levels/malibu_mansion/case_config.json
+Content/Levels/malibu_mansion/entrance/room_config.json
+Content/Levels/malibu_mansion/entrance/room_map.json
+Content/Levels/malibu_mansion/garden/room_config.json
+Content/Levels/malibu_mansion/garden/room_map.json
+Content/Levels/malibu_mansion/kitchen/room_config.json
+Content/Levels/malibu_mansion/kitchen/room_map.json
+Content/Levels/malibu_mansion/library/room_config.json
+Content/Levels/malibu_mansion/library/room_map.json
+Content/Levels/malibu_mansion/living_room/room_config.json
+Content/Levels/malibu_mansion/living_room/room_map.json
+Content/Levels/malibu_mansion/pool_area/room_config.json
+Content/Levels/malibu_mansion/pool_area/room_map.json
 Content/obj/DesktopGL/net8.0/Content/.mgcontent
 Content/obj/DesktopGL/net8.0/Content/.mgstats
 Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/bg_base.mgcontent
@@ -66,6 +97,13 @@ Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/Interactables/inspe
 Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/Interactables/inspect_trash_can.mgcontent
 Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/prop_cabinet.mgcontent
 Content/obj/DesktopGL/net8.0/Content/Levels/detective_office/prop_desk.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Levels/malibu_mansion/bedroom/bg_base.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Levels/malibu_mansion/entrance/bg_base.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Levels/malibu_mansion/garden/bg_base.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Levels/malibu_mansion/kitchen/bg_base.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Levels/malibu_mansion/library/bg_base.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Levels/malibu_mansion/living_room/bg_base.mgcontent
+Content/obj/DesktopGL/net8.0/Content/Levels/malibu_mansion/pool_area/bg_base.mgcontent
 Content/obj/DesktopGL/net8.0/Content/Shared/dialogue_font.mgcontent
 Content/obj/DesktopGL/net8.0/Content/Shared/how.mgcontent
 Content/obj/DesktopGL/net8.0/Content/Shared/mask_sunbeams.mgcontent
@@ -117,6 +155,2547 @@ Tiled maps/untitledcat_detective.tiled-session
 <files>
 This section contains the contents of the repository's files.
 
+<file path="bin/Debug/net8.0/Content/Levels/malibu_mansion/bedroom/room_config.json">
+{
+  "props": [],
+  "interactables": [],
+  "localDeductionSentence": ""
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/Levels/malibu_mansion/bedroom/room_map.json">
+{ "compressionlevel":-1,
+ "height":24,
+ "infinite":true,
+ "layers":[
+        {
+         "id":1,
+         "image":"bg_base.jpg",
+         "imageheight":816,
+         "imagewidth":1456,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Collisions",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Transfers",
+         "objects":[
+                {
+                 "height":120,
+                 "id":1,
+                 "name":"transfer_to_entrance",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"entrance"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_bedroom"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":374,
+                 "x":240,
+                 "y":684
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":4,
+         "name":"Spawn",
+         "objects":[
+                {
+                 "height":0,
+                 "id":50,
+                 "name":"spawn_default",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":366,
+                 "y":780
+                }, 
+                {
+                 "height":0,
+                 "id":51,
+                 "name":"spawn_from_entrance",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":392,
+                 "y":786
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":6,
+ "nextobjectid":52,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":43
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/Levels/malibu_mansion/case_config.json">
+{
+  "clues": [],
+  "finalSolveSentence": ""
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/Levels/malibu_mansion/entrance/room_config.json">
+{
+  "props": [],
+  "interactables": [],
+  "localDeductionSentence": ""
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/Levels/malibu_mansion/entrance/room_map.json">
+{ "compressionlevel":-1,
+ "height":24,
+ "infinite":true,
+ "layers":[
+        {
+         "id":1,
+         "image":"bg_base.jpg",
+         "imageheight":768,
+         "imagewidth":1370,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Collisions",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Transfers",
+         "objects":[
+                {
+                 "height":133,
+                 "id":1,
+                 "name":"transfer_to_living_room",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"living_room"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_entrance"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":228,
+                 "x":1218,
+                 "y":178
+                }, 
+                {
+                 "height":159,
+                 "id":2,
+                 "name":"transfer_to_bedroom",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"bedroom"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_entrance"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":231,
+                 "x":966,
+                 "y":219
+                }],
+         "offsetx":-142,
+         "offsety":192,
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":4,
+         "name":"Spawn",
+         "objects":[
+                {
+                 "height":0,
+                 "id":50,
+                 "name":"spawn_default",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":237,
+                 "y":394
+                }, 
+                {
+                 "height":0,
+                 "id":51,
+                 "name":"spawn_from_living_room",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1181.33333333333,
+                 "y":446.666666666667
+                }, 
+                {
+                 "height":0,
+                 "id":52,
+                 "name":"spawn_from_bedroom",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":958.666666666667,
+                 "y":560
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":6,
+ "nextobjectid":53,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":43
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/Levels/malibu_mansion/garden/room_config.json">
+{
+  "props": [],
+  "interactables": [],
+  "localDeductionSentence": ""
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/Levels/malibu_mansion/garden/room_map.json">
+{ "compressionlevel":-1,
+ "height":24,
+ "infinite":true,
+ "layers":[
+        {
+         "id":1,
+         "image":"bg_base.jpg",
+         "imageheight":816,
+         "imagewidth":1456,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Collisions",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Transfers",
+         "objects":[
+                {
+                 "height":141,
+                 "id":1,
+                 "name":"transfer_to_living_room",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"living_room"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_garden"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":225,
+                 "x":946,
+                 "y":264
+                }, 
+                {
+                 "height":157,
+                 "id":2,
+                 "name":"transfer_to_pool_area",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"pool_area"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_garden"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":283,
+                 "x":143,
+                 "y":690
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":4,
+         "name":"Spawn",
+         "objects":[
+                {
+                 "height":0,
+                 "id":50,
+                 "name":"spawn_default",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":528,
+                 "y":560
+                }, 
+                {
+                 "height":0,
+                 "id":51,
+                 "name":"spawn_from_living_room",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1062,
+                 "y":335
+                }, 
+                {
+                 "height":0,
+                 "id":52,
+                 "name":"spawn_from_pool_area",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":230,
+                 "y":795
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":6,
+ "nextobjectid":53,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":43
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/Levels/malibu_mansion/kitchen/room_config.json">
+{
+  "props": [],
+  "interactables": [],
+  "localDeductionSentence": ""
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/Levels/malibu_mansion/kitchen/room_map.json">
+{ "compressionlevel":-1,
+ "height":24,
+ "infinite":true,
+ "layers":[
+        {
+         "id":1,
+         "image":"bg_base.jpg",
+         "imageheight":768,
+         "imagewidth":1370,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Collisions",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Transfers",
+         "objects":[
+                {
+                 "height":154.505710259027,
+                 "id":1,
+                 "name":"transfer_to_living_room",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"living_room"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_kitchen"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":392.901200369345,
+                 "x":1005.99659814356,
+                 "y":633.833892209749
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":4,
+         "name":"Spawn",
+         "objects":[
+                {
+                 "height":0,
+                 "id":50,
+                 "name":"spawn_default",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1156.5075569811,
+                 "y":745.090149195704
+                }, 
+                {
+                 "height":0,
+                 "id":51,
+                 "name":"spawn_from_living_room",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1160.50230840259,
+                 "y":736.470816931526
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":6,
+ "nextobjectid":52,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":43
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/Levels/malibu_mansion/library/room_config.json">
+{
+  "props": [],
+  "interactables": [],
+  "localDeductionSentence": ""
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/Levels/malibu_mansion/library/room_map.json">
+{ "compressionlevel":-1,
+ "height":24,
+ "infinite":true,
+ "layers":[
+        {
+         "id":1,
+         "image":"bg_base.jpg",
+         "imageheight":816,
+         "imagewidth":1456,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Collisions",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Transfers",
+         "objects":[
+                {
+                 "height":208,
+                 "id":1,
+                 "name":"transfer_to_living_room",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"living_room"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_library"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":240,
+                 "x":1222,
+                 "y":636
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":4,
+         "name":"Spawn",
+         "objects":[
+                {
+                 "height":0,
+                 "id":50,
+                 "name":"spawn_default",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1366,
+                 "y":750
+                }, 
+                {
+                 "height":0,
+                 "id":51,
+                 "name":"spawn_from_living_room",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1386,
+                 "y":754
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":6,
+ "nextobjectid":52,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":43
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/Levels/malibu_mansion/living_room/room_config.json">
+{
+  "props": [],
+  "interactables": [],
+  "localDeductionSentence": ""
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/Levels/malibu_mansion/living_room/room_map.json">
+{ "compressionlevel":-1,
+ "height":24,
+ "infinite":true,
+ "layers":[
+        {
+         "id":1,
+         "image":"bg_base.jpg",
+         "imageheight":768,
+         "imagewidth":1370,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Collisions",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Transfers",
+         "objects":[
+                {
+                 "height":138.568693201147,
+                 "id":1,
+                 "name":"transfer_to_entrance",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"entrance"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_living_room"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":245.053409146134,
+                 "x":-11.9722019730766,
+                 "y":672.796228799145
+                }, 
+                {
+                 "height":227.742819653011,
+                 "id":2,
+                 "name":"transfer_to_library",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"library"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_living_room"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":133.242357972494,
+                 "x":231.014822374496,
+                 "y":227.700831024931
+                }, 
+                {
+                 "height":316.958934732954,
+                 "id":3,
+                 "name":"transfer_to_kitchen",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"kitchen"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_living_room"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":133.242357972493,
+                 "x":1243.01851581863,
+                 "y":123.933323613743
+                }, 
+                {
+                 "height":242.432230159887,
+                 "id":4,
+                 "name":"transfer_to_garden",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"garden"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_living_room"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":141.189872187394,
+                 "x":798.950284298003,
+                 "y":17.6569956747825
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":4,
+         "name":"Spawn",
+         "objects":[
+                {
+                 "height":0,
+                 "id":50,
+                 "name":"spawn_default",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":528,
+                 "y":560
+                }, 
+                {
+                 "height":0,
+                 "id":51,
+                 "name":"spawn_from_entrance",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":976,
+                 "y":296
+                }, 
+                {
+                 "height":0,
+                 "id":52,
+                 "name":"spawn_from_library",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":528,
+                 "y":80
+                }, 
+                {
+                 "height":0,
+                 "id":53,
+                 "name":"spawn_from_kitchen",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":528,
+                 "y":1008
+                }, 
+                {
+                 "height":0,
+                 "id":54,
+                 "name":"spawn_from_garden",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":80,
+                 "y":296
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":6,
+ "nextobjectid":55,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":43
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/Levels/malibu_mansion/pool_area/room_config.json">
+{
+  "props": [],
+  "interactables": [],
+  "localDeductionSentence": ""
+}
+</file>
+
+<file path="bin/Debug/net8.0/Content/Levels/malibu_mansion/pool_area/room_map.json">
+{ "compressionlevel":-1,
+ "height":24,
+ "infinite":true,
+ "layers":[
+        {
+         "id":1,
+         "image":"bg_base.jpg",
+         "imageheight":816,
+         "imagewidth":1456,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Collisions",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Transfers",
+         "objects":[
+                {
+                 "height":99.3793069932449,
+                 "id":1,
+                 "name":"transfer_to_garden",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"garden"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_pool_area"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":242.860669679739,
+                 "x":337.641444331049,
+                 "y":714.024784954075
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":4,
+         "name":"Spawn",
+         "objects":[
+                {
+                 "height":0,
+                 "id":50,
+                 "name":"spawn_default",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":528,
+                 "y":560
+                }, 
+                {
+                 "height":0,
+                 "id":51,
+                 "name":"spawn_from_garden",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":489.18073577295,
+                 "y":788.479953345969
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":6,
+ "nextobjectid":52,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":43
+}
+</file>
+
+<file path="Content/Levels/malibu_mansion/bedroom/room_config.json">
+{
+  "props": [],
+  "interactables": [],
+  "localDeductionSentence": ""
+}
+</file>
+
+<file path="Content/Levels/malibu_mansion/bedroom/room_map.json">
+{ "compressionlevel":-1,
+ "height":24,
+ "infinite":true,
+ "layers":[
+        {
+         "id":1,
+         "image":"bg_base.jpg",
+         "imageheight":816,
+         "imagewidth":1456,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Collisions",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Transfers",
+         "objects":[
+                {
+                 "height":120,
+                 "id":1,
+                 "name":"transfer_to_entrance",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"entrance"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_bedroom"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":374,
+                 "x":240,
+                 "y":684
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":4,
+         "name":"Spawn",
+         "objects":[
+                {
+                 "height":0,
+                 "id":50,
+                 "name":"spawn_default",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":366,
+                 "y":780
+                }, 
+                {
+                 "height":0,
+                 "id":51,
+                 "name":"spawn_from_entrance",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":392,
+                 "y":786
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":6,
+ "nextobjectid":52,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":43
+}
+</file>
+
+<file path="Content/Levels/malibu_mansion/case_config.json">
+{
+  "clues": [],
+  "finalSolveSentence": ""
+}
+</file>
+
+<file path="Content/Levels/malibu_mansion/entrance/room_config.json">
+{
+  "props": [],
+  "interactables": [],
+  "localDeductionSentence": ""
+}
+</file>
+
+<file path="Content/Levels/malibu_mansion/entrance/room_map.json">
+{ "compressionlevel":-1,
+ "height":24,
+ "infinite":true,
+ "layers":[
+        {
+         "id":1,
+         "image":"bg_base.jpg",
+         "imageheight":768,
+         "imagewidth":1370,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Collisions",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Transfers",
+         "objects":[
+                {
+                 "height":133,
+                 "id":1,
+                 "name":"transfer_to_living_room",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"living_room"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_entrance"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":228,
+                 "x":1218,
+                 "y":178
+                }, 
+                {
+                 "height":159,
+                 "id":2,
+                 "name":"transfer_to_bedroom",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"bedroom"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_entrance"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":231,
+                 "x":966,
+                 "y":219
+                }],
+         "offsetx":-142,
+         "offsety":192,
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":4,
+         "name":"Spawn",
+         "objects":[
+                {
+                 "height":0,
+                 "id":50,
+                 "name":"spawn_default",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":237,
+                 "y":394
+                }, 
+                {
+                 "height":0,
+                 "id":51,
+                 "name":"spawn_from_living_room",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1181.33333333333,
+                 "y":446.666666666667
+                }, 
+                {
+                 "height":0,
+                 "id":52,
+                 "name":"spawn_from_bedroom",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":958.666666666667,
+                 "y":560
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":6,
+ "nextobjectid":53,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":43
+}
+</file>
+
+<file path="Content/Levels/malibu_mansion/garden/room_config.json">
+{
+  "props": [],
+  "interactables": [],
+  "localDeductionSentence": ""
+}
+</file>
+
+<file path="Content/Levels/malibu_mansion/garden/room_map.json">
+{ "compressionlevel":-1,
+ "height":24,
+ "infinite":true,
+ "layers":[
+        {
+         "id":1,
+         "image":"bg_base.jpg",
+         "imageheight":816,
+         "imagewidth":1456,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Collisions",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Transfers",
+         "objects":[
+                {
+                 "height":141,
+                 "id":1,
+                 "name":"transfer_to_living_room",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"living_room"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_garden"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":225,
+                 "x":946,
+                 "y":264
+                }, 
+                {
+                 "height":157,
+                 "id":2,
+                 "name":"transfer_to_pool_area",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"pool_area"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_garden"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":283,
+                 "x":143,
+                 "y":690
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":4,
+         "name":"Spawn",
+         "objects":[
+                {
+                 "height":0,
+                 "id":50,
+                 "name":"spawn_default",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":528,
+                 "y":560
+                }, 
+                {
+                 "height":0,
+                 "id":51,
+                 "name":"spawn_from_living_room",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1062,
+                 "y":335
+                }, 
+                {
+                 "height":0,
+                 "id":52,
+                 "name":"spawn_from_pool_area",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":230,
+                 "y":795
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":6,
+ "nextobjectid":53,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":43
+}
+</file>
+
+<file path="Content/Levels/malibu_mansion/kitchen/room_config.json">
+{
+  "props": [],
+  "interactables": [],
+  "localDeductionSentence": ""
+}
+</file>
+
+<file path="Content/Levels/malibu_mansion/kitchen/room_map.json">
+{ "compressionlevel":-1,
+ "height":24,
+ "infinite":true,
+ "layers":[
+        {
+         "id":1,
+         "image":"bg_base.jpg",
+         "imageheight":768,
+         "imagewidth":1370,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Collisions",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Transfers",
+         "objects":[
+                {
+                 "height":154.505710259027,
+                 "id":1,
+                 "name":"transfer_to_living_room",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"living_room"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_kitchen"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":392.901200369345,
+                 "x":1005.99659814356,
+                 "y":633.833892209749
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":4,
+         "name":"Spawn",
+         "objects":[
+                {
+                 "height":0,
+                 "id":50,
+                 "name":"spawn_default",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1156.5075569811,
+                 "y":745.090149195704
+                }, 
+                {
+                 "height":0,
+                 "id":51,
+                 "name":"spawn_from_living_room",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1160.50230840259,
+                 "y":736.470816931526
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":6,
+ "nextobjectid":52,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":43
+}
+</file>
+
+<file path="Content/Levels/malibu_mansion/library/room_config.json">
+{
+  "props": [],
+  "interactables": [],
+  "localDeductionSentence": ""
+}
+</file>
+
+<file path="Content/Levels/malibu_mansion/library/room_map.json">
+{ "compressionlevel":-1,
+ "height":24,
+ "infinite":true,
+ "layers":[
+        {
+         "id":1,
+         "image":"bg_base.jpg",
+         "imageheight":816,
+         "imagewidth":1456,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Collisions",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Transfers",
+         "objects":[
+                {
+                 "height":208,
+                 "id":1,
+                 "name":"transfer_to_living_room",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"living_room"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_library"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":240,
+                 "x":1222,
+                 "y":636
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":4,
+         "name":"Spawn",
+         "objects":[
+                {
+                 "height":0,
+                 "id":50,
+                 "name":"spawn_default",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1366,
+                 "y":750
+                }, 
+                {
+                 "height":0,
+                 "id":51,
+                 "name":"spawn_from_living_room",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1386,
+                 "y":754
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":6,
+ "nextobjectid":52,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":43
+}
+</file>
+
+<file path="Content/Levels/malibu_mansion/living_room/room_config.json">
+{
+  "props": [],
+  "interactables": [],
+  "localDeductionSentence": ""
+}
+</file>
+
+<file path="Content/Levels/malibu_mansion/living_room/room_map.json">
+{ "compressionlevel":-1,
+ "height":24,
+ "infinite":true,
+ "layers":[
+        {
+         "id":1,
+         "image":"bg_base.jpg",
+         "imageheight":768,
+         "imagewidth":1370,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Collisions",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Transfers",
+         "objects":[
+                {
+                 "height":138.568693201147,
+                 "id":1,
+                 "name":"transfer_to_entrance",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"entrance"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_living_room"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":245.053409146134,
+                 "x":-11.9722019730766,
+                 "y":672.796228799145
+                }, 
+                {
+                 "height":227.742819653011,
+                 "id":2,
+                 "name":"transfer_to_library",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"library"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_living_room"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":133.242357972494,
+                 "x":231.014822374496,
+                 "y":227.700831024931
+                }, 
+                {
+                 "height":316.958934732954,
+                 "id":3,
+                 "name":"transfer_to_kitchen",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"kitchen"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_living_room"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":133.242357972493,
+                 "x":1243.01851581863,
+                 "y":123.933323613743
+                }, 
+                {
+                 "height":242.432230159887,
+                 "id":4,
+                 "name":"transfer_to_garden",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"garden"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_living_room"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":141.189872187394,
+                 "x":798.950284298003,
+                 "y":17.6569956747825
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":4,
+         "name":"Spawn",
+         "objects":[
+                {
+                 "height":0,
+                 "id":50,
+                 "name":"spawn_default",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":528,
+                 "y":560
+                }, 
+                {
+                 "height":0,
+                 "id":51,
+                 "name":"spawn_from_entrance",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":976,
+                 "y":296
+                }, 
+                {
+                 "height":0,
+                 "id":52,
+                 "name":"spawn_from_library",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":528,
+                 "y":80
+                }, 
+                {
+                 "height":0,
+                 "id":53,
+                 "name":"spawn_from_kitchen",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":528,
+                 "y":1008
+                }, 
+                {
+                 "height":0,
+                 "id":54,
+                 "name":"spawn_from_garden",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":80,
+                 "y":296
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":6,
+ "nextobjectid":55,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":43
+}
+</file>
+
+<file path="Content/Levels/malibu_mansion/pool_area/room_config.json">
+{
+  "props": [],
+  "interactables": [],
+  "localDeductionSentence": ""
+}
+</file>
+
+<file path="Content/Levels/malibu_mansion/pool_area/room_map.json">
+{ "compressionlevel":-1,
+ "height":24,
+ "infinite":true,
+ "layers":[
+        {
+         "id":1,
+         "image":"bg_base.jpg",
+         "imageheight":816,
+         "imagewidth":1456,
+         "name":"background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Collisions",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Transfers",
+         "objects":[
+                {
+                 "height":99.3793069932449,
+                 "id":1,
+                 "name":"transfer_to_garden",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"TargetRoom",
+                         "type":"string",
+                         "value":"garden"
+                        }, 
+                        {
+                         "name":"TargetSpawn",
+                         "type":"string",
+                         "value":"spawn_from_pool_area"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":242.860669679739,
+                 "x":337.641444331049,
+                 "y":714.024784954075
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":4,
+         "name":"Spawn",
+         "objects":[
+                {
+                 "height":0,
+                 "id":50,
+                 "name":"spawn_default",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":528,
+                 "y":560
+                }, 
+                {
+                 "height":0,
+                 "id":51,
+                 "name":"spawn_from_garden",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":489.18073577295,
+                 "y":788.479953345969
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Interactables",
+         "objects":[],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":6,
+ "nextobjectid":52,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":43
+}
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/Levels/malibu_mansion/bedroom/bg_base.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/bg_base.jpg</SourceFile>
+  <SourceTime>2026-04-27T12:31:21.340607+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/bedroom/bg_base.xnb</DestFile>
+  <DestTime>2026-04-27T12:42:20.6810414+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,0,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/Levels/malibu_mansion/entrance/bg_base.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/bg_base.jpg</SourceFile>
+  <SourceTime>2026-04-18T20:26:27.0237446+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/entrance/bg_base.xnb</DestFile>
+  <DestTime>2026-04-27T12:42:20.5617693+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,0,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/Levels/malibu_mansion/garden/bg_base.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/bg_base.jpg</SourceFile>
+  <SourceTime>2026-04-27T12:33:36.7557436+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/garden/bg_base.xnb</DestFile>
+  <DestTime>2026-04-27T12:42:21.1695958+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,0,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/Levels/malibu_mansion/kitchen/bg_base.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/bg_base.jpg</SourceFile>
+  <SourceTime>2026-04-18T13:51:57.5690164+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/kitchen/bg_base.xnb</DestFile>
+  <DestTime>2026-04-27T12:42:21.0157711+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,0,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/Levels/malibu_mansion/library/bg_base.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/bg_base.jpg</SourceFile>
+  <SourceTime>2026-04-27T12:37:17.4368756+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/library/bg_base.xnb</DestFile>
+  <DestTime>2026-04-27T12:42:20.9267366+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,0,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/Levels/malibu_mansion/living_room/bg_base.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/bg_base.jpg</SourceFile>
+  <SourceTime>2026-04-18T13:44:55.5057545+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/living_room/bg_base.xnb</DestFile>
+  <DestTime>2026-04-27T12:42:20.7932372+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,0,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
+<file path="Content/obj/DesktopGL/net8.0/Content/Levels/malibu_mansion/pool_area/bg_base.mgcontent">
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/bg_base.jpg</SourceFile>
+  <SourceTime>2026-04-27T12:40:54.203259+02:00</SourceTime>
+  <DestFile>C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/pool_area/bg_base.xnb</DestFile>
+  <DestTime>2026-04-27T12:42:21.2896951+02:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2025-10-20T16:25:32+02:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>255,0,255,255</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Color</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
+</file>
+
 <file path=".claude/settings.local.json">
 {
   "permissions": {
@@ -141,109 +2720,50 @@ This section contains the contents of the repository's files.
 }
 </file>
 
-<file path=".claude/skills/add-clue-interactable/SKILL.md">
+<file path=".claude/skills/scaffold-case/SKILL.md">
 ---
-name: add-clue-interactable
-description: Generates JSON for a new interactable object and its associated clues for Cat Detective's level_config.json. Use this skill when the user wants to add a new inspectable prop, scene object, or interactive element to a level, or when they describe a new clue and want the full JSON for both the clue entries and the interactable entry.
+name: scaffold-case
+description: Scaffolds a complete multi-room case. Generates the folder structure, case_config.json, room_config.json files, and minimal Tiled room_map.json files with wired transfers and spawns.
 user_invocable: true
 ---
 
-# Add Clue + Interactable
+# Scaffold Case
 
-Generates ready-to-paste JSON snippets for `level_config.json` — both the `"clues"` entries and the matching `"interactables"` entry.
+This skill creates the directory structure and base configuration files for a new multi-room case in Cat Detective.
 
-## The 3-Tier Information System
+## Workflow
+When the user asks to scaffold a case (e.g., "Scaffold the Malibu Mansion with Entrance, Living Room, and Kitchen. Entrance connects to Living Room, Living Room to Kitchen"):
 
-Every piece of information exists at three levels:
+1. **Create Folders**: Use the Bash tool to create `Content/Levels/<case_id>/` and a subfolder for each room (e.g., `Content/Levels/<case_id>/<room_id>/Interactables/`).
+2. **Create `case_config.json`**: In the root of the case folder, create a JSON file with empty arrays for `clues` and an empty string for `finalSolveSentence`.
+3. **Create `room_config.json`**: In each room folder, create a JSON file with empty arrays for `props` and `interactables`, and an empty string for `localDeductionSentence`.
+4. **Create `room_map.json`**: In each room folder, generate a minimal valid Tiled JSON map.
+   - It MUST include layers: `background` (imagelayer), `Collisions` (objectgroup), `Transfers` (objectgroup), `Spawn` (objectgroup), and `Interactables` (objectgroup).
+   - **Spawns**: For every room this room connects to, create a point object in the `Spawn` layer named `spawn_from_<other_room>`. Also create a `spawn_default`.
+   - **Transfers**: For every room this room connects to, create a rectangle object in the `Transfers` layer. It must have custom string properties: `TargetRoom` (the id of the destination room) and `TargetSpawn` (e.g., `spawn_from_<this_room>`).
 
-| Tier | Where it lives | Rule |
-|------|---------------|------|
-| **Keyword** (`displayText`) | Inside `keywords[]` of the interactable | Must match the bracketed text in `"text"` exactly (case-sensitive) |
-| **Name** (`name`) | Inside the clue entry | 1–3 words; shown on the Deduction Board |
-| **Context** (`context`) | Inside the clue entry | One sentence; shown in the Notebook |
-
-## Clue Rules
-
-- `id`: `snake_case`, unique across the level, descriptive of the fact (not the prop).
-- `category`: one of `"Who"`, `"What"`, `"Why"`, `"WhereWhen"`.
-  - **Who** — a person or suspect ("the housekeeper", "Lance's ex")
-  - **What** — a stolen/relevant object or event ("broken trophy", "torn contract")
-  - **Why** — a motive ("insurance fraud", "jealousy")
-  - **WhereWhen** — a location or time ("Malibu Mansion", "Day Before Premiere")
-- `name`: 1–3 words, Title Case. This is what the player reads on the Deduction Board card.
-- `context`: One complete sentence. Explains *why* this clue matters or *where* it was found.
-
-## Interactable Rules
-
-- `id`: `inspect_<prop_name>` by convention.
-- `text`: The dialogue string. Wrap each keyword in `[square brackets]`. The bracketed text is the keyword's `displayText` — it must match exactly.
-- `keywords[]`: One entry per bracketed phrase in `text`.
-  - `displayText`: copied verbatim from the brackets.
-  - `id`: the `id` of the clue this keyword unlocks.
-  - `color`: one of `"plot"` (story-critical), `"crime"` (directly criminal), `"misc"` (background detail).
-- Optional display fields (omit if using defaults):
-  - `scale` (float, default 1.0) — scales the dialogue box.
-  - `align` — `"BottomCenter"` (default), `"Center"`, `"Left"`.
-  - `offsetX` / `offsetY` (int) — pixel nudge from anchor position.
-
-## Output Format
-
-Always output two separate JSON blocks, clearly labelled, ready to paste.
-
-### Block 1 — paste into `"clues": [...]`
-
-```json
-{ "id": "clue_id_here", "category": "What", "name": "Short Name", "context": "One sentence explaining this clue." },
-{ "id": "second_clue",  "category": "WhereWhen", "name": "Place Name", "context": "Found in/on/near the prop." }
-```
-
-### Block 2 — paste into `"interactables": [...]`
-
+## Tiled JSON Template
+Use this minimal structure for `room_map.json`:
 ```json
 {
-  "id": "inspect_prop_name",
-  "text": "Dialogue text with [keyword one] and a [second keyword] inline.",
-  "keywords": [
-    { "displayText": "keyword one",   "id": "clue_id_here", "color": "plot"  },
-    { "displayText": "second keyword","id": "second_clue",  "color": "crime" }
-  ]
+ "compressionlevel": -1,
+ "infinite": true,
+ "layers":[
+  { "id": 1, "name": "background", "type": "imagelayer", "image": "bg_base.jpg", "opacity": 1, "visible": true, "x": 0, "y": 0 },
+  { "id": 2, "name": "Collisions", "type": "objectgroup", "objects": [] },
+  { "id": 3, "name": "Transfers", "type": "objectgroup", "objects":[] },
+  { "id": 4, "name": "Spawn", "type": "objectgroup", "objects":[] },
+  { "id": 5, "name": "Interactables", "type": "objectgroup", "objects":[] }
+ ],
+ "nextlayerid": 6, "nextobjectid": 100,
+ "orientation": "orthogonal", "renderorder": "right-down",
+"tileheight": 32, "tilewidth": 32, "width": 43, "height": 24, "type": "map", "version": "1.10"
 }
 ```
 
-## Quality Checklist
+**Note**: Make sure to inject the Transfer and Spawn objects into the correct layers.
 
-Before outputting, verify:
-- [ ] Every `[bracketed phrase]` in `text` has a matching entry in `keywords[]` with identical `displayText`.
-- [ ] Every keyword `id` references a clue that exists (either new or already in the `"clues"` array).
-- [ ] Each `name` is 1–3 words.
-- [ ] Each `context` is exactly one sentence.
-- [ ] No duplicate `id` values with existing clues in the level.
-- [ ] `category` makes sense for the information type.
-- [ ] `color` reflects importance: `"crime"` only for directly incriminating evidence.
-
-## Example
-
-**User prompt:** "Add a dusty bookshelf. The cat finds a love letter signed 'V' and a receipt for a boat rental in Malibu, dated last Friday."
-
-**Output:**
-
-Clues to add to `"clues": [...]`:
-```json
-{ "id": "love_letter_v",    "category": "Who",       "name": "Signed 'V'",       "context": "A love letter found in the bookshelf, signed only with the initial V." },
-{ "id": "boat_rental",      "category": "WhereWhen", "name": "Boat Rental Malibu","context": "Receipt for a boat rental in Malibu, dated last Friday." }
-```
-
-Interactable to add to `"interactables": [...]`:
-```json
-{
-  "id": "inspect_bookshelf",
-  "text": "Dusty, but not untouched. A folded letter — signed [signed 'V']. Behind it, a crumpled receipt for a [boat rental in Malibu].",
-  "keywords": [
-    { "displayText": "signed 'V'",            "id": "love_letter_v", "color": "plot"  },
-    { "displayText": "boat rental in Malibu", "id": "boat_rental",   "color": "plot"  }
-  ]
-}
-```
+**Remind the User**: Tell the user to add the new bg_base.png files to the directories, and remind them to add them to Content.mgcb.
 </file>
 
 <file path="bin/Debug/net8.0/CatDetective.deps.json">
@@ -2045,6 +4565,86 @@ dotnet run
 }
 </file>
 
+<file path=".claude/skills/add-clue-interactable/SKILL.md">
+---
+name: add-clue-interactable
+description: Actively writes a new interactable object into the game. It uses Read/Write tools to update case_config.json (for clues), room_config.json (for dialogue), and room_map.json (to place the object in Tiled).
+user_invocable: true
+---
+
+# Add Clue + Interactable (Multi-Room Auto-Writer)
+
+This skill automates adding an inspectable object to a specific room. **You will use your Read and Write tools to modify the 3 required files directly.**
+
+## The Information System & Rules
+
+Every piece of information exists at multiple levels. Follow these strict rules when generating the content:
+
+### Clue Rules (goes into `case_config.json`)
+- `id`: `snake_case`, unique across the case, descriptive of the fact (not the prop).
+- `roomId`: The exact string ID of the room this clue is found in.
+- `isMacroClue`: `false` (unless the user explicitly states this is a final case-level macro clue).
+- `category`: strictly one of `"Who"`, `"What"`, `"Why"`, `"WhereWhen"`.
+  - **Who** — a person or suspect ("the housekeeper", "Lance's ex")
+  - **What** — a stolen/relevant object or event ("broken trophy", "torn contract")
+  - **Why** — a motive ("insurance fraud", "jealousy")
+  - **WhereWhen** — a location or time ("Malibu Mansion", "Day Before Premiere")
+- `name`: 1–3 words, Title Case. Shown on the Deduction Board card.
+- `context`: Exactly one complete sentence. Shown in the Notebook.
+- `inspectorDescription`: 1-2 sentences of extended lore/flavor text for the UI Inspector Panel.
+
+### Interactable Rules (goes into `room_config.json`)
+- `id`: `inspect_<prop_name>` by convention.
+- `text`: The dialogue string. Wrap each keyword in `[square brackets]`. The bracketed text is the keyword's `displayText` — it must match exactly.
+- `keywords[]`: One entry per bracketed phrase in `text`.
+  - `displayText`: copied verbatim from the brackets (case-sensitive).
+  - `id`: the `id` of the clue this keyword unlocks.
+  - `color`: one of `"plot"` (story-critical), `"crime"` (directly criminal), `"misc"` (background detail).
+- Optional display fields (omit if using defaults):
+  - `scale` (float, default 1.0)
+  - `align` — `"BottomCenter"` (default), `"Center"`, `"Left"`.
+
+---
+
+## The 3 Files to Update
+
+When the user gives a prompt like: *"Use add-clue-interactable. In `malibu_mansion` `living_room`, add a dusty bookshelf with a love letter signed 'V'."*
+
+### 1. The Global Clues (`Content/Levels/<case_id>/case_config.json`)
+- **Read** the file.
+- Add the new clue(s) to the `"clues"` array.
+- **Example format:** 
+  `{ "id": "love_letter_v", "category": "Who", "roomId": "living_room", "isMacroClue": false, "name": "Signed 'V'", "context": "A love letter found in the bookshelf, signed with a V.", "inspectorDescription": "The handwriting is hurried, smelling faintly of expensive perfume." }`
+- **Write** the updated JSON back to the file.
+
+### 2. The Local Dialogue (`Content/Levels/<case_id>/<room_id>/room_config.json`)
+- **Read** the file.
+- Add the new interactable to the `"interactables"` array.
+- **Example format:**
+  `{ "id": "inspect_bookshelf", "text": "Dusty, but not untouched. A folded letter — [signed 'V'].", "keywords":[ { "displayText": "signed 'V'", "id": "love_letter_v", "color": "plot" } ] }`
+- **Write** the updated JSON back to the file.
+
+### 3. The Tiled Map (`Content/Levels/<case_id>/<room_id>/room_map.json`)
+- **Read** the file.
+- Find the layer where `"name": "Interactables"`.
+- Append a new Tiled object to its `"objects"` array.
+- **Example format:**
+  `{ "id": <generate_random_int_over_100>, "name": "inspect_bookshelf", "x": 500, "y": 500, "width": 64, "height": 64, "type": "", "visible": true, "rotation": 0 }`
+  *(Place it at arbitrary coordinates like 500,500; the user will move it in Tiled).*
+- **Write** the updated JSON back to the file.
+
+---
+
+## Quality Checklist
+Before concluding your task, verify:
+- [ ] Every `[bracketed phrase]` in `text` has a matching entry in `keywords[]` with identical `displayText`.
+-[ ] Every keyword `id` references a clue that was just added to `case_config.json`.
+- [ ] Each clue `name` is 1–3 words.
+- [ ] Each clue `context` is exactly one sentence.
+- [ ] The `roomId` in the clue exactly matches the current room you are editing.
+- [ ] You have reminded the user to place the `.png` file in the room's `Interactables/` folder and add it to `Content.mgcb` with `PremultiplyAlpha=False`.
+</file>
+
 <file path="Content/obj/DesktopGL/net8.0/Content/Shared/dialogue_font.mgcontent">
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -2132,29 +4732,6 @@ dotnet run
     </CharacterRegions>
   </Asset>
 </XnaContent>
-</file>
-
-<file path="Entities/Clue.cs">
-namespace CatDetective.Entities
-{
-    public enum ClueCategory { Who, What, Why, WhereWhen }
-
-    public sealed class Clue
-    {
-        public string       Id       { get; }
-        public ClueCategory Category { get; }
-        public string       Name     { get; }
-        public string       Context  { get; }
-
-        public Clue(string id, ClueCategory category, string name, string context)
-        {
-            Id       = id;
-            Category = category;
-            Name     = name;
-            Context  = context;
-        }
-    }
-}
 </file>
 
 <file path="Entities/InteractionData.cs">
@@ -2467,78 +5044,6 @@ namespace CatDetective.Systems
 }
 </file>
 
-<file path="Systems/NotebookManager.cs">
-using System.Collections.Generic;
-using CatDetective.Entities;
-
-namespace CatDetective.Systems
-{
-    /// <summary>
-    /// Owns the master clue database and tracks which clues the player has found.
-    /// The database is loaded from <c>level_config.json</c> via <see cref="LevelConfig"/>
-    /// and passed in at construction time — nothing is hardcoded here.
-    /// </summary>
-    public sealed class NotebookManager
-    {
-        private readonly Dictionary<string, Clue> _database;
-
-        public List<Clue> UnlockedClues { get; } = new();
-
-        public NotebookManager(Dictionary<string, Clue> database)
-        {
-            _database = database;
-        }
-
-        /// <summary>
-        /// Adds the clue with <paramref name="clueId"/> to <see cref="UnlockedClues"/>
-        /// if it exists in the database and has not been found yet.
-        /// Silently ignores unknown or duplicate IDs.
-        /// </summary>
-        public void UnlockClue(string clueId)
-        {
-            if (!_database.TryGetValue(clueId, out var clue)) return;
-            if (UnlockedClues.Exists(c => c.Id == clueId))    return;
-            UnlockedClues.Add(clue);
-        }
-    }
-}
-</file>
-
-<file path="Tiled maps/untitledcat_detective.tiled-session">
-{
-    "activeFile": "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/room_map.json",
-    "expandedProjectPaths": [
-    ],
-    "file.lastUsedOpenFilter": "All Files (*)",
-    "fileStates": {
-        "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/room_map.json": {
-            "scale": 0.75,
-            "selectedLayer": 2,
-            "viewCenter": {
-                "x": 777.3333333333333,
-                "y": 500.6666666666667
-            }
-        },
-        "C:/Users/larry/Projecten/cat_detective/Content/room_map.json": {
-            "scale": 0.75,
-            "selectedLayer": 2,
-            "viewCenter": {
-                "x": 496,
-                "y": 597.9999999999999
-            }
-        }
-    },
-    "openFiles": [
-        "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/room_map.json"
-    ],
-    "project": "untitledcat_detective.tiled-project",
-    "recentFiles": [
-        "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/room_map.json",
-        "C:/Users/larry/Projecten/cat_detective/Content/room_map.json"
-    ]
-}
-</file>
-
 <file path="CatDetective.csproj">
 <Project Sdk="Microsoft.NET.Sdk">
 
@@ -2581,9 +5086,45 @@ namespace CatDetective.Systems
     <Content Include="Content\scenes_config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Levels\malibu_mansion\**\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
+</file>
+
+<file path="Entities/Clue.cs">
+namespace CatDetective.Entities
+{
+    public enum ClueCategory { Who, What, Why, WhereWhen }
+
+    public sealed class Clue
+    {
+        public string       Id                   { get; }
+        public ClueCategory Category             { get; }
+        public string       Name                 { get; }
+        public string       Context              { get; }
+        /// <summary>Shown in the Inspector Panel when the clue is selected in the Word Bank.</summary>
+        public string       InspectorDescription { get; }
+        /// <summary>Which room this clue originates from. Empty string means case-global.</summary>
+        public string       RoomId               { get; }
+        /// <summary>True for clues that feed the final case-level deduction rather than a room sub-puzzle.</summary>
+        public bool         IsMacroClue          { get; }
+
+        public Clue(string id, ClueCategory category, string name, string context,
+            string inspectorDescription = "", string roomId = "", bool isMacroClue = false)
+        {
+            Id                   = id;
+            Category             = category;
+            Name                 = name;
+            Context              = context;
+            InspectorDescription = inspectorDescription;
+            RoomId               = roomId;
+            IsMacroClue          = isMacroClue;
+        }
+    }
+}
 </file>
 
 <file path="Entities/InteractableEntity.cs">
@@ -2674,6 +5215,170 @@ namespace CatDetective.Entities
             _              => new Vector2(w * 0.5f, h),   // "BottomCenter" (default)
         };
     }
+}
+</file>
+
+<file path="Systems/NotebookManager.cs">
+using System.Collections.Generic;
+using CatDetective.Entities;
+
+namespace CatDetective.Systems
+{
+    /// <summary>
+    /// Owns the master clue database and tracks which clues the player has found.
+    /// The database is populated from <c>case_config.json</c> at case load time
+    /// and persists across room transitions.
+    /// </summary>
+    public sealed class NotebookManager
+    {
+        private readonly Dictionary<string, Clue> _database;
+
+        public List<Clue> UnlockedClues { get; } = new();
+
+        public NotebookManager(Dictionary<string, Clue> database)
+        {
+            _database = database;
+        }
+
+        /// <summary>
+        /// Adds the clue with <paramref name="clueId"/> to <see cref="UnlockedClues"/>
+        /// if it exists in the database and has not been found yet.
+        /// Silently ignores unknown or duplicate IDs.
+        /// </summary>
+        public void UnlockClue(string clueId)
+        {
+            if (!_database.TryGetValue(clueId, out var clue)) return;
+            if (UnlockedClues.Exists(c => c.Id == clueId))    return;
+            UnlockedClues.Add(clue);
+        }
+
+        /// <summary>
+        /// Returns unlocked clues that belong to <paramref name="roomId"/>
+        /// and are not macro clues (i.e. they feed a room sub-puzzle).
+        /// </summary>
+        public List<Clue> GetCluesForRoom(string roomId) =>
+            UnlockedClues.FindAll(c => c.RoomId == roomId && !c.IsMacroClue);
+
+        /// <summary>
+        /// Returns unlocked clues that feed the final case-level deduction
+        /// regardless of which room they were found in.
+        /// </summary>
+        public List<Clue> GetMacroClues() =>
+            UnlockedClues.FindAll(c => c.IsMacroClue);
+
+        /// <summary>
+        /// Silently unlocks every macro clue in the database that belongs to
+        /// <paramref name="roomId"/>. Called when the player solves a room's local puzzle.
+        /// </summary>
+        public void UnlockMacroCluesForRoom(string roomId)
+        {
+            foreach (var clue in _database.Values)
+            {
+                if (clue.RoomId == roomId && clue.IsMacroClue)
+                    UnlockClue(clue.Id);
+            }
+        }
+    }
+}
+</file>
+
+<file path="Tiled maps/untitledcat_detective.tiled-session">
+{
+    "activeFile": "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/room_map.json",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/room_map.json": {
+            "scale": 0.75,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 536,
+                "y": 567.3333333333333
+            }
+        },
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/room_map.json": {
+            "expandedObjectLayers": [
+                4,
+                3
+            ],
+            "scale": 0.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 187,
+                "y": 323
+            }
+        },
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/room_map.json": {
+            "expandedObjectLayers": [
+                4,
+                3
+            ],
+            "scale": 0.75,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 776.6666666666667,
+                "y": 295.33333333333326
+            }
+        },
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/room_map.json": {
+            "scale": 1,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 1040,
+                "y": 295.5
+            }
+        },
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/room_map.json": {
+            "expandedObjectLayers": [
+                4,
+                3
+            ],
+            "scale": 0.750985401459854,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 952.0824221217864,
+                "y": 344.2144141517228
+            }
+        },
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/room_map.json": {
+            "scale": 0.5,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 528,
+                "y": 559
+            }
+        },
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/room_map.json": {
+            "scale": 0.750985401459854,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 651.1444817028721,
+                "y": 296.27739709384264
+            }
+        },
+        "C:/Users/larry/Projecten/cat_detective/Content/room_map.json": {
+            "scale": 0.75,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 496,
+                "y": 597.9999999999999
+            }
+        }
+    },
+    "openFiles": [
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/room_map.json"
+    ],
+    "project": "untitledcat_detective.tiled-project",
+    "recentFiles": [
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/room_map.json"
+    ]
 }
 </file>
 
@@ -4343,6 +7048,10 @@ namespace CatDetective.Entities
 }
 </file>
 
+<file path="obj/Debug/net8.0/CatDetective.csproj.CoreCompileInputs.cache">
+cfee2aec6e931c0d89fc155253343935af6ee25ade2ec8393636720121dce1d0
+</file>
+
 <file path="Map/LevelConfigParser.cs">
 using CatDetective.Entities;
 using CatDetective.Systems;
@@ -4364,27 +7073,36 @@ namespace CatDetective.Map
         [JsonPropertyName("triggerName")] public string TriggerName { get; set; } = "";
     }
 
-    internal sealed class LevelConfigData
+    internal sealed class CaseConfigData
     {
-        [JsonPropertyName("props")]
-        public List<PropConfigData> Props { get; set; } = new();
-
         [JsonPropertyName("clues")]
         public List<ClueConfigData> Clues { get; set; } = new();
-
-        [JsonPropertyName("interactables")]
-        public List<InteractableConfigData> Interactables { get; set; } = new();
 
         [JsonPropertyName("deductionSentence")]
         public string DeductionSentence { get; set; } = "";
     }
 
+    internal sealed class RoomConfigData
+    {
+        [JsonPropertyName("props")]
+        public List<PropConfigData> Props { get; set; } = new();
+
+        [JsonPropertyName("interactables")]
+        public List<InteractableConfigData> Interactables { get; set; } = new();
+
+        [JsonPropertyName("localDeductionSentence")]
+        public string LocalDeductionSentence { get; set; } = "";
+    }
+
     internal sealed class ClueConfigData
     {
-        [JsonPropertyName("id")]       public string Id       { get; set; } = "";
-        [JsonPropertyName("category")] public string Category { get; set; } = "";
-        [JsonPropertyName("name")]     public string Name     { get; set; } = "";
-        [JsonPropertyName("context")]  public string Context  { get; set; } = "";
+        [JsonPropertyName("id")]                   public string Id                   { get; set; } = "";
+        [JsonPropertyName("category")]             public string Category             { get; set; } = "";
+        [JsonPropertyName("name")]                 public string Name                 { get; set; } = "";
+        [JsonPropertyName("context")]              public string Context              { get; set; } = "";
+        [JsonPropertyName("inspectorDescription")] public string InspectorDescription { get; set; } = "";
+        [JsonPropertyName("roomId")]               public string RoomId               { get; set; } = "";
+        [JsonPropertyName("isMacroClue")]          public bool   IsMacroClue          { get; set; } = false;
     }
 
     internal sealed class InteractableConfigData
@@ -4406,33 +7124,44 @@ namespace CatDetective.Map
         [JsonPropertyName("color")]       public string Color       { get; set; } = "misc";
     }
 
-    // ── Parsed result returned to Game1 ──────────────────────────────────────
+    // ── Parsed results returned to Game1 ─────────────────────────────────────
 
-    /// <summary>All level data loaded from <c>level_config.json</c>.</summary>
-    public sealed class LevelConfig
+    /// <summary>Case-level data: global clue database and the macro deduction sentence.</summary>
+    public sealed class CaseConfig
+    {
+        /// <summary>Master clue database for <see cref="NotebookManager"/>.</summary>
+        public Dictionary<string, Clue> Clues { get; }
+
+        /// <summary>Sentence template for the final macro solve (e.g. "[WHO] stole the [WHAT]").</summary>
+        public string DeductionSentence { get; }
+
+        public CaseConfig(Dictionary<string, Clue> clues, string deductionSentence)
+        {
+            Clues             = clues;
+            DeductionSentence = deductionSentence;
+        }
+    }
+
+    /// <summary>Room-level data: props, interactables, and an optional local deduction sentence.</summary>
+    public sealed class RoomConfig
     {
         /// <summary>Foreground prop definitions (texture, sortY, trigger name).</summary>
         public List<PropConfigData> Props { get; }
 
-        /// <summary>Master clue database for <see cref="NotebookManager"/>.</summary>
-        public Dictionary<string, Clue> Clues { get; }
-
         /// <summary>Dialogue + keyword data keyed by Tiled object name.</summary>
         public Dictionary<string, InteractionData> Interactables { get; }
 
-        /// <summary>Sentence template for <see cref="DeductionManager"/> (e.g. "[WHO] stole the [WHAT]").</summary>
-        public string DeductionSentence { get; }
+        /// <summary>Optional sentence template for a room-local sub-puzzle.</summary>
+        public string LocalDeductionSentence { get; }
 
-        public LevelConfig(
+        public RoomConfig(
             List<PropConfigData>                props,
-            Dictionary<string, Clue>            clues,
             Dictionary<string, InteractionData> interactables,
-            string                              deductionSentence)
+            string                              localDeductionSentence)
         {
-            Props             = props;
-            Clues             = clues;
-            Interactables     = interactables;
-            DeductionSentence = deductionSentence;
+            Props                 = props;
+            Interactables         = interactables;
+            LocalDeductionSentence = localDeductionSentence;
         }
     }
 
@@ -4446,34 +7175,50 @@ namespace CatDetective.Map
         };
 
         /// <summary>
-        /// Loads and deserializes <paramref name="jsonPath"/> into a <see cref="LevelConfig"/>.
-        /// Throws <see cref="InvalidOperationException"/> if the file is missing or malformed.
+        /// Loads case-level data (clues, macro deduction sentence) from <paramref name="jsonPath"/>.
         /// </summary>
-        public static LevelConfig Load(string jsonPath)
+        public static CaseConfig LoadCase(string jsonPath)
         {
-            if (!File.Exists(jsonPath))
-                throw new InvalidOperationException(
-                    $"[LevelConfigParser] Level config not found: '{jsonPath}'");
+            var raw = Deserialize<CaseConfigData>(jsonPath);
 
-            var raw = JsonSerializer.Deserialize<LevelConfigData>(
-                File.ReadAllText(jsonPath), _jsonOptions)
-                ?? throw new InvalidOperationException(
-                    $"[LevelConfigParser] Failed to parse: '{jsonPath}'");
-
-            return new LevelConfig(
-                raw.Props,
+            return new CaseConfig(
                 ParseClues(raw.Clues),
-                ParseInteractables(raw.Interactables),
                 raw.DeductionSentence);
         }
 
+        /// <summary>
+        /// Loads room-level data (props, interactables, local deduction sentence) from <paramref name="jsonPath"/>.
+        /// </summary>
+        public static RoomConfig LoadRoom(string jsonPath)
+        {
+            var raw = Deserialize<RoomConfigData>(jsonPath);
+
+            return new RoomConfig(
+                raw.Props,
+                ParseInteractables(raw.Interactables),
+                raw.LocalDeductionSentence);
+        }
+
         // ── Private helpers ───────────────────────────────────────────────────
+
+        private static T Deserialize<T>(string jsonPath)
+        {
+            if (!File.Exists(jsonPath))
+                throw new InvalidOperationException(
+                    $"[LevelConfigParser] Config not found: '{jsonPath}'");
+
+            return JsonSerializer.Deserialize<T>(
+                File.ReadAllText(jsonPath), _jsonOptions)
+                ?? throw new InvalidOperationException(
+                    $"[LevelConfigParser] Failed to parse: '{jsonPath}'");
+        }
 
         private static Dictionary<string, Clue> ParseClues(List<ClueConfigData> raw)
         {
             var dict = new Dictionary<string, Clue>(raw.Count);
             foreach (var c in raw)
-                dict[c.Id] = new Clue(c.Id, ParseCategory(c.Category), c.Name, c.Context);
+                dict[c.Id] = new Clue(c.Id, ParseCategory(c.Category), c.Name, c.Context,
+                    c.InspectorDescription, c.RoomId, c.IsMacroClue);
             return dict;
         }
 
@@ -4579,6 +7324,39 @@ namespace CatDetective.Map
 
         [JsonPropertyName("height")]
         public float Height { get; set; }
+
+        [JsonPropertyName("properties")]
+        public List<TiledProperty> Properties { get; set; } = new();
+    }
+
+    /// <summary>One custom property on a Tiled object.</summary>
+    internal sealed class TiledProperty
+    {
+        [JsonPropertyName("name")]  public string      Name  { get; set; } = "";
+        [JsonPropertyName("type")]  public string      Type  { get; set; } = "string";
+        [JsonPropertyName("value")] public JsonElement Value { get; set; }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// A doorway or passage that sends the cat to another room when activated.
+    /// Populated from the "Transfers" object layer in the Tiled map.
+    /// </summary>
+    public sealed class TransferZone
+    {
+        public Rectangle TriggerRect { get; }
+        /// <summary>Matches a folder name under <c>Cases/{caseId}/Rooms/</c>.</summary>
+        public string    TargetRoom  { get; }
+        /// <summary>Name of the spawn-point object in the target room's map.</summary>
+        public string    TargetSpawn { get; }
+
+        public TransferZone(Rectangle triggerRect, string targetRoom, string targetSpawn)
+        {
+            TriggerRect = triggerRect;
+            TargetRoom  = targetRoom;
+            TargetSpawn = targetSpawn;
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -4590,6 +7368,10 @@ namespace CatDetective.Map
     ///   • <see cref="InteractableEntity"/> instances from the layer named
     ///     <c>Interactables</c>, auto-loading their sprites from the content
     ///     pipeline and looking up dialogue data from <paramref name="levelData"/>.
+    ///   • <see cref="TransferZone"/> instances from the layer named <c>Transfers</c>,
+    ///     reading <c>targetRoom</c> and <c>targetSpawn</c> custom properties.
+    ///   • The spawn point named <paramref name="targetSpawnName"/> from the
+    ///     layer named <c>Spawn</c>.
     /// </summary>
     public static class MapParser
     {
@@ -4598,47 +7380,37 @@ namespace CatDetective.Map
             PropertyNameCaseInsensitive = true
         };
 
-        /// <summary>
-        /// Parses <paramref name="jsonPath"/> and populates the three output lists.
-        /// If the file is missing the method logs a warning and returns empty lists
-        /// so the game can still run without a map (useful during early prototyping).
-        /// </summary>
         /// <param name="jsonPath">Absolute or relative path to the Tiled JSON file.</param>
         /// <param name="content">
         ///   The game's <see cref="ContentManager"/>; used to load interactable sprites.
         /// </param>
         /// <param name="levelId">
-        ///   The level folder name (e.g. "detective_office"). Sprites are loaded from
-        ///   <c>Levels/{levelId}/Interactables/{objectName}</c>.
+        ///   Content path prefix (e.g. "Cases/case01/Rooms/entrance"). Sprites are loaded
+        ///   from <c>{levelId}/Interactables/{objectName}</c>.
         /// </param>
         /// <param name="levelData">
         ///   Map from Tiled object name → <see cref="InteractionData"/>.
-        ///   Each matched interactable has its <c>Data</c> property set; unmatched
-        ///   objects log a console warning so missing entries are easy to spot.
         /// </param>
-        /// <param name="solidBoundaries">
-        ///   Output: all rectangles from the "Collisions" layer.
-        /// </param>
-        /// <param name="triggers">
-        ///   Output: all (name, rect) pairs from the "Triggers" layer.
-        /// </param>
-        /// <param name="interactables">
-        ///   Output: fully-populated <see cref="InteractableEntity"/> instances from
-        ///   the "Interactables" layer.
+        /// <param name="targetSpawnName">
+        ///   Name of the spawn-point object to look up in the "Spawn" layer.
+        ///   Falls back to (500, 500) if not found.
         /// </param>
         public static void Parse(
             string jsonPath,
             ContentManager content,
             string levelId,
             Dictionary<string, InteractionData> levelData,
-            out List<Rectangle> solidBoundaries,
-            out List<(string Name, Rectangle Rect)> triggers,
-            out List<InteractableEntity> interactables,
-            out Vector2? spawnPoint)
+            string targetSpawnName,
+            out List<Rectangle>                      solidBoundaries,
+            out List<(string Name, Rectangle Rect)>  triggers,
+            out List<InteractableEntity>             interactables,
+            out List<TransferZone>                   transfers,
+            out Vector2?                             spawnPoint)
         {
             solidBoundaries = new List<Rectangle>();
             triggers        = new List<(string, Rectangle)>();
             interactables   = new List<InteractableEntity>();
+            transfers       = new List<TransferZone>();
             spawnPoint      = null;
 
             if (!File.Exists(jsonPath))
@@ -4666,13 +7438,6 @@ namespace CatDetective.Map
             {
                 if (layer.Type != "objectgroup") continue;
 
-                foreach (var obj in layer.Objects)
-                {
-                    if (spawnPoint == null &&
-                        obj.Name.Equals("spawn", StringComparison.OrdinalIgnoreCase))
-                        spawnPoint = new Vector2(obj.X, obj.Y);
-                }
-
                 switch (layer.Name)
                 {
                     case "Collisions":
@@ -4685,11 +7450,41 @@ namespace CatDetective.Map
                             triggers.Add((obj.Name, ToRect(obj)));
                         break;
 
+                    case "Spawn":
+                        foreach (var obj in layer.Objects)
+                        {
+                            if (obj.Name.Equals(targetSpawnName, StringComparison.OrdinalIgnoreCase))
+                            {
+                                spawnPoint = new Vector2(obj.X, obj.Y);
+                                break;
+                            }
+                        }
+                        if (spawnPoint == null)
+                            Console.WriteLine(
+                                $"[MapParser] WARNING: Spawn '{targetSpawnName}' not found in '{jsonPath}'. " +
+                                "Defaulting to (500, 500).");
+                        break;
+
+                    case "Transfers":
+                        foreach (var obj in layer.Objects)
+                        {
+                            string targetRoom  = GetStringProperty(obj, "targetRoom");
+                            string targetSpawn = GetStringProperty(obj, "targetSpawn");
+                            if (string.IsNullOrEmpty(targetRoom))
+                            {
+                                Console.WriteLine(
+                                    $"[MapParser] WARNING: Transfer '{obj.Name}' is missing 'targetRoom' property.");
+                                continue;
+                            }
+                            transfers.Add(new TransferZone(ToRect(obj), targetRoom, targetSpawn));
+                        }
+                        break;
+
                     case "Interactables":
                         foreach (var obj in layer.Objects)
                         {
                             Texture2D? sprite    = null;
-                            string     assetPath = $"Levels/{levelId}/Interactables/{obj.Name}";
+                            string     assetPath = $"{levelId}/Interactables/{obj.Name}";
                             try
                             {
                                 sprite = content.Load<Texture2D>(assetPath);
@@ -4713,7 +7508,7 @@ namespace CatDetective.Map
                             else
                                 Console.WriteLine(
                                     $"[MapParser] WARNING: No dialogue data for interactable '{obj.Name}'. " +
-                                    "Add an entry to the level's interaction database.");
+                                    "Add an entry to the room's interaction database.");
 
                             interactables.Add(entity);
                         }
@@ -4724,17 +7519,26 @@ namespace CatDetective.Map
             Console.WriteLine(
                 $"[MapParser] Loaded {solidBoundaries.Count} collision(s), " +
                 $"{triggers.Count} trigger(s), " +
-                $"{interactables.Count} interactable(s) from '{jsonPath}'.");
+                $"{interactables.Count} interactable(s), " +
+                $"{transfers.Count} transfer(s) from '{jsonPath}'.");
         }
 
         private static Rectangle ToRect(TiledObject obj) =>
             new Rectangle((int)obj.X, (int)obj.Y, (int)obj.Width, (int)obj.Height);
+
+        private static string GetStringProperty(TiledObject obj, string name)
+        {
+            foreach (var p in obj.Properties)
+            {
+                if (!p.Name.Equals(name, StringComparison.OrdinalIgnoreCase)) continue;
+                return p.Value.ValueKind == JsonValueKind.String
+                    ? p.Value.GetString() ?? ""
+                    : "";
+            }
+            return "";
+        }
     }
 }
-</file>
-
-<file path="obj/Debug/net8.0/CatDetective.csproj.CoreCompileInputs.cache">
-cfee2aec6e931c0d89fc155253343935af6ee25ade2ec8393636720121dce1d0
 </file>
 
 <file path="bin/Debug/net8.0/Content/Levels/detective_office/level_config.json">
@@ -5174,6 +7978,92 @@ cfee2aec6e931c0d89fc155253343935af6ee25ade2ec8393636720121dce1d0
 # ── NOTE: room_map.json ────────────────────────────────────────────────────
 # Copied verbatim by the .csproj <Content> ItemGroup; not processed here.
 # Path: Levels/detective_office/room_map.json
+
+# ── Case: malibu_mansion ───────────────────────────────────────────────────
+
+#begin Levels/malibu_mansion/entrance/bg_base.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/entrance/bg_base.jpg
+
+#begin Levels/malibu_mansion/bedroom/bg_base.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/bedroom/bg_base.jpg
+
+#begin Levels/malibu_mansion/living_room/bg_base.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/living_room/bg_base.jpg
+
+#begin Levels/malibu_mansion/library/bg_base.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/library/bg_base.jpg
+
+#begin Levels/malibu_mansion/kitchen/bg_base.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/kitchen/bg_base.jpg
+
+#begin Levels/malibu_mansion/garden/bg_base.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/garden/bg_base.jpg
+
+#begin Levels/malibu_mansion/pool_area/bg_base.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/pool_area/bg_base.jpg
 </file>
 
 <file path="Content/obj/DesktopGL/net8.0/Content/.mgcontent">
@@ -5203,8 +8093,22 @@ cfee2aec6e931c0d89fc155253343935af6ee25ade2ec8393636720121dce1d0
     <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_newspaper.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_takeout_bag.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_trash_can.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/bg_base.jpg</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
@@ -5239,6 +8143,13 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_trash_can.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/Interactables/inspect_trash_can.xnb","TextureProcessor","Texture2DContent",34422,160085,0.0059195
 "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/prop_cabinet.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/prop_cabinet.xnb","TextureProcessor","Texture2DContent",240216,4871253,0.2333729
 "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/prop_desk.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/detective_office/prop_desk.xnb","TextureProcessor","Texture2DContent",360186,4871253,0.1612166
+"C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/bg_base.jpg","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/bedroom/bg_base.xnb","TextureProcessor","Texture2DContent",240841,4752469,0.1140498
+"C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/bg_base.jpg","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/entrance/bg_base.xnb","TextureProcessor","Texture2DContent",218490,4208725,0.2621834
+"C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/bg_base.jpg","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/garden/bg_base.xnb","TextureProcessor","Texture2DContent",366031,4752469,0.1541357
+"C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/bg_base.jpg","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/kitchen/bg_base.xnb","TextureProcessor","Texture2DContent",922142,4208725,0.0883118
+"C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/bg_base.jpg","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/library/bg_base.xnb","TextureProcessor","Texture2DContent",284091,4752469,0.1316817
+"C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/bg_base.jpg","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/living_room/bg_base.xnb","TextureProcessor","Texture2DContent",935322,4208725,0.1127937
+"C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/bg_base.jpg","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/pool_area/bg_base.xnb","TextureProcessor","Texture2DContent",368831,4752469,0.118324
 "C:/Users/larry/Projecten/cat_detective/Content/Shared/dialogue_font.spritefont","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Shared/dialogue_font.xnb","FontDescriptionProcessor","SpriteFontContent",481,70681,0.2047685
 "C:/Users/larry/Projecten/cat_detective/Content/Shared/how.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Shared/how.xnb","TextureProcessor","Texture2DContent",110929,480085,0.0257471
 "C:/Users/larry/Projecten/cat_detective/Content/Shared/mask_sunbeams.png","C:/Users/larry/Projecten/cat_detective/Content/bin/DesktopGL/Content/Shared/mask_sunbeams.xnb","TextureProcessor","Texture2DContent",83310,4871253,0.5331722
@@ -5303,6 +8214,28 @@ C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\how.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\where.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\who.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\why.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\bedroom\bg_base.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\entrance\bg_base.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\garden\bg_base.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\kitchen\bg_base.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\library\bg_base.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\living_room\bg_base.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\pool_area\bg_base.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\bedroom\room_config.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\bedroom\room_map.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\case_config.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\entrance\room_config.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\entrance\room_map.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\garden\room_config.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\garden\room_map.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\kitchen\room_config.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\kitchen\room_map.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\library\room_config.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\library\room_map.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\living_room\room_config.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\living_room\room_map.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\pool_area\room_config.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\pool_area\room_map.json
 </file>
 
 <file path="Game1.cs">
@@ -5366,6 +8299,10 @@ namespace CatDetective
         // ── Active interactable (updated each frame for highlighting) ──────────
         private InteractableEntity? _activeInteractable;
 
+        // ── Transfer zones and the one the cat is currently standing in ────────
+        private List<TransferZone>  _transferZones       = new();
+        private TransferZone?       _activeTransferZone;
+
         // ── Interaction system ─────────────────────────────────────────────────
         private Dictionary<string, InteractionData> _interactionDatabase = null!;
         private bool             _isDialogueActive;
@@ -5380,7 +8317,11 @@ namespace CatDetective
         // ── Deduction board ────────────────────────────────────────────────────
         private DeductionManager _deduction            = null!;
         private bool             _isDeductionBoardOpen = false;
+        private bool             _isFinalSolveMode     = false; // true = macro board, false = local room board
         private bool             _isGameWon            = false;
+
+        private bool AllRoomsSolved =>
+            _roomSolvedStates.Count > 0 && !_roomSolvedStates.ContainsValue(false);
 
         // Journal (two-page deduction board) UI state
         private ClueCategory _activeTab            = ClueCategory.Who;
@@ -5391,6 +8332,8 @@ namespace CatDetective
 
         private static readonly Rectangle _solveButtonRect =
             new Rectangle(2020 - 160, 1136 - 160, 120, 120);
+        private static readonly Rectangle _finalSolveButtonRect =
+            new Rectangle(2020 - 160, 1136 - 160 - 130, 120, 110);
 
         // Hotspot menu: one pre-rendered 800×150 bar per active tab.
         // Visual order on the image: Who | How(What) | Where(WhereWhen) | Why
@@ -5475,6 +8418,15 @@ namespace CatDetective
         private GameState    _currentState    = GameState.DevMenu;
         private List<string> _availableScenes = new();
 
+        // ── Case / room tracking ───────────────────────────────────────────────
+        private string                   _currentCaseId    = "";
+        private string                   _currentRoomId    = "";
+        private string                   _spawnPointName   = "";
+        private Dictionary<string, bool> _roomSolvedStates = new();
+
+        // ── Deduction — macro (case-level) and local (room-level) ─────────────
+        private DeductionManager  _localDeduction = null!;
+
         // ── Shared textures (loaded once, reused across scenes) ───────────────
         private Texture2D _walkForwardTex = null!;
         private Texture2D _walkUpwardTex  = null!;
@@ -5505,7 +8457,7 @@ namespace CatDetective
             _spriteBatch  = new SpriteBatch(GraphicsDevice);
             _renderTarget = new RenderTarget2D(GraphicsDevice, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-            // Shared sprite sheets — loaded once, passed into Cat on each LoadScene.
+            // Shared sprite sheets — loaded once, passed into Cat on each LoadRoom.
             _walkForwardTex = Content.Load<Texture2D>("Shared/walk_animation_forward");
             _walkUpwardTex  = Content.Load<Texture2D>("Shared/walk_animation_upward");
             _shadowTex      = Content.Load<Texture2D>("Shared/shadow_blob");
@@ -5528,55 +8480,82 @@ namespace CatDetective
         }
 
         // ══════════════════════════════════════════════════════════════════════
-        private void LoadScene(string sceneId)
+        private void LoadCase(string caseId)
         {
-            // Reset per-scene state.
-            _foregroundProps.Clear();
-            _solidBoundaries.Clear();
-            _interactables.Clear();
-            _isDialogueActive     = false;
-            _currentInteraction   = null;
-            _isNotebookOpen       = false;
-            _isDeductionBoardOpen = false;
+            // Case-level resets (do not reset on room transitions).
             _isGameWon            = false;
+            _isDeductionBoardOpen = false;
+            _isFinalSolveMode     = false;
+            _isNotebookOpen       = false;
             _activeTab            = ClueCategory.Who;
             _selectedWordBankClue = null;
             _wordBankPage         = 0;
             _hotReloadTimer       = 0f;
 
-            // Scene-specific textures.
-            _bgBase       = Content.Load<Texture2D>($"Levels/{sceneId}/bg_base");
+            _currentCaseId    = caseId;
+            _roomSolvedStates = new Dictionary<string, bool>();
+
             _sunbeamsMask = Content.Load<Texture2D>("Shared/mask_sunbeams");
+
+            string configPath = Path.Combine(Content.RootDirectory, "scenes_config.json");
+            _ambientColor = SceneConfigParser.GetAmbientColor(configPath, caseId);
+
+            // Load case config: global clue database + macro deduction sentence.
+            string caseConfigPath = Path.Combine(
+                Content.RootDirectory, "Levels", caseId, "case_config.json");
+            var caseConfig = LevelConfigParser.LoadCase(caseConfigPath);
+
+            _notebook  = new NotebookManager(caseConfig.Clues);
+            _deduction = new DeductionManager(caseConfig.DeductionSentence);
+
+            LoadRoom("entrance", spawnPointName: "spawn_default");
+
+            _currentState = GameState.Playing;
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        private void LoadRoom(string roomId, string spawnPointName)
+        {
+            // Room-level resets.
+            _foregroundProps.Clear();
+            _solidBoundaries.Clear();
+            _interactables.Clear();
+            _isDialogueActive   = false;
+            _currentInteraction = null;
+
+            _currentRoomId  = roomId;
+            _spawnPointName = spawnPointName;
+
+            string roomBase = Path.Combine(
+                Content.RootDirectory, "Levels", _currentCaseId, roomId);
+            string contentBase = $"Levels/{_currentCaseId}/{roomId}";
+
+            // Load room config: props, interactables, local deduction sentence.
+            string roomConfigPath = Path.Combine(roomBase, "room_config.json");
+            var roomConfig = LevelConfigParser.LoadRoom(roomConfigPath);
+
+            _interactionDatabase = roomConfig.Interactables;
+            _localDeduction = new DeductionManager(roomConfig.LocalDeductionSentence);
+
+            // Hot-reload tracks room_config.json.
+            _levelConfigSourcePath = Path.GetFullPath(Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "..", "..", "..", "Content", "Levels", _currentCaseId, roomId, "room_config.json"));
+            _levelConfigLastWrite = File.Exists(_levelConfigSourcePath)
+                ? File.GetLastWriteTime(_levelConfigSourcePath)
+                : DateTime.MinValue;
+
+            // Room background.
+            _bgBase = Content.Load<Texture2D>($"{contentBase}/bg_base");
 
             float offsetX = (SCREEN_WIDTH - _bgBase.Width) / 2f;
             _cameraTransform = Matrix.CreateTranslation(offsetX, 0, 0);
 
-            // Level config (clues, interactables, deduction solution).
-            string levelConfigPath = Path.Combine(
-                Content.RootDirectory, "Levels", sceneId, "level_config.json");
-            var levelConfig = LevelConfigParser.Load(levelConfigPath);
-
-            _interactionDatabase = levelConfig.Interactables;
-            _notebook            = new NotebookManager(levelConfig.Clues);
-            _deduction = new DeductionManager(levelConfig.DeductionSentence);
-
-            _levelConfigSourcePath = Path.GetFullPath(Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                "..", "..", "..", "Content", "Levels", sceneId, "level_config.json"));
-            _levelConfigLastWrite  = File.Exists(_levelConfigSourcePath)
-                ? File.GetLastWriteTime(_levelConfigSourcePath)
-                : DateTime.MinValue;
-
-            // Ambient color from scenes_config.json.
-            string configPath = Path.Combine(Content.RootDirectory, "scenes_config.json");
-            _ambientColor = SceneConfigParser.GetAmbientColor(configPath, sceneId);
-
-            // Parse Tiled map.
-            string mapPath = Path.Combine(
-                Content.RootDirectory, "Levels", sceneId, "room_map.json");
-            MapParser.Parse(mapPath, Content, sceneId, _interactionDatabase,
+            // Parse Tiled map for this room.
+            string mapPath = Path.Combine(roomBase, "room_map.json");
+            MapParser.Parse(mapPath, Content, contentBase, _interactionDatabase, spawnPointName,
                 out _solidBoundaries, out var triggers, out _interactables,
-                out Vector2? spawnPoint);
+                out _transferZones, out Vector2? spawnPoint);
 
             Vector2 catStart = spawnPoint ?? new Vector2(500, 500);
             _cat = new Cat(_walkForwardTex, _walkUpwardTex, startPosition: catStart,
@@ -5585,10 +8564,10 @@ namespace CatDetective
                 ShadowTexture = _shadowTex
             };
 
-            // Build foreground props from level config.
-            foreach (var propConfig in levelConfig.Props)
+            // Build foreground props.
+            foreach (var propConfig in roomConfig.Props)
             {
-                var tex = Content.Load<Texture2D>($"Levels/{sceneId}/" + propConfig.Texture);
+                var tex = Content.Load<Texture2D>($"{contentBase}/{propConfig.Texture}");
 
                 var triggerRect = Rectangle.Empty;
                 foreach (var (name, rect) in triggers)
@@ -5602,8 +8581,6 @@ namespace CatDetective
 
                 _foregroundProps.Add(new Prop(tex, propConfig.SortY, triggerRect));
             }
-
-            _currentState = GameState.Playing;
         }
 
         // ── Dev menu button layout ─────────────────────────────────────────────
@@ -5641,7 +8618,7 @@ namespace CatDetective
                     {
                         if (GetSceneButtonRect(i).Contains(vm))
                         {
-                            LoadScene(_availableScenes[i]);
+                            LoadCase(_availableScenes[i]);
                             break;
                         }
                     }
@@ -5656,10 +8633,13 @@ namespace CatDetective
                         if (_journalCloseRect.Contains(vm))
                         {
                             _isDeductionBoardOpen = false;
+                            _isFinalSolveMode     = false;
                             _selectedWordBankClue = null;
                         }
                         else
                         {
+                            var activeDeduction = _isFinalSolveMode ? _deduction : _localDeduction;
+
                             // Tab clicks
                             for (int i = 0; i < _tabHotspots.Length; i++)
                             {
@@ -5688,10 +8668,10 @@ namespace CatDetective
                             if (_journalNextPageRect.Contains(vm) && _wordBankPage < _wordBankPageCount)
                                 _wordBankPage++;
 
-                            // Insert selected clue into matching slot
+                            // Insert selected clue into the matching slot on the active board
                             if (_journalInsertRect.Contains(vm) && _selectedWordBankClue != null)
                             {
-                                var target = _deduction.Slots
+                                var target = activeDeduction.Slots
                                     .Find(s => s.Category == _selectedWordBankClue.Category);
                                 if (target != null)
                                     target.SelectedClueId = _selectedWordBankClue.Id;
@@ -5700,12 +8680,25 @@ namespace CatDetective
                             // Submit
                             if (_journalSubmitRect.Contains(vm))
                             {
-                                if (_deduction.ValidateCase())
-                                    _isGameWon = true;
+                                if (_isFinalSolveMode)
+                                {
+                                    if (_deduction.ValidateCase())
+                                        _isGameWon = true;
+                                }
+                                else
+                                {
+                                    if (_localDeduction.ValidateCase())
+                                    {
+                                        _roomSolvedStates[_currentRoomId] = true;
+                                        _notebook.UnlockMacroCluesForRoom(_currentRoomId);
+                                        _isDeductionBoardOpen = false;
+                                        _selectedWordBankClue = null;
+                                    }
+                                }
                             }
 
                             // Left page slot clicks -> switch active tab
-                            foreach (var slot in _deduction.Slots)
+                            foreach (var slot in activeDeduction.Slots)
                             {
                                 if (slot.Bounds.Contains(vm))
                                 {
@@ -5721,8 +8714,19 @@ namespace CatDetective
                     {
                         if (_solveButtonRect.Contains(vm))
                         {
+                            _isFinalSolveMode     = false;
                             _isDeductionBoardOpen = true;
                             _isNotebookOpen       = false;
+                            _selectedWordBankClue = null;
+                            _wordBankPage         = 0;
+                        }
+                        else if (AllRoomsSolved && _finalSolveButtonRect.Contains(vm))
+                        {
+                            _isFinalSolveMode     = true;
+                            _isDeductionBoardOpen = true;
+                            _isNotebookOpen       = false;
+                            _selectedWordBankClue = null;
+                            _wordBankPage         = 0;
                         }
                         else if (_notebookButtonRect.Contains(vm))
                         {
@@ -5778,6 +8782,23 @@ namespace CatDetective
                     _cat.Update(gameTime);
                     _cat.MoveWithCollision(dt, _solidBoundaries);
 
+                    // Transfer zones: check first; a doorway takes priority over props.
+                    _activeTransferZone = null;
+                    foreach (var zone in _transferZones)
+                    {
+                        if (_cat.CollisionBox.Intersects(zone.TriggerRect))
+                        {
+                            _activeTransferZone = zone;
+                            break;
+                        }
+                    }
+
+                    if (_activeTransferZone != null && _cat.IsInteractPressed())
+                    {
+                        LoadRoom(_activeTransferZone.TargetRoom, _activeTransferZone.TargetSpawn);
+                        return; // state was rebuilt; skip rest of this Update
+                    }
+
                     _activeInteractable = null;
                     foreach (var entity in _interactables)
                     {
@@ -5820,13 +8841,13 @@ namespace CatDetective
                             _levelConfigLastWrite = writeTime;
                             try
                             {
-                                var fresh = LevelConfigParser.Load(_levelConfigSourcePath);
+                                var fresh = LevelConfigParser.LoadRoom(_levelConfigSourcePath);
                                 foreach (var entity in _interactables)
                                 {
                                     if (fresh.Interactables.TryGetValue(entity.Id, out var data))
                                         entity.Data = data;
                                 }
-                                Console.WriteLine("[HotReload] level_config.json reloaded.");
+                                Console.WriteLine("[HotReload] room_config.json reloaded.");
                             }
                             catch (Exception ex)
                             {
@@ -5994,6 +9015,31 @@ namespace CatDetective
                                 _solveButtonRect.X + (_solveButtonRect.Width  - solveSz.X) * 0.5f,
                                 _solveButtonRect.Y + (_solveButtonRect.Height - solveSz.Y) * 0.5f),
                             Color.White);
+
+                        // FINAL SOLVE — only drawable once every visited room is solved.
+                        var finalColor = AllRoomsSolved ? new Color(180, 130, 20) : new Color(60, 60, 60);
+                        _spriteBatch.Draw(_debugPixel, _finalSolveButtonRect, finalColor);
+                        var finalLbl  = "FINAL\nSOLVE";
+                        var finalSz   = _dialogueFont.MeasureString(finalLbl);
+                        _spriteBatch.DrawString(
+                            _dialogueFont, finalLbl,
+                            new Vector2(
+                                _finalSolveButtonRect.X + (_finalSolveButtonRect.Width  - finalSz.X) * 0.5f,
+                                _finalSolveButtonRect.Y + (_finalSolveButtonRect.Height - finalSz.Y) * 0.5f),
+                            AllRoomsSolved ? Color.White : Color.DarkGray);
+                    }
+
+                    // Transfer-zone prompt: centred at the bottom of the play area.
+                    if (_activeTransferZone != null)
+                    {
+                        const string enterHint   = "[ Space ] to enter";
+                        var          enterHintSz = _dialogueFont.MeasureString(enterHint);
+                        _spriteBatch.DrawString(
+                            _dialogueFont, enterHint,
+                            new Vector2(
+                                (SCREEN_WIDTH  - enterHintSz.X) * 0.5f,
+                                SCREEN_HEIGHT  - enterHintSz.Y - 60),
+                            Color.White);
                     }
 
                     _spriteBatch.Draw(_debugPixel, _notebookButtonRect, Color.DimGray);
@@ -6042,7 +9088,7 @@ namespace CatDetective
                         float lineH = _dialogueFont.LineSpacing + 6;
 
                         bool any = false;
-                        foreach (var clue in _notebook.UnlockedClues)
+                        foreach (var clue in _notebook.GetCluesForRoom(_currentRoomId))
                         {
                             if (clue.Category != _selectedTab) continue;
                             any = true;
@@ -6126,7 +9172,9 @@ namespace CatDetective
 
                         string[] slotCatLabels = { "WHO", "WHAT", "WHY", "WHERE/WHEN" };
 
-                        foreach (var seg in _deduction.Segments)
+                        var activeDeduction = _isFinalSolveMode ? _deduction : _localDeduction;
+
+                        foreach (var seg in activeDeduction.Segments)
                         {
                             if (seg is TextSegment ts)
                             {
@@ -6193,8 +9241,10 @@ namespace CatDetective
 
                         _wordBankClueRects.Clear();
 
-                        var filteredWB = _notebook.UnlockedClues
-                            .FindAll(c => c.Category == _activeTab);
+                        var sourceClues = _isFinalSolveMode
+                            ? _notebook.GetMacroClues()
+                            : _notebook.GetCluesForRoom(_currentRoomId);
+                        var filteredWB = sourceClues.FindAll(c => c.Category == _activeTab);
 
                         foreach (var cl in filteredWB)
                         {
@@ -6288,7 +9338,7 @@ namespace CatDetective
                                 new Vector2(inspectorArea.X, inspectorArea.Y),
                                 _tabColors[(int)_selectedWordBankClue.Category]);
                             DrawWrappedString(_spriteBatch, _dialogueFont,
-                                _selectedWordBankClue.Context,
+                                _selectedWordBankClue.InspectorDescription,
                                 new Vector2(inspectorArea.X, inspectorArea.Y + 40),
                                 inspectorArea.Width, _dialogueFont.LineSpacing + 4, _inkColor);
                             _spriteBatch.Draw(_debugPixel, insertBtn,
@@ -6302,11 +9352,11 @@ namespace CatDetective
                         }
 
                         // ── Submit & validation ───────────────────────────────
-                        if (!string.IsNullOrEmpty(_deduction.ValidationMessage))
+                        if (!string.IsNullOrEmpty(activeDeduction.ValidationMessage))
                         {
-                            bool isCorrect = _deduction.ValidationMessage.StartsWith("Case");
-                            var  vmSz      = _dialogueFont.MeasureString(_deduction.ValidationMessage);
-                            _spriteBatch.DrawString(_dialogueFont, _deduction.ValidationMessage,
+                            bool isCorrect = activeDeduction.ValidationMessage.StartsWith("Case");
+                            var  vmSz      = _dialogueFont.MeasureString(activeDeduction.ValidationMessage);
+                            _spriteBatch.DrawString(_dialogueFont, activeDeduction.ValidationMessage,
                                 new Vector2(
                                     _journalSubmitRect.X + (_journalSubmitRect.Width  - vmSz.X) * 0.5f,
                                     _journalSubmitRect.Y - vmSz.Y - 8),
@@ -6498,7 +9548,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CatDetective")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1af11a76247f4c7a56a2d69c4e2a9ddef4c1be83")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+57536256635c5d9be5f6c651095dba7006a3ee3c")]
 [assembly: System.Reflection.AssemblyProductAttribute("CatDetective")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CatDetective")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
@@ -6507,11 +9557,11 @@ using System.Reflection;
 </file>
 
 <file path="obj/Debug/net8.0/CatDetective.AssemblyInfoInputs.cache">
-643bb42c71db7974c8201a615d77f44bdf7570ca5076bbc123450c4bf9b5b4c9
+63e3ec4eb376fab7250ed735a6558985a63ec189645b867d78900757549bb70a
 </file>
 
 <file path="obj/Debug/net8.0/CatDetective.sourcelink.json">
-{"documents":{"C:\\Users\\larry\\Projecten\\cat_detective\\*":"https://raw.githubusercontent.com/ErikHilhorst/cat_detective/1af11a76247f4c7a56a2d69c4e2a9ddef4c1be83/*"}}
+{"documents":{"C:\\Users\\larry\\Projecten\\cat_detective\\*":"https://raw.githubusercontent.com/ErikHilhorst/cat_detective/57536256635c5d9be5f6c651095dba7006a3ee3c/*"}}
 </file>
 
 </files>

@@ -1,5 +1,5 @@
 {
-    "activeFile": "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/room_map.json",
+    "activeFile": "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/room_map.json",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -8,8 +8,68 @@
             "scale": 0.75,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 777.3333333333333,
-                "y": 500.6666666666667
+                "x": 536,
+                "y": 567.3333333333333
+            }
+        },
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/room_map.json": {
+            "expandedObjectLayers": [
+                4,
+                3
+            ],
+            "scale": 0.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 187,
+                "y": 323
+            }
+        },
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/room_map.json": {
+            "expandedObjectLayers": [
+                4,
+                3
+            ],
+            "scale": 0.75,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 776.6666666666667,
+                "y": 295.33333333333326
+            }
+        },
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/room_map.json": {
+            "scale": 1,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 1040,
+                "y": 295.5
+            }
+        },
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/room_map.json": {
+            "expandedObjectLayers": [
+                4,
+                3
+            ],
+            "scale": 0.750985401459854,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 952.0824221217864,
+                "y": 344.2144141517228
+            }
+        },
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/room_map.json": {
+            "scale": 0.5,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 528,
+                "y": 559
+            }
+        },
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/room_map.json": {
+            "scale": 0.750985401459854,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 651.1444817028721,
+                "y": 296.27739709384264
             }
         },
         "C:/Users/larry/Projecten/cat_detective/Content/room_map.json": {
@@ -22,11 +82,16 @@
         }
     },
     "openFiles": [
-        "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/room_map.json"
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/room_map.json"
     ],
     "project": "untitledcat_detective.tiled-project",
     "recentFiles": [
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/room_map.json",
         "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/room_map.json",
         "C:/Users/larry/Projecten/cat_detective/Content/room_map.json"
     ]
 }

@@ -261,7 +261,7 @@ namespace CatDetective
 
             // Load case config: global clue database + macro deduction sentence.
             string caseConfigPath = Path.Combine(
-                Content.RootDirectory, "Cases", caseId, "case_config.json");
+                Content.RootDirectory, "Levels", caseId, "case_config.json");
             var caseConfig = LevelConfigParser.LoadCase(caseConfigPath);
 
             _notebook  = new NotebookManager(caseConfig.Clues);
@@ -286,8 +286,8 @@ namespace CatDetective
             _spawnPointName = spawnPointName;
 
             string roomBase = Path.Combine(
-                Content.RootDirectory, "Cases", _currentCaseId, "Rooms", roomId);
-            string contentBase = $"Cases/{_currentCaseId}/Rooms/{roomId}";
+                Content.RootDirectory, "Levels", _currentCaseId, roomId);
+            string contentBase = $"Levels/{_currentCaseId}/{roomId}";
 
             // Load room config: props, interactables, local deduction sentence.
             string roomConfigPath = Path.Combine(roomBase, "room_config.json");
@@ -299,7 +299,7 @@ namespace CatDetective
             // Hot-reload tracks room_config.json.
             _levelConfigSourcePath = Path.GetFullPath(Path.Combine(
                 AppDomain.CurrentDomain.BaseDirectory,
-                "..", "..", "..", "Content", "Cases", _currentCaseId, "Rooms", roomId, "room_config.json"));
+                "..", "..", "..", "Content", "Levels", _currentCaseId, roomId, "room_config.json"));
             _levelConfigLastWrite = File.Exists(_levelConfigSourcePath)
                 ? File.GetLastWriteTime(_levelConfigSourcePath)
                 : DateTime.MinValue;

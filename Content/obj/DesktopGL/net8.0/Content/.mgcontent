@@ -24,8 +24,22 @@
     <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_newspaper.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_takeout_bag.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_trash_can.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/bg_base.jpg</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

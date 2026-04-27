@@ -24,10 +24,9 @@ Use this minimal structure for `room_map.json`:
 ```json
 {
  "compressionlevel": -1,
- "height": 35,
- "infinite": false,
+ "infinite": true,
  "layers":[
-  { "id": 1, "name": "background", "type": "imagelayer", "image": "bg_base.png", "x": 0, "y": 0 },
+  { "id": 1, "name": "background", "type": "imagelayer", "image": "bg_base.jpg", "opacity": 1, "visible": true, "x": 0, "y": 0 },
   { "id": 2, "name": "Collisions", "type": "objectgroup", "objects": [] },
   { "id": 3, "name": "Transfers", "type": "objectgroup", "objects":[] },
   { "id": 4, "name": "Spawn", "type": "objectgroup", "objects":[] },
@@ -35,8 +34,7 @@ Use this minimal structure for `room_map.json`:
  ],
  "nextlayerid": 6, "nextobjectid": 100,
  "orientation": "orthogonal", "renderorder": "right-down",
- "tileheight": 32, "tilewidth": 32, "width": 33,
- "type": "map", "version": "1.10"
+"tileheight": 32, "tilewidth": 32, "width": 43, "height": 24, "type": "map", "version": "1.10"
 }
 ```
 
