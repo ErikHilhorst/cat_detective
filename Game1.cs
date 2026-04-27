@@ -58,6 +58,10 @@ namespace CatDetective
         // ── Active interactable (updated each frame for highlighting) ──────────
         private InteractableEntity? _activeInteractable;
 
+        // ── Transfer zones and the one the cat is currently standing in ────────
+        private List<TransferZone>  _transferZones       = new();
+        private TransferZone?       _activeTransferZone;
+
         // ── Interaction system ─────────────────────────────────────────────────
         private Dictionary<string, InteractionData> _interactionDatabase = null!;
         private bool             _isDialogueActive;
@@ -72,7 +76,11 @@ namespace CatDetective
         // ── Deduction board ────────────────────────────────────────────────────
         private DeductionManager _deduction            = null!;
         private bool             _isDeductionBoardOpen = false;
+        private bool             _isFinalSolveMode     = false; // true = macro board, false = local room board
         private bool             _isGameWon            = false;
+
+        private bool AllRoomsSolved =>
+            _roomSolvedStates.Count > 0 && !_roomSolvedStates.ContainsValue(false);
 
         // Journal (two-page deduction board) UI state
         private ClueCategory _activeTab            = ClueCategory.Who;
@@ -83,6 +91,8 @@ namespace CatDetective
 
         private static readonly Rectangle _solveButtonRect =
             new Rectangle(2020 - 160, 1136 - 160, 120, 120);
+        private static readonly Rectangle _finalSolveButtonRect =
+            new Rectangle(2020 - 160, 1136 - 160 - 130, 120, 110);
 
         // Hotspot menu: one pre-rendered 800×150 bar per active tab.
         // Visual order on the image: Who | How(What) | Where(WhereWhen) | Why
@@ -167,6 +177,15 @@ namespace CatDetective
         private GameState    _currentState    = GameState.DevMenu;
         private List<string> _availableScenes = new();
 
+        // ── Case / room tracking ───────────────────────────────────────────────
+        private string                   _currentCaseId    = "";
+        private string                   _currentRoomId    = "";
+        private string                   _spawnPointName   = "";
+        private Dictionary<string, bool> _roomSolvedStates = new();
+
+        // ── Deduction — macro (case-level) and local (room-level) ─────────────
+        private DeductionManager  _localDeduction = null!;
+
         // ── Shared textures (loaded once, reused across scenes) ───────────────
         private Texture2D _walkForwardTex = null!;
         private Texture2D _walkUpwardTex  = null!;
@@ -197,7 +216,7 @@ namespace CatDetective
             _spriteBatch  = new SpriteBatch(GraphicsDevice);
             _renderTarget = new RenderTarget2D(GraphicsDevice, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-            // Shared sprite sheets — loaded once, passed into Cat on each LoadScene.
+            // Shared sprite sheets — loaded once, passed into Cat on each LoadRoom.
             _walkForwardTex = Content.Load<Texture2D>("Shared/walk_animation_forward");
             _walkUpwardTex  = Content.Load<Texture2D>("Shared/walk_animation_upward");
             _shadowTex      = Content.Load<Texture2D>("Shared/shadow_blob");
@@ -220,55 +239,82 @@ namespace CatDetective
         }
 
         // ══════════════════════════════════════════════════════════════════════
-        private void LoadScene(string sceneId)
+        private void LoadCase(string caseId)
         {
-            // Reset per-scene state.
-            _foregroundProps.Clear();
-            _solidBoundaries.Clear();
-            _interactables.Clear();
-            _isDialogueActive     = false;
-            _currentInteraction   = null;
-            _isNotebookOpen       = false;
-            _isDeductionBoardOpen = false;
+            // Case-level resets (do not reset on room transitions).
             _isGameWon            = false;
+            _isDeductionBoardOpen = false;
+            _isFinalSolveMode     = false;
+            _isNotebookOpen       = false;
             _activeTab            = ClueCategory.Who;
             _selectedWordBankClue = null;
             _wordBankPage         = 0;
             _hotReloadTimer       = 0f;
 
-            // Scene-specific textures.
-            _bgBase       = Content.Load<Texture2D>($"Levels/{sceneId}/bg_base");
+            _currentCaseId    = caseId;
+            _roomSolvedStates = new Dictionary<string, bool>();
+
             _sunbeamsMask = Content.Load<Texture2D>("Shared/mask_sunbeams");
+
+            string configPath = Path.Combine(Content.RootDirectory, "scenes_config.json");
+            _ambientColor = SceneConfigParser.GetAmbientColor(configPath, caseId);
+
+            // Load case config: global clue database + macro deduction sentence.
+            string caseConfigPath = Path.Combine(
+                Content.RootDirectory, "Cases", caseId, "case_config.json");
+            var caseConfig = LevelConfigParser.LoadCase(caseConfigPath);
+
+            _notebook  = new NotebookManager(caseConfig.Clues);
+            _deduction = new DeductionManager(caseConfig.DeductionSentence);
+
+            LoadRoom("entrance", spawnPointName: "spawn_default");
+
+            _currentState = GameState.Playing;
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        private void LoadRoom(string roomId, string spawnPointName)
+        {
+            // Room-level resets.
+            _foregroundProps.Clear();
+            _solidBoundaries.Clear();
+            _interactables.Clear();
+            _isDialogueActive   = false;
+            _currentInteraction = null;
+
+            _currentRoomId  = roomId;
+            _spawnPointName = spawnPointName;
+
+            string roomBase = Path.Combine(
+                Content.RootDirectory, "Cases", _currentCaseId, "Rooms", roomId);
+            string contentBase = $"Cases/{_currentCaseId}/Rooms/{roomId}";
+
+            // Load room config: props, interactables, local deduction sentence.
+            string roomConfigPath = Path.Combine(roomBase, "room_config.json");
+            var roomConfig = LevelConfigParser.LoadRoom(roomConfigPath);
+
+            _interactionDatabase = roomConfig.Interactables;
+            _localDeduction = new DeductionManager(roomConfig.LocalDeductionSentence);
+
+            // Hot-reload tracks room_config.json.
+            _levelConfigSourcePath = Path.GetFullPath(Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "..", "..", "..", "Content", "Cases", _currentCaseId, "Rooms", roomId, "room_config.json"));
+            _levelConfigLastWrite = File.Exists(_levelConfigSourcePath)
+                ? File.GetLastWriteTime(_levelConfigSourcePath)
+                : DateTime.MinValue;
+
+            // Room background.
+            _bgBase = Content.Load<Texture2D>($"{contentBase}/bg_base");
 
             float offsetX = (SCREEN_WIDTH - _bgBase.Width) / 2f;
             _cameraTransform = Matrix.CreateTranslation(offsetX, 0, 0);
 
-            // Level config (clues, interactables, deduction solution).
-            string levelConfigPath = Path.Combine(
-                Content.RootDirectory, "Levels", sceneId, "level_config.json");
-            var levelConfig = LevelConfigParser.Load(levelConfigPath);
-
-            _interactionDatabase = levelConfig.Interactables;
-            _notebook            = new NotebookManager(levelConfig.Clues);
-            _deduction = new DeductionManager(levelConfig.DeductionSentence);
-
-            _levelConfigSourcePath = Path.GetFullPath(Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                "..", "..", "..", "Content", "Levels", sceneId, "level_config.json"));
-            _levelConfigLastWrite  = File.Exists(_levelConfigSourcePath)
-                ? File.GetLastWriteTime(_levelConfigSourcePath)
-                : DateTime.MinValue;
-
-            // Ambient color from scenes_config.json.
-            string configPath = Path.Combine(Content.RootDirectory, "scenes_config.json");
-            _ambientColor = SceneConfigParser.GetAmbientColor(configPath, sceneId);
-
-            // Parse Tiled map.
-            string mapPath = Path.Combine(
-                Content.RootDirectory, "Levels", sceneId, "room_map.json");
-            MapParser.Parse(mapPath, Content, sceneId, _interactionDatabase,
+            // Parse Tiled map for this room.
+            string mapPath = Path.Combine(roomBase, "room_map.json");
+            MapParser.Parse(mapPath, Content, contentBase, _interactionDatabase, spawnPointName,
                 out _solidBoundaries, out var triggers, out _interactables,
-                out Vector2? spawnPoint);
+                out _transferZones, out Vector2? spawnPoint);
 
             Vector2 catStart = spawnPoint ?? new Vector2(500, 500);
             _cat = new Cat(_walkForwardTex, _walkUpwardTex, startPosition: catStart,
@@ -277,10 +323,10 @@ namespace CatDetective
                 ShadowTexture = _shadowTex
             };
 
-            // Build foreground props from level config.
-            foreach (var propConfig in levelConfig.Props)
+            // Build foreground props.
+            foreach (var propConfig in roomConfig.Props)
             {
-                var tex = Content.Load<Texture2D>($"Levels/{sceneId}/" + propConfig.Texture);
+                var tex = Content.Load<Texture2D>($"{contentBase}/{propConfig.Texture}");
 
                 var triggerRect = Rectangle.Empty;
                 foreach (var (name, rect) in triggers)
@@ -294,8 +340,6 @@ namespace CatDetective
 
                 _foregroundProps.Add(new Prop(tex, propConfig.SortY, triggerRect));
             }
-
-            _currentState = GameState.Playing;
         }
 
         // ── Dev menu button layout ─────────────────────────────────────────────
@@ -333,7 +377,7 @@ namespace CatDetective
                     {
                         if (GetSceneButtonRect(i).Contains(vm))
                         {
-                            LoadScene(_availableScenes[i]);
+                            LoadCase(_availableScenes[i]);
                             break;
                         }
                     }
@@ -348,10 +392,13 @@ namespace CatDetective
                         if (_journalCloseRect.Contains(vm))
                         {
                             _isDeductionBoardOpen = false;
+                            _isFinalSolveMode     = false;
                             _selectedWordBankClue = null;
                         }
                         else
                         {
+                            var activeDeduction = _isFinalSolveMode ? _deduction : _localDeduction;
+
                             // Tab clicks
                             for (int i = 0; i < _tabHotspots.Length; i++)
                             {
@@ -380,10 +427,10 @@ namespace CatDetective
                             if (_journalNextPageRect.Contains(vm) && _wordBankPage < _wordBankPageCount)
                                 _wordBankPage++;
 
-                            // Insert selected clue into matching slot
+                            // Insert selected clue into the matching slot on the active board
                             if (_journalInsertRect.Contains(vm) && _selectedWordBankClue != null)
                             {
-                                var target = _deduction.Slots
+                                var target = activeDeduction.Slots
                                     .Find(s => s.Category == _selectedWordBankClue.Category);
                                 if (target != null)
                                     target.SelectedClueId = _selectedWordBankClue.Id;
@@ -392,12 +439,25 @@ namespace CatDetective
                             // Submit
                             if (_journalSubmitRect.Contains(vm))
                             {
-                                if (_deduction.ValidateCase())
-                                    _isGameWon = true;
+                                if (_isFinalSolveMode)
+                                {
+                                    if (_deduction.ValidateCase())
+                                        _isGameWon = true;
+                                }
+                                else
+                                {
+                                    if (_localDeduction.ValidateCase())
+                                    {
+                                        _roomSolvedStates[_currentRoomId] = true;
+                                        _notebook.UnlockMacroCluesForRoom(_currentRoomId);
+                                        _isDeductionBoardOpen = false;
+                                        _selectedWordBankClue = null;
+                                    }
+                                }
                             }
 
                             // Left page slot clicks -> switch active tab
-                            foreach (var slot in _deduction.Slots)
+                            foreach (var slot in activeDeduction.Slots)
                             {
                                 if (slot.Bounds.Contains(vm))
                                 {
@@ -413,8 +473,19 @@ namespace CatDetective
                     {
                         if (_solveButtonRect.Contains(vm))
                         {
+                            _isFinalSolveMode     = false;
                             _isDeductionBoardOpen = true;
                             _isNotebookOpen       = false;
+                            _selectedWordBankClue = null;
+                            _wordBankPage         = 0;
+                        }
+                        else if (AllRoomsSolved && _finalSolveButtonRect.Contains(vm))
+                        {
+                            _isFinalSolveMode     = true;
+                            _isDeductionBoardOpen = true;
+                            _isNotebookOpen       = false;
+                            _selectedWordBankClue = null;
+                            _wordBankPage         = 0;
                         }
                         else if (_notebookButtonRect.Contains(vm))
                         {
@@ -470,6 +541,23 @@ namespace CatDetective
                     _cat.Update(gameTime);
                     _cat.MoveWithCollision(dt, _solidBoundaries);
 
+                    // Transfer zones: check first; a doorway takes priority over props.
+                    _activeTransferZone = null;
+                    foreach (var zone in _transferZones)
+                    {
+                        if (_cat.CollisionBox.Intersects(zone.TriggerRect))
+                        {
+                            _activeTransferZone = zone;
+                            break;
+                        }
+                    }
+
+                    if (_activeTransferZone != null && _cat.IsInteractPressed())
+                    {
+                        LoadRoom(_activeTransferZone.TargetRoom, _activeTransferZone.TargetSpawn);
+                        return; // state was rebuilt; skip rest of this Update
+                    }
+
                     _activeInteractable = null;
                     foreach (var entity in _interactables)
                     {
@@ -512,13 +600,13 @@ namespace CatDetective
                             _levelConfigLastWrite = writeTime;
                             try
                             {
-                                var fresh = LevelConfigParser.Load(_levelConfigSourcePath);
+                                var fresh = LevelConfigParser.LoadRoom(_levelConfigSourcePath);
                                 foreach (var entity in _interactables)
                                 {
                                     if (fresh.Interactables.TryGetValue(entity.Id, out var data))
                                         entity.Data = data;
                                 }
-                                Console.WriteLine("[HotReload] level_config.json reloaded.");
+                                Console.WriteLine("[HotReload] room_config.json reloaded.");
                             }
                             catch (Exception ex)
                             {
@@ -686,6 +774,31 @@ namespace CatDetective
                                 _solveButtonRect.X + (_solveButtonRect.Width  - solveSz.X) * 0.5f,
                                 _solveButtonRect.Y + (_solveButtonRect.Height - solveSz.Y) * 0.5f),
                             Color.White);
+
+                        // FINAL SOLVE — only drawable once every visited room is solved.
+                        var finalColor = AllRoomsSolved ? new Color(180, 130, 20) : new Color(60, 60, 60);
+                        _spriteBatch.Draw(_debugPixel, _finalSolveButtonRect, finalColor);
+                        var finalLbl  = "FINAL\nSOLVE";
+                        var finalSz   = _dialogueFont.MeasureString(finalLbl);
+                        _spriteBatch.DrawString(
+                            _dialogueFont, finalLbl,
+                            new Vector2(
+                                _finalSolveButtonRect.X + (_finalSolveButtonRect.Width  - finalSz.X) * 0.5f,
+                                _finalSolveButtonRect.Y + (_finalSolveButtonRect.Height - finalSz.Y) * 0.5f),
+                            AllRoomsSolved ? Color.White : Color.DarkGray);
+                    }
+
+                    // Transfer-zone prompt: centred at the bottom of the play area.
+                    if (_activeTransferZone != null)
+                    {
+                        const string enterHint   = "[ Space ] to enter";
+                        var          enterHintSz = _dialogueFont.MeasureString(enterHint);
+                        _spriteBatch.DrawString(
+                            _dialogueFont, enterHint,
+                            new Vector2(
+                                (SCREEN_WIDTH  - enterHintSz.X) * 0.5f,
+                                SCREEN_HEIGHT  - enterHintSz.Y - 60),
+                            Color.White);
                     }
 
                     _spriteBatch.Draw(_debugPixel, _notebookButtonRect, Color.DimGray);
@@ -734,7 +847,7 @@ namespace CatDetective
                         float lineH = _dialogueFont.LineSpacing + 6;
 
                         bool any = false;
-                        foreach (var clue in _notebook.UnlockedClues)
+                        foreach (var clue in _notebook.GetCluesForRoom(_currentRoomId))
                         {
                             if (clue.Category != _selectedTab) continue;
                             any = true;
@@ -818,7 +931,9 @@ namespace CatDetective
 
                         string[] slotCatLabels = { "WHO", "WHAT", "WHY", "WHERE/WHEN" };
 
-                        foreach (var seg in _deduction.Segments)
+                        var activeDeduction = _isFinalSolveMode ? _deduction : _localDeduction;
+
+                        foreach (var seg in activeDeduction.Segments)
                         {
                             if (seg is TextSegment ts)
                             {
@@ -885,8 +1000,10 @@ namespace CatDetective
 
                         _wordBankClueRects.Clear();
 
-                        var filteredWB = _notebook.UnlockedClues
-                            .FindAll(c => c.Category == _activeTab);
+                        var sourceClues = _isFinalSolveMode
+                            ? _notebook.GetMacroClues()
+                            : _notebook.GetCluesForRoom(_currentRoomId);
+                        var filteredWB = sourceClues.FindAll(c => c.Category == _activeTab);
 
                         foreach (var cl in filteredWB)
                         {
@@ -980,7 +1097,7 @@ namespace CatDetective
                                 new Vector2(inspectorArea.X, inspectorArea.Y),
                                 _tabColors[(int)_selectedWordBankClue.Category]);
                             DrawWrappedString(_spriteBatch, _dialogueFont,
-                                _selectedWordBankClue.Context,
+                                _selectedWordBankClue.InspectorDescription,
                                 new Vector2(inspectorArea.X, inspectorArea.Y + 40),
                                 inspectorArea.Width, _dialogueFont.LineSpacing + 4, _inkColor);
                             _spriteBatch.Draw(_debugPixel, insertBtn,
@@ -994,11 +1111,11 @@ namespace CatDetective
                         }
 
                         // ── Submit & validation ───────────────────────────────
-                        if (!string.IsNullOrEmpty(_deduction.ValidationMessage))
+                        if (!string.IsNullOrEmpty(activeDeduction.ValidationMessage))
                         {
-                            bool isCorrect = _deduction.ValidationMessage.StartsWith("Case");
-                            var  vmSz      = _dialogueFont.MeasureString(_deduction.ValidationMessage);
-                            _spriteBatch.DrawString(_dialogueFont, _deduction.ValidationMessage,
+                            bool isCorrect = activeDeduction.ValidationMessage.StartsWith("Case");
+                            var  vmSz      = _dialogueFont.MeasureString(activeDeduction.ValidationMessage);
+                            _spriteBatch.DrawString(_dialogueFont, activeDeduction.ValidationMessage,
                                 new Vector2(
                                     _journalSubmitRect.X + (_journalSubmitRect.Width  - vmSz.X) * 0.5f,
                                     _journalSubmitRect.Y - vmSz.Y - 8),

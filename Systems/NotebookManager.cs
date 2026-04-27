@@ -5,8 +5,8 @@ namespace CatDetective.Systems
 {
     /// <summary>
     /// Owns the master clue database and tracks which clues the player has found.
-    /// The database is loaded from <c>level_config.json</c> via <see cref="LevelConfig"/>
-    /// and passed in at construction time — nothing is hardcoded here.
+    /// The database is populated from <c>case_config.json</c> at case load time
+    /// and persists across room transitions.
     /// </summary>
     public sealed class NotebookManager
     {
@@ -29,6 +29,33 @@ namespace CatDetective.Systems
             if (!_database.TryGetValue(clueId, out var clue)) return;
             if (UnlockedClues.Exists(c => c.Id == clueId))    return;
             UnlockedClues.Add(clue);
+        }
+
+        /// <summary>
+        /// Returns unlocked clues that belong to <paramref name="roomId"/>
+        /// and are not macro clues (i.e. they feed a room sub-puzzle).
+        /// </summary>
+        public List<Clue> GetCluesForRoom(string roomId) =>
+            UnlockedClues.FindAll(c => c.RoomId == roomId && !c.IsMacroClue);
+
+        /// <summary>
+        /// Returns unlocked clues that feed the final case-level deduction
+        /// regardless of which room they were found in.
+        /// </summary>
+        public List<Clue> GetMacroClues() =>
+            UnlockedClues.FindAll(c => c.IsMacroClue);
+
+        /// <summary>
+        /// Silently unlocks every macro clue in the database that belongs to
+        /// <paramref name="roomId"/>. Called when the player solves a room's local puzzle.
+        /// </summary>
+        public void UnlockMacroCluesForRoom(string roomId)
+        {
+            foreach (var clue in _database.Values)
+            {
+                if (clue.RoomId == roomId && clue.IsMacroClue)
+                    UnlockClue(clue.Id);
+            }
         }
     }
 }

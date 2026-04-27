@@ -18,27 +18,36 @@ namespace CatDetective.Map
         [JsonPropertyName("triggerName")] public string TriggerName { get; set; } = "";
     }
 
-    internal sealed class LevelConfigData
+    internal sealed class CaseConfigData
     {
-        [JsonPropertyName("props")]
-        public List<PropConfigData> Props { get; set; } = new();
-
         [JsonPropertyName("clues")]
         public List<ClueConfigData> Clues { get; set; } = new();
-
-        [JsonPropertyName("interactables")]
-        public List<InteractableConfigData> Interactables { get; set; } = new();
 
         [JsonPropertyName("deductionSentence")]
         public string DeductionSentence { get; set; } = "";
     }
 
+    internal sealed class RoomConfigData
+    {
+        [JsonPropertyName("props")]
+        public List<PropConfigData> Props { get; set; } = new();
+
+        [JsonPropertyName("interactables")]
+        public List<InteractableConfigData> Interactables { get; set; } = new();
+
+        [JsonPropertyName("localDeductionSentence")]
+        public string LocalDeductionSentence { get; set; } = "";
+    }
+
     internal sealed class ClueConfigData
     {
-        [JsonPropertyName("id")]       public string Id       { get; set; } = "";
-        [JsonPropertyName("category")] public string Category { get; set; } = "";
-        [JsonPropertyName("name")]     public string Name     { get; set; } = "";
-        [JsonPropertyName("context")]  public string Context  { get; set; } = "";
+        [JsonPropertyName("id")]                   public string Id                   { get; set; } = "";
+        [JsonPropertyName("category")]             public string Category             { get; set; } = "";
+        [JsonPropertyName("name")]                 public string Name                 { get; set; } = "";
+        [JsonPropertyName("context")]              public string Context              { get; set; } = "";
+        [JsonPropertyName("inspectorDescription")] public string InspectorDescription { get; set; } = "";
+        [JsonPropertyName("roomId")]               public string RoomId               { get; set; } = "";
+        [JsonPropertyName("isMacroClue")]          public bool   IsMacroClue          { get; set; } = false;
     }
 
     internal sealed class InteractableConfigData
@@ -60,33 +69,44 @@ namespace CatDetective.Map
         [JsonPropertyName("color")]       public string Color       { get; set; } = "misc";
     }
 
-    // ── Parsed result returned to Game1 ──────────────────────────────────────
+    // ── Parsed results returned to Game1 ─────────────────────────────────────
 
-    /// <summary>All level data loaded from <c>level_config.json</c>.</summary>
-    public sealed class LevelConfig
+    /// <summary>Case-level data: global clue database and the macro deduction sentence.</summary>
+    public sealed class CaseConfig
+    {
+        /// <summary>Master clue database for <see cref="NotebookManager"/>.</summary>
+        public Dictionary<string, Clue> Clues { get; }
+
+        /// <summary>Sentence template for the final macro solve (e.g. "[WHO] stole the [WHAT]").</summary>
+        public string DeductionSentence { get; }
+
+        public CaseConfig(Dictionary<string, Clue> clues, string deductionSentence)
+        {
+            Clues             = clues;
+            DeductionSentence = deductionSentence;
+        }
+    }
+
+    /// <summary>Room-level data: props, interactables, and an optional local deduction sentence.</summary>
+    public sealed class RoomConfig
     {
         /// <summary>Foreground prop definitions (texture, sortY, trigger name).</summary>
         public List<PropConfigData> Props { get; }
 
-        /// <summary>Master clue database for <see cref="NotebookManager"/>.</summary>
-        public Dictionary<string, Clue> Clues { get; }
-
         /// <summary>Dialogue + keyword data keyed by Tiled object name.</summary>
         public Dictionary<string, InteractionData> Interactables { get; }
 
-        /// <summary>Sentence template for <see cref="DeductionManager"/> (e.g. "[WHO] stole the [WHAT]").</summary>
-        public string DeductionSentence { get; }
+        /// <summary>Optional sentence template for a room-local sub-puzzle.</summary>
+        public string LocalDeductionSentence { get; }
 
-        public LevelConfig(
+        public RoomConfig(
             List<PropConfigData>                props,
-            Dictionary<string, Clue>            clues,
             Dictionary<string, InteractionData> interactables,
-            string                              deductionSentence)
+            string                              localDeductionSentence)
         {
-            Props             = props;
-            Clues             = clues;
-            Interactables     = interactables;
-            DeductionSentence = deductionSentence;
+            Props                 = props;
+            Interactables         = interactables;
+            LocalDeductionSentence = localDeductionSentence;
         }
     }
 
@@ -100,34 +120,50 @@ namespace CatDetective.Map
         };
 
         /// <summary>
-        /// Loads and deserializes <paramref name="jsonPath"/> into a <see cref="LevelConfig"/>.
-        /// Throws <see cref="InvalidOperationException"/> if the file is missing or malformed.
+        /// Loads case-level data (clues, macro deduction sentence) from <paramref name="jsonPath"/>.
         /// </summary>
-        public static LevelConfig Load(string jsonPath)
+        public static CaseConfig LoadCase(string jsonPath)
         {
-            if (!File.Exists(jsonPath))
-                throw new InvalidOperationException(
-                    $"[LevelConfigParser] Level config not found: '{jsonPath}'");
+            var raw = Deserialize<CaseConfigData>(jsonPath);
 
-            var raw = JsonSerializer.Deserialize<LevelConfigData>(
-                File.ReadAllText(jsonPath), _jsonOptions)
-                ?? throw new InvalidOperationException(
-                    $"[LevelConfigParser] Failed to parse: '{jsonPath}'");
-
-            return new LevelConfig(
-                raw.Props,
+            return new CaseConfig(
                 ParseClues(raw.Clues),
-                ParseInteractables(raw.Interactables),
                 raw.DeductionSentence);
         }
 
+        /// <summary>
+        /// Loads room-level data (props, interactables, local deduction sentence) from <paramref name="jsonPath"/>.
+        /// </summary>
+        public static RoomConfig LoadRoom(string jsonPath)
+        {
+            var raw = Deserialize<RoomConfigData>(jsonPath);
+
+            return new RoomConfig(
+                raw.Props,
+                ParseInteractables(raw.Interactables),
+                raw.LocalDeductionSentence);
+        }
+
         // ── Private helpers ───────────────────────────────────────────────────
+
+        private static T Deserialize<T>(string jsonPath)
+        {
+            if (!File.Exists(jsonPath))
+                throw new InvalidOperationException(
+                    $"[LevelConfigParser] Config not found: '{jsonPath}'");
+
+            return JsonSerializer.Deserialize<T>(
+                File.ReadAllText(jsonPath), _jsonOptions)
+                ?? throw new InvalidOperationException(
+                    $"[LevelConfigParser] Failed to parse: '{jsonPath}'");
+        }
 
         private static Dictionary<string, Clue> ParseClues(List<ClueConfigData> raw)
         {
             var dict = new Dictionary<string, Clue>(raw.Count);
             foreach (var c in raw)
-                dict[c.Id] = new Clue(c.Id, ParseCategory(c.Category), c.Name, c.Context);
+                dict[c.Id] = new Clue(c.Id, ParseCategory(c.Category), c.Name, c.Context,
+                    c.InspectorDescription, c.RoomId, c.IsMacroClue);
             return dict;
         }
 

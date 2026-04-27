@@ -61,6 +61,39 @@ namespace CatDetective.Map
 
         [JsonPropertyName("height")]
         public float Height { get; set; }
+
+        [JsonPropertyName("properties")]
+        public List<TiledProperty> Properties { get; set; } = new();
+    }
+
+    /// <summary>One custom property on a Tiled object.</summary>
+    internal sealed class TiledProperty
+    {
+        [JsonPropertyName("name")]  public string      Name  { get; set; } = "";
+        [JsonPropertyName("type")]  public string      Type  { get; set; } = "string";
+        [JsonPropertyName("value")] public JsonElement Value { get; set; }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// A doorway or passage that sends the cat to another room when activated.
+    /// Populated from the "Transfers" object layer in the Tiled map.
+    /// </summary>
+    public sealed class TransferZone
+    {
+        public Rectangle TriggerRect { get; }
+        /// <summary>Matches a folder name under <c>Cases/{caseId}/Rooms/</c>.</summary>
+        public string    TargetRoom  { get; }
+        /// <summary>Name of the spawn-point object in the target room's map.</summary>
+        public string    TargetSpawn { get; }
+
+        public TransferZone(Rectangle triggerRect, string targetRoom, string targetSpawn)
+        {
+            TriggerRect = triggerRect;
+            TargetRoom  = targetRoom;
+            TargetSpawn = targetSpawn;
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -72,6 +105,10 @@ namespace CatDetective.Map
     ///   • <see cref="InteractableEntity"/> instances from the layer named
     ///     <c>Interactables</c>, auto-loading their sprites from the content
     ///     pipeline and looking up dialogue data from <paramref name="levelData"/>.
+    ///   • <see cref="TransferZone"/> instances from the layer named <c>Transfers</c>,
+    ///     reading <c>targetRoom</c> and <c>targetSpawn</c> custom properties.
+    ///   • The spawn point named <paramref name="targetSpawnName"/> from the
+    ///     layer named <c>Spawn</c>.
     /// </summary>
     public static class MapParser
     {
@@ -80,47 +117,37 @@ namespace CatDetective.Map
             PropertyNameCaseInsensitive = true
         };
 
-        /// <summary>
-        /// Parses <paramref name="jsonPath"/> and populates the three output lists.
-        /// If the file is missing the method logs a warning and returns empty lists
-        /// so the game can still run without a map (useful during early prototyping).
-        /// </summary>
         /// <param name="jsonPath">Absolute or relative path to the Tiled JSON file.</param>
         /// <param name="content">
         ///   The game's <see cref="ContentManager"/>; used to load interactable sprites.
         /// </param>
         /// <param name="levelId">
-        ///   The level folder name (e.g. "detective_office"). Sprites are loaded from
-        ///   <c>Levels/{levelId}/Interactables/{objectName}</c>.
+        ///   Content path prefix (e.g. "Cases/case01/Rooms/entrance"). Sprites are loaded
+        ///   from <c>{levelId}/Interactables/{objectName}</c>.
         /// </param>
         /// <param name="levelData">
         ///   Map from Tiled object name → <see cref="InteractionData"/>.
-        ///   Each matched interactable has its <c>Data</c> property set; unmatched
-        ///   objects log a console warning so missing entries are easy to spot.
         /// </param>
-        /// <param name="solidBoundaries">
-        ///   Output: all rectangles from the "Collisions" layer.
-        /// </param>
-        /// <param name="triggers">
-        ///   Output: all (name, rect) pairs from the "Triggers" layer.
-        /// </param>
-        /// <param name="interactables">
-        ///   Output: fully-populated <see cref="InteractableEntity"/> instances from
-        ///   the "Interactables" layer.
+        /// <param name="targetSpawnName">
+        ///   Name of the spawn-point object to look up in the "Spawn" layer.
+        ///   Falls back to (500, 500) if not found.
         /// </param>
         public static void Parse(
             string jsonPath,
             ContentManager content,
             string levelId,
             Dictionary<string, InteractionData> levelData,
-            out List<Rectangle> solidBoundaries,
-            out List<(string Name, Rectangle Rect)> triggers,
-            out List<InteractableEntity> interactables,
-            out Vector2? spawnPoint)
+            string targetSpawnName,
+            out List<Rectangle>                      solidBoundaries,
+            out List<(string Name, Rectangle Rect)>  triggers,
+            out List<InteractableEntity>             interactables,
+            out List<TransferZone>                   transfers,
+            out Vector2?                             spawnPoint)
         {
             solidBoundaries = new List<Rectangle>();
             triggers        = new List<(string, Rectangle)>();
             interactables   = new List<InteractableEntity>();
+            transfers       = new List<TransferZone>();
             spawnPoint      = null;
 
             if (!File.Exists(jsonPath))
@@ -148,13 +175,6 @@ namespace CatDetective.Map
             {
                 if (layer.Type != "objectgroup") continue;
 
-                foreach (var obj in layer.Objects)
-                {
-                    if (spawnPoint == null &&
-                        obj.Name.Equals("spawn", StringComparison.OrdinalIgnoreCase))
-                        spawnPoint = new Vector2(obj.X, obj.Y);
-                }
-
                 switch (layer.Name)
                 {
                     case "Collisions":
@@ -167,11 +187,41 @@ namespace CatDetective.Map
                             triggers.Add((obj.Name, ToRect(obj)));
                         break;
 
+                    case "Spawn":
+                        foreach (var obj in layer.Objects)
+                        {
+                            if (obj.Name.Equals(targetSpawnName, StringComparison.OrdinalIgnoreCase))
+                            {
+                                spawnPoint = new Vector2(obj.X, obj.Y);
+                                break;
+                            }
+                        }
+                        if (spawnPoint == null)
+                            Console.WriteLine(
+                                $"[MapParser] WARNING: Spawn '{targetSpawnName}' not found in '{jsonPath}'. " +
+                                "Defaulting to (500, 500).");
+                        break;
+
+                    case "Transfers":
+                        foreach (var obj in layer.Objects)
+                        {
+                            string targetRoom  = GetStringProperty(obj, "targetRoom");
+                            string targetSpawn = GetStringProperty(obj, "targetSpawn");
+                            if (string.IsNullOrEmpty(targetRoom))
+                            {
+                                Console.WriteLine(
+                                    $"[MapParser] WARNING: Transfer '{obj.Name}' is missing 'targetRoom' property.");
+                                continue;
+                            }
+                            transfers.Add(new TransferZone(ToRect(obj), targetRoom, targetSpawn));
+                        }
+                        break;
+
                     case "Interactables":
                         foreach (var obj in layer.Objects)
                         {
                             Texture2D? sprite    = null;
-                            string     assetPath = $"Levels/{levelId}/Interactables/{obj.Name}";
+                            string     assetPath = $"{levelId}/Interactables/{obj.Name}";
                             try
                             {
                                 sprite = content.Load<Texture2D>(assetPath);
@@ -195,7 +245,7 @@ namespace CatDetective.Map
                             else
                                 Console.WriteLine(
                                     $"[MapParser] WARNING: No dialogue data for interactable '{obj.Name}'. " +
-                                    "Add an entry to the level's interaction database.");
+                                    "Add an entry to the room's interaction database.");
 
                             interactables.Add(entity);
                         }
@@ -206,10 +256,23 @@ namespace CatDetective.Map
             Console.WriteLine(
                 $"[MapParser] Loaded {solidBoundaries.Count} collision(s), " +
                 $"{triggers.Count} trigger(s), " +
-                $"{interactables.Count} interactable(s) from '{jsonPath}'.");
+                $"{interactables.Count} interactable(s), " +
+                $"{transfers.Count} transfer(s) from '{jsonPath}'.");
         }
 
         private static Rectangle ToRect(TiledObject obj) =>
             new Rectangle((int)obj.X, (int)obj.Y, (int)obj.Width, (int)obj.Height);
+
+        private static string GetStringProperty(TiledObject obj, string name)
+        {
+            foreach (var p in obj.Properties)
+            {
+                if (!p.Name.Equals(name, StringComparison.OrdinalIgnoreCase)) continue;
+                return p.Value.ValueKind == JsonValueKind.String
+                    ? p.Value.GetString() ?? ""
+                    : "";
+            }
+            return "";
+        }
     }
 }
