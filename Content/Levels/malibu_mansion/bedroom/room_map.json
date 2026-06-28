@@ -107,7 +107,12 @@
          "draworder":"topdown",
          "id":5,
          "name":"Interactables",
-         "objects":[],
+         "objects":[
+                {"height":80,"id":52,"name":"inspect_husband","opacity":1,"rotation":0,"type":"","visible":true,"width":80,"x":680,"y":470},
+                {"height":80,"id":53,"name":"inspect_delivery_manifest","opacity":1,"rotation":0,"type":"","visible":true,"width":100,"x":950,"y":460},
+                {"height":100,"id":54,"name":"inspect_acoustic_cases","opacity":1,"rotation":0,"type":"","visible":true,"width":120,"x":750,"y":660},
+                {"height":60,"id":55,"name":"inspect_star_note","opacity":1,"rotation":0,"type":"","visible":true,"width":80,"x":480,"y":460},
+                {"height":70,"id":56,"name":"inspect_headphone_box","opacity":1,"rotation":0,"type":"","visible":true,"width":90,"x":600,"y":660}],
          "opacity":0,
          "type":"objectgroup",
          "visible":true,
@@ -115,7 +120,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":52,
+ "nextobjectid":57,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",

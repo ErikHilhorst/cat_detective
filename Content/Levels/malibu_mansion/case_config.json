@@ -1,4 +1,239 @@
 {
-  "clues": [],
-  "finalSolveSentence": ""
+  "clues": [
+    {
+      "id": "lockdown_815pm",
+      "roomId": "entrance",
+      "isMacroClue": true,
+      "category": "WhereWhen",
+      "name": "Police Lockdown",
+      "context": "The lockdown began at 8:15 PM, well after the bird was last reported heard.",
+      "inspectorDescription": "The cop sealed the mansion 15 minutes after the 8PM squawk. Whoever hid the bird was already inside long before."
+    },
+    {
+      "id": "pr_disaster",
+      "roomId": "entrance",
+      "isMacroClue": true,
+      "category": "Why",
+      "name": "PR Disaster",
+      "context": "The Manager is furious that a missing animal is generating terrible press for his client.",
+      "inspectorDescription": "Hates animals. Cares only about the Movie Star's brand. Strong feelings, zero evidence."
+    },
+    {
+      "id": "guest_registry",
+      "roomId": "entrance",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "Guest Registry",
+      "context": "The mansion's sign-in book shows all crew arrivals. One entry reads: D. Marsh — 6:30 PM, half an hour before his cases were officially signed in.",
+      "inspectorDescription": "He arrived at 6:30. His cases were signed in at 7:00. What was he doing in that thirty minutes?"
+    },
+    {
+      "id": "husband_hall_7pm",
+      "roomId": "bedroom",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "Husband's Grumble",
+      "context": "The Husband recalls a crew member brushing past him in the hallway at approximately 7:00 PM.",
+      "inspectorDescription": "He didn't catch a name. Just a nervous man with big headphones, in a hurry."
+    },
+    {
+      "id": "d_marsh_7pm",
+      "roomId": "bedroom",
+      "isMacroClue": true,
+      "category": "WhereWhen",
+      "name": "D. Marsh — 7:00 PM",
+      "context": "The delivery manifest lists several crew members. One signed in two sound-proof acoustic cases at exactly 7:00 PM: D. Marsh.",
+      "inspectorDescription": "D. Marsh. Sound-proof cases. 7:00 PM. Among a list of names — but the only one with cases that block all sound."
+    },
+    {
+      "id": "sound_proof_cases",
+      "roomId": "bedroom",
+      "isMacroClue": true,
+      "category": "What",
+      "name": "Sound-Proof Cases",
+      "context": "The cases are rated for complete acoustic isolation. A bird inside would be completely inaudible.",
+      "inspectorDescription": "Fully soundproofed. A bird in here could not be heard from next door, let alone down the hall."
+    },
+    {
+      "id": "star_note_to_husband",
+      "roomId": "bedroom",
+      "isMacroClue": false,
+      "category": "Why",
+      "name": "Star's Ultimatum",
+      "context": "A handwritten note from the Movie Star to her Husband: 'Derek — Rudebeak woke me up at 5AM. AGAIN. Do SOMETHING about that bird or I am calling my lawyer.'",
+      "inspectorDescription": "Derek is the Husband's name. He clearly did not do something. Someone else did."
+    },
+    {
+      "id": "headphone_box",
+      "roomId": "bedroom",
+      "isMacroClue": false,
+      "category": "Why",
+      "name": "New Headphones",
+      "context": "A freshly opened box of top-of-the-line noise-canceling headphones. The receipt is dated yesterday.",
+      "inspectorDescription": "He ordered them the day before the shoot. The bird drove him to it. He just handled it more legally than whoever took Rudebeak."
+    },
+    {
+      "id": "squawk_at_8pm",
+      "roomId": "living_room",
+      "isMacroClue": true,
+      "category": "WhereWhen",
+      "name": "8:00 PM Squawk",
+      "context": "The Movie Star is certain she heard the bird squawking at exactly 8:00 PM.",
+      "inspectorDescription": "She's sincere. But is it possible she heard a very convincing recording?"
+    },
+    {
+      "id": "broken_latch",
+      "roomId": "living_room",
+      "isMacroClue": true,
+      "category": "What",
+      "name": "Broken Latch",
+      "context": "The cage latch was forcibly broken. Signs suggest the bird was gone well before 8:00 PM.",
+      "inspectorDescription": "That latch was forced open. And those settled feathers aren't fresh. Rudebeak was gone long before the Movie Star heard him."
+    },
+    {
+      "id": "hidden_speaker",
+      "roomId": "living_room",
+      "isMacroClue": true,
+      "category": "What",
+      "name": "Hidden Speaker",
+      "context": "A hidden speaker was placed beneath the birdcage, connected to a cable running through the wall.",
+      "inspectorDescription": "Someone installed this deliberately. The cable goes toward the library. Whatever played through it, it wasn't Rudebeak."
+    },
+    {
+      "id": "documentary_camera",
+      "roomId": "living_room",
+      "isMacroClue": false,
+      "category": "What",
+      "name": "Documentary Camera",
+      "context": "A film crew camera on a tripod with its recording light on, positioned near the birdcage.",
+      "inspectorDescription": "If this captured anything useful, the Director definitely already watched it and decided not to share."
+    },
+    {
+      "id": "vocab_ledger",
+      "roomId": "living_room",
+      "isMacroClue": false,
+      "category": "Why",
+      "name": "Vocab Ledger",
+      "context": "A booklet of phrases taught to Rudebeak. The entry for 'garbage slop' is crossed out with 'MAID'S FAULT' written next to it.",
+      "inspectorDescription": "The Movie Star blames the Maid for teaching Rudebeak the insult. Someone in this house was keeping score."
+    },
+    {
+      "id": "director_notes",
+      "roomId": "library",
+      "isMacroClue": false,
+      "category": "Why",
+      "name": "Director's Ratings",
+      "context": "The Director sees the crisis as a documentary opportunity. He is thrilled.",
+      "inspectorDescription": "Not a suspect. Just a vulture with a camera. He didn't take the bird — this drama is worth more to him free."
+    },
+    {
+      "id": "audio_cable",
+      "roomId": "library",
+      "isMacroClue": true,
+      "category": "What",
+      "name": "Audio Cable",
+      "context": "An audio cable runs from the mixing board, through the wall, toward the Living Room.",
+      "inspectorDescription": "That cable goes exactly where the hidden speaker was found. Someone ran a live audio feed from this board to that room."
+    },
+    {
+      "id": "d_marsh_sound_guy",
+      "roomId": "library",
+      "isMacroClue": true,
+      "category": "Who",
+      "name": "D. Marsh = Sound Guy",
+      "context": "The Sound Guy's name badge identifies him as D. Marsh — the same name on the bedroom delivery manifest.",
+      "inspectorDescription": "D. Marsh. On the manifest. In the bedroom at 7PM with sound-proof cases. Now sitting next to a cable that runs to a hidden speaker. He's trying very hard to look calm."
+    },
+    {
+      "id": "directors_shot_list",
+      "roomId": "library",
+      "isMacroClue": false,
+      "category": "Why",
+      "name": "Shot List",
+      "context": "The Director's shot list shows 'Rudebeak reaction shot' was cancelled, with a note in red pen: 'BETTER WITHOUT HIM?'",
+      "inspectorDescription": "He cancelled the bird's segment. Or someone made him cancel it. And then wrote a very suspicious note about it."
+    },
+    {
+      "id": "the_maid",
+      "roomId": "kitchen",
+      "isMacroClue": true,
+      "category": "Who",
+      "name": "The Maid",
+      "context": "The Maid is furious. She has both a temper and access to every room in the house.",
+      "inspectorDescription": "Furious. Definitely had a reason to want the bird gone. But wanting something isn't the same as doing it."
+    },
+    {
+      "id": "insulted_cooking",
+      "roomId": "kitchen",
+      "isMacroClue": true,
+      "category": "Why",
+      "name": "Insulted Cooking",
+      "context": "The bird publicly insulted the Maid's cooking. She wrote it down. She drew a skull next to it.",
+      "inspectorDescription": "A very clear motive. But a note on a fridge is not a crime. Is there anything placing her near the cage?"
+    },
+    {
+      "id": "paella_pot",
+      "roomId": "kitchen",
+      "isMacroClue": false,
+      "category": "Why",
+      "name": "Maid's Paella",
+      "context": "The Maid's paella is on the stove. It smells extraordinary.",
+      "inspectorDescription": "For the record: the paella smells incredible. Rudebeak had terrible taste in food criticism."
+    },
+    {
+      "id": "the_gardener",
+      "roomId": "garden",
+      "isMacroClue": true,
+      "category": "Who",
+      "name": "The Gardener",
+      "context": "The Gardener believes caged animals should be free. He is visibly uncomfortable.",
+      "inspectorDescription": "He's protesting too much. He had the motive, the tools, and apparently something to hide."
+    },
+    {
+      "id": "shears_match_latch",
+      "roomId": "garden",
+      "isMacroClue": true,
+      "category": "What",
+      "name": "Bent Shears",
+      "context": "The shears show damage consistent with forcing a metal latch. The cage had a snapped latch.",
+      "inspectorDescription": "These shears snapped the cage latch. The Gardener tried to free the bird. But the bird stayed. So who actually took it?"
+    },
+    {
+      "id": "bird_bath_feathers",
+      "roomId": "garden",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "Garden Visit",
+      "context": "Fresh feathers matching Rudebeak's markings float in the bird bath. He was in the garden this morning.",
+      "inspectorDescription": "Rudebeak visited the garden this morning. The Gardener would have seen him. Maybe even tried to speak to him before taking more drastic action."
+    },
+    {
+      "id": "eyewitness_645pm",
+      "roomId": "pool_area",
+      "isMacroClue": true,
+      "category": "WhereWhen",
+      "name": "Eyewitness — 6:45 PM",
+      "context": "The Socialite saw a crew member dragging large black cases through the garden at approximately 6:45 PM.",
+      "inspectorDescription": "She saw him. Before 7PM. With cases. Through the garden. Heading toward the house. She didn't think anything of it at the time."
+    },
+    {
+      "id": "selfie_figure_cases",
+      "roomId": "pool_area",
+      "isMacroClue": true,
+      "category": "WhereWhen",
+      "name": "Timestamped Photo",
+      "context": "A timestamped photo places a figure hauling large cases through the garden at 6:47 PM — 13 minutes before the official sign-in.",
+      "inspectorDescription": "Timestamped. Objective. The figure is blurry but the cases are unmistakable. He was moving through the garden 13 minutes before he officially signed them into the bedroom."
+    },
+    {
+      "id": "production_schedule",
+      "roomId": "pool_area",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "Production Schedule",
+      "context": "The official crew schedule assigns D. Marsh to Library audio setup at 7:00 PM. He was not in the library at 7:00 PM.",
+      "inspectorDescription": "His official assignment was the Library at 7PM. But the manifest says he was in the Bedroom. He wasn't where he was supposed to be."
+    }
+  ],
+  "finalSolveSentence": "[WHO] took Rudebeak at [WHEN], hiding the bird inside [WHAT], then played an [HOW] through a [WHERE] to fake an alibi."
 }

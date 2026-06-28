@@ -1,5 +1,30 @@
 {
   "props": [],
-  "interactables": [],
-  "localDeductionSentence": ""
+  "interactables": [
+    {
+      "id": "inspect_gardener",
+      "text": "The [Gardener] is trimming the same hedge for the fourth time. 'Animals belong in [Nature]. Cages are cruel. I... I didn't do anything wrong.'",
+      "keywords": [
+        { "displayText": "Gardener", "id": "the_gardener", "color": "misc" },
+        { "displayText": "Nature", "id": "the_gardener", "color": "misc" }
+      ]
+    },
+    {
+      "id": "inspect_pruning_shears",
+      "text": "Heavy iron [Pruning Shears] left near the fountain. The blade tips are [slightly bent] — the kind of bend you'd get forcing a metal latch.",
+      "keywords": [
+        { "displayText": "Pruning Shears", "id": "shears_match_latch", "color": "misc" },
+        { "displayText": "slightly bent", "id": "shears_match_latch", "color": "misc" }
+      ]
+    },
+    {
+      "id": "inspect_bird_bath",
+      "text": "A stone bird bath near the hedgerow. A few [bright feathers] float on the surface — Rudebeak's distinctive markings. They're fresh. He was here [this morning].",
+      "keywords": [
+        { "displayText": "bright feathers", "id": "bird_bath_feathers", "color": "misc" },
+        { "displayText": "this morning", "id": "bird_bath_feathers", "color": "misc" }
+      ]
+    }
+  ],
+  "localDeductionSentence": "The [Gardener] left his [Shears] near the fountain, insisting birds belong in [Nature] — and the bent blade tips match the cage's broken latch perfectly."
 }

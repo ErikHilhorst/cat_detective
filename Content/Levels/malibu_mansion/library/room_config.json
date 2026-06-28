@@ -1,5 +1,38 @@
 {
   "props": [],
-  "interactables": [],
-  "localDeductionSentence": ""
+  "interactables": [
+    {
+      "id": "inspect_director",
+      "text": "The [Director] scribbles in a leather notebook. 'Missing bird + weeping star + locked mansion = [Emmy bait].' He doesn't look up.",
+      "keywords": [
+        { "displayText": "Director", "id": "director_notes", "color": "misc" },
+        { "displayText": "Emmy bait", "id": "director_notes", "color": "misc" }
+      ]
+    },
+    {
+      "id": "inspect_mixing_board",
+      "text": "The Sound Guy's mixing board hums. An [Audio Cable] runs from the back panel, disappears into the wall — heading in the direction of the [Living Room].",
+      "keywords": [
+        { "displayText": "Audio Cable", "id": "audio_cable", "color": "crime" },
+        { "displayText": "Living Room", "id": "audio_cable", "color": "crime" }
+      ]
+    },
+    {
+      "id": "inspect_sound_guy",
+      "text": "The [Sound Guy] is sweating. His name badge reads: '[D. Marsh].' He won't meet your eyes. His headphones are on but nothing's playing.",
+      "keywords": [
+        { "displayText": "Sound Guy", "id": "d_marsh_sound_guy", "color": "crime" },
+        { "displayText": "D. Marsh", "id": "d_marsh_sound_guy", "color": "crime" }
+      ]
+    },
+    {
+      "id": "inspect_shot_list",
+      "text": "The Director's shot list for today. Items include: 'Rudebeak reaction shot — [CANCELLED].' Next to it, in red pen: '[BETTER WITHOUT HIM?]'",
+      "keywords": [
+        { "displayText": "CANCELLED", "id": "directors_shot_list", "color": "misc" },
+        { "displayText": "BETTER WITHOUT HIM?", "id": "directors_shot_list", "color": "misc" }
+      ]
+    }
+  ],
+  "localDeductionSentence": "The [Director] smelled an Emmy while 'D. Marsh' — the [Sound Guy] — kept his mixer running, an [Audio Cable] threading quietly through the wall toward the [Living Room]."
 }

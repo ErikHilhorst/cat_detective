@@ -142,7 +142,10 @@
          "draworder":"topdown",
          "id":5,
          "name":"Interactables",
-         "objects":[],
+         "objects":[
+                {"height":40,"id":53,"name":"inspect_walkie_talkie","opacity":1,"rotation":0,"type":"","visible":true,"width":60,"x":700,"y":540},
+                {"height":80,"id":54,"name":"inspect_managers_phone","opacity":1,"rotation":0,"type":"","visible":true,"width":50,"x":350,"y":490},
+                {"height":100,"id":55,"name":"inspect_guest_registry","opacity":1,"rotation":0,"type":"","visible":true,"width":80,"x":550,"y":520}],
          "opacity":0,
          "type":"objectgroup",
          "visible":false,
@@ -150,7 +153,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":53,
+ "nextobjectid":56,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",

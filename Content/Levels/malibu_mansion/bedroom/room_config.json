@@ -1,5 +1,46 @@
 {
   "props": [],
-  "interactables": [],
-  "localDeductionSentence": ""
+  "interactables": [
+    {
+      "id": "inspect_husband",
+      "text": "The [Husband] lifts one headphone. 'That audio guy barged past me in the hall around [seven]. Didn't even apologize. Very rude.'",
+      "keywords": [
+        { "displayText": "Husband", "id": "husband_hall_7pm", "color": "misc" },
+        { "displayText": "seven", "id": "husband_hall_7pm", "color": "misc" }
+      ]
+    },
+    {
+      "id": "inspect_delivery_manifest",
+      "text": "A crew manifest on the dresser. Multiple names. One line stands out: '[D. Marsh] — 2x Acoustic Cases (sound-proof) — [7:00 PM].'",
+      "keywords": [
+        { "displayText": "D. Marsh", "id": "d_marsh_7pm", "color": "crime" },
+        { "displayText": "7:00 PM", "id": "d_marsh_7pm", "color": "crime" }
+      ]
+    },
+    {
+      "id": "inspect_acoustic_cases",
+      "text": "Massive road cases. The label reads: '[Acoustic Isolation] — No Sound Transmission.' You press an ear to the surface. Silence. Whatever's inside, you wouldn't hear it [squawk].",
+      "keywords": [
+        { "displayText": "Acoustic Isolation", "id": "sound_proof_cases", "color": "crime" },
+        { "displayText": "squawk", "id": "sound_proof_cases", "color": "crime" }
+      ]
+    },
+    {
+      "id": "inspect_star_note",
+      "text": "A handwritten note on the nightstand: 'Derek — Rudebeak woke me up at 5AM. AGAIN. Do [SOMETHING] about that bird or I am calling my [lawyer].' — M.",
+      "keywords": [
+        { "displayText": "SOMETHING", "id": "star_note_to_husband", "color": "misc" },
+        { "displayText": "lawyer", "id": "star_note_to_husband", "color": "misc" }
+      ]
+    },
+    {
+      "id": "inspect_headphone_box",
+      "text": "An open box for top-of-the-line noise-canceling headphones. Purchase receipt inside: [yesterday's date]. Someone finally [snapped].",
+      "keywords": [
+        { "displayText": "yesterday's date", "id": "headphone_box", "color": "misc" },
+        { "displayText": "snapped", "id": "headphone_box", "color": "misc" }
+      ]
+    }
+  ],
+  "localDeductionSentence": "The [Husband] heard someone rush past at [7:00 PM], while heavy [Sound-Proof Cases] signed in under 'D. Marsh' sat silently in the corner."
 }

@@ -94,8 +94,48 @@ Call them in that order from `Game1.Update()`. Do not merge them.
 - Only **object layers** are parsed. Tile layers are ignored.
 - Layer named `Collisions` → feeds `_solidBoundaries` (blocks cat movement).
 - Layer named `Triggers` → fade zones; matched to props by name substring (`"desk"`, `"cabinet"`).
+- Layer named `Transfers` → doorways; each object needs two custom properties: `TargetRoom` (folder name) and `TargetSpawn` (spawn point name in the target room).
+- Layer named `Spawn` → named point objects. `spawn_default` is used on first entry; return spawns are named `spawn_from_<roomId>`.
 - The JSON file is read at runtime with `File.ReadAllText`. Edit it without rebuilding `.mgcb`.
 - Object rectangles only. Tiled polygons and ellipses are not supported yet.
+- A layer-level `offsetx`/`offsety` on any layer shifts all its objects at parse time. The entrance Transfers layer uses offset `(-142, +192)` to align with the background art.
+
+### Spawn point placement rule — critical
+The cat collision box is **87 px wide (±43 px from center) and 45 px tall** (from `Position.Y - 45` up to `Position.Y`). A spawn point that lands inside a transfer zone causes an instant re-trigger loop. When placing a `spawn_from_X` point, ensure the entire collision box clears the transfer zone:
+
+- **Y clearance**: `spawnY > zoneBottom + 45` (spawn below a zone) or `spawnY - 45 > zoneTop` adjusted accordingly
+- **X clearance**: `spawnX - 43 > zoneRight` or `spawnX + 43 < zoneLeft` (spawn beside a zone)
+
+A safe margin of ~15 px beyond the minimum is recommended.
+
+### Malibu Mansion — room wiring
+
+```
+entrance ──► living_room   (transfer right-side; spawn_from_entrance)
+         └─► bedroom       (transfer right-side; spawn_from_entrance)
+
+living_room ──► entrance   (transfer bottom-left; spawn_from_living_room)
+            ├─► library    (transfer left-side;   spawn_from_living_room)
+            ├─► kitchen    (transfer right-side;  spawn_from_living_room)
+            └─► garden     (transfer top-center;  spawn_from_living_room)
+
+bedroom ──► entrance       (transfer bottom-center; spawn_from_bedroom)
+
+library ──► living_room    (transfer right-side; spawn_from_library)
+
+kitchen ──► living_room    (transfer right-side; spawn_from_kitchen)
+
+garden ──► living_room     (transfer right-side; spawn_from_garden)
+       └─► pool_area       (transfer bottom-left; spawn_from_garden)
+
+pool_area ──► garden       (transfer bottom-center; spawn_from_pool_area)
+```
+
+All connections are bidirectional. Background dimensions per room:
+- `entrance`, `living_room`, `kitchen`: 1370 × 768
+- `bedroom`, `garden`, `library`, `pool_area`: 1456 × 816
+
+The canvas resizes automatically when switching between room sizes.
 
 ---
 

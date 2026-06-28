@@ -142,7 +142,10 @@
          "draworder":"topdown",
          "id":5,
          "name":"Interactables",
-         "objects":[],
+         "objects":[
+                {"height":120,"id":53,"name":"inspect_gardener","opacity":1,"rotation":0,"type":"","visible":true,"width":80,"x":700,"y":550},
+                {"height":60,"id":54,"name":"inspect_pruning_shears","opacity":1,"rotation":0,"type":"","visible":true,"width":80,"x":650,"y":265},
+                {"height":70,"id":55,"name":"inspect_bird_bath","opacity":1,"rotation":0,"type":"","visible":true,"width":90,"x":310,"y":430}],
          "opacity":0,
          "type":"objectgroup",
          "visible":true,
@@ -150,7 +153,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":53,
+ "nextobjectid":56,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",

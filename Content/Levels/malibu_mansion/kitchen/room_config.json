@@ -1,5 +1,28 @@
 {
   "props": [],
-  "interactables": [],
-  "localDeductionSentence": ""
+  "interactables": [
+    {
+      "id": "inspect_maid",
+      "text": "The [Maid] is aggressively chopping vegetables. The cleaver hits the board like a verdict. She does not look friendly.",
+      "keywords": [
+        { "displayText": "Maid", "id": "the_maid", "color": "misc" }
+      ]
+    },
+    {
+      "id": "inspect_note_on_fridge",
+      "text": "A note pinned to the fridge: 'That bird called my paella [garbage slop]. In front of guests.' Someone drew a [skull] next to it.",
+      "keywords": [
+        { "displayText": "garbage slop", "id": "insulted_cooking", "color": "misc" },
+        { "displayText": "skull", "id": "insulted_cooking", "color": "misc" }
+      ]
+    },
+    {
+      "id": "inspect_paella_pot",
+      "text": "The Maid's paella. You sniff it. It smells extraordinary. Whatever Rudebeak said about this dish, [he was wrong].",
+      "keywords": [
+        { "displayText": "he was wrong", "id": "paella_pot", "color": "misc" }
+      ]
+    }
+  ],
+  "localDeductionSentence": "The [Maid] aggressively chopped vegetables, her fury at Rudebeak's insult to her [Cooking] immortalized on the fridge in her own handwriting — skull and all."
 }

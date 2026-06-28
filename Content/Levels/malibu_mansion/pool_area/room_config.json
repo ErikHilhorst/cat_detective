@@ -1,5 +1,30 @@
 {
   "props": [],
-  "interactables": [],
-  "localDeductionSentence": ""
+  "interactables": [
+    {
+      "id": "inspect_socialite",
+      "text": "The [Socialite] lowers her sunglasses. 'I saw that camera crew guy — the nervous one with the giant headphones — dragging [huge black cases] through the garden. At like, [quarter to seven]. I thought it was weird.'",
+      "keywords": [
+        { "displayText": "Socialite", "id": "eyewitness_645pm", "color": "plot" },
+        { "displayText": "huge black cases", "id": "eyewitness_645pm", "color": "plot" },
+        { "displayText": "quarter to seven", "id": "eyewitness_645pm", "color": "plot" }
+      ]
+    },
+    {
+      "id": "inspect_pool_selfie",
+      "text": "The Socialite's phone has a pool selfie timestamped [6:47 PM]. Visible in the blurry background: a [figure with large dark cases] moving along the garden path.",
+      "keywords": [
+        { "displayText": "6:47 PM", "id": "selfie_figure_cases", "color": "plot" },
+        { "displayText": "figure with large dark cases", "id": "selfie_figure_cases", "color": "plot" }
+      ]
+    },
+    {
+      "id": "inspect_production_schedule",
+      "text": "A production schedule left poolside. Under '7:00 PM — Crew Assignments:' it reads: '[D. Marsh — Library (audio setup)].' He was supposed to be in the Library at seven.",
+      "keywords": [
+        { "displayText": "D. Marsh — Library (audio setup)", "id": "production_schedule", "color": "misc" }
+      ]
+    }
+  ],
+  "localDeductionSentence": "The [Socialite]'s pool selfie, timestamped [6:47 PM], captured a blurry figure hauling [large dark cases] through the garden — before anyone reported a thing."
 }

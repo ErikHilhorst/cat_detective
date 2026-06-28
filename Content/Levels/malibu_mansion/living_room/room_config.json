@@ -1,5 +1,46 @@
 {
   "props": [],
-  "interactables": [],
-  "localDeductionSentence": ""
+  "interactables": [
+    {
+      "id": "inspect_movie_star",
+      "text": "The [Movie Star] weeps. 'I heard Rudebeak. At [8:00 PM]. It was definitely him — I'd know that screech anywhere. He was here.'",
+      "keywords": [
+        { "displayText": "Movie Star", "id": "squawk_at_8pm", "color": "plot" },
+        { "displayText": "8:00 PM", "id": "squawk_at_8pm", "color": "plot" }
+      ]
+    },
+    {
+      "id": "inspect_birdcage",
+      "text": "The [Empty Cage]. The latch is [snapped clean off]. The seed tray is bone dry. The feathers have settled — they've been here for hours, not minutes.",
+      "keywords": [
+        { "displayText": "Empty Cage", "id": "broken_latch", "color": "crime" },
+        { "displayText": "snapped clean off", "id": "broken_latch", "color": "crime" }
+      ]
+    },
+    {
+      "id": "inspect_hidden_speaker",
+      "text": "Tucked behind the cage stand, half-hidden by a fern: a small [Wireless Speaker]. A thin [Audio Cable] trails behind the furniture toward the wall.",
+      "keywords": [
+        { "displayText": "Wireless Speaker", "id": "hidden_speaker", "color": "crime" },
+        { "displayText": "Audio Cable", "id": "hidden_speaker", "color": "crime" }
+      ]
+    },
+    {
+      "id": "inspect_documentary_camera",
+      "text": "A film crew camera on a tripod. The red light says [Recording]. It's been on all day. Someone forgot to check if it was aimed at the [cage].",
+      "keywords": [
+        { "displayText": "Recording", "id": "documentary_camera", "color": "misc" },
+        { "displayText": "cage", "id": "documentary_camera", "color": "misc" }
+      ]
+    },
+    {
+      "id": "inspect_vocab_ledger",
+      "text": "A booklet: 'Phrases We've Taught Rudebeak.' Entries include: 'Hello gorgeous' ✓ | 'Oscar worthy' ✓ | '[Garbage slop]' ✓ — crossed out, labeled: '[Maid's fault]'.",
+      "keywords": [
+        { "displayText": "Garbage slop", "id": "vocab_ledger", "color": "misc" },
+        { "displayText": "Maid's fault", "id": "vocab_ledger", "color": "misc" }
+      ]
+    }
+  ],
+  "localDeductionSentence": "The [Movie Star] swore she heard Rudebeak at [8:00 PM] — but the [Broken Latch], dried seed tray, and a [Hidden Speaker] behind the cage tell a very different story."
 }

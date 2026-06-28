@@ -1,5 +1,30 @@
 {
   "props": [],
-  "interactables": [],
-  "localDeductionSentence": ""
+  "interactables": [
+    {
+      "id": "inspect_walkie_talkie",
+      "text": "The [Police Officer]'s radio crackles: 'Lockdown initiated. [8:15 PM]. No one in or out.'",
+      "keywords": [
+        { "displayText": "Police Officer", "id": "lockdown_815pm", "color": "misc" },
+        { "displayText": "8:15 PM", "id": "lockdown_815pm", "color": "misc" }
+      ]
+    },
+    {
+      "id": "inspect_managers_phone",
+      "text": "The [Manager] shouts into his phone: 'A missing parrot?! Do you know what this does to her brand?! It's a [PR Disaster]!'",
+      "keywords": [
+        { "displayText": "Manager", "id": "pr_disaster", "color": "misc" },
+        { "displayText": "PR Disaster", "id": "pr_disaster", "color": "misc" }
+      ]
+    },
+    {
+      "id": "inspect_guest_registry",
+      "text": "A formal sign-in book by the entrance. Everyone logged their arrival. One entry stands out: '[D. Marsh] — [6:30 PM].' Half an hour before he officially signed in his cases.",
+      "keywords": [
+        { "displayText": "D. Marsh", "id": "guest_registry", "color": "misc" },
+        { "displayText": "6:30 PM", "id": "guest_registry", "color": "misc" }
+      ]
+    }
+  ],
+  "localDeductionSentence": "The [Police Officer] locked down the mansion at [8:15 PM], long after the bird had gone quiet — leaving the [Manager] to turn a [PR Disaster] into a phone call."
 }

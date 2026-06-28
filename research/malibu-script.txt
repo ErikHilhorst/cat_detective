@@ -1,0 +1,120 @@
+CASE FILE 01: The Missing Macaw
+1. Case Overview
+Setting: A luxurious, sun-drenched Malibu mansion with a "Studio Ghibli" painted aesthetic. Lush plants, warm lighting, rich woodwork, and sparkling blue water.
+Tone: Cozy, humorous, and low-stakes. A clash between chaotic, egotistical Hollywood personalities and a chill, judgmental housecat. No murder, no gore—just a stolen, highly obnoxious parrot.
+The Victim: "Rudebeak" the Macaw. A prized, expensive, and exceptionally foul-mouthed bird belonging to the Movie Star.
+2. The Truth (What Actually Happened)
+The Culprit: The Sound Guy.
+The Motive: Rudebeak kept squawking and ruining the audio takes for the documentary crew. The Sound Guy, desperate for a perfect portfolio to break into Hollywood, snapped.
+The Method (The Trick): At 7:00 PM, when the crew first arrived, the Sound Guy stashed Rudebeak inside one of his heavy, sound-proofed Acoustic Cases and moved it to the Bedroom. To cover his tracks, he ran an Audio Cable from his mixing board in the Library to a hidden speaker tucked under the birdcage in the Living Room. At 8:00 PM, he triggered a loop of Rudebeak squawking from the mixer. Everyone heard it — creating a fake time of crime that gave everyone, including himself, a false alibi.
+Pre-crime subplot: Earlier that afternoon, the Gardener had already broken the birdcage latch himself in an attempt to free the bird into the wild. The bird didn't fly. The Gardener gave up. The Sound Guy found the cage already unlatched and simply lifted Rudebeak out — no tools needed.
+3. Character Roster (The 10 Suspects)
+The cat cannot converse with them; clicking them yields contextual observations or overheard mumbling.
+The Movie Star (Living Room): Distraught, genuine, weeping on the couch.
+The Husband (Bedroom): Nervous wreck. Hiding in the bedroom wearing heavy headphones to escape the noise of the house. Tried to speak to the Sound Guy in the hallway at ~7:00 PM and was brushed off.
+The Manager (Entrance): A slick, horrible Hollywood agent. Screaming on his phone. Hates animals.
+The Socialite (Pool Area): Perpetually bored, wearing massive sunglasses. Saw the Sound Guy hauling heavy cases through the garden at 6:45 PM. Didn't think much of it until now.
+The Maid (Kitchen): Fiercely protective of the kitchen. Furious that the bird insulted her cooking.
+The Gardener (Garden): A gentle nature lover trimming hedges. Quietly guilty — he snapped the cage latch earlier that day, trying to free the bird. The bird didn't leave. He never told anyone.
+The Director (Library): Sleazy TLC-style documentary director. Thrilled by the drama because it means good TV ratings.
+The Sound Guy (Library): Sweaty, wearing big headphones, hunched over a mixing board. Desperate for a clean audio take.
+The Bird Handler (Living Room): Eccentric, obsessed with the bird's plumage. Frantically picking up loose feathers.
+The Police Officer (Entrance): Grumpy, standing guard. Annoyed he was called in for a "missing poultry" case.
+4. Map & Flow
+A flat, 7-room grid. The Living Room acts as the central hub.
+[Entrance] connects to -> [Living Room], [Bedroom]
+[Living Room] connects to -> [Entrance], [Library], [Kitchen], [Garden]
+[Bedroom] connects to -> [Entrance]
+[Library] connects to -> [Living Room]
+[Kitchen] connects to -> [Living Room]
+[Garden] connects to -> [Living Room], [Pool Area]
+[Pool Area] connects to -> [Garden]
+5. Room-by-Room Breakdown (Layer 1 Solves)
+Room 1: The Entrance
+Vibe: Grand staircase, marble floors, locked double doors.
+Interactables (Clues):
+The Cop's walkie-talkie: "[Police Officer] reporting. Lockdown began at [8:15 PM]. No one in or out after that."
+The Manager's phone: "[Manager] screaming: 'I told you, I hate [Animals]! It's a [PR Disaster]! Do you know what this does to her brand?!'"
+Room Solve Sentence:
+"The [Police Officer] locked the [Front Doors] at [8:15 PM], long after the bird had gone quiet — infuriating the [Manager] who is already spinning the [PR Disaster]."
+Macro Clues Rewarded: [Lockdown at 8:15 PM] | [PR Disaster]
+
+Room 2: The Bedroom
+Vibe: Quiet, isolated, dim. Sunbeams hitting a messy bed.
+Interactables (Clues):
+The Husband: "The [Husband] is wearing heavy [Headphones]. He mumbles: 'That audio guy barged past me in the hall around seven. Didn't even apologize.'"
+Equipment Manifest: "A crew delivery manifest on the dresser. Multiple names, multiple items. One line reads: [D. Marsh — 2x Acoustic Cases, sound-proof rated — 7:00 PM]. Other crew members signed for cables, lights, and a dolly earlier."
+Acoustic Cases: "Massive black road cases, latched shut. The label reads: 'Acoustic Isolation — No Sound Transmission.' Not a peep from inside. Whatever's in there, you wouldn't hear it squawk."
+Room Solve Sentence:
+"The [Husband] heard someone rush past at [7:00 PM], while heavy [Sound-Proof Cases] signed in under the name 'D. Marsh' sat silently in the corner."
+Macro Clues Rewarded: [Sound-Proof Cases] | [D. Marsh — 7:00 PM]
+Note: D. Marsh is the Sound Guy's surname. The player must connect this name to the Sound Guy from the Library.
+
+Room 3: The Living Room (The Crime Scene)
+Vibe: The central hub. Messy coffee table, a giant empty gilded birdcage.
+Interactables (Clues):
+The Movie Star: "The [Movie Star] weeps, swearing she heard the bird squawking at exactly [8:00 PM]. 'It was definitely him. I'd know Rudebeak anywhere.'"
+The Cage / Handler: "The [Empty Cage] has a [Broken Latch] — snapped clean off. The food bowl is bone dry, the seed tray is thick with [Settled Feathers]. The [Handler] frets: 'These feathers have been here for hours. He was gone before I even got here.'"
+The Hidden Speaker: "Tucked behind the cage stand, mostly hidden by a potted fern: a small [Wireless Speaker], trailing a thin cable behind the furniture toward the wall."
+Room Solve Sentence:
+"The [Movie Star] swore she heard Rudebeak at [8:00 PM] — but the [Settled Feathers] and a hidden [Wireless Speaker] suggest the cage was empty long before that."
+Macro Clues Rewarded: [8:00 PM Squawk] | [Hidden Speaker]
+Note: The contradiction — dried food, settled feathers, and the hidden speaker all point to the 8PM squawk being fake.
+
+Room 4: The Library
+Vibe: Cozy wood panels, books, overrun with film equipment.
+Interactables (Clues):
+The Director: "The [Director] is scribbling notes. 'This is gold. A missing bird, a weeping star, a locked mansion — this writes itself. Emmy, baby.'"
+Mixing Board + Cable: "The [Sound Guy]'s mixer hums quietly. His name badge reads 'D. Marsh.' An [Audio Cable] snakes from the back of the board, disappears into the wall — heading in the direction of the [Living Room]."
+Room Solve Sentence:
+"The [Director] smelled ratings while 'D. Marsh' — the [Sound Guy] — kept his mixer running, an [Audio Cable] threading quietly toward the [Living Room]."
+Macro Clues Rewarded: [Audio Cable → Living Room] | [D. Marsh = Sound Guy]
+Note: This is where the player confirms that D. Marsh on the bedroom manifest and the Sound Guy are the same person.
+
+Room 5: The Kitchen
+Vibe: Bright, tiled, smells like food. A massive pot on the stove.
+Interactables (Clues):
+The Maid / Cleaver: "The [Maid] is aggressively chopping [Vegetables], the cleaver hitting the board like a verdict."
+Scrap of paper: "A note pinned to the fridge: 'That bird called my paella 'garbage slop.' In front of guests.' Someone drew a skull next to it."
+Room Solve Sentence:
+"The [Maid] aggressively chopped [Vegetables], her fury at the bird's insult to her [Cooking] written all over the kitchen wall."
+Macro Clues Rewarded: [The Maid] | [Insulted Cooking]
+
+Room 6: The Garden
+Vibe: Beautiful flowers, a fountain, sunshine — and a guilty-looking man trimming the same hedge for the fourth time.
+Interactables (Clues):
+The Gardener: "The [Gardener] is very focused on his hedge. 'Birds belong in [Nature]. Cages are cruel. I... I didn't do anything. I was just trimming.'"
+Pruning Shears: "A pair of heavy iron [Pruning Shears] left near the fountain. The blade tips are slightly bent — consistent with forcing a metal latch. The cage had a [Broken Latch]."
+Room Solve Sentence:
+"The [Gardener] left his [Shears] by the fountain, claiming birds belong in [Nature] — and the bent blade tips match the cage's [Broken Latch] perfectly."
+Macro Clues Rewarded: [The Gardener] | [Broken Latch]
+Note: A compelling red herring. He broke the latch but did not take the bird. The Sound Guy exploited the already-open cage.
+
+Room 7: The Pool Area
+Vibe: Crystal blue water, lounge chairs, very relaxed — except the Socialite is watching something on her phone with narrowed eyes.
+Interactables (Clues):
+The Socialite: "The [Socialite] looks up from her phone. 'I saw that camera crew guy — you know, the nervous one with the giant headphones? He was dragging those huge black cases through the garden at like, quarter to seven. I thought it was weird. I took a photo.'"
+Phone / Pool Selfie: "The [Socialite]'s pool selfie is timestamped [6:47 PM]. Visible in the background, slightly out of focus: a figure hauling large dark cases through the garden path toward the house."
+Room Solve Sentence:
+"The [Socialite]'s pool selfie, timestamped [6:47 PM], shows a blurry figure hauling heavy cases through the garden — long before the bird was reported missing."
+Macro Clues Rewarded: [Eyewitness at 6:47 PM] | [Figure with Cases]
+
+6. The Final Solve (Macro Deduction)
+The Setup:
+Once all 7 room puzzles are completed, a "Solve Case" button unlocks. The player opens the Notebook to the Final Case file. The right-hand tabs are populated only with the Macro Clues earned from the rooms.
+If the player selects a Macro Clue, the Inspector Panel displays the text from that room's solved sentence as a reminder.
+The Deduction Chain the Player Must Build:
+Step 1 — Establish the fake alibi:
+[8:00 PM Squawk] + [Hidden Speaker] + [Audio Cable → Living Room] = the squawk at 8PM was played through a speaker from the mixer. It was a recording.
+Step 2 — Prove the bird was already gone:
+[Sound-Proof Cases] = the bird could not have made a sound if it was inside. Combined with [Settled Feathers], it was gone well before 8PM.
+Step 3 — Place the culprit at the scene:
+[D. Marsh — 7:00 PM] + [D. Marsh = Sound Guy] + [Husband saw someone at 7:00 PM] + [Eyewitness at 6:47 PM] = the Sound Guy was moving cases through the garden before 7PM and signed them into the bedroom at 7PM.
+Step 4 — Expose the red herrings:
+[The Gardener] + [Broken Latch] = he snapped the latch, but the bird didn't leave. The Sound Guy used the already-open cage.
+[The Maid] + [Insulted Cooking] = motive only, no physical evidence.
+The Final Mad Libs Sentence (Left Page) — 5 slots:
+[ WHO ] took Rudebeak at [ WHEN ], hiding the bird inside [ WHAT ], then played a [ HOW ] through a [ WHERE ] to fake an alibi.
+The Solution:
+[ The Sound Guy ] took Rudebeak at [ 7:00 PM ], hiding the bird inside [ Sound-Proof Cases ], then played an [ Audio Recording ] through a [ Hidden Speaker ] to fake an alibi.
+Red herrings in the clue pool: [The Maid], [Insulted Cooking], [The Gardener], [Broken Latch], [PR Disaster], [Lockdown at 8:15 PM] — present to ensure the player must actually reason through the evidence rather than guess. The Gardener trap is the deepest: he has both physical motive and physical evidence, but the timeline collapses — the bird didn't leave when he broke the latch. Only the Sound Guy had the timing, the equipment, and the means to fake the sound.

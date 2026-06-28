@@ -104,7 +104,10 @@
          "draworder":"topdown",
          "id":5,
          "name":"Interactables",
-         "objects":[],
+         "objects":[
+                {"height":120,"id":52,"name":"inspect_maid","opacity":1,"rotation":0,"type":"","visible":true,"width":80,"x":530,"y":490},
+                {"height":80,"id":53,"name":"inspect_note_on_fridge","opacity":1,"rotation":0,"type":"","visible":true,"width":60,"x":800,"y":390},
+                {"height":80,"id":54,"name":"inspect_paella_pot","opacity":1,"rotation":0,"type":"","visible":true,"width":100,"x":630,"y":390}],
          "opacity":0,
          "type":"objectgroup",
          "visible":false,
@@ -112,7 +115,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":52,
+ "nextobjectid":55,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",

@@ -212,7 +212,12 @@
          "draworder":"topdown",
          "id":5,
          "name":"Interactables",
-         "objects":[],
+         "objects":[
+                {"height":120,"id":55,"name":"inspect_movie_star","opacity":1,"rotation":0,"type":"","visible":true,"width":80,"x":330,"y":510},
+                {"height":160,"id":56,"name":"inspect_birdcage","opacity":1,"rotation":0,"type":"","visible":true,"width":110,"x":680,"y":360},
+                {"height":50,"id":57,"name":"inspect_hidden_speaker","opacity":1,"rotation":0,"type":"","visible":true,"width":50,"x":750,"y":440},
+                {"height":120,"id":58,"name":"inspect_documentary_camera","opacity":1,"rotation":0,"type":"","visible":true,"width":80,"x":550,"y":360},
+                {"height":90,"id":59,"name":"inspect_vocab_ledger","opacity":1,"rotation":0,"type":"","visible":true,"width":70,"x":480,"y":450}],
          "opacity":0,
          "type":"objectgroup",
          "visible":false,
@@ -220,7 +225,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":55,
+ "nextobjectid":60,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",
