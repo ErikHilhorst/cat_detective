@@ -1,5 +1,5 @@
 {
-    "activeFile": "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/room_map.json",
+    "activeFile": "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/room_map.json",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -37,6 +37,10 @@
             }
         },
         "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/room_map.json": {
+            "expandedObjectLayers": [
+                4,
+                3
+            ],
             "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
@@ -57,6 +61,10 @@
             }
         },
         "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/room_map.json": {
+            "expandedObjectLayers": [
+                4,
+                3
+            ],
             "scale": 0.5,
             "selectedLayer": 3,
             "viewCenter": {
@@ -65,11 +73,22 @@
             }
         },
         "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/room_map.json": {
+            "expandedObjectLayers": [
+                3
+            ],
             "scale": 0.750985401459854,
             "selectedLayer": 2,
             "viewCenter": {
                 "x": 651.1444817028721,
                 "y": 296.27739709384264
+            }
+        },
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/room_map.json": {
+            "scale": 0.7066277472527472,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 976.4688730135589,
+                "y": 296.4785926033921
             }
         },
         "C:/Users/larry/Projecten/cat_detective/Content/room_map.json": {
@@ -83,15 +102,24 @@
     },
     "openFiles": [
         "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/room_map.json",
-        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/room_map.json"
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/room_map.json"
     ],
     "project": "untitledcat_detective.tiled-project",
     "recentFiles": [
-        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/room_map.json",
-        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/room_map.json",
-        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/room_map.json",
         "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/room_map.json",
         "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/room_map.json",
+        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/room_map.json",
         "C:/Users/larry/Projecten/cat_detective/Content/room_map.json"
     ]
 }
