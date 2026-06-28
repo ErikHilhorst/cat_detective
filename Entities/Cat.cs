@@ -200,13 +200,13 @@ namespace CatDetective.Entities
         }
 
         /// <summary>
-        /// Returns true on the exact frame the Spacebar is pressed (not held).
+        /// Returns true on the exact frame the Enter key is pressed (not held).
         /// Call once per Update tick so the state advances correctly.
         /// </summary>
         public bool IsInteractPressed()
         {
             var kb = Keyboard.GetState();
-            bool pressed = kb.IsKeyDown(Keys.Space) && !_prevInteractKbState.IsKeyDown(Keys.Space);
+            bool pressed = kb.IsKeyDown(Keys.Enter) && !_prevInteractKbState.IsKeyDown(Keys.Enter);
             _prevInteractKbState = kb;
             return pressed;
         }

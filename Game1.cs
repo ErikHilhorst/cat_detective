@@ -782,8 +782,8 @@ namespace CatDetective
 
                     bool isLastPage = _currentDialoguePage >= _dialoguePages.Length - 1;
                     string hint     = typingDone
-                        ? (isLastPage ? "[ Space ] to dismiss" : "[ Space ] to continue")
-                        : "[ Space ] to skip";
+                        ? (isLastPage ? "[ Enter ] to dismiss" : "[ Enter ] to continue")
+                        : "[ Enter ] to skip";
                     var    hintSize = _dialogueFont.MeasureString(hint);
                     _spriteBatch.DrawString(
                         _dialogueFont,
@@ -830,7 +830,7 @@ namespace CatDetective
                     // Transfer-zone prompt: centred at the bottom of the play area.
                     if (_activeTransferZone != null)
                     {
-                        const string enterHint   = "[ Space ] to enter";
+                        const string enterHint   = "[ Enter ] to enter";
                         var          enterHintSz = _dialogueFont.MeasureString(enterHint);
                         _spriteBatch.DrawString(
                             _dialogueFont, enterHint,

@@ -18,7 +18,13 @@
          "draworder":"topdown",
          "id":2,
          "name":"Collisions",
-         "objects":[],
+         "objects":[
+                {"height":60,"id":200,"name":"wall_top","opacity":1,"rotation":0,"type":"","visible":true,"width":1456,"x":0,"y":0},
+                {"height":756,"id":201,"name":"wall_left","opacity":1,"rotation":0,"type":"","visible":true,"width":20,"x":0,"y":60},
+                {"height":756,"id":202,"name":"wall_right","opacity":1,"rotation":0,"type":"","visible":true,"width":20,"x":1436,"y":60},
+                {"height":8,"id":203,"name":"wall_bottom","opacity":1,"rotation":0,"type":"","visible":true,"width":1456,"x":0,"y":808},
+                {"height":160,"id":204,"name":"fountain","opacity":1,"rotation":0,"type":"","visible":true,"width":270,"x":530,"y":90},
+                {"height":350,"id":205,"name":"house_right","opacity":1,"rotation":0,"type":"","visible":true,"width":266,"x":1190,"y":60}],
          "opacity":0,
          "type":"objectgroup",
          "visible":false,
@@ -110,9 +116,9 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":1062,
-                 "y":335
-                }, 
+                 "x":930,
+                 "y":455
+                },
                 {
                  "height":0,
                  "id":52,
@@ -123,8 +129,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":230,
-                 "y":795
+                 "x":440,
+                 "y":680
                 }],
          "opacity":0,
          "type":"objectgroup",

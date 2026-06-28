@@ -18,7 +18,11 @@
          "draworder":"topdown",
          "id":2,
          "name":"Collisions",
-         "objects":[],
+         "objects":[
+                {"height":340,"id":200,"name":"wall_top","opacity":1,"rotation":0,"type":"","visible":true,"width":1370,"x":0,"y":0},
+                {"height":428,"id":201,"name":"wall_left","opacity":1,"rotation":0,"type":"","visible":true,"width":20,"x":0,"y":340},
+                {"height":428,"id":202,"name":"wall_right","opacity":1,"rotation":0,"type":"","visible":true,"width":20,"x":1350,"y":340},
+                {"height":23,"id":203,"name":"wall_bottom","opacity":1,"rotation":0,"type":"","visible":true,"width":1370,"x":0,"y":745}],
          "opacity":0,
          "type":"objectgroup",
          "visible":true,
@@ -112,9 +116,9 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":1181.33333333333,
-                 "y":446.666666666667
-                }, 
+                 "x":1140,
+                 "y":560
+                },
                 {
                  "height":0,
                  "id":52,
@@ -125,8 +129,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":958.666666666667,
-                 "y":560
+                 "x":900,
+                 "y":630
                 }],
          "opacity":0,
          "type":"objectgroup",
