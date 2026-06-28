@@ -1,5 +1,5 @@
 {
-    "activeFile": "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/room_map.json",
+    "activeFile": "",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -101,14 +101,6 @@
         }
     },
     "openFiles": [
-        "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/room_map.json",
-        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/room_map.json",
-        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/room_map.json",
-        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/room_map.json",
-        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/room_map.json",
-        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/room_map.json",
-        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/room_map.json",
-        "C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/room_map.json"
     ],
     "project": "untitledcat_detective.tiled-project",
     "recentFiles": [

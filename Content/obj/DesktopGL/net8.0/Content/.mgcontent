@@ -4,33 +4,33 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/ui_dialogue_box.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/mask_sunbeams.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/shadow_blob.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/walk_animation_forward.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/walk_animation_upward.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/ui_notebook_bg.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/ui_tab.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/who.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/how.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/where.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/why.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/dialogue_font.spritefont</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/bg_base.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/prop_desk.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/prop_cabinet.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_answering_machine.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_calendar.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_newspaper.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_takeout_bag.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_trash_can.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/bg_base.jpg</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/bg_base.jpg</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/bg_base.jpg</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/bg_base.jpg</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/bg_base.jpg</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/bg_base.jpg</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/bg_base.jpg</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/ui_dialogue_box.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/mask_sunbeams.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/shadow_blob.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/walk_animation_forward.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/walk_animation_upward.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/ui_notebook_bg.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/ui_tab.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/who.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/how.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/where.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/why.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/dialogue_font.spritefont</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/bg_base.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/prop_desk.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/prop_cabinet.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/Interactables/inspect_answering_machine.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/Interactables/inspect_calendar.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/Interactables/inspect_newspaper.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/Interactables/inspect_takeout_bag.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/Interactables/inspect_trash_can.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/entrance/bg_base.jpg</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/bedroom/bg_base.jpg</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/bg_base.jpg</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/library/bg_base.jpg</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/kitchen/bg_base.jpg</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/garden/bg_base.jpg</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/pool_area/bg_base.jpg</File>
   </SourceFiles>
   <DestFiles>
     <File xsi:nil="true" />

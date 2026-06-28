@@ -102,24 +102,25 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\larry\\.nuget\\packages\\": {}
+    "C:\\Users\\Erik\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj",
+      "projectUniqueName": "C:\\Users\\Erik\\Desktop\\Python projects\\cat_detective\\CatDetective.csproj",
       "projectName": "CatDetective",
-      "projectPath": "C:\\Users\\larry\\Projecten\\cat_detective\\CatDetective.csproj",
-      "packagesPath": "C:\\Users\\larry\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\larry\\Projecten\\cat_detective\\obj\\",
+      "projectPath": "C:\\Users\\Erik\\Desktop\\Python projects\\cat_detective\\CatDetective.csproj",
+      "packagesPath": "C:\\Users\\Erik\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Erik\\Desktop\\Python projects\\cat_detective\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\larry\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Erik\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -138,7 +139,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.100"
+      "SdkAnalysisLevel": "9.0.200"
     },
     "frameworks": {
       "net8.0": {
@@ -167,19 +168,19 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.23, 8.0.23]"
+            "version": "[8.0.14, 8.0.14]"
           },
           {
             "name": "Microsoft.NETCore.App.Host.win-x64",
-            "version": "[8.0.23, 8.0.23]"
+            "version": "[8.0.14, 8.0.14]"
           },
           {
             "name": "Microsoft.NETCore.App.Ref",
-            "version": "[8.0.23, 8.0.23]"
+            "version": "[8.0.14, 8.0.14]"
           },
           {
             "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[8.0.23, 8.0.23]"
+            "version": "[8.0.14, 8.0.14]"
           }
         ],
         "frameworkReferences": {
@@ -187,7 +188,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

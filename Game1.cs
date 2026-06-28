@@ -30,11 +30,11 @@ namespace CatDetective
     public class Game1 : Game
     {
         // ── Internal resolution ────────────────────────────────────────────────
-        private const int   SCREEN_WIDTH   = 2020;
-        private const int   SCREEN_HEIGHT  = 1136;
-        private const float DISPLAY_SCALE  = 0.6f;
-        private static readonly int WINDOW_WIDTH  = (int)(SCREEN_WIDTH  * DISPLAY_SCALE);
-        private static readonly int WINDOW_HEIGHT = (int)(SCREEN_HEIGHT * DISPLAY_SCALE);
+        // Set per-room to match the background image exactly (no centering, no dead zone).
+        // UpdateLayout() recomputes all UI positions whenever these change.
+        private int         SCREEN_WIDTH  = 1456;
+        private int         SCREEN_HEIGHT = 816;
+        private const float DISPLAY_SCALE = 1.0f; // 1.0 = native bg pixel size
 
         // ── MonoGame core ──────────────────────────────────────────────────────
         private readonly GraphicsDeviceManager _graphics;
@@ -89,22 +89,16 @@ namespace CatDetective
         private int          _wordBankPageCount = 0; // last page index, written by Draw, read by Update
         private readonly List<(Rectangle Rect, Clue Clue)> _wordBankClueRects = new();
 
-        private static readonly Rectangle _solveButtonRect =
-            new Rectangle(2020 - 160, 1136 - 160, 120, 120);
-        private static readonly Rectangle _finalSolveButtonRect =
-            new Rectangle(2020 - 160, 1136 - 160 - 130, 120, 110);
+        // UI layout — all computed by UpdateLayout() so they scale with any background size.
+        // Reference design space: 2020×1136. UpdateLayout() maps these to SCREEN_WIDTH×SCREEN_HEIGHT.
+        private Rectangle   _solveButtonRect;
+        private Rectangle   _finalSolveButtonRect;
 
         // Hotspot menu: one pre-rendered 800×150 bar per active tab.
         // Visual order on the image: Who | How(What) | Where(WhereWhen) | Why
         // This differs from enum order (Who=0,What=1,Why=2,WhereWhen=3), so map explicitly.
-        private static readonly Vector2 _tabImagePos = new Vector2(1050,100);
-        private static readonly Rectangle[] _tabHotspots = new[]
-        {
-            new Rectangle(1060, 50, 200, 150),
-            new Rectangle(1260, 50, 200, 150),
-            new Rectangle(1460, 50, 200, 150),
-            new Rectangle(1660, 50, 200, 150),
-        };
+        private Vector2     _tabImagePos;
+        private Rectangle[] _tabHotspots      = Array.Empty<Rectangle>();
         private static readonly ClueCategory[] _tabHotspotCategories =
         {
             ClueCategory.Who,
@@ -112,33 +106,16 @@ namespace CatDetective
             ClueCategory.WhereWhen,
             ClueCategory.Why,
         };
-        // Paging: sit just below wordBankArea (Y=280+400=680)
-        private static readonly Rectangle _journalPrevPageRect = new Rectangle(1050, 692,  90, 35);
-        private static readonly Rectangle _journalNextPageRect = new Rectangle(1710, 692,  90, 35);
-        // Insert: bottom-right of inspectorArea (X=1050+700=1750, Y=740+250=990)
-        private static readonly Rectangle _journalInsertRect   = new Rectangle(1610, 940, 140, 50);
-        private static readonly Rectangle _journalSubmitRect   = new Rectangle(1330, 1040, 340, 70);
-        private static readonly Rectangle _journalCloseRect    = new Rectangle(1930,   30,  60, 60);
+        private Rectangle _journalPrevPageRect;
+        private Rectangle _journalNextPageRect;
+        private Rectangle _journalInsertRect;
+        private Rectangle _journalSubmitRect;
+        private Rectangle _journalCloseRect;
 
-        // Notebook UI rectangles — all in virtual 2020×1136 screen space.
-        private static readonly Rectangle _notebookButtonRect =
-            new Rectangle(2020 - 120, 20, 100, 100);
-        private static readonly Rectangle _notebookPanelRect =
-            new Rectangle(2020 - 450, 140, 430, 950);
-        private static readonly Rectangle[] _tabRects = BuildTabRects();
-        private static Rectangle[] BuildTabRects()
-        {
-            const int tabH = 60;
-            int       tabW = _notebookPanelRect.Width / 4;
-            int       y    = _notebookPanelRect.Y;
-            return new[]
-            {
-                new Rectangle(_notebookPanelRect.X + 0 * tabW, y, tabW, tabH),
-                new Rectangle(_notebookPanelRect.X + 1 * tabW, y, tabW, tabH),
-                new Rectangle(_notebookPanelRect.X + 2 * tabW, y, tabW, tabH),
-                new Rectangle(_notebookPanelRect.X + 3 * tabW, y, tabW, tabH),
-            };
-        }
+        // Notebook UI rectangles — recomputed by UpdateLayout().
+        private Rectangle   _notebookButtonRect;
+        private Rectangle   _notebookPanelRect;
+        private Rectangle[] _tabRects = Array.Empty<Rectangle>();
         private static readonly Color[] _tabColors = new[]
         {
             new Color( 80, 120, 230),   // Who       — blue
@@ -166,6 +143,14 @@ namespace CatDetective
         private Texture2D     _debugPixel  = null!;
         private bool          _showDebug   = true;   // F1 toggles
         private KeyboardState _prevKbState;
+
+        // ── Screenshot mode  (--screenshot <caseId> <roomId>) ─────────────────
+        private bool   _screenshotMode  = false;
+        private string _screenshotCase  = "";
+        private string _screenshotRoom  = "";
+        private float  _screenshotTimer = 0f;
+        private bool   _screenshotSaved = false;
+        private const float SCREENSHOT_DELAY = 1.5f;
 
         // ── Hot-reload (level_config.json) ─────────────────────────────────────
         private string   _levelConfigSourcePath = "";
@@ -196,11 +181,24 @@ namespace CatDetective
         {
             _graphics = new GraphicsDeviceManager(this)
             {
-                PreferredBackBufferWidth  = WINDOW_WIDTH,
-                PreferredBackBufferHeight = WINDOW_HEIGHT,
+                PreferredBackBufferWidth  = (int)(SCREEN_WIDTH  * DISPLAY_SCALE),
+                PreferredBackBufferHeight = (int)(SCREEN_HEIGHT * DISPLAY_SCALE),
             };
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+            // Parse --screenshot <caseId> <roomId>
+            string[] cliArgs = System.Environment.GetCommandLineArgs();
+            for (int i = 1; i < cliArgs.Length; i++)
+            {
+                if (cliArgs[i] == "--screenshot" && i + 2 < cliArgs.Length)
+                {
+                    _screenshotMode = true;
+                    _screenshotCase = cliArgs[i + 1];
+                    _screenshotRoom = cliArgs[i + 2];
+                    break;
+                }
+            }
         }
 
         // ══════════════════════════════════════════════════════════════════════
@@ -236,6 +234,15 @@ namespace CatDetective
 
             string configPath = Path.Combine(Content.RootDirectory, "scenes_config.json");
             _availableScenes = SceneConfigParser.GetAvailableScenes(configPath);
+
+            UpdateLayout();
+
+            if (_screenshotMode)
+            {
+                LoadCase(_screenshotCase);
+                if (_screenshotRoom != "entrance")
+                    LoadRoom(_screenshotRoom, "spawn_default");
+            }
         }
 
         // ══════════════════════════════════════════════════════════════════════
@@ -304,11 +311,25 @@ namespace CatDetective
                 ? File.GetLastWriteTime(_levelConfigSourcePath)
                 : DateTime.MinValue;
 
-            // Room background.
+            // Room background — drives the virtual canvas size.
             _bgBase = Content.Load<Texture2D>($"{contentBase}/bg_base");
 
-            float offsetX = (SCREEN_WIDTH - _bgBase.Width) / 2f;
-            _cameraTransform = Matrix.CreateTranslation(offsetX, 0, 0);
+            // Resize virtual canvas and window to match the background exactly.
+            if (_bgBase.Width != SCREEN_WIDTH || _bgBase.Height != SCREEN_HEIGHT)
+            {
+                SCREEN_WIDTH  = _bgBase.Width;
+                SCREEN_HEIGHT = _bgBase.Height;
+                _renderTarget?.Dispose();
+                _renderTarget = new RenderTarget2D(GraphicsDevice, SCREEN_WIDTH, SCREEN_HEIGHT);
+                _graphics.PreferredBackBufferWidth  = (int)(SCREEN_WIDTH  * DISPLAY_SCALE);
+                _graphics.PreferredBackBufferHeight = (int)(SCREEN_HEIGHT * DISPLAY_SCALE);
+                _graphics.ApplyChanges();
+                GameObject.SetScreenHeight(SCREEN_HEIGHT);
+                UpdateLayout();
+            }
+
+            // Background exactly fills the canvas — no centering offset needed.
+            _cameraTransform = Matrix.Identity;
 
             // Parse Tiled map for this room.
             string mapPath = Path.Combine(roomBase, "room_map.json");
@@ -343,7 +364,7 @@ namespace CatDetective
         }
 
         // ── Dev menu button layout ─────────────────────────────────────────────
-        private static Rectangle GetSceneButtonRect(int index)
+        private Rectangle GetSceneButtonRect(int index)
         {
             const int BTN_W = 600, BTN_H = 80, BTN_SPACING = 20;
             int x = (SCREEN_WIDTH - BTN_W) / 2;
@@ -385,6 +406,19 @@ namespace CatDetective
             }
             else // Playing
             {
+                // Screenshot mode: save render target to file then exit.
+                if (_screenshotMode && !_screenshotSaved)
+                {
+                    _screenshotTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (_screenshotTimer >= SCREENSHOT_DELAY)
+                    {
+                        _screenshotSaved = true;
+                        SaveScreenshot();
+                        Exit();
+                        return;
+                    }
+                }
+
                 if (!_isGameWon && clicked)
                 {
                     if (_isDeductionBoardOpen)
@@ -708,6 +742,10 @@ namespace CatDetective
                         transformMatrix: _cameraTransform);
                     foreach (var wall in _solidBoundaries)
                         DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, wall, Color.Red);
+                    foreach (var zone in _transferZones)
+                        DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, zone.TriggerRect, Color.Lime);
+                    foreach (var entity in _interactables)
+                        DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, entity.TriggerZone, Color.Yellow);
                     DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, _cat.CollisionBox, Color.Cyan);
                     _spriteBatch.End();
                 }
@@ -717,10 +755,11 @@ namespace CatDetective
                 // ════════════════════════════════════════════════════════════════
                 if (_isDialogueActive && _currentInteraction != null)
                 {
+                    int boxW    = Math.Min(1400, SCREEN_WIDTH - 40);
                     var boxRect = new Rectangle(
-                        (SCREEN_WIDTH - 1400) / 2,
+                        (SCREEN_WIDTH - boxW) / 2,
                         SCREEN_HEIGHT - 450 - 40,
-                        1400, 450);
+                        boxW, 450);
 
                     const int PAD_X = 140;
                     const int PAD_Y = 100;
@@ -913,9 +952,13 @@ namespace CatDetective
                             Color.White);
 
                         // Safe zones — tweak to match ui_notebook_bg.png art
-                        var leftPageArea  = new Rectangle(250, 300, 650, 600);
-                        var wordBankArea  = new Rectangle(1050, 280, 750, 400);
-                        var inspectorArea = new Rectangle(1150, 800, 600, 250);
+                        // Scale journal areas from 2020×1136 reference space to current canvas.
+                        float jsx = (float)SCREEN_WIDTH  / 2020f;
+                        float jsy = (float)SCREEN_HEIGHT / 1136f;
+                        int J(float v, float s) => (int)(v * s);
+                        var leftPageArea  = new Rectangle(J(250,jsx), J(300,jsy), J(650,jsx), J(600,jsy));
+                        var wordBankArea  = new Rectangle(J(1050,jsx), J(280,jsy), J(750,jsx), J(400,jsy));
+                        var inspectorArea = new Rectangle(J(1150,jsx), J(800,jsy), J(600,jsx), J(250,jsy));
 
                         // ── LEFT PAGE: Mad-Libs sentence ──────────────────────
                         float lx      = leftPageArea.X;
@@ -1151,7 +1194,7 @@ namespace CatDetective
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
             _spriteBatch.Draw(
                 _renderTarget,
-                new Rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT),
+                new Rectangle(0, 0, (int)(SCREEN_WIDTH * DISPLAY_SCALE), (int)(SCREEN_HEIGHT * DISPLAY_SCALE)),
                 Color.White);
             _spriteBatch.End();
 
@@ -1184,6 +1227,62 @@ namespace CatDetective
                 x += wordW + spaceW;
             }
             return y + lineHeight;
+        }
+
+        // ── Layout ────────────────────────────────────────────────────────────
+        // Recomputes all UI rectangles for the current SCREEN_WIDTH × SCREEN_HEIGHT.
+        // All source coordinates are in the original 2020×1136 design space.
+        private void UpdateLayout()
+        {
+            float sx = (float)SCREEN_WIDTH  / 2020f;
+            float sy = (float)SCREEN_HEIGHT / 1136f;
+            int S(float v) => (int)v;
+
+            _solveButtonRect      = new Rectangle(S((2020 - 160) * sx), S((1136 - 160) * sy), S(120 * sx), S(120 * sy));
+            _finalSolveButtonRect = new Rectangle(S((2020 - 160) * sx), S((1136 - 290) * sy), S(120 * sx), S(110 * sy));
+
+            _tabImagePos = new Vector2(1050 * sx, 100 * sy);
+            _tabHotspots = new[]
+            {
+                new Rectangle(S(1060 * sx), S(50 * sy), S(200 * sx), S(150 * sy)),
+                new Rectangle(S(1260 * sx), S(50 * sy), S(200 * sx), S(150 * sy)),
+                new Rectangle(S(1460 * sx), S(50 * sy), S(200 * sx), S(150 * sy)),
+                new Rectangle(S(1660 * sx), S(50 * sy), S(200 * sx), S(150 * sy)),
+            };
+
+            _journalPrevPageRect = new Rectangle(S(1050 * sx), S(692 * sy), S(90 * sx), S(35 * sy));
+            _journalNextPageRect = new Rectangle(S(1710 * sx), S(692 * sy), S(90 * sx), S(35 * sy));
+            _journalInsertRect   = new Rectangle(S(1610 * sx), S(940 * sy), S(140 * sx), S(50 * sy));
+            _journalSubmitRect   = new Rectangle(S(1330 * sx), S(1040 * sy), S(340 * sx), S(70 * sy));
+            _journalCloseRect    = new Rectangle(S(1930 * sx), S(30  * sy), S(60  * sx), S(60 * sy));
+
+            _notebookButtonRect = new Rectangle(S((2020 - 120) * sx), S(20  * sy), S(100 * sx), S(100 * sy));
+            _notebookPanelRect  = new Rectangle(S((2020 - 450) * sx), S(140 * sy), S(430 * sx), S(950 * sy));
+
+            const int tabH = 60;
+            int tabW = _notebookPanelRect.Width / 4;
+            int tabY = _notebookPanelRect.Y;
+            _tabRects = new[]
+            {
+                new Rectangle(_notebookPanelRect.X + 0 * tabW, tabY, tabW, tabH),
+                new Rectangle(_notebookPanelRect.X + 1 * tabW, tabY, tabW, tabH),
+                new Rectangle(_notebookPanelRect.X + 2 * tabW, tabY, tabW, tabH),
+                new Rectangle(_notebookPanelRect.X + 3 * tabW, tabY, tabW, tabH),
+            };
+        }
+
+        // ── Screenshot helper ──────────────────────────────────────────────────
+        private void SaveScreenshot()
+        {
+            // Navigate three levels up from the binary folder to the project root.
+            string dir = Path.GetFullPath(Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "..", "..", "..", "debug_output"));
+            Directory.CreateDirectory(dir);
+            string path = Path.Combine(dir, $"{_screenshotCase}_{_screenshotRoom}.png");
+            using var stream = File.OpenWrite(path);
+            _renderTarget.SaveAsPng(stream, _renderTarget.Width, _renderTarget.Height);
+            Console.WriteLine($"[Screenshot] Saved → {Path.GetFullPath(path)}");
         }
 
         private static readonly Color _inkColor = new Color(40, 30, 20);

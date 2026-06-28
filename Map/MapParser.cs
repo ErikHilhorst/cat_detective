@@ -36,6 +36,13 @@ namespace CatDetective.Map
 
         [JsonPropertyName("objects")]
         public List<TiledObject> Objects { get; set; } = new();
+
+        /// <summary>Layer-level pixel offset set in Tiled's layer properties.</summary>
+        [JsonPropertyName("offsetx")]
+        public float OffsetX { get; set; } = 0f;
+
+        [JsonPropertyName("offsety")]
+        public float OffsetY { get; set; } = 0f;
     }
 
     /// <summary>
@@ -175,16 +182,19 @@ namespace CatDetective.Map
             {
                 if (layer.Type != "objectgroup") continue;
 
+                int layerOffX = (int)layer.OffsetX;
+                int layerOffY = (int)layer.OffsetY;
+
                 switch (layer.Name)
                 {
                     case "Collisions":
                         foreach (var obj in layer.Objects)
-                            solidBoundaries.Add(ToRect(obj));
+                            solidBoundaries.Add(ToRect(obj, layerOffX, layerOffY));
                         break;
 
                     case "Triggers":
                         foreach (var obj in layer.Objects)
-                            triggers.Add((obj.Name, ToRect(obj)));
+                            triggers.Add((obj.Name, ToRect(obj, layerOffX, layerOffY)));
                         break;
 
                     case "Spawn":
@@ -192,7 +202,7 @@ namespace CatDetective.Map
                         {
                             if (obj.Name.Equals(targetSpawnName, StringComparison.OrdinalIgnoreCase))
                             {
-                                spawnPoint = new Vector2(obj.X, obj.Y);
+                                spawnPoint = new Vector2(obj.X + layerOffX, obj.Y + layerOffY);
                                 break;
                             }
                         }
@@ -213,7 +223,7 @@ namespace CatDetective.Map
                                     $"[MapParser] WARNING: Transfer '{obj.Name}' is missing 'targetRoom' property.");
                                 continue;
                             }
-                            transfers.Add(new TransferZone(ToRect(obj), targetRoom, targetSpawn));
+                            transfers.Add(new TransferZone(ToRect(obj, layerOffX, layerOffY), targetRoom, targetSpawn));
                         }
                         break;
 
@@ -235,10 +245,10 @@ namespace CatDetective.Map
 
                             // Position = bottom-center floor contact point of the Tiled rect.
                             var position = new Vector2(
-                                obj.X + obj.Width  * 0.5f,
-                                obj.Y + obj.Height);
+                                obj.X + layerOffX + obj.Width  * 0.5f,
+                                obj.Y + layerOffY + obj.Height);
 
-                            var entity = new InteractableEntity(obj.Name, ToRect(obj), sprite, position);
+                            var entity = new InteractableEntity(obj.Name, ToRect(obj, layerOffX, layerOffY), sprite, position);
 
                             if (levelData.TryGetValue(obj.Name, out var data))
                                 entity.Data = data;
@@ -260,8 +270,8 @@ namespace CatDetective.Map
                 $"{transfers.Count} transfer(s) from '{jsonPath}'.");
         }
 
-        private static Rectangle ToRect(TiledObject obj) =>
-            new Rectangle((int)obj.X, (int)obj.Y, (int)obj.Width, (int)obj.Height);
+        private static Rectangle ToRect(TiledObject obj, int offX = 0, int offY = 0) =>
+            new Rectangle((int)obj.X + offX, (int)obj.Y + offY, (int)obj.Width, (int)obj.Height);
 
         private static string GetStringProperty(TiledObject obj, string name)
         {
