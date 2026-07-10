@@ -201,6 +201,30 @@
      "width": 70,
      "x": 300,
      "y": 330
+    },
+    {
+     "height": 80,
+     "id": 59,
+     "name": "inspect_poultry_crate",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 90,
+     "x": 1130,
+     "y": 380
+    },
+    {
+     "height": 70,
+     "id": 60,
+     "name": "inspect_duty_roster",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 70,
+     "x": 450,
+     "y": 285
     }
    ],
    "opacity": 0,
@@ -211,7 +235,7 @@
   }
  ],
  "nextlayerid": 6,
- "nextobjectid": 59,
+ "nextobjectid": 61,
  "orientation": "orthogonal",
  "renderorder": "right-down",
  "tiledversion": "1.12.1",

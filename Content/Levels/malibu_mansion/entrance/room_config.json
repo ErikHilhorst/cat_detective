@@ -3,9 +3,9 @@
   "interactables": [
     {
       "id": "inspect_police_officer",
-      "text": "The [Police Officer] guards the door with the weary dignity of a man who trained for hostage negotiations and got [missing poultry] instead. 'Lockdown since [8:15 PM]. Nobody in or out. Not even you, cat.'",
+      "text": "[Officer Reyes] guards the door with the weary dignity of a man who trained for hostage negotiations and got [missing poultry] instead. 'Lockdown since [8:15 PM]. Nobody in or out. Not even you, cat.'",
       "keywords": [
-        { "displayText": "Police Officer", "id": "lockdown_815pm", "color": "misc" },
+        { "displayText": "Officer Reyes", "id": "lockdown_815pm", "color": "misc" },
         { "displayText": "8:15 PM", "id": "lockdown_815pm", "color": "misc" }
       ],
       "texture": "Shared/placeholder_person",
@@ -13,26 +13,27 @@
     },
     {
       "id": "inspect_manager",
-      "text": "The [Manager] paces the rug, shouting into his phone: 'A missing parrot?! Do you know what this does to her brand?! It's a [PR Disaster]!' He steps over you without looking down. You memorize his face.",
+      "text": "The [Manager], a man named Chip Sterling, paces the rug, shouting into his phone: 'A missing parrot?! Do you know what this does to her brand?! It's a [PR Disaster]! That bird's documentary fee is [fifteen percent] of my year!' He steps over you without looking down. You memorize his face.",
       "keywords": [
         { "displayText": "Manager", "id": "pr_disaster", "color": "misc" },
-        { "displayText": "PR Disaster", "id": "pr_disaster", "color": "misc" }
+        { "displayText": "PR Disaster", "id": "pr_disaster", "color": "misc" },
+        { "displayText": "fifteen percent", "id": "managers_commission", "color": "misc" }
       ],
       "texture": "Shared/placeholder_person",
       "scale": 0.15
     },
     {
       "id": "inspect_walkie_talkie",
-      "text": "The Officer's radio crackles on the sideboard: 'Lockdown initiated. [8:15 PM]. No one in or out.' The bird went quiet at eight. The doors locked at eight-fifteen. Interesting gap.",
+      "text": "The Officer's radio crackles on the sideboard: 'Confirm north gate status?' A pause. 'Locked [all evening], over.' 'Copy. Nothing in or out through the garden.'",
       "keywords": [
-        { "displayText": "8:15 PM", "id": "lockdown_815pm", "color": "misc" }
+        { "displayText": "all evening", "id": "north_gate_locked", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 0.08
     },
     {
       "id": "inspect_guest_registry",
-      "text": "A formal sign-in book by the entrance. Everyone logged their arrival. One entry stands out: '[D. Marsh] — [6:30 PM].' Half an hour before he officially signed in his cases.",
+      "text": "A formal sign-in book by the entrance. Everyone logged their arrival. The first crew entry reads: '[D. Marsh] - [6:30 PM].'",
       "keywords": [
         { "displayText": "D. Marsh", "id": "guest_registry", "color": "misc" },
         { "displayText": "6:30 PM", "id": "guest_registry", "color": "misc" }
@@ -41,6 +42,6 @@
       "scale": 0.10
     }
   ],
-  "localDeductionSentence": "The [Police Lockdown] sealed the mansion at 8:15 PM — the Manager only fears a [PR Disaster], but the [Guest Registry] shows one crew member arrived half an hour early.",
+  "localDeductionSentence": "The [Police Lockdown] sealed the mansion at 8:15 PM - Chip only fears a [PR Disaster], and the registry's first crew entry reads [Guest Registry].",
   "localDeductionClueIds": ["lockdown_815pm", "pr_disaster", "guest_registry"]
 }

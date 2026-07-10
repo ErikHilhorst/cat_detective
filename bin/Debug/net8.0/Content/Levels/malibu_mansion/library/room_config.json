@@ -3,7 +3,7 @@
   "interactables": [
     {
       "id": "inspect_director",
-      "text": "The [Director] scribbles in a leather notebook. 'Missing bird + weeping star + locked mansion = [Emmy bait].' He doesn't look up.",
+      "text": "The [Director], Wexler, scribbles in a leather notebook. 'Missing bird + weeping star + locked mansion = [Emmy bait].' He doesn't look up.",
       "keywords": [
         { "displayText": "Director", "id": "director_notes", "color": "misc" },
         { "displayText": "Emmy bait", "id": "director_notes", "color": "misc" }
@@ -13,7 +13,7 @@
     },
     {
       "id": "inspect_sound_guy",
-      "text": "The [Sound Guy] is sweating. His name badge reads: '[D. Marsh].' He won't meet your eyes. His headphones are on but nothing's playing.",
+      "text": "The [Sound Guy]'s badge reads '[D. Marsh].' He is very busy re-coiling a cable that was already coiled. 'Nice cat,' he says, half an octave too high.",
       "keywords": [
         { "displayText": "Sound Guy", "id": "d_marsh_sound_guy", "color": "crime" },
         { "displayText": "D. Marsh", "id": "d_marsh_sound_guy", "color": "crime" }
@@ -23,17 +23,17 @@
     },
     {
       "id": "inspect_mixing_board",
-      "text": "The Sound Guy's mixing board hums. An [Audio Cable] runs from the back panel, disappears into the wall — heading in the direction of the [Living Room].",
+      "text": "The mixing board hums, still powered on long after wrap. An [Audio Cable] leaves the back panel and vanishes [into the wall].",
       "keywords": [
         { "displayText": "Audio Cable", "id": "audio_cable", "color": "crime" },
-        { "displayText": "Living Room", "id": "audio_cable", "color": "crime" }
+        { "displayText": "into the wall", "id": "audio_cable", "color": "crime" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 0.11
     },
     {
       "id": "inspect_session_log",
-      "text": "A session log wedged behind the podium: 'TAKE 12 — bird. TAKE 23 — bird. TAKE 47 — [RUINED. BIRD. AGAIN.]' The handwriting gets angrier with every page. The last page has torn through.",
+      "text": "A session log wedged behind the podium: 'TAKE 12 - bird. TAKE 23 - bird. TAKE 47 - [RUINED. BIRD. AGAIN.]' The handwriting gets angrier with every page. The last page has torn through.",
       "keywords": [
         { "displayText": "RUINED. BIRD. AGAIN.", "id": "ruined_takes", "color": "crime" }
       ],
@@ -42,7 +42,7 @@
     },
     {
       "id": "inspect_shot_list",
-      "text": "The Director's shot list for today. Items include: 'Rudebeak reaction shot — [CANCELLED].' Next to it, in red pen: '[BETTER WITHOUT HIM?]'",
+      "text": "The Director's shot list for today. Items include: 'Rudebeak reaction shot - [CANCELLED].' Next to it, in red pen: '[BETTER WITHOUT HIM?]'",
       "keywords": [
         { "displayText": "CANCELLED", "id": "directors_shot_list", "color": "misc" },
         { "displayText": "BETTER WITHOUT HIM?", "id": "directors_shot_list", "color": "misc" }
@@ -51,6 +51,6 @@
       "scale": 0.09
     }
   ],
-  "localDeductionSentence": "The Director smelled an Emmy while [D. Marsh = Sound Guy] kept his mixer running — an [Audio Cable] threading toward the living room, and a session log full of [Ruined Takes].",
+  "localDeductionSentence": "Wexler smells an Emmy - meanwhile [Sound Guy] left his mixer humming, an [Audio Cable] runs into the wall, and the session log is one long scream about [Ruined Takes].",
   "localDeductionClueIds": ["d_marsh_sound_guy", "audio_cable", "ruined_takes"]
 }

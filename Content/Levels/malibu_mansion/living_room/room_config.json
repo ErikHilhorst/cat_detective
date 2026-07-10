@@ -3,7 +3,7 @@
   "interactables": [
     {
       "id": "inspect_movie_star",
-      "text": "The [Movie Star] weeps. 'I heard Rudebeak. At [8:00 PM]. It was definitely him — I'd know that screech anywhere. He was here.'",
+      "text": "The [Movie Star], Vivienne Vale, weeps operatically. 'I heard Rudebeak. At [8:00 PM]. I'd know that screech anywhere. He was HERE.'",
       "keywords": [
         { "displayText": "Movie Star", "id": "squawk_at_8pm", "color": "plot" },
         { "displayText": "8:00 PM", "id": "squawk_at_8pm", "color": "plot" }
@@ -13,17 +13,17 @@
     },
     {
       "id": "inspect_bird_handler",
-      "text": "The [Bird Handler] crawls under the couch collecting feathers with tweezers. 'These have [settled]. Feathers don't lie. He was gone hours before anyone heard that squawk.' You respect a fellow professional.",
+      "text": "The [Bird Handler], Petra, holds out an untouched bowl of seed. 'This was his six o'clock snack. [He never misses it]. Never.' You respect a fellow professional.",
       "keywords": [
         { "displayText": "Bird Handler", "id": "broken_latch", "color": "crime" },
-        { "displayText": "settled", "id": "broken_latch", "color": "crime" }
+        { "displayText": "He never misses it", "id": "broken_latch", "color": "crime" }
       ],
       "texture": "Shared/placeholder_person",
       "scale": 0.15
     },
     {
       "id": "inspect_birdcage",
-      "text": "The [Empty Cage]. The latch is [snapped clean off]. The seed tray is bone dry. The feathers have settled — they've been here for hours, not minutes.",
+      "text": "The [Empty Cage]. The latch is [snapped clean off]. The seed tray is bone dry, and the feathers under the cage have settled flat.",
       "keywords": [
         { "displayText": "Empty Cage", "id": "broken_latch", "color": "crime" },
         { "displayText": "snapped clean off", "id": "broken_latch", "color": "crime" }
@@ -53,7 +53,7 @@
     },
     {
       "id": "inspect_vocab_ledger",
-      "text": "A booklet: 'Phrases We've Taught Rudebeak.' Entries include: 'Hello gorgeous' ✓ | 'Oscar worthy' ✓ | '[Garbage slop]' ✓ — crossed out, labeled: '[Maid's fault]'.",
+      "text": "A booklet: 'Phrases We've Taught Rudebeak.' Entries include: 'Hello gorgeous', 'Oscar worthy', and '[Garbage slop]' - the last one furiously crossed out and labeled: '[Maid's fault]'.",
       "keywords": [
         { "displayText": "Garbage slop", "id": "vocab_ledger", "color": "misc" },
         { "displayText": "Maid's fault", "id": "vocab_ledger", "color": "misc" }
@@ -62,6 +62,6 @@
       "scale": 0.08
     }
   ],
-  "localDeductionSentence": "Everyone heard the [8:00 PM Squawk] — but the [Broken Latch] and the [Hidden Speaker] under the cage tell a very different story.",
+  "localDeductionSentence": "Everyone heard the [8:00 PM Squawk] - but the [Broken Latch] and the [Hidden Speaker] under the cage tell a very different story.",
   "localDeductionClueIds": ["squawk_at_8pm", "broken_latch", "hidden_speaker"]
 }

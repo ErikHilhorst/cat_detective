@@ -1,0 +1,201 @@
+================================================================================
+MALIBU MANSION — LLM SPRITE PROMPTS
+================================================================================
+Case: "The Missing Parrot" (Rudebeak). Cozy Studio Ghibli detective aesthetic.
+
+HOW TO USE
+- CHARACTERS: one prompt each, portrait dimensions, single full-body figure.
+- OBJECTS: batched into 5x2 grid sheets (10 objects per prompt) to save runs.
+  Generate the sheet, then crop each cell out using the numbered legend.
+- Per-name sprites live under each room's "Interactables/" folder and must be
+  named after the interactable id (e.g. Interactables/inspect_maid.png).
+  If the file is missing, the game falls back to the placeholder in room_config.
+- Every prompt requests a plain solid white background for easy cutout.
+
+================================================================================
+CHARACTERS  (portrait, one each)  — folder: <room>/Interactables/
+================================================================================
+
+--- ENTRANCE ---
+
+[inspect_police_officer.png]
+I need a videogame sprite, in the style of Studio Ghibli, of a weary uniformed
+police officer guarding a doorway. Middle-aged, a little overtrained for the job,
+the dignified air of a man who prepared for hostage negotiations and got a
+missing parrot instead. Full body, standing at attention, portrait dimensions,
+soft hand-painted cel shading. Plain solid white background for easy cutout.
+
+[inspect_manager.png]
+I need a videogame sprite, in the style of Studio Ghibli, of a slick Hollywood
+talent manager mid-tantrum, expensive suit, phone pressed to his ear, other
+hand thrown up in exasperation. Stressed, self-important, cares only about his
+client's brand. Full body, portrait dimensions, soft cel shading. Plain solid
+white background for easy cutout.
+
+--- LIVING ROOM ---
+
+[inspect_movie_star.png]
+I need a videogame sprite, in the style of Studio Ghibli, of a glamorous
+weeping movie star, silk robe, dramatic and heartbroken, dabbing her eyes with
+a tissue. Full body, portrait dimensions, soft hand-painted cel shading. Plain
+solid white background for easy cutout.
+
+[inspect_bird_handler.png]
+I need a videogame sprite, in the style of Studio Ghibli, of a professional
+bird handler crouching low, holding tweezers, carefully collecting feathers.
+Practical vest, focused and meticulous. Full body, portrait dimensions, soft
+cel shading. Plain solid white background for easy cutout.
+
+--- BEDROOM ---
+
+[inspect_husband.png]
+I need a videogame sprite, in the style of Studio Ghibli, of a tired rich
+husband wearing enormous top-of-the-line noise-canceling headphones, lifting
+one earcup as if annoyed at being disturbed. Casual wealthy loungewear. Full
+body, portrait dimensions, soft cel shading. Plain solid white background for
+easy cutout.
+
+--- LIBRARY ---
+
+[inspect_director.png]
+I need a videogame sprite, in the style of Studio Ghibli, of a pretentious
+documentary film director scribbling in a leather notebook, smug and thrilled,
+scarf and vest, thinks the whole crisis is an Emmy opportunity. Full body,
+portrait dimensions, soft cel shading. Plain solid white background for easy
+cutout.
+
+[inspect_sound_guy.png]
+I need a videogame sprite, in the style of Studio Ghibli, of a nervous, sweating
+sound engineer (the culprit) with big studio headphones around his neck and a
+crew name badge, avoiding eye contact, guilty body language. Full body, portrait
+dimensions, soft cel shading. Plain solid white background for easy cutout.
+
+--- KITCHEN ---
+
+[inspect_maid.png]
+I need a videogame sprite, in the style of Studio Ghibli, of a fierce, no-nonsense
+housemaid in an apron, aggressively holding a kitchen cleaver mid-chop, glaring,
+short-tempered but secretly kind. Full body, portrait dimensions, soft cel
+shading. Plain solid white background for easy cutout.
+
+--- GARDEN ---
+
+[inspect_gardener.png]
+I need a videogame sprite, in the style of Studio Ghibli, of a gentle idealistic
+gardener in a sun hat, muddy work gloves, holding hedge clippers, looking
+nervous and guilty, believes animals belong in nature. Full body, portrait
+dimensions, soft cel shading. Plain solid white background for easy cutout.
+
+--- POOL AREA ---
+
+[inspect_socialite.png]
+I need a videogame sprite, in the style of Studio Ghibli, of a chic poolside
+socialite in a sundress and oversized sunglasses, lowering the glasses with one
+finger, holding a phone, unbothered and gossipy. Full body, portrait dimensions,
+soft cel shading. Plain solid white background for easy cutout.
+
+--- (OPTIONAL) THE MISSING BIRD ---
+
+[rudebeak.png]
+I need a videogame sprite, in the style of Studio Ghibli, of a loud, brightly
+colored macaw parrot named Rudebeak with a rude, cocky expression, vivid red
+green and blue plumage. Full body on a perch or in flight, portrait dimensions,
+soft cel shading. Plain solid white background for easy cutout.
+(Only needed if you show the bird in a reveal/ending; he is "missing" in-case.)
+
+================================================================================
+OBJECTS  (two 5x2 grid sheets — 10 objects each)  — folder: <room>/Interactables/
+================================================================================
+
+Each sheet packs 10 DIFFERENT objects into a 5-wide by 2-tall grid. Cells are
+numbered left-to-right, top row first. Crop each cell and save it under the
+filename listed in the legend.
+
+--------------------------------------------------------------------------------
+SHEET 1  (entrance + living room + bedroom)
+--------------------------------------------------------------------------------
+
+PROMPT:
+I need a sheet of videogame item sprites in the style of Studio Ghibli, soft
+hand-painted cel shading, cozy warm palette. Arrange exactly 10 different
+objects in a clean 5x2 grid (5 columns, 2 rows), each object centered in its own
+cell on a plain solid white background with clear spacing between them so I can
+cut each one out. Draw these 10 objects, in reading order (left to right, top
+row first):
+1. A police handheld walkie-talkie radio with a small antenna and worn buttons.
+2. A formal leather-bound guest sign-in registry book, open, a pen on the page.
+3. An ornate empty birdcage on a stand, little door open with a snapped latch,
+   a few stray feathers settled at the bottom.
+4. A small hidden wireless speaker with a thin audio cable trailing from it.
+5. A professional film documentary camera on a tripod with a glowing red
+   recording light.
+6. A small open booklet of taught parrot phrases, one line crossed out in pen.
+7. A clipboard holding a crew delivery manifest sheet with handwritten lines.
+8. Two massive black sound-proof acoustic road cases with heavy latches, stacked.
+9. An elegant handwritten note on cream stationery.
+10. An open premium product box for luxury noise-canceling headphones, with
+    tissue paper and a receipt visible.
+Keep every object on the same plain white background for easy cutout.
+
+CELL LEGEND (crop -> save as):
+  1 -> inspect_walkie_talkie.png        (entrance)
+  2 -> inspect_guest_registry.png       (entrance)
+  3 -> inspect_birdcage.png             (living_room)
+  4 -> inspect_hidden_speaker.png       (living_room)
+  5 -> inspect_documentary_camera.png   (living_room)
+  6 -> inspect_vocab_ledger.png         (living_room)
+  7 -> inspect_delivery_manifest.png    (bedroom)
+  8 -> inspect_acoustic_cases.png       (bedroom)
+  9 -> inspect_star_note.png            (bedroom)
+ 10 -> inspect_headphone_box.png        (bedroom)
+
+--------------------------------------------------------------------------------
+SHEET 2  (library + kitchen + garden + pool area)
+--------------------------------------------------------------------------------
+
+PROMPT:
+I need a sheet of videogame item sprites in the style of Studio Ghibli, soft
+hand-painted cel shading, cozy warm palette. Arrange exactly 10 different
+objects in a clean 5x2 grid (5 columns, 2 rows), each object centered in its own
+cell on a plain solid white background with clear spacing between them so I can
+cut each one out. Draw these 10 objects, in reading order (left to right, top
+row first):
+1. An audio mixing board / sound desk covered in knobs and faders, one cable
+   running off the back.
+2. A stack of recording session log pages, angry handwriting, the last sheet
+   torn.
+3. A director's printed shot list on a clipboard, one line crossed out in red
+   pen.
+4. A handwritten note pinned to a fridge with a magnet, an angry little skull
+   doodle on it.
+5. A large steaming paella pan full of colorful saffron rice and seafood.
+6. A cute ceramic treat jar with a handwritten "FOR THE CAT" label.
+7. A pair of heavy iron pruning shears with slightly bent blade tips.
+8. A weathered stone garden bird bath with a few bright feathers on the water.
+9. A smartphone held up showing a poolside selfie, a blurry figure with dark
+   cases visible in the photo's background.
+10. A printed film production schedule sheet on a clipboard with listed times.
+Keep every object on the same plain white background for easy cutout.
+
+CELL LEGEND (crop -> save as):
+  1 -> inspect_mixing_board.png         (library)
+  2 -> inspect_session_log.png          (library)
+  3 -> inspect_shot_list.png            (library)
+  4 -> inspect_note_on_fridge.png       (kitchen)
+  5 -> inspect_paella_pot.png           (kitchen)
+  6 -> inspect_treat_jar.png            (kitchen)
+  7 -> inspect_pruning_shears.png       (garden)
+  8 -> inspect_bird_bath.png            (garden)
+  9 -> inspect_pool_selfie.png          (pool_area)
+ 10 -> inspect_production_schedule.png  (pool_area)
+
+--------------------------------------------------------------------------------
+NOTE: inspect_pool_water (pool_area) is intentionally omitted — the glittering
+pool surface is better painted into the room background than cut out as a sprite.
+--------------------------------------------------------------------------------
+
+================================================================================
+SUMMARY
+  Characters: 10 single prompts (+1 optional bird)
+  Objects:    20 across 2 sheets of 10 (5x2 grids)  (+1 pool, baked into bg)
+================================================================================

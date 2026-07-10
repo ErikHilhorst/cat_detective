@@ -3,7 +3,7 @@
   "interactables": [
     {
       "id": "inspect_maid",
-      "text": "The [Maid] is aggressively chopping vegetables. The cleaver hits the board like a verdict. She does not look friendly.",
+      "text": "The [Maid], Rosa, is aggressively chopping vegetables. The cleaver hits the board like a verdict. She does not look friendly.",
       "keywords": [
         { "displayText": "Maid", "id": "the_maid", "color": "misc" }
       ],
@@ -22,7 +22,7 @@
     },
     {
       "id": "inspect_paella_pot",
-      "text": "The Maid's paella. You sniff it. It smells extraordinary. Whatever Rudebeak said about this dish, [he was wrong].",
+      "text": "Rosa's paella. You sniff it. It smells extraordinary. Whatever Rudebeak said about this dish, [he was wrong].",
       "keywords": [
         { "displayText": "he was wrong", "id": "paella_pot", "color": "misc" }
       ],
@@ -31,12 +31,33 @@
     },
     {
       "id": "inspect_treat_jar",
-      "text": "A ceramic jar on the counter, labeled 'FOR THE CAT.' The Maid keeps treats. For you. Specifically. You are now morally conflicted about having her on the suspect list.",
-      "keywords": [],
+      "text": "A ceramic jar on the counter, labeled '[FOR THE CAT].' Rosa keeps treats. For you. Specifically. You are now morally conflicted about having her on the suspect list. If this is a bribe, it is working.",
+      "keywords": [
+        { "displayText": "FOR THE CAT", "id": "treat_jar_bribe", "color": "misc" }
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.08
+    },
+    {
+      "id": "inspect_poultry_crate",
+      "text": "A crate by the pantry - tonight's roast, plucked in-house. Beside it, a bin of [feathers]. Your heart stops. You sniff. [Chicken]. Not macaw. You compose yourself with dignity.",
+      "keywords": [
+        { "displayText": "feathers", "id": "kitchen_feathers", "color": "misc" },
+        { "displayText": "Chicken", "id": "kitchen_feathers", "color": "misc" }
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.10
+    },
+    {
+      "id": "inspect_duty_roster",
+      "text": "The kitchen duty roster, pinned by the door: '6:30 - plating. [7:00 PM - dinner cart, east wing - R.] 8:30 - clear service.' The east wing is where the bedrooms are.",
+      "keywords": [
+        { "displayText": "7:00 PM - dinner cart, east wing - R.", "id": "dinner_cart_7pm", "color": "misc" }
+      ],
       "texture": "Shared/placeholder_object",
       "scale": 0.08
     }
   ],
-  "localDeductionSentence": "[The Maid] had a temper and access to every room — her fury over the [Insulted Cooking] is on the fridge, skull and all. Motive, yes. Evidence, no.",
-  "localDeductionClueIds": ["the_maid", "insulted_cooking"]
+  "localDeductionSentence": "[Rosa the Maid] wrote the [Insulted Cooking] note, skull and all - and the roster puts her [Dinner Cart] in the bedroom wing.",
+  "localDeductionClueIds": ["the_maid", "insulted_cooking", "dinner_cart_7pm"]
 }

@@ -38,6 +38,16 @@ namespace CatDetective.Systems
         public Clue? GetClue(string clueId) =>
             _database.TryGetValue(clueId, out var clue) ? clue : null;
 
+        /// <summary>Found/total clue counts for one room (for per-room progress displays).</summary>
+        public (int Found, int Total) GetRoomClueCounts(string roomId)
+        {
+            int total = 0;
+            foreach (var clue in _database.Values)
+                if (clue.RoomId == roomId) total++;
+            int found = UnlockedClues.FindAll(c => c.RoomId == roomId).Count;
+            return (found, total);
+        }
+
         /// <summary>
         /// Returns all unlocked clues that belong to <paramref name="roomId"/> — macro and
         /// micro. The room puzzle answers are macro clues unlocked via keywords, so they

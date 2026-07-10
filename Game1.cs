@@ -108,11 +108,17 @@ namespace CatDetective
         private Rectangle _journalNextPageRect;
         private Rectangle _journalInsertRect;
         private Rectangle _journalSubmitRect;
+        private Rectangle _journalClearRect;
         private Rectangle _journalCloseRect;
+
+        // Transient HUD toast (progression feedback: room solved, FINAL SOLVE locked, ...)
+        private string _toastMessage = "";
+        private float  _toastTimer;
+        private const float TOAST_DURATION = 4f;
 
         private static readonly Color[] _tabColors = new[]
         {
-            new Color( 80, 120, 230),   // Who       — blue
+            new Color(200, 160,  35),   // Who       — yellow (matches the tab-bar art)
             new Color( 80, 200, 100),   // What      — green
             new Color(230, 140,  40),   // Why       — orange
             new Color(160,  80, 220),   // WhereWhen — purple
@@ -135,10 +141,11 @@ namespace CatDetective
         private bool          _showDebug   = true;   // F1 toggles
         private KeyboardState _prevKbState;
 
-        // ── Screenshot mode  (--screenshot <caseId> <roomId>) ─────────────────
+        // ── Screenshot mode  (--screenshot <caseId> <roomId> [journal|final]) ──
         private bool   _screenshotMode  = false;
         private string _screenshotCase  = "";
         private string _screenshotRoom  = "";
+        private string _screenshotView  = "";   // "" = room, "journal" = local board, "final" = final board
         private float  _screenshotTimer = 0f;
         private bool   _screenshotSaved = false;
         private const float SCREENSHOT_DELAY = 1.5f;
@@ -198,6 +205,8 @@ namespace CatDetective
                     _screenshotMode = true;
                     _screenshotCase = cliArgs[i + 1];
                     _screenshotRoom = cliArgs[i + 2];
+                    if (i + 3 < cliArgs.Length)
+                        _screenshotView = cliArgs[i + 3];
                     break;
                 }
             }
@@ -243,6 +252,42 @@ namespace CatDetective
                 LoadCase(_screenshotCase);
                 if (_screenshotRoom != "entrance")
                     LoadRoom(_screenshotRoom, "spawn_default");
+
+                // Optional view arg opens the journal so board layouts can be captured.
+                if (_screenshotView == "journal" || _screenshotView == "final")
+                {
+                    foreach (var id in _currentRoomClueIds)
+                        _notebook.UnlockClue(id);
+                    _isDeductionBoardOpen = true;
+                    _isFinalSolveMode     = _screenshotView == "final";
+                    if (_isFinalSolveMode)
+                    {
+                        foreach (var room in _caseRooms)
+                            _notebook.UnlockMacroCluesForRoom(room);
+                    }
+                    _selectedWordBankClue = _notebook.UnlockedClues.Count > 0
+                        ? _notebook.UnlockedClues[0] : null;
+                    _activeTab = _selectedWordBankClue?.Category ?? ClueCategory.Who;
+                }
+                // "dialogue" opens the room's longest interaction text, fully typed,
+                // so text-box fit can be verified from a capture.
+                else if (_screenshotView == "dialogue")
+                {
+                    InteractableEntity? longest = null;
+                    foreach (var entity in _interactables)
+                        if (entity.Data != null &&
+                            (longest?.Data == null ||
+                             entity.Data.Text.Length > longest.Data.Text.Length))
+                            longest = entity;
+                    if (longest?.Data != null)
+                    {
+                        _currentInteraction  = longest.Data;
+                        _dialoguePages       = _currentInteraction.Text.Split('|');
+                        _currentDialoguePage = 0;
+                        _typewriterTimer     = 999999f;   // fully typed ((int) cast safe)
+                        _isDialogueActive    = true;
+                    }
+                }
             }
         }
 
@@ -514,6 +559,15 @@ namespace CatDetective
                                     target.SelectedClueId = _selectedWordBankClue.Id;
                             }
 
+                            // Clear all slots (reset the board without redoing anything)
+                            if (!boardLocked && _journalClearRect.Contains(vm))
+                            {
+                                foreach (var slot in activeDeduction.Slots)
+                                    slot.SelectedClueId = null;
+                                activeDeduction.ValidationMessage = "";
+                                _insertTargetSlot = null;
+                            }
+
                             // Submit
                             if (!boardLocked && _journalSubmitRect.Contains(vm))
                             {
@@ -534,15 +588,27 @@ namespace CatDetective
                                         _isDeductionBoardOpen = false;
                                         _selectedWordBankClue = null;
                                         _insertTargetSlot     = null;
+
+                                        int done = SolvedRoomCount();
+                                        ShowToast(done == _caseRooms.Count
+                                            ? "All rooms solved - the FINAL SOLVE board is unlocked!"
+                                            : $"Room solved! ({done}/{_caseRooms.Count}) " +
+                                              "Solve every room to unlock the FINAL SOLVE.");
                                     }
                                 }
                             }
 
-                            // Left page slot clicks -> switch active tab + target the slot for INSERT
+                            // Left page slot clicks -> switch active tab + target the slot
+                            // for INSERT. Clicking a FILLED slot removes its clue.
                             foreach (var slot in activeDeduction.Slots)
                             {
                                 if (slot.Bounds.Contains(vm))
                                 {
+                                    if (!boardLocked && slot.SelectedClueId != null)
+                                    {
+                                        slot.SelectedClueId = null;
+                                        activeDeduction.ValidationMessage = "";
+                                    }
                                     _activeTab            = slot.Category;
                                     _wordBankPage         = 0;
                                     _selectedWordBankClue = null;
@@ -561,17 +627,28 @@ namespace CatDetective
                             _selectedWordBankClue = null;
                             _wordBankPage         = 0;
                         }
-                        else if (AllRoomsSolved && _finalSolveButtonRect.Contains(vm))
+                        else if (_finalSolveButtonRect.Contains(vm))
                         {
-                            _isFinalSolveMode     = true;
-                            _isDeductionBoardOpen = true;
-                            _selectedWordBankClue = null;
-                            _wordBankPage         = 0;
+                            if (AllRoomsSolved)
+                            {
+                                _isFinalSolveMode     = true;
+                                _isDeductionBoardOpen = true;
+                                _selectedWordBankClue = null;
+                                _wordBankPage         = 0;
+                            }
+                            else
+                            {
+                                ShowToast($"Locked - solve every room's deduction first " +
+                                          $"({SolvedRoomCount()}/{_caseRooms.Count} solved).");
+                            }
                         }
                     }
                 }
 
                 float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (_toastTimer > 0f)
+                    _toastTimer -= dt;
 
                 if (_isDialogueActive)
                 {
@@ -803,6 +880,9 @@ namespace CatDetective
                         .Replace("[", "").Replace("]", "").Length;
                     bool typingDone = _typewriterTimer >= totalCharsOnPage;
 
+                    // Dialogue text renders below full size so long clue texts stay
+                    // inside the box art instead of running past its borders.
+                    const float dialogueScale = 0.72f;
                     DrawRichText(
                         _spriteBatch,
                         _dialogueFont,
@@ -810,20 +890,22 @@ namespace CatDetective
                         _currentInteraction.Keywords,
                         new Vector2(boxRect.X + PAD_X, boxRect.Y + PAD_Y),
                         boxRect.Width - PAD_X * 2,
-                        (int)_typewriterTimer);
+                        (int)_typewriterTimer,
+                        dialogueScale);
 
                     bool isLastPage = _currentDialoguePage >= _dialoguePages.Length - 1;
                     string hint     = typingDone
                         ? (isLastPage ? "[ Enter ] to dismiss" : "[ Enter ] to continue")
                         : "[ Enter ] to skip";
-                    var    hintSize = _dialogueFont.MeasureString(hint);
+                    var    hintSize = _dialogueFont.MeasureString(hint) * dialogueScale;
                     _spriteBatch.DrawString(
                         _dialogueFont,
                         hint,
                         new Vector2(
                             boxRect.Right  - PAD_X - hintSize.X,
                             boxRect.Bottom - PAD_Y * 0.6f - hintSize.Y),
-                        new Color(90, 70, 50));
+                        new Color(90, 70, 50),
+                        0f, Vector2.Zero, dialogueScale, SpriteEffects.None, 0f);
                     _spriteBatch.End();
                 }
 
@@ -836,27 +918,20 @@ namespace CatDetective
 
                     if (!_isGameWon)
                     {
-                        _spriteBatch.Draw(_debugPixel, _solveButtonRect, Color.DarkGoldenrod);
-                        var solveLbl = "SOLVE";
-                        var solveSz  = _dialogueFont.MeasureString(solveLbl);
-                        _spriteBatch.DrawString(
-                            _dialogueFont, solveLbl,
-                            new Vector2(
-                                _solveButtonRect.X + (_solveButtonRect.Width  - solveSz.X) * 0.5f,
-                                _solveButtonRect.Y + (_solveButtonRect.Height - solveSz.Y) * 0.5f),
-                            Color.White);
+                        DrawUiButton(_solveButtonRect, new Color(170, 120, 30), "SOLVE", Color.White);
 
-                        // FINAL SOLVE — only drawable once every visited room is solved.
-                        var finalColor = AllRoomsSolved ? new Color(180, 130, 20) : new Color(60, 60, 60);
-                        _spriteBatch.Draw(_debugPixel, _finalSolveButtonRect, finalColor);
-                        var finalLbl  = "FINAL\nSOLVE";
-                        var finalSz   = _dialogueFont.MeasureString(finalLbl);
-                        _spriteBatch.DrawString(
-                            _dialogueFont, finalLbl,
-                            new Vector2(
-                                _finalSolveButtonRect.X + (_finalSolveButtonRect.Width  - finalSz.X) * 0.5f,
-                                _finalSolveButtonRect.Y + (_finalSolveButtonRect.Height - finalSz.Y) * 0.5f),
-                            AllRoomsSolved ? Color.White : Color.DarkGray);
+                        // FINAL SOLVE — locked until every room is solved; shows progress.
+                        if (AllRoomsSolved)
+                        {
+                            DrawUiButton(_finalSolveButtonRect, new Color(190, 60, 45),
+                                "FINAL\nSOLVE", Color.White);
+                        }
+                        else
+                        {
+                            DrawUiButton(_finalSolveButtonRect, new Color(70, 70, 78),
+                                $"FINAL SOLVE\n{SolvedRoomCount()}/{_caseRooms.Count} rooms",
+                                Color.LightGray, maxLabelScale: 0.6f);
+                        }
                     }
 
                     // Transfer-zone prompt: centred at the bottom of the play area.
@@ -879,11 +954,31 @@ namespace CatDetective
                         foreach (var c in _notebook.UnlockedClues)
                             if (_currentRoomClueIds.Contains(c.Id)) roomFound++;
 
+                        const float hudScale = 0.8f;
                         string hud = $"Clues ({ToDisplayName(_currentRoomId)}): " +
                                      $"{roomFound}/{_currentRoomClueIds.Count}    " +
                                      $"Case: {_notebook.UnlockedClues.Count}/{_notebook.TotalClueCount}";
-                        _spriteBatch.DrawString(_dialogueFont, hud, new Vector2(26, 18), Color.Black * 0.6f);
-                        _spriteBatch.DrawString(_dialogueFont, hud, new Vector2(24, 16), Color.White);
+                        _spriteBatch.DrawString(_dialogueFont, hud, new Vector2(26, 18),
+                            Color.Black * 0.6f, 0f, Vector2.Zero, hudScale, SpriteEffects.None, 0f);
+                        _spriteBatch.DrawString(_dialogueFont, hud, new Vector2(24, 16),
+                            Color.White, 0f, Vector2.Zero, hudScale, SpriteEffects.None, 0f);
+                    }
+
+                    // Transient toast — bottom-center, fades out at the end.
+                    if (_toastTimer > 0f && !_isGameWon)
+                    {
+                        const float toastScale = 0.8f;
+                        float alpha   = Math.Min(1f, _toastTimer / 0.5f);
+                        var   toastSz = _dialogueFont.MeasureString(_toastMessage) * toastScale;
+                        var   toastPos = new Vector2(
+                            (SCREEN_WIDTH - toastSz.X) * 0.5f,
+                            SCREEN_HEIGHT - toastSz.Y - 120);
+                        var bgRect = new Rectangle(
+                            (int)(toastPos.X - 20), (int)(toastPos.Y - 10),
+                            (int)(toastSz.X + 40),  (int)(toastSz.Y + 20));
+                        _spriteBatch.Draw(_debugPixel, bgRect, Color.Black * (0.65f * alpha));
+                        _spriteBatch.DrawString(_dialogueFont, _toastMessage, toastPos,
+                            Color.White * alpha, 0f, Vector2.Zero, toastScale, SpriteEffects.None, 0f);
                     }
 
                     _spriteBatch.End();
@@ -939,11 +1034,16 @@ namespace CatDetective
                         var wordBankArea  = new Rectangle(J(1050,jsx), J(280,jsy), J(750,jsx), J(400,jsy));
                         var inspectorArea = new Rectangle(J(1150,jsx), J(800,jsy), J(600,jsx), J(250,jsy));
 
+                        // Journal text scales: the panel rects shrink with the canvas, so
+                        // the 32pt font must shrink with them or it overflows every box.
+                        float jt  = 0.80f * jsy;   // body text
+                        float jti = 0.66f * jsy;   // inspector text (longest content, densest)
+
                         // ── LEFT PAGE: Mad-Libs sentence ──────────────────────
                         float lx      = leftPageArea.X;
                         float ly      = leftPageArea.Y;
-                        float lineH   = _dialogueFont.LineSpacing + 16;
-                        float spaceW  = _dialogueFont.MeasureString(" ").X;
+                        float lineH   = _dialogueFont.LineSpacing * jt + 12 * jsy;
+                        float spaceW  = _dialogueFont.MeasureString(" ").X * jt;
                         int   maxRight = leftPageArea.Right;
 
                         //var sentTitleSz = _dialogueFont.MeasureString("What happened?");
@@ -973,11 +1073,12 @@ namespace CatDetective
                                         int end = pos;
                                         while (end < txt.Length && txt[end] != ' ') end++;
                                         string word  = txt[pos..end];
-                                        float  wordW = _dialogueFont.MeasureString(word).X;
+                                        float  wordW = _dialogueFont.MeasureString(word).X * jt;
                                         if (lx > leftPageArea.X && lx + wordW > maxRight)
                                         { lx = leftPageArea.X; ly += lineH; }
                                         _spriteBatch.DrawString(_dialogueFont, word,
-                                            new Vector2(lx, ly), _inkColor);
+                                            new Vector2(lx, ly), _inkColor,
+                                            0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
                                         lx  += wordW;
                                         pos  = end;
                                     }
@@ -991,9 +1092,9 @@ namespace CatDetective
                                            .Find(c => c.Id == slot.SelectedClueId)?.Name
                                        ?? slot.TagLabel)
                                     : $"[ {slotCatLabels[(int)slot.Category]} ]";
-                                float textW  = _dialogueFont.MeasureString(label).X;
-                                int   slotW  = (int)textW + 24;
-                                int   slotH  = _dialogueFont.LineSpacing + 8;
+                                float textW  = _dialogueFont.MeasureString(label).X * jt;
+                                int   slotW  = (int)(textW + 20 * jt);
+                                int   slotH  = (int)(_dialogueFont.LineSpacing * jt + 8);
                                 if (lx > leftPageArea.X && lx + slotW > maxRight)
                                 { lx = leftPageArea.X; ly += lineH; }
                                 var slotColor = _tabColors[(int)slot.Category];
@@ -1001,35 +1102,42 @@ namespace CatDetective
                                 _spriteBatch.Draw(_debugPixel, slotRect, slotColor * 0.3f);
                                 DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, slotRect, slotColor);
                                 float tX = slotRect.X + (slotRect.Width  - textW) * 0.5f;
-                                float tY = slotRect.Y + (slotRect.Height - _dialogueFont.LineSpacing) * 0.5f;
-                                _spriteBatch.DrawString(_dialogueFont, label, new Vector2(tX, tY), _inkColor);
+                                float tY = slotRect.Y + (slotRect.Height - _dialogueFont.LineSpacing * jt) * 0.5f;
+                                _spriteBatch.DrawString(_dialogueFont, label, new Vector2(tX, tY), _inkColor,
+                                    0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
                                 slot.Bounds = slotRect;
                                 lx += slotW + 8;
                             }
                         }
 
-                        // ── LEFT PAGE: solves overview (final board only) ─────
-                        if (_isFinalSolveMode)
+                        // ── LEFT PAGE: rooms overview — solved state + clue counts.
+                        // Shown on every board so the player can see which room still
+                        // hides clues and which deductions remain.
                         {
-                            float oy = Math.Max(ly + lineH * 2f, J(560, jsy));
-                            _spriteBatch.DrawString(_dialogueFont, "Room deductions:",
-                                new Vector2(leftPageArea.X, oy), _inkColor);
+                            float oy = Math.Max(ly + lineH * 1.6f, J(560, jsy));
+                            _spriteBatch.DrawString(_dialogueFont, "Investigation:",
+                                new Vector2(leftPageArea.X, oy), _inkColor,
+                                0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
                             oy += lineH;
                             foreach (var room in _caseRooms)
                             {
                                 bool solved = _roomSolvedStates.TryGetValue(room, out var s) && s;
+                                var (found, total) = _notebook.GetRoomClueCounts(room);
                                 _spriteBatch.DrawString(_dialogueFont,
-                                    (solved ? "[x] " : "[  ] ") + ToDisplayName(room),
+                                    $"{(solved ? "[x]" : "[  ]")} {ToDisplayName(room)}  -  clues {found}/{total}",
                                     new Vector2(leftPageArea.X, oy),
-                                    solved ? new Color(30, 130, 50) : Color.Gray);
-                                oy += _dialogueFont.LineSpacing + 6;
+                                    solved ? new Color(30, 130, 50)
+                                           : (found == total ? _inkColor : Color.Gray),
+                                    0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
+                                oy += _dialogueFont.LineSpacing * jt + 6;
                             }
                         }
 
                         // Case-wide clue counter — top of the left page.
                         _spriteBatch.DrawString(_dialogueFont,
                             $"Case clues: {_notebook.UnlockedClues.Count}/{_notebook.TotalClueCount}",
-                            new Vector2(leftPageArea.X, J(230, jsy)), _inkColor * 0.8f);
+                            new Vector2(leftPageArea.X, J(230, jsy)), _inkColor * 0.8f,
+                            0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
 
                         // ── RIGHT PAGE: Tab bar (pre-rendered full-bar image) ──
                         // Scaled with the canvas so the art lands exactly on the hotspots.
@@ -1037,9 +1145,9 @@ namespace CatDetective
                             0f, Vector2.Zero, new Vector2(jsx, jsy), SpriteEffects.None, 0f);
 
                         // ── RIGHT PAGE: Word Bank (flow layout) ───────────────
-                        const float spacingX  = 16f;
-                        const float spacingY  = 16f;
-                        const float boxHeight = 40f;
+                        float spacingX  = 14f * jsx;
+                        float spacingY  = 12f * jsy;
+                        float boxHeight = _dialogueFont.LineSpacing * jt + 10f;
 
                         float currentX   = wordBankArea.X;
                         float currentY   = wordBankArea.Y;
@@ -1054,8 +1162,8 @@ namespace CatDetective
 
                         foreach (var cl in filteredWB)
                         {
-                            var   textSz   = _dialogueFont.MeasureString(cl.Name);
-                            float boxWidth = textSz.X + 24f;
+                            var   textSz   = _dialogueFont.MeasureString(cl.Name) * jt;
+                            float boxWidth = textSz.X + 20f * jt;
 
                             // Line wrap
                             if (currentX + boxWidth > wordBankArea.Right)
@@ -1086,7 +1194,8 @@ namespace CatDetective
                                 float nameY = tagR.Y + (tagR.Height - textSz.Y) * 0.5f;
                                 _spriteBatch.DrawString(_dialogueFont, cl.Name,
                                     new Vector2(nameX, nameY),
-                                    sel ? Color.White : _inkColor);
+                                    sel ? Color.White : _inkColor,
+                                    0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
                                 _wordBankClueRects.Add((tagR, cl));
                             }
 
@@ -1098,105 +1207,105 @@ namespace CatDetective
                         if (filteredWB.Count == 0)
                         {
                             _spriteBatch.DrawString(_dialogueFont, "-- no clues found yet --",
-                                new Vector2(wordBankArea.X, wordBankArea.Y + 10), Color.Gray);
+                                new Vector2(wordBankArea.X, wordBankArea.Y + 10), Color.Gray,
+                                0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
                         }
 
                         // ── Paging controls ───────────────────────────────────
                         if (_wordBankPageCount > 0)
                         {
                             if (_wordBankPage > 0)
-                            {
-                                _spriteBatch.Draw(_debugPixel, _journalPrevPageRect,
-                                    new Color(40, 40, 60));
-                                var prevSz = _dialogueFont.MeasureString("<");
-                                _spriteBatch.DrawString(_dialogueFont, "<",
-                                    new Vector2(
-                                        _journalPrevPageRect.X + (_journalPrevPageRect.Width  - prevSz.X) * 0.5f,
-                                        _journalPrevPageRect.Y + (_journalPrevPageRect.Height - prevSz.Y) * 0.5f),
-                                    Color.White);
-                            }
+                                DrawUiButton(_journalPrevPageRect, new Color(40, 40, 60), "<", Color.White);
                             if (_wordBankPage < _wordBankPageCount)
-                            {
-                                _spriteBatch.Draw(_debugPixel, _journalNextPageRect,
-                                    new Color(40, 40, 60));
-                                var nextSz = _dialogueFont.MeasureString(">");
-                                _spriteBatch.DrawString(_dialogueFont, ">",
-                                    new Vector2(
-                                        _journalNextPageRect.X + (_journalNextPageRect.Width  - nextSz.X) * 0.5f,
-                                        _journalNextPageRect.Y + (_journalNextPageRect.Height - nextSz.Y) * 0.5f),
-                                    Color.White);
-                            }
+                                DrawUiButton(_journalNextPageRect, new Color(40, 40, 60), ">", Color.White);
+
                             var pageLbl   = $"{_wordBankPage + 1} / {_wordBankPageCount + 1}";
-                            var pageLblSz = _dialogueFont.MeasureString(pageLbl);
+                            var pageLblSz = _dialogueFont.MeasureString(pageLbl) * jt;
                             _spriteBatch.DrawString(_dialogueFont, pageLbl,
                                 new Vector2(
                                     (_journalPrevPageRect.Right + _journalNextPageRect.X) * 0.5f
                                         - pageLblSz.X * 0.5f,
                                     _journalPrevPageRect.Y + (_journalPrevPageRect.Height - pageLblSz.Y) * 0.5f),
-                                Color.LightGray);
+                                Color.LightGray, 0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
                         }
 
                         // ── Inspector Panel (no debug background) ─────────────
                         if (_selectedWordBankClue != null)
                         {
-                            var insertBtn = _journalInsertRect;
                             _spriteBatch.DrawString(_dialogueFont, _selectedWordBankClue.Name,
                                 new Vector2(inspectorArea.X, inspectorArea.Y),
-                                _tabColors[(int)_selectedWordBankClue.Category]);
-                            float descBottom = DrawWrappedString(_spriteBatch, _dialogueFont,
-                                _selectedWordBankClue.InspectorDescription,
-                                new Vector2(inspectorArea.X, inspectorArea.Y + 40),
-                                inspectorArea.Width, _dialogueFont.LineSpacing + 4, _inkColor);
+                                _tabColors[(int)_selectedWordBankClue.Category],
+                                0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
 
-                            // Macro clues carry their room's solved deduction as a reminder.
-                            if (_selectedWordBankClue.IsMacroClue &&
+                            // The room-deduction recap only appears on the final board,
+                            // where cross-room recall matters; on local boards it read
+                            // as clutter glued under the description.
+                            string  descText   = _selectedWordBankClue.InspectorDescription;
+                            string? recapText  = null;
+                            if (_isFinalSolveMode && _selectedWordBankClue.IsMacroClue &&
                                 _roomSolvedSentences.TryGetValue(_selectedWordBankClue.RoomId,
                                                                  out var sourceSentence))
+                                recapText =
+                                    $"{ToDisplayName(_selectedWordBankClue.RoomId)}: \"{sourceSentence}\"";
+
+                            // Auto-fit: shrink the text scale until description (+ recap)
+                            // fits inside the inspector paper instead of spilling out.
+                            float availH   = inspectorArea.Height - (_dialogueFont.LineSpacing * jt + 6);
+                            float fitScale = jti;
+                            for (int tries = 0; tries < 6; tries++)
                             {
-                                DrawWrappedString(_spriteBatch, _dialogueFont,
-                                    $"{ToDisplayName(_selectedWordBankClue.RoomId)}: \"{sourceSentence}\"",
-                                    new Vector2(inspectorArea.X, descBottom + 6),
-                                    inspectorArea.Width, _dialogueFont.LineSpacing + 4,
-                                    new Color(95, 75, 130));
+                                float h = MeasureWrappedHeight(_dialogueFont, descText,
+                                    inspectorArea.Width, _dialogueFont.LineSpacing * fitScale + 4, fitScale);
+                                if (recapText != null)
+                                    h += 6 + MeasureWrappedHeight(_dialogueFont, recapText,
+                                        inspectorArea.Width, _dialogueFont.LineSpacing * fitScale + 4, fitScale);
+                                if (h <= availH) break;
+                                fitScale *= 0.88f;
                             }
-                            _spriteBatch.Draw(_debugPixel, insertBtn,
-                                _tabColors[(int)_selectedWordBankClue.Category]);
-                            var insSz = _dialogueFont.MeasureString("INSERT");
-                            _spriteBatch.DrawString(_dialogueFont, "INSERT",
-                                new Vector2(
-                                    insertBtn.X + (insertBtn.Width  - insSz.X) * 0.5f,
-                                    insertBtn.Y + (insertBtn.Height - insSz.Y) * 0.5f),
-                                Color.White);
+
+                            float descBottom = DrawWrappedString(_spriteBatch, _dialogueFont,
+                                descText,
+                                new Vector2(inspectorArea.X, inspectorArea.Y + _dialogueFont.LineSpacing * jt + 6),
+                                inspectorArea.Width, _dialogueFont.LineSpacing * fitScale + 4, _inkColor, fitScale);
+
+                            if (recapText != null)
+                            {
+                                DrawWrappedString(_spriteBatch, _dialogueFont, recapText,
+                                    new Vector2(inspectorArea.X, descBottom + 6),
+                                    inspectorArea.Width, _dialogueFont.LineSpacing * fitScale + 4,
+                                    new Color(95, 75, 130), fitScale);
+                            }
+                            DrawUiButton(_journalInsertRect,
+                                _tabColors[(int)_selectedWordBankClue.Category], "INSERT", Color.White,
+                                maxLabelScale: jt);
                         }
 
-                        // ── Submit & validation ───────────────────────────────
+                        // A solved room's board is a locked recap — no CLEAR/SUBMIT.
+                        bool drawLocked = !_isFinalSolveMode &&
+                            _roomSolvedStates.TryGetValue(_currentRoomId, out var roomDone) && roomDone;
+
+                        // ── Submit / clear & validation ───────────────────────
                         if (!string.IsNullOrEmpty(activeDeduction.ValidationMessage))
                         {
                             bool isCorrect = activeDeduction.ValidationMessage.StartsWith("Case");
-                            var  vmSz      = _dialogueFont.MeasureString(activeDeduction.ValidationMessage);
+                            var  vmSz      = _dialogueFont.MeasureString(activeDeduction.ValidationMessage) * jt;
                             _spriteBatch.DrawString(_dialogueFont, activeDeduction.ValidationMessage,
                                 new Vector2(
                                     _journalSubmitRect.X + (_journalSubmitRect.Width  - vmSz.X) * 0.5f,
                                     _journalSubmitRect.Y - vmSz.Y - 8),
-                                isCorrect ? Color.LimeGreen : Color.OrangeRed);
+                                isCorrect ? Color.LimeGreen : Color.OrangeRed,
+                                0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
                         }
-                        _spriteBatch.Draw(_debugPixel, _journalSubmitRect, new Color(20, 100, 40));
-                        var subLbl = "SUBMIT";
-                        var subSz  = _dialogueFont.MeasureString(subLbl);
-                        _spriteBatch.DrawString(_dialogueFont, subLbl,
-                            new Vector2(
-                                _journalSubmitRect.X + (_journalSubmitRect.Width  - subSz.X) * 0.5f,
-                                _journalSubmitRect.Y + (_journalSubmitRect.Height - subSz.Y) * 0.5f),
-                            Color.White);
+                        if (!drawLocked)
+                        {
+                            DrawUiButton(_journalClearRect,  new Color(110, 60, 40), "CLEAR",  Color.White,
+                                maxLabelScale: jt);
+                            DrawUiButton(_journalSubmitRect, new Color(20, 100, 40), "SUBMIT", Color.White,
+                                maxLabelScale: jt);
+                        }
 
                         // ── Close button (X) ──────────────────────────────────
-                        _spriteBatch.Draw(_debugPixel, _journalCloseRect, new Color(100, 40, 40));
-                        var closeSz = _dialogueFont.MeasureString("X");
-                        _spriteBatch.DrawString(_dialogueFont, "X",
-                            new Vector2(
-                                _journalCloseRect.X + (_journalCloseRect.Width  - closeSz.X) * 0.5f,
-                                _journalCloseRect.Y + (_journalCloseRect.Height - closeSz.Y) * 0.5f),
-                            Color.White);
+                        DrawUiButton(_journalCloseRect, new Color(100, 40, 40), "X", Color.White);
                     }
 
                     _spriteBatch.End();
@@ -1219,6 +1328,51 @@ namespace CatDetective
 
         // ── Helpers ────────────────────────────────────────────────────────────
 
+        private int SolvedRoomCount()
+        {
+            int n = 0;
+            foreach (var solved in _roomSolvedStates.Values)
+                if (solved) n++;
+            return n;
+        }
+
+        private void ShowToast(string message)
+        {
+            _toastMessage = message;
+            _toastTimer   = TOAST_DURATION;
+        }
+
+        /// <summary>
+        /// Code-drawn UI button: drop shadow, fill, lighter border, hover highlight,
+        /// and a label auto-scaled to fit inside the rect.
+        /// </summary>
+        private void DrawUiButton(Rectangle rect, Color fill, string label, Color labelColor,
+                                  float maxLabelScale = 0.85f)
+        {
+            var mouse   = Mouse.GetState();
+            var vm      = new Point((int)(mouse.X / DISPLAY_SCALE), (int)(mouse.Y / DISPLAY_SCALE));
+            bool hover  = rect.Contains(vm);
+
+            _spriteBatch.Draw(_debugPixel,
+                new Rectangle(rect.X + 4, rect.Y + 4, rect.Width, rect.Height),
+                Color.Black * 0.35f);
+            _spriteBatch.Draw(_debugPixel, rect, hover ? Color.Lerp(fill, Color.White, 0.18f) : fill);
+            DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, rect,
+                Color.Lerp(fill, Color.White, hover ? 0.7f : 0.45f));
+
+            var size  = _dialogueFont.MeasureString(label);
+            float fitW = (rect.Width  - 16) / Math.Max(size.X, 1f);
+            float fitH = (rect.Height - 10) / Math.Max(size.Y, 1f);
+            float scale = Math.Min(maxLabelScale, Math.Min(fitW, fitH));
+            var pos = new Vector2(
+                rect.X + (rect.Width  - size.X * scale) * 0.5f,
+                rect.Y + (rect.Height - size.Y * scale) * 0.5f);
+            _spriteBatch.DrawString(_dialogueFont, label, pos + new Vector2(2, 2),
+                Color.Black * 0.4f, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            _spriteBatch.DrawString(_dialogueFont, label, pos,
+                labelColor, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+        }
+
         private float DrawWrappedString(
             SpriteBatch spriteBatch,
             SpriteFont  font,
@@ -1226,20 +1380,41 @@ namespace CatDetective
             Vector2     origin,
             float       maxWidth,
             float       lineHeight,
-            Color       color)
+            Color       color,
+            float       scale = 1f)
         {
             float x = origin.X, y = origin.Y;
             string[] words = text.Split(' ');
             foreach (var word in words)
             {
-                float wordW  = font.MeasureString(word).X;
-                float spaceW = font.MeasureString(" ").X;
+                float wordW  = font.MeasureString(word).X * scale;
+                float spaceW = font.MeasureString(" ").X * scale;
                 if (x > origin.X && x + wordW > origin.X + maxWidth)
                 {
                     x  = origin.X;
                     y += lineHeight;
                 }
-                spriteBatch.DrawString(font, word, new Vector2(x, y), color);
+                spriteBatch.DrawString(font, word, new Vector2(x, y), color,
+                    0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                x += wordW + spaceW;
+            }
+            return y + lineHeight;
+        }
+
+        /// <summary>Height DrawWrappedString would occupy — same wrap rules, no drawing.</summary>
+        private static float MeasureWrappedHeight(
+            SpriteFont font, string text, float maxWidth, float lineHeight, float scale)
+        {
+            float x = 0f, y = 0f;
+            foreach (var word in text.Split(' '))
+            {
+                float wordW  = font.MeasureString(word).X * scale;
+                float spaceW = font.MeasureString(" ").X * scale;
+                if (x > 0f && x + wordW > maxWidth)
+                {
+                    x  = 0f;
+                    y += lineHeight;
+                }
                 x += wordW + spaceW;
             }
             return y + lineHeight;
@@ -1267,8 +1442,11 @@ namespace CatDetective
 
             _journalPrevPageRect = new Rectangle(S(1050 * sx), S(692 * sy), S(90 * sx), S(35 * sy));
             _journalNextPageRect = new Rectangle(S(1710 * sx), S(692 * sy), S(90 * sx), S(35 * sy));
-            _journalInsertRect   = new Rectangle(S(1610 * sx), S(940 * sy), S(140 * sx), S(50 * sy));
-            _journalSubmitRect   = new Rectangle(S(1330 * sx), S(1040 * sy), S(340 * sx), S(70 * sy));
+            // Top-right of the inspector paper, level with the clue name —
+            // keeps the button clear of the wrapped description text.
+            _journalInsertRect   = new Rectangle(S(1610 * sx), S(800 * sy), S(140 * sx), S(50 * sy));
+            _journalSubmitRect   = new Rectangle(S(1400 * sx), S(1040 * sy), S(270 * sx), S(70 * sy));
+            _journalClearRect    = new Rectangle(S(1200 * sx), S(1040 * sy), S(170 * sx), S(70 * sy));
             _journalCloseRect    = new Rectangle(S(1930 * sx), S(30  * sy), S(60  * sx), S(60 * sy));
 
         }
@@ -1346,12 +1524,13 @@ namespace CatDetective
             Keyword[]   keywords,
             Vector2     origin,
             float       maxWidth,
-            int         maxChars = int.MaxValue)
+            int         maxChars = int.MaxValue,
+            float       scale    = 1f)
         {
             var   spans      = ParseSpans(text, keywords);
             float x          = origin.X;
             float y          = origin.Y;
-            float lineH      = font.LineSpacing;
+            float lineH      = font.LineSpacing * scale;
             int   charsDrawn = 0;
 
             foreach (var (spanText, highlightColor) in spans)
@@ -1364,7 +1543,7 @@ namespace CatDetective
                     while (pos < spanText.Length && (spanText[pos] == ' ') == isSpace)
                         pos++;
                     string token  = spanText[start..pos];
-                    float  tokenW = font.MeasureString(token).X;
+                    float  tokenW = font.MeasureString(token).X * scale;
 
                     if (isSpace)
                     {
@@ -1383,15 +1562,17 @@ namespace CatDetective
                         string drawToken  = charsDrawn + token.Length > maxChars
                             ? token.Substring(0, maxChars - charsDrawn)
                             : token;
-                        float  drawTokenW = font.MeasureString(drawToken).X;
+                        float  drawTokenW = font.MeasureString(drawToken).X * scale;
 
                         if (highlightColor != Color.Transparent)
                         {
                             spriteBatch.Draw(_debugPixel,
-                                new Rectangle((int)x, (int)y + 8, (int)drawTokenW, (int)lineH - 12),
+                                new Rectangle((int)x, (int)(y + 8 * scale),
+                                              (int)drawTokenW, (int)(lineH - 12 * scale)),
                                 highlightColor * 0.4f);
                         }
-                        spriteBatch.DrawString(font, drawToken, new Vector2(x, y), _inkColor);
+                        spriteBatch.DrawString(font, drawToken, new Vector2(x, y), _inkColor,
+                            0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
                         x          += tokenW;
                         charsDrawn += token.Length;
                     }

@@ -3,7 +3,7 @@
   "interactables": [
     {
       "id": "inspect_socialite",
-      "text": "The [Socialite] lowers her sunglasses. 'I saw that camera crew guy — the nervous one with the giant headphones — dragging [huge black cases] through the garden. At like, [quarter to seven]. I thought it was weird.'",
+      "text": "The [Socialite], Coco, lowers her sunglasses. 'Some crew person was lugging [huge black cases] through the garden at, like, [quarter to seven]. Walked right through my sunset shot. The nerve.'",
       "keywords": [
         { "displayText": "Socialite", "id": "eyewitness_645pm", "color": "plot" },
         { "displayText": "huge black cases", "id": "eyewitness_645pm", "color": "plot" },
@@ -14,7 +14,7 @@
     },
     {
       "id": "inspect_pool_selfie",
-      "text": "The Socialite's phone has a pool selfie timestamped [6:47 PM]. Visible in the blurry background: a [figure with large dark cases] moving along the garden path.",
+      "text": "Coco's phone has a pool selfie timestamped [6:47 PM]. Visible in the blurry background: a [figure with large dark cases] on the garden path.",
       "keywords": [
         { "displayText": "6:47 PM", "id": "selfie_figure_cases", "color": "plot" },
         { "displayText": "figure with large dark cases", "id": "selfie_figure_cases", "color": "plot" }
@@ -24,21 +24,23 @@
     },
     {
       "id": "inspect_production_schedule",
-      "text": "A production schedule left poolside. Under '7:00 PM — Crew Assignments:' it reads: '[D. Marsh — Library (audio setup)].' He was supposed to be in the Library at seven.",
+      "text": "A production schedule left poolside. Under '7:00 PM - Crew Assignments:' it reads: '[D. Marsh - Library (audio setup)].'",
       "keywords": [
-        { "displayText": "D. Marsh — Library (audio setup)", "id": "production_schedule", "color": "misc" }
+        { "displayText": "D. Marsh - Library (audio setup)", "id": "production_schedule", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 0.09
     },
     {
       "id": "inspect_pool_water",
-      "text": "An enormous body of water, glittering with menace. You maintain a professional distance of exactly one pounce plus a safety margin. The pool is not a suspect, but you don't trust it either.",
-      "keywords": [],
+      "text": "An enormous body of water, glittering with menace. You maintain a professional distance of exactly one pounce plus a safety margin. In the filter floats [a single bright feather]. It could have blown in from anywhere. The pool is not a suspect, but you don't trust it either.",
+      "keywords": [
+        { "displayText": "a single bright feather", "id": "feather_in_filter", "color": "misc" }
+      ],
       "texture": "Shared/placeholder_object",
       "scale": 0.10
     }
   ],
-  "localDeductionSentence": "The [Eyewitness — 6:45 PM] account is backed by a [Timestamped Photo]: a figure hauling dark cases, 13 minutes before the sign-in on the [Production Schedule].",
+  "localDeductionSentence": "[Coco's Sighting] and the [Timestamped Photo] agree: big dark cases crossed the garden before the [Production Schedule] says setup even began.",
   "localDeductionClueIds": ["eyewitness_645pm", "selfie_figure_cases", "production_schedule"]
 }
