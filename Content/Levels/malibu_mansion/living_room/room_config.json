@@ -7,7 +7,19 @@
       "keywords": [
         { "displayText": "Movie Star", "id": "squawk_at_8pm", "color": "plot" },
         { "displayText": "8:00 PM", "id": "squawk_at_8pm", "color": "plot" }
-      ]
+      ],
+      "texture": "Shared/placeholder_person",
+      "scale": 0.15
+    },
+    {
+      "id": "inspect_bird_handler",
+      "text": "The [Bird Handler] crawls under the couch collecting feathers with tweezers. 'These have [settled]. Feathers don't lie. He was gone hours before anyone heard that squawk.' You respect a fellow professional.",
+      "keywords": [
+        { "displayText": "Bird Handler", "id": "broken_latch", "color": "crime" },
+        { "displayText": "settled", "id": "broken_latch", "color": "crime" }
+      ],
+      "texture": "Shared/placeholder_person",
+      "scale": 0.15
     },
     {
       "id": "inspect_birdcage",
@@ -15,7 +27,9 @@
       "keywords": [
         { "displayText": "Empty Cage", "id": "broken_latch", "color": "crime" },
         { "displayText": "snapped clean off", "id": "broken_latch", "color": "crime" }
-      ]
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.12
     },
     {
       "id": "inspect_hidden_speaker",
@@ -23,7 +37,9 @@
       "keywords": [
         { "displayText": "Wireless Speaker", "id": "hidden_speaker", "color": "crime" },
         { "displayText": "Audio Cable", "id": "hidden_speaker", "color": "crime" }
-      ]
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.07
     },
     {
       "id": "inspect_documentary_camera",
@@ -31,7 +47,9 @@
       "keywords": [
         { "displayText": "Recording", "id": "documentary_camera", "color": "misc" },
         { "displayText": "cage", "id": "documentary_camera", "color": "misc" }
-      ]
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.11
     },
     {
       "id": "inspect_vocab_ledger",
@@ -39,8 +57,11 @@
       "keywords": [
         { "displayText": "Garbage slop", "id": "vocab_ledger", "color": "misc" },
         { "displayText": "Maid's fault", "id": "vocab_ledger", "color": "misc" }
-      ]
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.08
     }
   ],
-  "localDeductionSentence": "The [Movie Star] swore she heard Rudebeak at [8:00 PM] — but the [Broken Latch], dried seed tray, and a [Hidden Speaker] behind the cage tell a very different story."
+  "localDeductionSentence": "Everyone heard the [8:00 PM Squawk] — but the [Broken Latch] and the [Hidden Speaker] under the cage tell a very different story.",
+  "localDeductionClueIds": ["squawk_at_8pm", "broken_latch", "hidden_speaker"]
 }

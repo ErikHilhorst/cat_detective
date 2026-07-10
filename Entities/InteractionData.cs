@@ -36,16 +36,23 @@ namespace CatDetective.Entities
         public int    OffsetX { get; }
         public int    OffsetY { get; }
 
+        /// <summary>
+        /// Fallback content path (e.g. "Shared/placeholder_person") used when no
+        /// per-name sprite exists under Interactables/. Empty = no fallback.
+        /// </summary>
+        public string TexturePath { get; }
+
         public InteractionData(string text, Keyword[] keywords,
             float scale = 1.0f, string align = "BottomCenter",
-            int offsetX = 0, int offsetY = 0)
+            int offsetX = 0, int offsetY = 0, string texturePath = "")
         {
-            Text     = text;
-            Keywords = keywords;
-            Scale    = scale;
-            Align    = align;
-            OffsetX  = offsetX;
-            OffsetY  = offsetY;
+            Text        = text;
+            Keywords    = keywords;
+            Scale       = scale;
+            Align       = align;
+            OffsetX     = offsetX;
+            OffsetY     = offsetY;
+            TexturePath = texturePath;
         }
 
         // ── Shared colour palette ──────────────────────────────────────────────

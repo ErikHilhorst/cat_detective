@@ -101,12 +101,26 @@ Call them in that order from `Game1.Update()`. Do not merge them.
 - A layer-level `offsetx`/`offsety` on any layer shifts all its objects at parse time. The entrance Transfers layer uses offset `(-142, +192)` to align with the background art.
 
 ### Spawn point placement rule — critical
-The cat collision box is **87 px wide (±43 px from center) and 45 px tall** (from `Position.Y - 45` up to `Position.Y`). A spawn point that lands inside a transfer zone causes an instant re-trigger loop. When placing a `spawn_from_X` point, ensure the entire collision box clears the transfer zone:
+The cat collision box is **~61 px wide (±31 px from center; ~70 px / ±35 when facing up) and 32 px tall** (from `Position.Y - 32` up to `Position.Y`). A spawn point that lands inside a transfer zone causes an instant re-trigger loop. When placing a `spawn_from_X` point, ensure the entire collision box clears the transfer zone:
 
-- **Y clearance**: `spawnY > zoneBottom + 45` (spawn below a zone) or `spawnY - 45 > zoneTop` adjusted accordingly
-- **X clearance**: `spawnX - 43 > zoneRight` or `spawnX + 43 < zoneLeft` (spawn beside a zone)
+- **Y clearance**: `spawnY > zoneBottom + 32` (spawn below a zone) or `spawnY - 32 > zoneTop` adjusted accordingly
+- **X clearance**: `spawnX - 35 > zoneRight` or `spawnX + 35 < zoneLeft` (spawn beside a zone)
 
 A safe margin of ~15 px beyond the minimum is recommended.
+
+### Case / room config keys
+
+`case_config.json` (per case):
+- `clues[]` — master clue database (`id`, `roomId`, `isMacroClue`, `category`, `name`, `context`, `inspectorDescription`).
+- `rooms[]` — every room id in the case, in display order. Feeds `AllRoomsSolved` and the journal's solves overview. Keep in sync when adding rooms.
+- `finalSolveSentence` — mad-libs template for the final board; `[bracketed]` tags become slots.
+- `finalSolveClueIds[]` — answer clue ids matched to slots **in parse order**. A slot's category is taken from its answer clue, so tags can be readable text (`[Police Lockdown]`), not just `[WHO]`.
+
+`room_config.json` (per room):
+- `interactables[].texture` — fallback content path (e.g. `Shared/placeholder_person`) used when no per-name sprite exists under `Interactables/`. Combine with `scale` to size it.
+- `localDeductionSentence` + `localDeductionClueIds[]` — same slot/answer scheme as the final board. Answers should be clue ids the room's own keywords can unlock.
+
+Deduction validation is enforced: a slot with a non-empty correct id rejects wrong clues ("Incorrect logic."). Solving a room stores its filled sentence for the journal recap and unlocks the room's macro clues.
 
 ### Malibu Mansion — room wiring
 

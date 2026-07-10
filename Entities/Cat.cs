@@ -34,11 +34,11 @@ namespace CatDetective.Entities
         private const float Y_SPEED = 125f;
 
         // ── Collision box ──────────────────────────────────────────────────────
-        private const int   FEET_BOX_HEIGHT = 45;   // px, covers only the paws on the floor
+        private const int   FEET_BOX_HEIGHT = 32;   // px, covers only the paws on the floor
 
         // ── Sprite scale ───────────────────────────────────────────────────────
-        private const float SPRITE_SCALE_DOWN = 0.5f;
-        private const float SPRITE_SCALE_UP   = 0.57f;
+        private const float SPRITE_SCALE_DOWN = 0.35f;
+        private const float SPRITE_SCALE_UP   = 0.40f;
 
         private float CurrentScale => _facingUp ? SPRITE_SCALE_UP : SPRITE_SCALE_DOWN;
 
@@ -223,7 +223,7 @@ namespace CatDetective.Entities
     var shadowOrigin = new Vector2(ShadowTexture.Width * 0.5f, ShadowTexture.Height * 0.5f);
     
     // Offset significantly UP (negative Y) to close the transparent gap under the paws
-    var shadowPos = Position + new Vector2(0f, -20f);
+    var shadowPos = Position + new Vector2(0f, -14f);
 
     spriteBatch.Draw(
         ShadowTexture,
@@ -233,7 +233,7 @@ namespace CatDetective.Entities
         rotation: 0f,
         origin:   shadowOrigin,
         // Flattened Y scale to look painted onto the isometric floor
-        scale:    new Vector2(0.16f, 0.07f),   
+        scale:    new Vector2(0.11f, 0.05f),
         effects:  SpriteEffects.None,
         layerDepth: 0f);
 }

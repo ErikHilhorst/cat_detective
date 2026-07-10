@@ -6,7 +6,9 @@
       "text": "The [Maid] is aggressively chopping vegetables. The cleaver hits the board like a verdict. She does not look friendly.",
       "keywords": [
         { "displayText": "Maid", "id": "the_maid", "color": "misc" }
-      ]
+      ],
+      "texture": "Shared/placeholder_person",
+      "scale": 0.15
     },
     {
       "id": "inspect_note_on_fridge",
@@ -14,15 +16,27 @@
       "keywords": [
         { "displayText": "garbage slop", "id": "insulted_cooking", "color": "misc" },
         { "displayText": "skull", "id": "insulted_cooking", "color": "misc" }
-      ]
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.08
     },
     {
       "id": "inspect_paella_pot",
       "text": "The Maid's paella. You sniff it. It smells extraordinary. Whatever Rudebeak said about this dish, [he was wrong].",
       "keywords": [
         { "displayText": "he was wrong", "id": "paella_pot", "color": "misc" }
-      ]
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.09
+    },
+    {
+      "id": "inspect_treat_jar",
+      "text": "A ceramic jar on the counter, labeled 'FOR THE CAT.' The Maid keeps treats. For you. Specifically. You are now morally conflicted about having her on the suspect list.",
+      "keywords": [],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.08
     }
   ],
-  "localDeductionSentence": "The [Maid] aggressively chopped vegetables, her fury at Rudebeak's insult to her [Cooking] immortalized on the fridge in her own handwriting — skull and all."
+  "localDeductionSentence": "[The Maid] had a temper and access to every room — her fury over the [Insulted Cooking] is on the fridge, skull and all. Motive, yes. Evidence, no.",
+  "localDeductionClueIds": ["the_maid", "insulted_cooking"]
 }

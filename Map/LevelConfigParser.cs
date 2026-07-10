@@ -23,8 +23,16 @@ namespace CatDetective.Map
         [JsonPropertyName("clues")]
         public List<ClueConfigData> Clues { get; set; } = new();
 
-        [JsonPropertyName("deductionSentence")]
+        [JsonPropertyName("finalSolveSentence")]
         public string DeductionSentence { get; set; } = "";
+
+        /// <summary>Answer clue ids for the final sentence's slots, in slot order.</summary>
+        [JsonPropertyName("finalSolveClueIds")]
+        public List<string> FinalSolveClueIds { get; set; } = new();
+
+        /// <summary>All room ids in the case, in display order. Empty fails safe (final solve stays locked).</summary>
+        [JsonPropertyName("rooms")]
+        public List<string> Rooms { get; set; } = new();
     }
 
     internal sealed class RoomConfigData
@@ -37,6 +45,10 @@ namespace CatDetective.Map
 
         [JsonPropertyName("localDeductionSentence")]
         public string LocalDeductionSentence { get; set; } = "";
+
+        /// <summary>Answer clue ids for the local sentence's slots, in slot order.</summary>
+        [JsonPropertyName("localDeductionClueIds")]
+        public List<string> LocalDeductionClueIds { get; set; } = new();
     }
 
     internal sealed class ClueConfigData
@@ -59,6 +71,8 @@ namespace CatDetective.Map
         [JsonPropertyName("align")]    public string                  Align    { get; set; } = "BottomCenter";
         [JsonPropertyName("offsetX")]  public int                     OffsetX  { get; set; } = 0;
         [JsonPropertyName("offsetY")]  public int                     OffsetY  { get; set; } = 0;
+        /// <summary>Fallback sprite content path (e.g. "Shared/placeholder_object").</summary>
+        [JsonPropertyName("texture")]  public string                  Texture  { get; set; } = "";
     }
 
     internal sealed class KeywordConfigData
@@ -80,10 +94,19 @@ namespace CatDetective.Map
         /// <summary>Sentence template for the final macro solve (e.g. "[WHO] stole the [WHAT]").</summary>
         public string DeductionSentence { get; }
 
-        public CaseConfig(Dictionary<string, Clue> clues, string deductionSentence)
+        /// <summary>Answer clue ids for the final sentence's slots, in slot order.</summary>
+        public IReadOnlyList<string> FinalSolveClueIds { get; }
+
+        /// <summary>All room ids in the case, in display order.</summary>
+        public IReadOnlyList<string> Rooms { get; }
+
+        public CaseConfig(Dictionary<string, Clue> clues, string deductionSentence,
+            IReadOnlyList<string> finalSolveClueIds, IReadOnlyList<string> rooms)
         {
             Clues             = clues;
             DeductionSentence = deductionSentence;
+            FinalSolveClueIds = finalSolveClueIds;
+            Rooms             = rooms;
         }
     }
 
@@ -99,14 +122,19 @@ namespace CatDetective.Map
         /// <summary>Optional sentence template for a room-local sub-puzzle.</summary>
         public string LocalDeductionSentence { get; }
 
+        /// <summary>Answer clue ids for the local sentence's slots, in slot order.</summary>
+        public IReadOnlyList<string> LocalDeductionClueIds { get; }
+
         public RoomConfig(
             List<PropConfigData>                props,
             Dictionary<string, InteractionData> interactables,
-            string                              localDeductionSentence)
+            string                              localDeductionSentence,
+            IReadOnlyList<string>               localDeductionClueIds)
         {
-            Props                 = props;
-            Interactables         = interactables;
+            Props                  = props;
+            Interactables          = interactables;
             LocalDeductionSentence = localDeductionSentence;
+            LocalDeductionClueIds  = localDeductionClueIds;
         }
     }
 
@@ -128,7 +156,9 @@ namespace CatDetective.Map
 
             return new CaseConfig(
                 ParseClues(raw.Clues),
-                raw.DeductionSentence);
+                raw.DeductionSentence,
+                raw.FinalSolveClueIds,
+                raw.Rooms);
         }
 
         /// <summary>
@@ -141,7 +171,8 @@ namespace CatDetective.Map
             return new RoomConfig(
                 raw.Props,
                 ParseInteractables(raw.Interactables),
-                raw.LocalDeductionSentence);
+                raw.LocalDeductionSentence,
+                raw.LocalDeductionClueIds);
         }
 
         // ── Private helpers ───────────────────────────────────────────────────
@@ -180,7 +211,7 @@ namespace CatDetective.Map
                     keywords[k] = new Keyword(kw.DisplayText, kw.Id, ParseColor(kw.Color));
                 }
                 dict[i.Id] = new InteractionData(i.Text, keywords,
-                    i.Scale, i.Align, i.OffsetX, i.OffsetY);
+                    i.Scale, i.Align, i.OffsetX, i.OffsetY, i.Texture);
             }
             return dict;
         }

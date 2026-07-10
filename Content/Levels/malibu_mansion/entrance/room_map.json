@@ -1,166 +1,263 @@
-{ "compressionlevel":-1,
- "height":24,
- "infinite":true,
- "layers":[
-        {
-         "id":1,
-         "image":"bg_base.jpg",
-         "imageheight":768,
-         "imagewidth":1370,
-         "name":"background",
-         "opacity":1,
-         "type":"imagelayer",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":2,
-         "name":"Collisions",
-         "objects":[
-                {"height":340,"id":200,"name":"wall_top","opacity":1,"rotation":0,"type":"","visible":true,"width":1370,"x":0,"y":0},
-                {"height":428,"id":201,"name":"wall_left","opacity":1,"rotation":0,"type":"","visible":true,"width":20,"x":0,"y":340},
-                {"height":428,"id":202,"name":"wall_right","opacity":1,"rotation":0,"type":"","visible":true,"width":20,"x":1350,"y":340},
-                {"height":23,"id":203,"name":"wall_bottom","opacity":1,"rotation":0,"type":"","visible":true,"width":1370,"x":0,"y":745}],
-         "opacity":0,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":3,
-         "name":"Transfers",
-         "objects":[
-                {
-                 "height":133,
-                 "id":1,
-                 "name":"transfer_to_living_room",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"TargetRoom",
-                         "type":"string",
-                         "value":"living_room"
-                        }, 
-                        {
-                         "name":"TargetSpawn",
-                         "type":"string",
-                         "value":"spawn_from_entrance"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":228,
-                 "x":1218,
-                 "y":178
-                }, 
-                {
-                 "height":159,
-                 "id":2,
-                 "name":"transfer_to_bedroom",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"TargetRoom",
-                         "type":"string",
-                         "value":"bedroom"
-                        }, 
-                        {
-                         "name":"TargetSpawn",
-                         "type":"string",
-                         "value":"spawn_from_entrance"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":231,
-                 "x":966,
-                 "y":219
-                }],
-         "offsetx":-142,
-         "offsety":192,
-         "opacity":0,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":4,
-         "name":"Spawn",
-         "objects":[
-                {
-                 "height":0,
-                 "id":50,
-                 "name":"spawn_default",
-                 "opacity":1,
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":237,
-                 "y":394
-                }, 
-                {
-                 "height":0,
-                 "id":51,
-                 "name":"spawn_from_living_room",
-                 "opacity":1,
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1140,
-                 "y":560
-                },
-                {
-                 "height":0,
-                 "id":52,
-                 "name":"spawn_from_bedroom",
-                 "opacity":1,
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":900,
-                 "y":630
-                }],
-         "opacity":0,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":5,
-         "name":"Interactables",
-         "objects":[
-                {"height":40,"id":53,"name":"inspect_walkie_talkie","opacity":1,"rotation":0,"type":"","visible":true,"width":60,"x":700,"y":540},
-                {"height":80,"id":54,"name":"inspect_managers_phone","opacity":1,"rotation":0,"type":"","visible":true,"width":50,"x":350,"y":490},
-                {"height":100,"id":55,"name":"inspect_guest_registry","opacity":1,"rotation":0,"type":"","visible":true,"width":80,"x":550,"y":520}],
-         "opacity":0,
-         "type":"objectgroup",
-         "visible":false,
-         "x":0,
-         "y":0
-        }],
- "nextlayerid":6,
- "nextobjectid":56,
- "orientation":"orthogonal",
- "renderorder":"right-down",
- "tiledversion":"1.12.1",
- "tileheight":32,
- "tilesets":[],
- "tilewidth":32,
- "type":"map",
- "version":"1.10",
- "width":43
+{
+ "compressionlevel": -1,
+ "height": 24,
+ "infinite": true,
+ "layers": [
+  {
+   "id": 1,
+   "image": "bg_base.jpg",
+   "imageheight": 768,
+   "imagewidth": 1370,
+   "name": "background",
+   "opacity": 1,
+   "type": "imagelayer",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 2,
+   "name": "Collisions",
+   "objects": [
+    {
+     "height": 340,
+     "id": 200,
+     "name": "wall_top",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 1370,
+     "x": 0,
+     "y": 0
+    },
+    {
+     "height": 428,
+     "id": 201,
+     "name": "wall_left",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 20,
+     "x": 0,
+     "y": 340
+    },
+    {
+     "height": 428,
+     "id": 202,
+     "name": "wall_right",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 20,
+     "x": 1350,
+     "y": 340
+    },
+    {
+     "height": 23,
+     "id": 203,
+     "name": "wall_bottom",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 1370,
+     "x": 0,
+     "y": 745
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 3,
+   "name": "Transfers",
+   "objects": [
+    {
+     "height": 133,
+     "id": 1,
+     "name": "transfer_to_living_room",
+     "opacity": 1,
+     "properties": [
+      {
+       "name": "TargetRoom",
+       "type": "string",
+       "value": "living_room"
+      },
+      {
+       "name": "TargetSpawn",
+       "type": "string",
+       "value": "spawn_from_entrance"
+      }
+     ],
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 228,
+     "x": 1218,
+     "y": 178
+    },
+    {
+     "height": 159,
+     "id": 2,
+     "name": "transfer_to_bedroom",
+     "opacity": 1,
+     "properties": [
+      {
+       "name": "TargetRoom",
+       "type": "string",
+       "value": "bedroom"
+      },
+      {
+       "name": "TargetSpawn",
+       "type": "string",
+       "value": "spawn_from_entrance"
+      }
+     ],
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 231,
+     "x": 966,
+     "y": 219
+    }
+   ],
+   "offsetx": -142,
+   "offsety": 192,
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 4,
+   "name": "Spawn",
+   "objects": [
+    {
+     "height": 0,
+     "id": 50,
+     "name": "spawn_default",
+     "opacity": 1,
+     "point": true,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 0,
+     "x": 237,
+     "y": 394
+    },
+    {
+     "height": 0,
+     "id": 51,
+     "name": "spawn_from_living_room",
+     "opacity": 1,
+     "point": true,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 0,
+     "x": 1140,
+     "y": 560
+    },
+    {
+     "height": 0,
+     "id": 52,
+     "name": "spawn_from_bedroom",
+     "opacity": 1,
+     "point": true,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 0,
+     "x": 900,
+     "y": 630
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 5,
+   "name": "Interactables",
+   "objects": [
+    {
+     "height": 140,
+     "id": 56,
+     "name": "inspect_manager",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 100,
+     "x": 400,
+     "y": 500
+    },
+    {
+     "height": 140,
+     "id": 57,
+     "name": "inspect_police_officer",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 100,
+     "x": 940,
+     "y": 590
+    },
+    {
+     "height": 50,
+     "id": 58,
+     "name": "inspect_walkie_talkie",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 60,
+     "x": 850,
+     "y": 655
+    },
+    {
+     "height": 70,
+     "id": 59,
+     "name": "inspect_guest_registry",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 90,
+     "x": 1100,
+     "y": 670
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  }
+ ],
+ "nextlayerid": 6,
+ "nextobjectid": 60,
+ "orientation": "orthogonal",
+ "renderorder": "right-down",
+ "tiledversion": "1.12.1",
+ "tileheight": 32,
+ "tilesets": [],
+ "tilewidth": 32,
+ "type": "map",
+ "version": "1.10",
+ "width": 43
 }

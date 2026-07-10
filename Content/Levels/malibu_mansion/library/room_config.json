@@ -7,15 +7,9 @@
       "keywords": [
         { "displayText": "Director", "id": "director_notes", "color": "misc" },
         { "displayText": "Emmy bait", "id": "director_notes", "color": "misc" }
-      ]
-    },
-    {
-      "id": "inspect_mixing_board",
-      "text": "The Sound Guy's mixing board hums. An [Audio Cable] runs from the back panel, disappears into the wall — heading in the direction of the [Living Room].",
-      "keywords": [
-        { "displayText": "Audio Cable", "id": "audio_cable", "color": "crime" },
-        { "displayText": "Living Room", "id": "audio_cable", "color": "crime" }
-      ]
+      ],
+      "texture": "Shared/placeholder_person",
+      "scale": 0.15
     },
     {
       "id": "inspect_sound_guy",
@@ -23,7 +17,28 @@
       "keywords": [
         { "displayText": "Sound Guy", "id": "d_marsh_sound_guy", "color": "crime" },
         { "displayText": "D. Marsh", "id": "d_marsh_sound_guy", "color": "crime" }
-      ]
+      ],
+      "texture": "Shared/placeholder_person",
+      "scale": 0.15
+    },
+    {
+      "id": "inspect_mixing_board",
+      "text": "The Sound Guy's mixing board hums. An [Audio Cable] runs from the back panel, disappears into the wall — heading in the direction of the [Living Room].",
+      "keywords": [
+        { "displayText": "Audio Cable", "id": "audio_cable", "color": "crime" },
+        { "displayText": "Living Room", "id": "audio_cable", "color": "crime" }
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.11
+    },
+    {
+      "id": "inspect_session_log",
+      "text": "A session log wedged behind the podium: 'TAKE 12 — bird. TAKE 23 — bird. TAKE 47 — [RUINED. BIRD. AGAIN.]' The handwriting gets angrier with every page. The last page has torn through.",
+      "keywords": [
+        { "displayText": "RUINED. BIRD. AGAIN.", "id": "ruined_takes", "color": "crime" }
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.08
     },
     {
       "id": "inspect_shot_list",
@@ -31,8 +46,11 @@
       "keywords": [
         { "displayText": "CANCELLED", "id": "directors_shot_list", "color": "misc" },
         { "displayText": "BETTER WITHOUT HIM?", "id": "directors_shot_list", "color": "misc" }
-      ]
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.09
     }
   ],
-  "localDeductionSentence": "The [Director] smelled an Emmy while 'D. Marsh' — the [Sound Guy] — kept his mixer running, an [Audio Cable] threading quietly through the wall toward the [Living Room]."
+  "localDeductionSentence": "The Director smelled an Emmy while [D. Marsh = Sound Guy] kept his mixer running — an [Audio Cable] threading toward the living room, and a session log full of [Ruined Takes].",
+  "localDeductionClueIds": ["d_marsh_sound_guy", "audio_cable", "ruined_takes"]
 }

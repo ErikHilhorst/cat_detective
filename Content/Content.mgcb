@@ -155,6 +155,30 @@
 /processorParam:TextureFormat=Color
 /build:Shared/why.png
 
+# ── Placeholder sprites (interactable fallback textures) ───────────────────
+
+#begin Shared/placeholder_person.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Shared/placeholder_person.jpg
+
+#begin Shared/placeholder_object.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Shared/placeholder_object.jpg
+
 # ── Dialogue font ─────────────────────────────────────────────────────────
 #begin Shared/dialogue_font.spritefont
 /importer:FontDescriptionImporter

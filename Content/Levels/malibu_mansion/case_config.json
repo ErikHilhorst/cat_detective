@@ -118,6 +118,15 @@
       "inspectorDescription": "The Movie Star blames the Maid for teaching Rudebeak the insult. Someone in this house was keeping score."
     },
     {
+      "id": "ruined_takes",
+      "roomId": "library",
+      "isMacroClue": true,
+      "category": "Why",
+      "name": "Ruined Takes",
+      "context": "A session log by the mixer: 'TAKE 47 — RUINED. BIRD. AGAIN.' Pages and pages of them.",
+      "inspectorDescription": "Forty-seven takes. A man can only hear 'garbage slop' screamed over his audio so many times."
+    },
+    {
       "id": "director_notes",
       "roomId": "library",
       "isMacroClue": false,
@@ -235,5 +244,7 @@
       "inspectorDescription": "His official assignment was the Library at 7PM. But the manifest says he was in the Bedroom. He wasn't where he was supposed to be."
     }
   ],
-  "finalSolveSentence": "[WHO] took Rudebeak at [WHEN], hiding the bird inside [WHAT], then played an [HOW] through a [WHERE] to fake an alibi."
+  "rooms": ["entrance", "living_room", "bedroom", "library", "kitchen", "garden", "pool_area"],
+  "finalSolveSentence": "[WHO] snatched Rudebeak at [WHEN], hid him inside the [WHAT], and faked the 8 PM squawk through a [HOW] — all because the bird kept [WHY].",
+  "finalSolveClueIds": ["d_marsh_sound_guy", "d_marsh_7pm", "sound_proof_cases", "hidden_speaker", "ruined_takes"]
 }

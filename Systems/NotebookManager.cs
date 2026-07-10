@@ -31,12 +31,20 @@ namespace CatDetective.Systems
             UnlockedClues.Add(clue);
         }
 
+        /// <summary>Total number of clues in the case database (for the case-wide counter).</summary>
+        public int TotalClueCount => _database.Count;
+
+        /// <summary>Database lookup regardless of unlock state; null if unknown.</summary>
+        public Clue? GetClue(string clueId) =>
+            _database.TryGetValue(clueId, out var clue) ? clue : null;
+
         /// <summary>
-        /// Returns unlocked clues that belong to <paramref name="roomId"/>
-        /// and are not macro clues (i.e. they feed a room sub-puzzle).
+        /// Returns all unlocked clues that belong to <paramref name="roomId"/> — macro and
+        /// micro. The room puzzle answers are macro clues unlocked via keywords, so they
+        /// must appear in the local word bank.
         /// </summary>
         public List<Clue> GetCluesForRoom(string roomId) =>
-            UnlockedClues.FindAll(c => c.RoomId == roomId && !c.IsMacroClue);
+            UnlockedClues.FindAll(c => c.RoomId == roomId);
 
         /// <summary>
         /// Returns unlocked clues that feed the final case-level deduction

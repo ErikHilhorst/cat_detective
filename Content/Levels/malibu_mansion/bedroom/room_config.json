@@ -7,7 +7,9 @@
       "keywords": [
         { "displayText": "Husband", "id": "husband_hall_7pm", "color": "misc" },
         { "displayText": "seven", "id": "husband_hall_7pm", "color": "misc" }
-      ]
+      ],
+      "texture": "Shared/placeholder_person",
+      "scale": 0.15
     },
     {
       "id": "inspect_delivery_manifest",
@@ -15,7 +17,9 @@
       "keywords": [
         { "displayText": "D. Marsh", "id": "d_marsh_7pm", "color": "crime" },
         { "displayText": "7:00 PM", "id": "d_marsh_7pm", "color": "crime" }
-      ]
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.10
     },
     {
       "id": "inspect_acoustic_cases",
@@ -23,7 +27,9 @@
       "keywords": [
         { "displayText": "Acoustic Isolation", "id": "sound_proof_cases", "color": "crime" },
         { "displayText": "squawk", "id": "sound_proof_cases", "color": "crime" }
-      ]
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.13
     },
     {
       "id": "inspect_star_note",
@@ -31,7 +37,9 @@
       "keywords": [
         { "displayText": "SOMETHING", "id": "star_note_to_husband", "color": "misc" },
         { "displayText": "lawyer", "id": "star_note_to_husband", "color": "misc" }
-      ]
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.07
     },
     {
       "id": "inspect_headphone_box",
@@ -39,8 +47,11 @@
       "keywords": [
         { "displayText": "yesterday's date", "id": "headphone_box", "color": "misc" },
         { "displayText": "snapped", "id": "headphone_box", "color": "misc" }
-      ]
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.09
     }
   ],
-  "localDeductionSentence": "The [Husband] heard someone rush past at [7:00 PM], while heavy [Sound-Proof Cases] signed in under 'D. Marsh' sat silently in the corner."
+  "localDeductionSentence": "The [Husband's Grumble] places a nervous crew member in the hallway at 7:00 PM — when [D. Marsh — 7:00 PM] signed in two [Sound-Proof Cases] big enough to hide a very loud bird.",
+  "localDeductionClueIds": ["husband_hall_7pm", "d_marsh_7pm", "sound_proof_cases"]
 }

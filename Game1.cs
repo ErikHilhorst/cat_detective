@@ -68,10 +68,8 @@ namespace CatDetective
         private InteractionData? _currentInteraction;
 
         // ── Notebook / inventory ───────────────────────────────────────────────
-        private NotebookManager _notebook       = null!;
-        private bool         _isNotebookOpen = false;
-        private ClueCategory _selectedTab    = ClueCategory.Who;
-        private MouseState   _prevMouseState;
+        private NotebookManager _notebook = null!;
+        private MouseState      _prevMouseState;
 
         // ── Deduction board ────────────────────────────────────────────────────
         private DeductionManager _deduction            = null!;
@@ -112,10 +110,6 @@ namespace CatDetective
         private Rectangle _journalSubmitRect;
         private Rectangle _journalCloseRect;
 
-        // Notebook UI rectangles — recomputed by UpdateLayout().
-        private Rectangle   _notebookButtonRect;
-        private Rectangle   _notebookPanelRect;
-        private Rectangle[] _tabRects = Array.Empty<Rectangle>();
         private static readonly Color[] _tabColors = new[]
         {
             new Color( 80, 120, 230),   // Who       — blue
@@ -123,14 +117,11 @@ namespace CatDetective
             new Color(230, 140,  40),   // Why       — orange
             new Color(160,  80, 220),   // WhereWhen — purple
         };
-        private static readonly string[] _tabLabels =
-            { "Who", "What", "Why", "Where/When" };
 
         // ── UI ─────────────────────────────────────────────────────────────────
         private SpriteFont  _dialogueFont    = null!;
         private Texture2D   _dialogueBoxTex  = null!;
         private Texture2D   _notebookBgTex   = null!;
-        private Texture2D   _tabTex          = null!;  // notebook tabs (Pass 7)
         private Dictionary<ClueCategory, Texture2D> _tabTextures = new(); // deduction board bar (Pass 8)
 
         // ── Dialogue pagination & typewriter ──────────────────────────────────
@@ -167,6 +158,17 @@ namespace CatDetective
         private string                   _currentRoomId    = "";
         private string                   _spawnPointName   = "";
         private Dictionary<string, bool> _roomSolvedStates = new();
+        private IReadOnlyList<string>    _caseRooms        = Array.Empty<string>();
+
+        // Filled local sentences captured at solve time (the local DeductionManager
+        // is recreated on every LoadRoom, so this is the only durable copy).
+        private readonly Dictionary<string, string> _roomSolvedSentences = new();
+
+        // Clue ids referenced by the current room's keywords — the room counter's basis.
+        private readonly HashSet<string> _currentRoomClueIds = new();
+
+        // Slot the player last clicked on the board; INSERT prefers it.
+        private DeductionSlot? _insertTargetSlot;
 
         // ── Deduction — macro (case-level) and local (room-level) ─────────────
         private DeductionManager  _localDeduction = null!;
@@ -225,7 +227,6 @@ namespace CatDetective
             _dialogueFont   = Content.Load<SpriteFont>("Shared/dialogue_font");
             _dialogueBoxTex = Content.Load<Texture2D>("Shared/ui_dialogue_box");
             _notebookBgTex  = Content.Load<Texture2D>("Shared/ui_notebook_bg");
-            _tabTex         = Content.Load<Texture2D>("Shared/ui_tab");
 
             _tabTextures[ClueCategory.Who]       = Content.Load<Texture2D>("Shared/who");
             _tabTextures[ClueCategory.What]      = Content.Load<Texture2D>("Shared/how");
@@ -252,14 +253,12 @@ namespace CatDetective
             _isGameWon            = false;
             _isDeductionBoardOpen = false;
             _isFinalSolveMode     = false;
-            _isNotebookOpen       = false;
             _activeTab            = ClueCategory.Who;
             _selectedWordBankClue = null;
             _wordBankPage         = 0;
             _hotReloadTimer       = 0f;
 
-            _currentCaseId    = caseId;
-            _roomSolvedStates = new Dictionary<string, bool>();
+            _currentCaseId = caseId;
 
             _sunbeamsMask = Content.Load<Texture2D>("Shared/mask_sunbeams");
 
@@ -272,7 +271,17 @@ namespace CatDetective
             var caseConfig = LevelConfigParser.LoadCase(caseConfigPath);
 
             _notebook  = new NotebookManager(caseConfig.Clues);
-            _deduction = new DeductionManager(caseConfig.DeductionSentence);
+            _deduction = new DeductionManager(
+                caseConfig.DeductionSentence,
+                caseConfig.FinalSolveClueIds,
+                id => _notebook.GetClue(id)?.Category);
+
+            // Pre-populate so AllRoomsSolved requires every room, not just the first solved one.
+            _caseRooms        = caseConfig.Rooms;
+            _roomSolvedStates = new Dictionary<string, bool>();
+            foreach (var room in _caseRooms)
+                _roomSolvedStates[room] = false;
+            _roomSolvedSentences.Clear();
 
             LoadRoom("entrance", spawnPointName: "spawn_default");
 
@@ -301,7 +310,26 @@ namespace CatDetective
             var roomConfig = LevelConfigParser.LoadRoom(roomConfigPath);
 
             _interactionDatabase = roomConfig.Interactables;
-            _localDeduction = new DeductionManager(roomConfig.LocalDeductionSentence);
+            _localDeduction = new DeductionManager(
+                roomConfig.LocalDeductionSentence,
+                roomConfig.LocalDeductionClueIds,
+                id => _notebook.GetClue(id)?.Category);
+            _insertTargetSlot = null;
+
+            // Room counter basis: every clue id this room's keywords can unlock.
+            _currentRoomClueIds.Clear();
+            foreach (var data in _interactionDatabase.Values)
+                foreach (var kw in data.Keywords)
+                    _currentRoomClueIds.Add(kw.Id);
+
+            // Re-entering a solved room: show its board as a completed recap.
+            if (_roomSolvedStates.TryGetValue(roomId, out var wasSolved) && wasSolved)
+            {
+                foreach (var slot in _localDeduction.Slots)
+                    if (slot.CorrectClueId != "")
+                        slot.SelectedClueId = slot.CorrectClueId;
+                _localDeduction.ValidationMessage = "Case solved!";
+            }
 
             // Hot-reload tracks room_config.json.
             _levelConfigSourcePath = Path.GetFullPath(Path.Combine(
@@ -428,10 +456,16 @@ namespace CatDetective
                             _isDeductionBoardOpen = false;
                             _isFinalSolveMode     = false;
                             _selectedWordBankClue = null;
+                            _insertTargetSlot     = null;
                         }
                         else
                         {
                             var activeDeduction = _isFinalSolveMode ? _deduction : _localDeduction;
+
+                            // A solved room's board is a read-only recap: browsing stays
+                            // enabled, but inserting and submitting are locked.
+                            bool boardLocked = !_isFinalSolveMode &&
+                                _roomSolvedStates.TryGetValue(_currentRoomId, out var solved) && solved;
 
                             // Tab clicks
                             for (int i = 0; i < _tabHotspots.Length; i++)
@@ -441,6 +475,7 @@ namespace CatDetective
                                     _activeTab            = _tabHotspotCategories[i];
                                     _wordBankPage         = 0;
                                     _selectedWordBankClue = null;
+                                    _insertTargetSlot     = null;
                                     break;
                                 }
                             }
@@ -461,17 +496,26 @@ namespace CatDetective
                             if (_journalNextPageRect.Contains(vm) && _wordBankPage < _wordBankPageCount)
                                 _wordBankPage++;
 
-                            // Insert selected clue into the matching slot on the active board
-                            if (_journalInsertRect.Contains(vm) && _selectedWordBankClue != null)
+                            // Insert selected clue: prefer the slot the player clicked,
+                            // then the first EMPTY slot of the category, then the first slot.
+                            // (A sentence can hold two slots of the same category.)
+                            if (!boardLocked && _journalInsertRect.Contains(vm) && _selectedWordBankClue != null)
                             {
-                                var target = activeDeduction.Slots
-                                    .Find(s => s.Category == _selectedWordBankClue.Category);
+                                var slots  = activeDeduction.Slots;
+                                var target =
+                                    (_insertTargetSlot != null &&
+                                     _insertTargetSlot.Category == _selectedWordBankClue.Category &&
+                                     slots.Contains(_insertTargetSlot))
+                                        ? _insertTargetSlot
+                                        : slots.Find(s => s.Category == _selectedWordBankClue.Category
+                                                       && s.SelectedClueId == null)
+                                          ?? slots.Find(s => s.Category == _selectedWordBankClue.Category);
                                 if (target != null)
                                     target.SelectedClueId = _selectedWordBankClue.Id;
                             }
 
                             // Submit
-                            if (_journalSubmitRect.Contains(vm))
+                            if (!boardLocked && _journalSubmitRect.Contains(vm))
                             {
                                 if (_isFinalSolveMode)
                                 {
@@ -483,14 +527,18 @@ namespace CatDetective
                                     if (_localDeduction.ValidateCase())
                                     {
                                         _roomSolvedStates[_currentRoomId] = true;
+                                        _roomSolvedSentences[_currentRoomId] =
+                                            _localDeduction.BuildFilledSentence(
+                                                id => _notebook.GetClue(id)?.Name);
                                         _notebook.UnlockMacroCluesForRoom(_currentRoomId);
                                         _isDeductionBoardOpen = false;
                                         _selectedWordBankClue = null;
+                                        _insertTargetSlot     = null;
                                     }
                                 }
                             }
 
-                            // Left page slot clicks -> switch active tab
+                            // Left page slot clicks -> switch active tab + target the slot for INSERT
                             foreach (var slot in activeDeduction.Slots)
                             {
                                 if (slot.Bounds.Contains(vm))
@@ -498,6 +546,7 @@ namespace CatDetective
                                     _activeTab            = slot.Category;
                                     _wordBankPage         = 0;
                                     _selectedWordBankClue = null;
+                                    _insertTargetSlot     = slot;
                                     break;
                                 }
                             }
@@ -509,7 +558,6 @@ namespace CatDetective
                         {
                             _isFinalSolveMode     = false;
                             _isDeductionBoardOpen = true;
-                            _isNotebookOpen       = false;
                             _selectedWordBankClue = null;
                             _wordBankPage         = 0;
                         }
@@ -517,24 +565,8 @@ namespace CatDetective
                         {
                             _isFinalSolveMode     = true;
                             _isDeductionBoardOpen = true;
-                            _isNotebookOpen       = false;
                             _selectedWordBankClue = null;
                             _wordBankPage         = 0;
-                        }
-                        else if (_notebookButtonRect.Contains(vm))
-                        {
-                            _isNotebookOpen = !_isNotebookOpen;
-                        }
-                        else if (_isNotebookOpen)
-                        {
-                            for (int i = 0; i < _tabRects.Length; i++)
-                            {
-                                if (_tabRects[i].Contains(vm))
-                                {
-                                    _selectedTab = (ClueCategory)i;
-                                    break;
-                                }
-                            }
                         }
                     }
                 }
@@ -840,71 +872,18 @@ namespace CatDetective
                             Color.White);
                     }
 
-                    _spriteBatch.Draw(_debugPixel, _notebookButtonRect, Color.DimGray);
-                    var btnLabel     = "Notes";
-                    var btnLabelSize = _dialogueFont.MeasureString(btnLabel);
-                    _spriteBatch.DrawString(
-                        _dialogueFont, btnLabel,
-                        new Vector2(
-                            _notebookButtonRect.X + (_notebookButtonRect.Width  - btnLabelSize.X) * 0.5f,
-                            _notebookButtonRect.Y + (_notebookButtonRect.Height - btnLabelSize.Y) * 0.5f),
-                        Color.White);
-
-                    if (_isNotebookOpen)
+                    // Clue counters: current room progress + case-wide total.
+                    if (!_isGameWon && !_isDeductionBoardOpen)
                     {
-                        var contentRect = new Rectangle(
-                            _notebookPanelRect.X,
-                            _notebookPanelRect.Y + 60,
-                            _notebookPanelRect.Width,
-                            _notebookPanelRect.Height - 60);
-                        _spriteBatch.Draw(_debugPixel, contentRect, Color.Black * 0.82f);
+                        int roomFound = 0;
+                        foreach (var c in _notebook.UnlockedClues)
+                            if (_currentRoomClueIds.Contains(c.Id)) roomFound++;
 
-                        for (int i = 0; i < _tabRects.Length; i++)
-                        {
-                            bool active = (ClueCategory)i == _selectedTab;
-                            var tr = active
-                                ? new Rectangle(_tabRects[i].X, _tabRects[i].Y - 8,
-                                                _tabRects[i].Width, _tabRects[i].Height + 8)
-                                : _tabRects[i];
-
-                            _spriteBatch.Draw(_debugPixel, tr,
-                                active ? _tabColors[i] : _tabColors[i] * 0.55f);
-
-                            var labelSize = _dialogueFont.MeasureString(_tabLabels[i]);
-                            _spriteBatch.DrawString(
-                                _dialogueFont, _tabLabels[i],
-                                new Vector2(
-                                    tr.X + (tr.Width  - labelSize.X) * 0.5f,
-                                    tr.Y + (tr.Height - labelSize.Y) * 0.5f),
-                                Color.White);
-                        }
-
-                        const int CLUE_PADDING = 16;
-                        float cx    = contentRect.X + CLUE_PADDING;
-                        float cy    = contentRect.Y + CLUE_PADDING;
-                        float maxW  = contentRect.Width - CLUE_PADDING * 2;
-                        float lineH = _dialogueFont.LineSpacing + 6;
-
-                        bool any = false;
-                        foreach (var clue in _notebook.GetCluesForRoom(_currentRoomId))
-                        {
-                            if (clue.Category != _selectedTab) continue;
-                            any = true;
-                            _spriteBatch.DrawString(_dialogueFont, "* ", new Vector2(cx, cy), Color.LightGray);
-                            float bulletW = _dialogueFont.MeasureString("* ").X;
-                            cy = DrawWrappedString(_spriteBatch, _dialogueFont, $"{clue.Name.ToUpper()} - {clue.Context}",
-                                     new Vector2(cx + bulletW, cy),
-                                     maxW - bulletW, lineH,
-                                     Color.White);
-                            cy += 4f;
-                        }
-
-                        if (!any)
-                        {
-                            _spriteBatch.DrawString(
-                                _dialogueFont, "- nothing yet -",
-                                new Vector2(cx, cy), Color.Gray);
-                        }
+                        string hud = $"Clues ({ToDisplayName(_currentRoomId)}): " +
+                                     $"{roomFound}/{_currentRoomClueIds.Count}    " +
+                                     $"Case: {_notebook.UnlockedClues.Count}/{_notebook.TotalClueCount}";
+                        _spriteBatch.DrawString(_dialogueFont, hud, new Vector2(26, 18), Color.Black * 0.6f);
+                        _spriteBatch.DrawString(_dialogueFont, hud, new Vector2(24, 16), Color.White);
                     }
 
                     _spriteBatch.End();
@@ -1029,8 +1008,33 @@ namespace CatDetective
                             }
                         }
 
+                        // ── LEFT PAGE: solves overview (final board only) ─────
+                        if (_isFinalSolveMode)
+                        {
+                            float oy = Math.Max(ly + lineH * 2f, J(560, jsy));
+                            _spriteBatch.DrawString(_dialogueFont, "Room deductions:",
+                                new Vector2(leftPageArea.X, oy), _inkColor);
+                            oy += lineH;
+                            foreach (var room in _caseRooms)
+                            {
+                                bool solved = _roomSolvedStates.TryGetValue(room, out var s) && s;
+                                _spriteBatch.DrawString(_dialogueFont,
+                                    (solved ? "[x] " : "[  ] ") + ToDisplayName(room),
+                                    new Vector2(leftPageArea.X, oy),
+                                    solved ? new Color(30, 130, 50) : Color.Gray);
+                                oy += _dialogueFont.LineSpacing + 6;
+                            }
+                        }
+
+                        // Case-wide clue counter — top of the left page.
+                        _spriteBatch.DrawString(_dialogueFont,
+                            $"Case clues: {_notebook.UnlockedClues.Count}/{_notebook.TotalClueCount}",
+                            new Vector2(leftPageArea.X, J(230, jsy)), _inkColor * 0.8f);
+
                         // ── RIGHT PAGE: Tab bar (pre-rendered full-bar image) ──
-                        _spriteBatch.Draw(_tabTextures[_activeTab], _tabImagePos, Color.White);
+                        // Scaled with the canvas so the art lands exactly on the hotspots.
+                        _spriteBatch.Draw(_tabTextures[_activeTab], _tabImagePos, null, Color.White,
+                            0f, Vector2.Zero, new Vector2(jsx, jsy), SpriteEffects.None, 0f);
 
                         // ── RIGHT PAGE: Word Bank (flow layout) ───────────────
                         const float spacingX  = 16f;
@@ -1139,10 +1143,22 @@ namespace CatDetective
                             _spriteBatch.DrawString(_dialogueFont, _selectedWordBankClue.Name,
                                 new Vector2(inspectorArea.X, inspectorArea.Y),
                                 _tabColors[(int)_selectedWordBankClue.Category]);
-                            DrawWrappedString(_spriteBatch, _dialogueFont,
+                            float descBottom = DrawWrappedString(_spriteBatch, _dialogueFont,
                                 _selectedWordBankClue.InspectorDescription,
                                 new Vector2(inspectorArea.X, inspectorArea.Y + 40),
                                 inspectorArea.Width, _dialogueFont.LineSpacing + 4, _inkColor);
+
+                            // Macro clues carry their room's solved deduction as a reminder.
+                            if (_selectedWordBankClue.IsMacroClue &&
+                                _roomSolvedSentences.TryGetValue(_selectedWordBankClue.RoomId,
+                                                                 out var sourceSentence))
+                            {
+                                DrawWrappedString(_spriteBatch, _dialogueFont,
+                                    $"{ToDisplayName(_selectedWordBankClue.RoomId)}: \"{sourceSentence}\"",
+                                    new Vector2(inspectorArea.X, descBottom + 6),
+                                    inspectorArea.Width, _dialogueFont.LineSpacing + 4,
+                                    new Color(95, 75, 130));
+                            }
                             _spriteBatch.Draw(_debugPixel, insertBtn,
                                 _tabColors[(int)_selectedWordBankClue.Category]);
                             var insSz = _dialogueFont.MeasureString("INSERT");
@@ -1241,14 +1257,13 @@ namespace CatDetective
             _solveButtonRect      = new Rectangle(S((2020 - 160) * sx), S((1136 - 160) * sy), S(120 * sx), S(120 * sy));
             _finalSolveButtonRect = new Rectangle(S((2020 - 160) * sx), S((1136 - 290) * sy), S(120 * sx), S(110 * sy));
 
+            // Tab bar image is 800×150 (four 200px humps), drawn scaled at _tabImagePos —
+            // hotspots mirror those humps exactly in the same reference space.
             _tabImagePos = new Vector2(1050 * sx, 100 * sy);
-            _tabHotspots = new[]
-            {
-                new Rectangle(S(1060 * sx), S(50 * sy), S(200 * sx), S(150 * sy)),
-                new Rectangle(S(1260 * sx), S(50 * sy), S(200 * sx), S(150 * sy)),
-                new Rectangle(S(1460 * sx), S(50 * sy), S(200 * sx), S(150 * sy)),
-                new Rectangle(S(1660 * sx), S(50 * sy), S(200 * sx), S(150 * sy)),
-            };
+            _tabHotspots = new Rectangle[4];
+            for (int i = 0; i < 4; i++)
+                _tabHotspots[i] = new Rectangle(
+                    S((1050 + i * 200) * sx), S(100 * sy), S(200 * sx), S(150 * sy));
 
             _journalPrevPageRect = new Rectangle(S(1050 * sx), S(692 * sy), S(90 * sx), S(35 * sy));
             _journalNextPageRect = new Rectangle(S(1710 * sx), S(692 * sy), S(90 * sx), S(35 * sy));
@@ -1256,19 +1271,6 @@ namespace CatDetective
             _journalSubmitRect   = new Rectangle(S(1330 * sx), S(1040 * sy), S(340 * sx), S(70 * sy));
             _journalCloseRect    = new Rectangle(S(1930 * sx), S(30  * sy), S(60  * sx), S(60 * sy));
 
-            _notebookButtonRect = new Rectangle(S((2020 - 120) * sx), S(20  * sy), S(100 * sx), S(100 * sy));
-            _notebookPanelRect  = new Rectangle(S((2020 - 450) * sx), S(140 * sy), S(430 * sx), S(950 * sy));
-
-            const int tabH = 60;
-            int tabW = _notebookPanelRect.Width / 4;
-            int tabY = _notebookPanelRect.Y;
-            _tabRects = new[]
-            {
-                new Rectangle(_notebookPanelRect.X + 0 * tabW, tabY, tabW, tabH),
-                new Rectangle(_notebookPanelRect.X + 1 * tabW, tabY, tabW, tabH),
-                new Rectangle(_notebookPanelRect.X + 2 * tabW, tabY, tabW, tabH),
-                new Rectangle(_notebookPanelRect.X + 3 * tabW, tabY, tabW, tabH),
-            };
         }
 
         // ── Screenshot helper ──────────────────────────────────────────────────
@@ -1286,6 +1288,16 @@ namespace CatDetective
         }
 
         private static readonly Color _inkColor = new Color(40, 30, 20);
+
+        /// <summary>"living_room" → "Living Room".</summary>
+        private static string ToDisplayName(string roomId)
+        {
+            var parts = roomId.Split('_');
+            for (int i = 0; i < parts.Length; i++)
+                if (parts[i].Length > 0)
+                    parts[i] = char.ToUpperInvariant(parts[i][0]) + parts[i][1..];
+            return string.Join(' ', parts);
+        }
 
         private static List<(string Text, Color HighlightColor)> ParseSpans(
             string text, Keyword[] keywords)

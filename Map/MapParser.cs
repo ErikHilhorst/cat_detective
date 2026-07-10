@@ -230,6 +230,13 @@ namespace CatDetective.Map
                     case "Interactables":
                         foreach (var obj in layer.Objects)
                         {
+                            // Data first: its TexturePath serves as the sprite fallback below.
+                            levelData.TryGetValue(obj.Name, out var data);
+                            if (data == null)
+                                Console.WriteLine(
+                                    $"[MapParser] WARNING: No dialogue data for interactable '{obj.Name}'. " +
+                                    "Add an entry to the room's interaction database.");
+
                             Texture2D? sprite    = null;
                             string     assetPath = $"{levelId}/Interactables/{obj.Name}";
                             try
@@ -238,9 +245,25 @@ namespace CatDetective.Map
                             }
                             catch (ContentLoadException)
                             {
-                                Console.WriteLine(
-                                    $"[MapParser] No sprite for '{obj.Name}' at '{assetPath}' — " +
-                                    "entity will be invisible (trigger zone only).");
+                                if (!string.IsNullOrEmpty(data?.TexturePath))
+                                {
+                                    try
+                                    {
+                                        sprite = content.Load<Texture2D>(data.TexturePath);
+                                    }
+                                    catch (ContentLoadException)
+                                    {
+                                        Console.WriteLine(
+                                            $"[MapParser] Fallback texture '{data.TexturePath}' for '{obj.Name}' " +
+                                            "failed to load — entity will be invisible.");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine(
+                                        $"[MapParser] No sprite for '{obj.Name}' at '{assetPath}' — " +
+                                        "entity will be invisible (trigger zone only).");
+                                }
                             }
 
                             // Position = bottom-center floor contact point of the Tiled rect.
@@ -249,13 +272,8 @@ namespace CatDetective.Map
                                 obj.Y + layerOffY + obj.Height);
 
                             var entity = new InteractableEntity(obj.Name, ToRect(obj, layerOffX, layerOffY), sprite, position);
-
-                            if (levelData.TryGetValue(obj.Name, out var data))
+                            if (data != null)
                                 entity.Data = data;
-                            else
-                                Console.WriteLine(
-                                    $"[MapParser] WARNING: No dialogue data for interactable '{obj.Name}'. " +
-                                    "Add an entry to the room's interaction database.");
 
                             interactables.Add(entity);
                         }

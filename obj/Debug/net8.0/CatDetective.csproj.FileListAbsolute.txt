@@ -140,3 +140,5 @@ C:\Users\Erik\Desktop\Python projects\cat_detective\obj\Debug\net8.0\refint\CatD
 C:\Users\Erik\Desktop\Python projects\cat_detective\obj\Debug\net8.0\CatDetective.pdb
 C:\Users\Erik\Desktop\Python projects\cat_detective\obj\Debug\net8.0\CatDetective.genruntimeconfig.cache
 C:\Users\Erik\Desktop\Python projects\cat_detective\obj\Debug\net8.0\ref\CatDetective.dll
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Shared\placeholder_object.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Shared\placeholder_person.xnb

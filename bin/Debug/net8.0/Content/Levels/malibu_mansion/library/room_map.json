@@ -1,127 +1,260 @@
-{ "compressionlevel":-1,
- "height":24,
- "infinite":true,
- "layers":[
-        {
-         "id":1,
-         "image":"bg_base.jpg",
-         "imageheight":816,
-         "imagewidth":1456,
-         "name":"background",
-         "opacity":1,
-         "type":"imagelayer",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":2,
-         "name":"Collisions",
-         "objects":[
-                {"height":180,"id":200,"name":"wall_top","opacity":1,"rotation":0,"type":"","visible":true,"width":1456,"x":0,"y":0},
-                {"height":636,"id":201,"name":"wall_left","opacity":1,"rotation":0,"type":"","visible":true,"width":20,"x":0,"y":180},
-                {"height":636,"id":202,"name":"wall_right","opacity":1,"rotation":0,"type":"","visible":true,"width":20,"x":1436,"y":180},
-                {"height":26,"id":203,"name":"wall_bottom","opacity":1,"rotation":0,"type":"","visible":true,"width":1456,"x":0,"y":790},
-                {"height":440,"id":204,"name":"staircase","opacity":1,"rotation":0,"type":"","visible":true,"width":566,"x":870,"y":180},
-                {"height":400,"id":205,"name":"bookshelf_left","opacity":1,"rotation":0,"type":"","visible":true,"width":120,"x":0,"y":180}],
-         "opacity":0,
-         "type":"objectgroup",
-         "visible":false,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":3,
-         "name":"Transfers",
-         "objects":[
-                {
-                 "height":208,
-                 "id":1,
-                 "name":"transfer_to_living_room",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"TargetRoom",
-                         "type":"string",
-                         "value":"living_room"
-                        }, 
-                        {
-                         "name":"TargetSpawn",
-                         "type":"string",
-                         "value":"spawn_from_library"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":240,
-                 "x":1222,
-                 "y":636
-                }],
-         "opacity":0,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":4,
-         "name":"Spawn",
-         "objects":[
-                {
-                 "height":0,
-                 "id":50,
-                 "name":"spawn_default",
-                 "opacity":1,
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":550,
-                 "y":530
-                }, 
-                {
-                 "height":0,
-                 "id":51,
-                 "name":"spawn_from_living_room",
-                 "opacity":1,
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1150,
-                 "y":720
-                }],
-         "opacity":0,
-         "type":"objectgroup",
-         "visible":false,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":5,
-         "name":"Interactables",
-         "objects":[],
-         "opacity":0,
-         "type":"objectgroup",
-         "visible":false,
-         "x":0,
-         "y":0
-        }],
- "nextlayerid":6,
- "nextobjectid":52,
- "orientation":"orthogonal",
- "renderorder":"right-down",
- "tiledversion":"1.12.1",
- "tileheight":32,
- "tilesets":[],
- "tilewidth":32,
- "type":"map",
- "version":"1.10",
- "width":43
+{
+ "compressionlevel": -1,
+ "height": 24,
+ "infinite": true,
+ "layers": [
+  {
+   "id": 1,
+   "image": "bg_base.jpg",
+   "imageheight": 816,
+   "imagewidth": 1456,
+   "name": "background",
+   "opacity": 1,
+   "type": "imagelayer",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 2,
+   "name": "Collisions",
+   "objects": [
+    {
+     "height": 180,
+     "id": 200,
+     "name": "wall_top",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 1456,
+     "x": 0,
+     "y": 0
+    },
+    {
+     "height": 636,
+     "id": 201,
+     "name": "wall_left",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 20,
+     "x": 0,
+     "y": 180
+    },
+    {
+     "height": 636,
+     "id": 202,
+     "name": "wall_right",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 20,
+     "x": 1436,
+     "y": 180
+    },
+    {
+     "height": 26,
+     "id": 203,
+     "name": "wall_bottom",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 1456,
+     "x": 0,
+     "y": 790
+    },
+    {
+     "height": 440,
+     "id": 204,
+     "name": "staircase",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 566,
+     "x": 870,
+     "y": 180
+    },
+    {
+     "height": 400,
+     "id": 205,
+     "name": "bookshelf_left",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 120,
+     "x": 0,
+     "y": 180
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 3,
+   "name": "Transfers",
+   "objects": [
+    {
+     "height": 208,
+     "id": 1,
+     "name": "transfer_to_living_room",
+     "opacity": 1,
+     "properties": [
+      {
+       "name": "TargetRoom",
+       "type": "string",
+       "value": "living_room"
+      },
+      {
+       "name": "TargetSpawn",
+       "type": "string",
+       "value": "spawn_from_library"
+      }
+     ],
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 240,
+     "x": 1222,
+     "y": 636
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 4,
+   "name": "Spawn",
+   "objects": [
+    {
+     "height": 0,
+     "id": 50,
+     "name": "spawn_default",
+     "opacity": 1,
+     "point": true,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 0,
+     "x": 550,
+     "y": 530
+    },
+    {
+     "height": 0,
+     "id": 51,
+     "name": "spawn_from_living_room",
+     "opacity": 1,
+     "point": true,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 0,
+     "x": 1150,
+     "y": 720
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": false,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 5,
+   "name": "Interactables",
+   "objects": [
+    {
+     "height": 140,
+     "id": 56,
+     "name": "inspect_director",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 100,
+     "x": 250,
+     "y": 480
+    },
+    {
+     "height": 140,
+     "id": 57,
+     "name": "inspect_sound_guy",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 100,
+     "x": 700,
+     "y": 480
+    },
+    {
+     "height": 90,
+     "id": 58,
+     "name": "inspect_mixing_board",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 110,
+     "x": 790,
+     "y": 540
+    },
+    {
+     "height": 60,
+     "id": 59,
+     "name": "inspect_session_log",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 70,
+     "x": 880,
+     "y": 640
+    },
+    {
+     "height": 70,
+     "id": 60,
+     "name": "inspect_shot_list",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 90,
+     "x": 430,
+     "y": 600
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  }
+ ],
+ "nextlayerid": 6,
+ "nextobjectid": 61,
+ "orientation": "orthogonal",
+ "renderorder": "right-down",
+ "tiledversion": "1.12.1",
+ "tileheight": 32,
+ "tilesets": [],
+ "tilewidth": 32,
+ "type": "map",
+ "version": "1.10",
+ "width": 43
 }

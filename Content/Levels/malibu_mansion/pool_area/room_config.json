@@ -8,7 +8,9 @@
         { "displayText": "Socialite", "id": "eyewitness_645pm", "color": "plot" },
         { "displayText": "huge black cases", "id": "eyewitness_645pm", "color": "plot" },
         { "displayText": "quarter to seven", "id": "eyewitness_645pm", "color": "plot" }
-      ]
+      ],
+      "texture": "Shared/placeholder_person",
+      "scale": 0.15
     },
     {
       "id": "inspect_pool_selfie",
@@ -16,15 +18,27 @@
       "keywords": [
         { "displayText": "6:47 PM", "id": "selfie_figure_cases", "color": "plot" },
         { "displayText": "figure with large dark cases", "id": "selfie_figure_cases", "color": "plot" }
-      ]
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.07
     },
     {
       "id": "inspect_production_schedule",
       "text": "A production schedule left poolside. Under '7:00 PM — Crew Assignments:' it reads: '[D. Marsh — Library (audio setup)].' He was supposed to be in the Library at seven.",
       "keywords": [
         { "displayText": "D. Marsh — Library (audio setup)", "id": "production_schedule", "color": "misc" }
-      ]
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.09
+    },
+    {
+      "id": "inspect_pool_water",
+      "text": "An enormous body of water, glittering with menace. You maintain a professional distance of exactly one pounce plus a safety margin. The pool is not a suspect, but you don't trust it either.",
+      "keywords": [],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.10
     }
   ],
-  "localDeductionSentence": "The [Socialite]'s pool selfie, timestamped [6:47 PM], captured a blurry figure hauling [large dark cases] through the garden — before anyone reported a thing."
+  "localDeductionSentence": "The [Eyewitness — 6:45 PM] account is backed by a [Timestamped Photo]: a figure hauling dark cases, 13 minutes before the sign-in on the [Production Schedule].",
+  "localDeductionClueIds": ["eyewitness_645pm", "selfie_figure_cases", "production_schedule"]
 }

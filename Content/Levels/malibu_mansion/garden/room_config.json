@@ -7,7 +7,9 @@
       "keywords": [
         { "displayText": "Gardener", "id": "the_gardener", "color": "misc" },
         { "displayText": "Nature", "id": "the_gardener", "color": "misc" }
-      ]
+      ],
+      "texture": "Shared/placeholder_person",
+      "scale": 0.15
     },
     {
       "id": "inspect_pruning_shears",
@@ -15,7 +17,9 @@
       "keywords": [
         { "displayText": "Pruning Shears", "id": "shears_match_latch", "color": "misc" },
         { "displayText": "slightly bent", "id": "shears_match_latch", "color": "misc" }
-      ]
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.09
     },
     {
       "id": "inspect_bird_bath",
@@ -23,8 +27,11 @@
       "keywords": [
         { "displayText": "bright feathers", "id": "bird_bath_feathers", "color": "misc" },
         { "displayText": "this morning", "id": "bird_bath_feathers", "color": "misc" }
-      ]
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.11
     }
   ],
-  "localDeductionSentence": "The [Gardener] left his [Shears] near the fountain, insisting birds belong in [Nature] — and the bent blade tips match the cage's broken latch perfectly."
+  "localDeductionSentence": "[The Gardener] insists birds belong in nature — and his [Bent Shears] match the cage's snapped latch. He freed Rudebeak... but he didn't take him.",
+  "localDeductionClueIds": ["the_gardener", "shears_match_latch"]
 }

@@ -1,133 +1,272 @@
-{ "compressionlevel":-1,
- "height":24,
- "infinite":true,
- "layers":[
-        {
-         "id":1,
-         "image":"bg_base.jpg",
-         "imageheight":816,
-         "imagewidth":1456,
-         "name":"background",
-         "opacity":1,
-         "type":"imagelayer",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":2,
-         "name":"Collisions",
-         "objects":[
-                {"height":165,"id":200,"name":"wall_top","opacity":1,"rotation":0,"type":"","visible":true,"width":1456,"x":0,"y":0},
-                {"height":651,"id":201,"name":"wall_left","opacity":1,"rotation":0,"type":"","visible":true,"width":20,"x":0,"y":165},
-                {"height":651,"id":202,"name":"wall_right","opacity":1,"rotation":0,"type":"","visible":true,"width":20,"x":1436,"y":165},
-                {"height":26,"id":203,"name":"wall_bottom","opacity":1,"rotation":0,"type":"","visible":true,"width":1456,"x":0,"y":790},
-                {"height":290,"id":204,"name":"bed","opacity":1,"rotation":0,"type":"","visible":true,"width":550,"x":560,"y":165},
-                {"height":350,"id":205,"name":"tv_stand","opacity":1,"rotation":0,"type":"","visible":true,"width":225,"x":0,"y":300},
-                {"height":380,"id":206,"name":"dresser_right","opacity":1,"rotation":0,"type":"","visible":true,"width":256,"x":1200,"y":250}],
-         "opacity":0,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":3,
-         "name":"Transfers",
-         "objects":[
-                {
-                 "height":120,
-                 "id":1,
-                 "name":"transfer_to_entrance",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"TargetRoom",
-                         "type":"string",
-                         "value":"entrance"
-                        }, 
-                        {
-                         "name":"TargetSpawn",
-                         "type":"string",
-                         "value":"spawn_from_bedroom"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":374,
-                 "x":240,
-                 "y":684
-                }],
-         "opacity":0,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":4,
-         "name":"Spawn",
-         "objects":[
-                {
-                 "height":0,
-                 "id":50,
-                 "name":"spawn_default",
-                 "opacity":1,
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":750,
-                 "y":520
-                }, 
-                {
-                 "height":0,
-                 "id":51,
-                 "name":"spawn_from_entrance",
-                 "opacity":1,
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":400,
-                 "y":660
-                }],
-         "opacity":0,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":5,
-         "name":"Interactables",
-         "objects":[
-                {"height":80,"id":52,"name":"inspect_husband","opacity":1,"rotation":0,"type":"","visible":true,"width":80,"x":680,"y":470},
-                {"height":80,"id":53,"name":"inspect_delivery_manifest","opacity":1,"rotation":0,"type":"","visible":true,"width":100,"x":950,"y":460},
-                {"height":100,"id":54,"name":"inspect_acoustic_cases","opacity":1,"rotation":0,"type":"","visible":true,"width":120,"x":750,"y":660},
-                {"height":60,"id":55,"name":"inspect_star_note","opacity":1,"rotation":0,"type":"","visible":true,"width":80,"x":480,"y":460},
-                {"height":70,"id":56,"name":"inspect_headphone_box","opacity":1,"rotation":0,"type":"","visible":true,"width":90,"x":600,"y":660}],
-         "opacity":0,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }],
- "nextlayerid":6,
- "nextobjectid":57,
- "orientation":"orthogonal",
- "renderorder":"right-down",
- "tiledversion":"1.12.1",
- "tileheight":32,
- "tilesets":[],
- "tilewidth":32,
- "type":"map",
- "version":"1.10",
- "width":43
+{
+ "compressionlevel": -1,
+ "height": 24,
+ "infinite": true,
+ "layers": [
+  {
+   "id": 1,
+   "image": "bg_base.jpg",
+   "imageheight": 816,
+   "imagewidth": 1456,
+   "name": "background",
+   "opacity": 1,
+   "type": "imagelayer",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 2,
+   "name": "Collisions",
+   "objects": [
+    {
+     "height": 165,
+     "id": 200,
+     "name": "wall_top",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 1456,
+     "x": 0,
+     "y": 0
+    },
+    {
+     "height": 651,
+     "id": 201,
+     "name": "wall_left",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 20,
+     "x": 0,
+     "y": 165
+    },
+    {
+     "height": 651,
+     "id": 202,
+     "name": "wall_right",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 20,
+     "x": 1436,
+     "y": 165
+    },
+    {
+     "height": 26,
+     "id": 203,
+     "name": "wall_bottom",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 1456,
+     "x": 0,
+     "y": 790
+    },
+    {
+     "height": 290,
+     "id": 204,
+     "name": "bed",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 550,
+     "x": 560,
+     "y": 165
+    },
+    {
+     "height": 350,
+     "id": 205,
+     "name": "tv_stand",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 225,
+     "x": 0,
+     "y": 300
+    },
+    {
+     "height": 380,
+     "id": 206,
+     "name": "dresser_right",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 256,
+     "x": 1200,
+     "y": 250
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 3,
+   "name": "Transfers",
+   "objects": [
+    {
+     "height": 120,
+     "id": 1,
+     "name": "transfer_to_entrance",
+     "opacity": 1,
+     "properties": [
+      {
+       "name": "TargetRoom",
+       "type": "string",
+       "value": "entrance"
+      },
+      {
+       "name": "TargetSpawn",
+       "type": "string",
+       "value": "spawn_from_bedroom"
+      }
+     ],
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 374,
+     "x": 240,
+     "y": 684
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 4,
+   "name": "Spawn",
+   "objects": [
+    {
+     "height": 0,
+     "id": 50,
+     "name": "spawn_default",
+     "opacity": 1,
+     "point": true,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 0,
+     "x": 750,
+     "y": 520
+    },
+    {
+     "height": 0,
+     "id": 51,
+     "name": "spawn_from_entrance",
+     "opacity": 1,
+     "point": true,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 0,
+     "x": 400,
+     "y": 660
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 5,
+   "name": "Interactables",
+   "objects": [
+    {
+     "height": 140,
+     "id": 57,
+     "name": "inspect_husband",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 100,
+     "x": 920,
+     "y": 470
+    },
+    {
+     "height": 70,
+     "id": 58,
+     "name": "inspect_delivery_manifest",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 90,
+     "x": 1130,
+     "y": 520
+    },
+    {
+     "height": 80,
+     "id": 59,
+     "name": "inspect_acoustic_cases",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 85,
+     "x": 1115,
+     "y": 330
+    },
+    {
+     "height": 70,
+     "id": 60,
+     "name": "inspect_star_note",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 80,
+     "x": 560,
+     "y": 440
+    },
+    {
+     "height": 70,
+     "id": 61,
+     "name": "inspect_headphone_box",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 80,
+     "x": 200,
+     "y": 560
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  }
+ ],
+ "nextlayerid": 6,
+ "nextobjectid": 62,
+ "orientation": "orthogonal",
+ "renderorder": "right-down",
+ "tiledversion": "1.12.1",
+ "tileheight": 32,
+ "tilesets": [],
+ "tilewidth": 32,
+ "type": "map",
+ "version": "1.10",
+ "width": 43
 }
