@@ -67,6 +67,15 @@ namespace CatDetective
         private bool             _isDialogueActive;
         private InteractionData? _currentInteraction;
 
+        // ── Interrogation topic menu ───────────────────────────────────────────
+        private Keyword[] _currentKeywords = Array.Empty<Keyword>();  // keywords of the segment on screen
+        private bool      _isTopicMenuOpen;
+        private int       _selectedTopicIndex;
+        private readonly List<(DialogueTopic Topic, int Index)> _menuTopics = new();
+        private string    _dialogueEntityId = "";
+        private readonly HashSet<string> _visitedTopics = new();      // "room/entity/topicIndex"
+        private bool      _menuUpPressed, _menuDownPressed;           // edge-detected each Update
+
         // ── Notebook / inventory ───────────────────────────────────────────────
         private NotebookManager _notebook = null!;
         private MouseState      _prevMouseState;
@@ -269,23 +278,58 @@ namespace CatDetective
                         ? _notebook.UnlockedClues[0] : null;
                     _activeTab = _selectedWordBankClue?.Category ?? ClueCategory.Who;
                 }
-                // "dialogue" opens the room's longest interaction text, fully typed,
-                // so text-box fit can be verified from a capture.
+                // "dialogue" opens the room's longest text segment (intro or topic
+                // response), fully typed, so text-box fit can be verified from a capture.
                 else if (_screenshotView == "dialogue")
                 {
-                    InteractableEntity? longest = null;
+                    InteractableEntity? best = null;
+                    string    bestText = "";
+                    Keyword[] bestKw   = Array.Empty<Keyword>();
                     foreach (var entity in _interactables)
-                        if (entity.Data != null &&
-                            (longest?.Data == null ||
-                             entity.Data.Text.Length > longest.Data.Text.Length))
-                            longest = entity;
-                    if (longest?.Data != null)
                     {
-                        _currentInteraction  = longest.Data;
-                        _dialoguePages       = _currentInteraction.Text.Split('|');
+                        if (entity.Data == null) continue;
+                        if (entity.Data.Text.Length > bestText.Length)
+                        {
+                            best = entity; bestText = entity.Data.Text; bestKw = entity.Data.Keywords;
+                        }
+                        foreach (var topic in entity.Data.Topics)
+                            if (topic.Text.Length > bestText.Length)
+                            {
+                                best = entity; bestText = topic.Text; bestKw = topic.Keywords;
+                            }
+                    }
+                    if (best?.Data != null)
+                    {
+                        _currentInteraction  = best.Data;
+                        _currentKeywords     = bestKw;
+                        _dialoguePages       = bestText.Split('|');
                         _currentDialoguePage = 0;
                         _typewriterTimer     = 999999f;   // fully typed ((int) cast safe)
                         _isDialogueActive    = true;
+                    }
+                }
+                // "topics" opens the room's fullest interrogation menu with every
+                // gated topic unlocked, so the worst-case menu layout can be verified.
+                else if (_screenshotView == "topics")
+                {
+                    InteractableEntity? fullest = null;
+                    foreach (var entity in _interactables)
+                        if (entity.Data != null && entity.Data.Topics.Length >
+                            (fullest?.Data?.Topics.Length ?? 0))
+                            fullest = entity;
+                    if (fullest?.Data != null)
+                    {
+                        foreach (var topic in fullest.Data.Topics)
+                            if (topic.RequiresClue.Length > 0)
+                                _notebook.UnlockClue(topic.RequiresClue);
+                        _currentInteraction  = fullest.Data;
+                        _currentKeywords     = fullest.Data.Keywords;
+                        _dialogueEntityId    = fullest.Id;
+                        _dialoguePages       = fullest.Data.Text.Split('|');
+                        _currentDialoguePage = 0;
+                        _typewriterTimer     = 999999f;
+                        _isDialogueActive    = true;
+                        OpenTopicMenu();
                     }
                 }
             }
@@ -342,6 +386,7 @@ namespace CatDetective
             _interactables.Clear();
             _isDialogueActive   = false;
             _currentInteraction = null;
+            _isTopicMenuOpen    = false;
 
             _currentRoomId  = roomId;
             _spawnPointName = spawnPointName;
@@ -446,6 +491,25 @@ namespace CatDetective
         }
 
         // ══════════════════════════════════════════════════════════════════════
+        /// <summary>
+        /// Opens the interrogation menu for <see cref="_currentInteraction"/>.
+        /// Topics gated behind a clue the player hasn't found are hidden entirely,
+        /// so their prompts don't spoil what evidence exists.
+        /// </summary>
+        private void OpenTopicMenu()
+        {
+            _menuTopics.Clear();
+            var topics = _currentInteraction!.Topics;
+            for (int i = 0; i < topics.Length; i++)
+            {
+                if (topics[i].RequiresClue.Length == 0 || _notebook.IsUnlocked(topics[i].RequiresClue))
+                    _menuTopics.Add((topics[i], i));
+            }
+            _selectedTopicIndex = 0;
+            _isTopicMenuOpen    = true;
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
         protected override void Update(GameTime gameTime)
         {
             var kbState = Keyboard.GetState();
@@ -454,6 +518,14 @@ namespace CatDetective
 
             if (kbState.IsKeyDown(Keys.F1) && !_prevKbState.IsKeyDown(Keys.F1))
                 _showDebug = !_showDebug;
+
+            _menuUpPressed =
+                (kbState.IsKeyDown(Keys.W) || kbState.IsKeyDown(Keys.Up)) &&
+                !(_prevKbState.IsKeyDown(Keys.W) || _prevKbState.IsKeyDown(Keys.Up));
+            _menuDownPressed =
+                (kbState.IsKeyDown(Keys.S) || kbState.IsKeyDown(Keys.Down)) &&
+                !(_prevKbState.IsKeyDown(Keys.S) || _prevKbState.IsKeyDown(Keys.Down));
+
             _prevKbState = kbState;
 
             var  mouseState = Mouse.GetState();
@@ -652,31 +724,64 @@ namespace CatDetective
 
                 if (_isDialogueActive)
                 {
-                    int totalChars = _dialoguePages[_currentDialoguePage]
-                        .Replace("[", "").Replace("]", "").Length;
-
-                    if (_cat.IsInteractPressed())
+                    if (_isTopicMenuOpen)
                     {
-                        if (_typewriterTimer < totalChars)
+                        int optionCount = _menuTopics.Count + 1;   // +1 = the Leave entry
+                        if (_menuUpPressed)
+                            _selectedTopicIndex = (_selectedTopicIndex - 1 + optionCount) % optionCount;
+                        if (_menuDownPressed)
+                            _selectedTopicIndex = (_selectedTopicIndex + 1) % optionCount;
+
+                        if (_cat.IsInteractPressed())
                         {
-                            _typewriterTimer = totalChars;
+                            if (_selectedTopicIndex >= _menuTopics.Count)
+                            {
+                                _isDialogueActive = false;
+                                _isTopicMenuOpen  = false;
+                            }
+                            else
+                            {
+                                var (topic, index) = _menuTopics[_selectedTopicIndex];
+                                _visitedTopics.Add($"{_currentRoomId}/{_dialogueEntityId}/{index}");
+                                foreach (var kw in topic.Keywords)
+                                    _notebook.UnlockClue(kw.Id);
+                                _currentKeywords     = topic.Keywords;
+                                _dialoguePages       = topic.Text.Split('|');
+                                _currentDialoguePage = 0;
+                                _typewriterTimer     = 0f;
+                                _isTopicMenuOpen     = false;
+                            }
                         }
-                        else
+                    }
+                    else
+                    {
+                        int totalChars = _dialoguePages[_currentDialoguePage]
+                            .Replace("[", "").Replace("]", "").Length;
+
+                        if (_cat.IsInteractPressed())
                         {
-                            if (_currentDialoguePage < _dialoguePages.Length - 1)
+                            if (_typewriterTimer < totalChars)
+                            {
+                                _typewriterTimer = totalChars;
+                            }
+                            else if (_currentDialoguePage < _dialoguePages.Length - 1)
                             {
                                 _currentDialoguePage++;
                                 _typewriterTimer = 0f;
+                            }
+                            else if (_currentInteraction != null && _currentInteraction.Topics.Length > 0)
+                            {
+                                OpenTopicMenu();
                             }
                             else
                             {
                                 _isDialogueActive = false;
                             }
                         }
-                    }
-                    else
-                    {
-                        _typewriterTimer += (float)gameTime.ElapsedGameTime.TotalSeconds * TYPEWRITER_SPEED;
+                        else
+                        {
+                            _typewriterTimer += (float)gameTime.ElapsedGameTime.TotalSeconds * TYPEWRITER_SPEED;
+                        }
                     }
                 }
                 else
@@ -715,10 +820,13 @@ namespace CatDetective
                         && _activeInteractable.Data != null)
                     {
                         _currentInteraction  = _activeInteractable.Data;
+                        _currentKeywords     = _currentInteraction.Keywords;
+                        _dialogueEntityId    = _activeInteractable.Id;
                         _dialoguePages       = _currentInteraction.Text.Split('|');
                         _currentDialoguePage = 0;
                         _typewriterTimer     = 0f;
                         _isDialogueActive    = true;
+                        _isTopicMenuOpen     = false;
                         foreach (var kw in _activeInteractable.Data.Keywords)
                             _notebook.UnlockClue(kw.Id);
                     }
@@ -876,36 +984,76 @@ namespace CatDetective
                     _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
                     _spriteBatch.Draw(_dialogueBoxTex, boxRect, Color.White);
 
-                    int totalCharsOnPage = _dialoguePages[_currentDialoguePage]
-                        .Replace("[", "").Replace("]", "").Length;
-                    bool typingDone = _typewriterTimer >= totalCharsOnPage;
-
                     // Dialogue text renders below full size so long clue texts stay
                     // inside the box art instead of running past its borders.
                     const float dialogueScale = 0.72f;
-                    DrawRichText(
-                        _spriteBatch,
-                        _dialogueFont,
-                        _dialoguePages[_currentDialoguePage],
-                        _currentInteraction.Keywords,
-                        new Vector2(boxRect.X + PAD_X, boxRect.Y + PAD_Y),
-                        boxRect.Width - PAD_X * 2,
-                        (int)_typewriterTimer,
-                        dialogueScale);
+                    var hintColor = new Color(90, 70, 50);
 
-                    bool isLastPage = _currentDialoguePage >= _dialoguePages.Length - 1;
-                    string hint     = typingDone
-                        ? (isLastPage ? "[ Enter ] to dismiss" : "[ Enter ] to continue")
-                        : "[ Enter ] to skip";
-                    var    hintSize = _dialogueFont.MeasureString(hint) * dialogueScale;
-                    _spriteBatch.DrawString(
-                        _dialogueFont,
-                        hint,
-                        new Vector2(
-                            boxRect.Right  - PAD_X - hintSize.X,
-                            boxRect.Bottom - PAD_Y * 0.6f - hintSize.Y),
-                        new Color(90, 70, 50),
-                        0f, Vector2.Zero, dialogueScale, SpriteEffects.None, 0f);
+                    if (_isTopicMenuOpen)
+                    {
+                        const float menuScale = 0.66f;
+                        float lineH = _dialogueFont.LineSpacing * menuScale + 2f;
+                        var   pos   = new Vector2(boxRect.X + PAD_X, boxRect.Y + PAD_Y - 20);
+
+                        _spriteBatch.DrawString(_dialogueFont, "The detective considers his next move...",
+                            pos, hintColor, 0f, Vector2.Zero, menuScale, SpriteEffects.None, 0f);
+                        pos.Y += lineH + 8f;
+
+                        for (int i = 0; i <= _menuTopics.Count; i++)
+                        {
+                            bool   isLeave  = i == _menuTopics.Count;
+                            bool   selected = i == _selectedTopicIndex;
+                            string label    = isLeave ? "Pad away. (Leave)" : _menuTopics[i].Topic.Prompt;
+                            bool   visited  = !isLeave && _visitedTopics.Contains(
+                                $"{_currentRoomId}/{_dialogueEntityId}/{_menuTopics[i].Index}");
+
+                            Color color = selected ? InteractionData.Crime
+                                        : visited  ? new Color(165, 150, 130)
+                                                   : _inkColor;
+                            _spriteBatch.DrawString(_dialogueFont,
+                                (selected ? "> " : "  ") + label,
+                                pos, color, 0f, Vector2.Zero, menuScale, SpriteEffects.None, 0f);
+                            pos.Y += lineH;
+                        }
+
+                        string menuHint   = "[ W/S ] choose   [ Enter ] act";
+                        var    menuHintSz = _dialogueFont.MeasureString(menuHint) * dialogueScale;
+                        _spriteBatch.DrawString(_dialogueFont, menuHint,
+                            new Vector2(boxRect.Right  - PAD_X - menuHintSz.X,
+                                        boxRect.Bottom - PAD_Y * 0.6f - menuHintSz.Y),
+                            hintColor, 0f, Vector2.Zero, dialogueScale, SpriteEffects.None, 0f);
+                    }
+                    else
+                    {
+                        int totalCharsOnPage = _dialoguePages[_currentDialoguePage]
+                            .Replace("[", "").Replace("]", "").Length;
+                        bool typingDone = _typewriterTimer >= totalCharsOnPage;
+
+                        DrawRichText(
+                            _spriteBatch,
+                            _dialogueFont,
+                            _dialoguePages[_currentDialoguePage],
+                            _currentKeywords,
+                            new Vector2(boxRect.X + PAD_X, boxRect.Y + PAD_Y),
+                            boxRect.Width - PAD_X * 2,
+                            (int)_typewriterTimer,
+                            dialogueScale);
+
+                        bool isLastPage  = _currentDialoguePage >= _dialoguePages.Length - 1;
+                        bool opensMenu   = isLastPage && _currentInteraction.Topics.Length > 0;
+                        string hint      = typingDone
+                            ? (opensMenu ? "[ Enter ] ..." : isLastPage ? "[ Enter ] to dismiss" : "[ Enter ] to continue")
+                            : "[ Enter ] to skip";
+                        var    hintSize = _dialogueFont.MeasureString(hint) * dialogueScale;
+                        _spriteBatch.DrawString(
+                            _dialogueFont,
+                            hint,
+                            new Vector2(
+                                boxRect.Right  - PAD_X - hintSize.X,
+                                boxRect.Bottom - PAD_Y * 0.6f - hintSize.Y),
+                            hintColor,
+                            0f, Vector2.Zero, dialogueScale, SpriteEffects.None, 0f);
+                    }
                     _spriteBatch.End();
                 }
 

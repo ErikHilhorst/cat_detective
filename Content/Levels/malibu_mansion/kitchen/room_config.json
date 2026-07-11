@@ -3,9 +3,33 @@
   "interactables": [
     {
       "id": "inspect_maid",
-      "text": "The [Maid], Rosa, is aggressively chopping vegetables. The cleaver hits the board like a verdict. She does not look friendly.",
+      "text": "The Maid, [Rosa], is chopping vegetables with feeling. The cleaver hits the board like a verdict. Without turning around: 'If you are here about the bird, get in line.'",
       "keywords": [
-        { "displayText": "Maid", "id": "the_maid", "color": "misc" }
+        { "displayText": "Rosa", "id": "the_maid", "color": "misc" }
+      ],
+      "topics": [
+        {
+          "prompt": "Meow the word 'bird', approximately",
+          "text": "The cleaver stops mid-air. 'That bird called my paella [garbage slop]. In front of guests. Eleven years I run this kitchen.' Chop. 'Did I dream of roasting him with a nice sofrito? Yes. Did I do it? No.' Chop. 'A woman can keep a list without acting on it.'",
+          "keywords": [
+            { "displayText": "garbage slop", "id": "insulted_cooking", "color": "misc" }
+          ]
+        },
+        {
+          "prompt": "Sit hopefully beneath the treat jar",
+          "text": "She sighs like the tide going out, wipes her hands, and shakes exactly three treats into a saucer. '[For the cat],' she says, softer than the room deserves. 'You saw nothing. I have a reputation.' The treats are excellent. Your objectivity is now a memory.",
+          "keywords": [
+            { "displayText": "For the cat", "id": "treat_jar_bribe", "color": "misc" }
+          ]
+        },
+        {
+          "prompt": "Give her a slow, skeptical blink",
+          "requiresClue": "husband_hall_7pm",
+          "text": "'What. WHAT.' She points the cleaver at nothing in particular. 'Seven o'clock I take the [dinner cart] to the east wing, same as every night. Soup, roast, the little breads.' Chop. 'Mister Derek did not even lift his headphones to say thank you. Ask HIM who else was rolling things around up there.'",
+          "keywords": [
+            { "displayText": "dinner cart", "id": "dinner_cart_7pm", "color": "misc" }
+          ]
+        }
       ],
       "texture": "Shared/placeholder_person",
       "scale": 0.15

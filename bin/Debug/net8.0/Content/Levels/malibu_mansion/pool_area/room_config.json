@@ -3,11 +3,34 @@
   "interactables": [
     {
       "id": "inspect_socialite",
-      "text": "The [Socialite], Coco, lowers her sunglasses. 'Some crew person was lugging [huge black cases] through the garden at, like, [quarter to seven]. Walked right through my sunset shot. The nerve.'",
+      "text": "The Socialite, [Coco], lowers her sunglasses exactly one centimeter. 'Oh thank GOD. Someone with cheekbones.' She pats the sun lounger. You do not sit on it. She respects that.",
       "keywords": [
-        { "displayText": "Socialite", "id": "eyewitness_645pm", "color": "plot" },
-        { "displayText": "huge black cases", "id": "eyewitness_645pm", "color": "plot" },
-        { "displayText": "quarter to seven", "id": "eyewitness_645pm", "color": "plot" }
+        { "displayText": "Coco", "id": "eyewitness_645pm", "color": "plot" }
+      ],
+      "topics": [
+        {
+          "prompt": "Pose beside her chaise, chin up",
+          "text": "'Iconic. ICONIC.' She reaches for her phone, then remembers it is evidence now and pouts. 'Tonight is ruined anyway. Some crew person lugged [huge black cases] through the garden at, like, [quarter to seven]. Walked STRAIGHT through my sunset shot. The nerve. The NERVE.'",
+          "keywords": [
+            { "displayText": "huge black cases", "id": "eyewitness_645pm", "color": "plot" },
+            { "displayText": "quarter to seven", "id": "eyewitness_645pm", "color": "plot" }
+          ]
+        },
+        {
+          "prompt": "Investigate her abandoned spritz",
+          "text": "'It is a spritz, darling, and it is warm now. Like everything else about this evening.' She swirls it sadly. 'You know what I keep thinking about? The cases had [little squeaky wheels]. Rrr, rrr, rrr, all the way up the garden path. Some of us were trying to VIBE.'",
+          "keywords": [
+            { "displayText": "little squeaky wheels", "id": "eyewitness_645pm", "color": "plot" }
+          ]
+        },
+        {
+          "prompt": "Sprawl across the production schedule",
+          "requiresClue": "production_schedule",
+          "text": "She peers over her sunglasses at the page beneath you. 'Seven o'clock, library, audio setup? Honey.' A long, slow sip. 'At quarter to seven that man was doing CARDIO through the begonias with two giant cases. [I know what I saw]. I was bored enough to be reliable.'",
+          "keywords": [
+            { "displayText": "I know what I saw", "id": "eyewitness_645pm", "color": "plot" }
+          ]
+        }
       ],
       "texture": "Shared/placeholder_person",
       "scale": 0.15

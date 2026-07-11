@@ -3,20 +3,75 @@
   "interactables": [
     {
       "id": "inspect_director",
-      "text": "The [Director], Wexler, scribbles in a leather notebook. 'Missing bird + weeping star + locked mansion = [Emmy bait].' He doesn't look up.",
+      "text": "The Director, [Wexler], has three cameras of footage to review and is instead watching the room like it owes him a third act. He frames you between his fingers. 'Cat. Great texture. Stay in the light.'",
       "keywords": [
-        { "displayText": "Director", "id": "director_notes", "color": "misc" },
-        { "displayText": "Emmy bait", "id": "director_notes", "color": "misc" }
+        { "displayText": "Wexler", "id": "director_notes", "color": "misc" }
+      ],
+      "topics": [
+        {
+          "prompt": "Walk directly through his shot",
+          "text": "He does not get angry. He gets ideas. 'Missing bird. Weeping star. Locked mansion. A cat crosses the frame.' He writes fast. '[Emmy bait], all of it. You cannot BUY a crisis like this.' He underlines something twice.",
+          "keywords": [
+            { "displayText": "Emmy bait", "id": "director_notes", "color": "misc" }
+          ]
+        },
+        {
+          "prompt": "Sit on his notebook",
+          "text": "He slides it out from under you with the ease of a man who has worked with talent before. 'The crew? Grips are asleep. Camera department is unionized. And [Marsh] - Marsh is my rock. Used to file a complaint about that bird every single day. Hasn't said a word in two weeks. Personal growth, probably.'",
+          "keywords": [
+            { "displayText": "Marsh", "id": "d_marsh_sound_guy", "color": "crime" }
+          ]
+        },
+        {
+          "prompt": "Stare pointedly at the red pen in his pocket",
+          "requiresClue": "directors_shot_list",
+          "text": "He follows your gaze down to the pen, then back up. 'The shot list. [BETTER WITHOUT HIM], question mark. Note the question mark, cat - that is editorial instinct, not a confession.' He clicks the pen twice. 'Though if it WERE a confession, the ratings would be extraordinary.'",
+          "keywords": [
+            { "displayText": "BETTER WITHOUT HIM", "id": "directors_shot_list", "color": "misc" }
+          ]
+        }
       ],
       "texture": "Shared/placeholder_person",
       "scale": 0.15
     },
     {
       "id": "inspect_sound_guy",
-      "text": "The [Sound Guy]'s badge reads '[D. Marsh].' He is very busy re-coiling a cable that was already coiled. 'Nice cat,' he says, half an octave too high.",
+      "text": "The [Sound Guy]'s badge reads '[D. Marsh].' He is very busy re-coiling a cable that was already coiled. 'Nice cat,' he says, half an octave too high. The coil slips out of his hands.",
       "keywords": [
         { "displayText": "Sound Guy", "id": "d_marsh_sound_guy", "color": "crime" },
         { "displayText": "D. Marsh", "id": "d_marsh_sound_guy", "color": "crime" }
+      ],
+      "topics": [
+        {
+          "prompt": "Stare at him. Do not blink.",
+          "text": "He lasts eleven seconds. 'What. WHAT. It's boom mics, okay? I do boom mics.' He wipes his palms on his lanyard. 'Look, I was HERE at seven. Library. Audio setup. It's [on the schedule]. Check the schedule. Everyone should check the schedule.'",
+          "keywords": [
+            { "displayText": "on the schedule", "id": "production_schedule", "color": "misc" }
+          ]
+        },
+        {
+          "prompt": "Paw at his headphones",
+          "text": "He grabs them protectively. 'I'm monitoring levels.' You look at the jack. He looks at the jack. The cable ends a foot short of the board, plugged into [nothing at all]. 'Wireless monitoring,' he explains, to a cat, with total conviction.",
+          "keywords": [
+            { "displayText": "nothing at all", "id": "d_marsh_sound_guy", "color": "crime" }
+          ]
+        },
+        {
+          "prompt": "Follow the wall cable with your eyes, slowly",
+          "requiresClue": "audio_cable",
+          "text": "You trace it: board, floor, wainscoting, gone. He watches you do it. 'That's [grounding]. Cables need grounding. Into walls. It's an audio thing, you wouldn't-' He stops himself explaining audio engineering to a cat, sits down at the mixer, and very carefully touches nothing.",
+          "keywords": [
+            { "displayText": "grounding", "id": "audio_cable", "color": "crime" }
+          ]
+        },
+        {
+          "prompt": "Hop onto his road case and refuse to move",
+          "requiresClue": "sound_proof_cases",
+          "text": "'Hey - careful - that's delicate equipment!' You knead it once, with meaning. 'They're empty! The cases are [EMPTY], both of them, why would I even-' He hears himself say it. The library gets very, very quiet. 'I have a lot of levels to monitor,' he whispers.",
+          "keywords": [
+            { "displayText": "EMPTY", "id": "sound_proof_cases", "color": "crime" }
+          ]
+        }
       ],
       "texture": "Shared/placeholder_person",
       "scale": 0.15

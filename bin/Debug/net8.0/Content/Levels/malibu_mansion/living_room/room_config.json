@@ -3,20 +3,64 @@
   "interactables": [
     {
       "id": "inspect_movie_star",
-      "text": "The [Movie Star], Vivienne Vale, weeps operatically. 'I heard Rudebeak. At [8:00 PM]. I'd know that screech anywhere. He was HERE.'",
+      "text": "The Movie Star, [Vivienne Vale], is draped across the chaise in full mourning couture. She points at you with a tissue. 'You. You have KIND eyes. Not like the rest of these vultures.'",
       "keywords": [
-        { "displayText": "Movie Star", "id": "squawk_at_8pm", "color": "plot" },
-        { "displayText": "8:00 PM", "id": "squawk_at_8pm", "color": "plot" }
+        { "displayText": "Vivienne Vale", "id": "squawk_at_8pm", "color": "plot" }
+      ],
+      "topics": [
+        {
+          "prompt": "Purr consolingly against her arm",
+          "text": "'He was HERE, darling. I heard him at [8:00 PM], on the dot - I was mid-affirmation.' She dabs one eye, careful of the mascara. 'I would know that screech anywhere. It said: Vivienne. I am ALIVE. And possibly: garbage slop.'",
+          "keywords": [
+            { "displayText": "8:00 PM", "id": "squawk_at_8pm", "color": "plot" }
+          ]
+        },
+        {
+          "prompt": "Paw gently at the empty cage",
+          "text": "'Do NOT touch the crime scene, darling.' She sweeps you up and holds you like a press photo. 'Rudebeak is family. Rude, loud family with a [vocabulary problem] - which is the maid's doing, by the way. Rosa taught him THAT phrase. I keep a list.'",
+          "keywords": [
+            { "displayText": "vocabulary problem", "id": "vocab_ledger", "color": "misc" }
+          ]
+        },
+        {
+          "prompt": "Bat the little speaker out where she can see it",
+          "requiresClue": "hidden_speaker",
+          "text": "She stares at it for a long moment. Something sharpens behind the movie-star eyes. 'That is not mine. That is not RUDEBEAK'S.' Then, quieter: 'The [film people] wire everything, you know. There are cables in my walls I have never been introduced to.'",
+          "keywords": [
+            { "displayText": "film people", "id": "hidden_speaker", "color": "crime" }
+          ]
+        }
       ],
       "texture": "Shared/placeholder_person",
       "scale": 0.15
     },
     {
       "id": "inspect_bird_handler",
-      "text": "The [Bird Handler], Petra, holds out an untouched bowl of seed. 'This was his six o'clock snack. [He never misses it]. Never.' You respect a fellow professional.",
+      "text": "The Bird Handler, [Petra], sits perfectly still beside an untouched bowl of seed, the way professionals wait. She gives you a nod, one working animal expert to another.",
       "keywords": [
-        { "displayText": "Bird Handler", "id": "broken_latch", "color": "crime" },
-        { "displayText": "He never misses it", "id": "broken_latch", "color": "crime" }
+        { "displayText": "Petra", "id": "broken_latch", "color": "crime" }
+      ],
+      "topics": [
+        {
+          "prompt": "Sniff the untouched seed bowl",
+          "text": "'His six o'clock snack. [He never misses it]. Never.' Her voice is flat and certain, a metronome of worry. 'Whatever happened, by six o'clock he was already somewhere he could not smell this bowl.'",
+          "keywords": [
+            { "displayText": "He never misses it", "id": "broken_latch", "color": "crime" }
+          ]
+        },
+        {
+          "prompt": "Tilt your head at her, professionally",
+          "text": "'You want the profile? Blue-and-gold macaw, nineteen years old, ego like a co-star, lungs like a fire alarm.' She almost smiles. 'Loud in daylight. But put him somewhere [dark and quiet] and he goes silent as a stone. Handler trick. Works every time.'",
+          "keywords": []
+        },
+        {
+          "prompt": "Report the garden feathers with a slow blink",
+          "requiresClue": "bird_bath_feathers",
+          "text": "You aim a long, deliberate blink toward the garden. She reads you perfectly. 'The bird bath. Of course - he loves that thing.' Her jaw sets. 'Understand something, cat. [Wet feathers mean a happy bird]. A happy bird does not fly away from his own bath. Someone picked him up. He only allows that when he is soggy and smug.'",
+          "keywords": [
+            { "displayText": "Wet feathers mean a happy bird", "id": "bird_bath_feathers", "color": "misc" }
+          ]
+        }
       ],
       "texture": "Shared/placeholder_person",
       "scale": 0.15

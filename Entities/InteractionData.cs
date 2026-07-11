@@ -15,6 +15,34 @@ namespace CatDetective.Entities
         Color  Color);
 
     /// <summary>
+    /// One selectable entry on a character's interrogation menu.
+    /// The prompt is a cat action ("Stare at him. Do not blink."); the text is
+    /// the character's monologue in response. The detective never speaks.
+    /// </summary>
+    public sealed class DialogueTopic
+    {
+        /// <summary>Menu label: the cat action the player chooses.</summary>
+        public string Prompt { get; }
+
+        /// <summary>Response text; pages split on '|', [brackets] colored via <see cref="Keywords"/>.</summary>
+        public string Text { get; }
+
+        /// <summary>Keywords in the response; unlocked when the topic is chosen.</summary>
+        public Keyword[] Keywords { get; }
+
+        /// <summary>Clue id that must be unlocked before this topic appears. Empty = always shown.</summary>
+        public string RequiresClue { get; }
+
+        public DialogueTopic(string prompt, string text, Keyword[] keywords, string requiresClue = "")
+        {
+            Prompt       = prompt;
+            Text         = text;
+            Keywords     = keywords;
+            RequiresClue = requiresClue;
+        }
+    }
+
+    /// <summary>
     /// Holds the content for a single interactable zone.
     /// Keyed by Tiled object name in <c>Game1._interactionDatabase</c>.
     /// </summary>
@@ -30,6 +58,12 @@ namespace CatDetective.Entities
         /// <summary>Keywords in this dialogue, each with its display text, clue ID, and tint.</summary>
         public Keyword[] Keywords { get; }
 
+        /// <summary>
+        /// Interrogation topics offered after <see cref="Text"/> finishes.
+        /// Empty = plain object inspection (dialogue closes after the last page).
+        /// </summary>
+        public DialogueTopic[] Topics { get; }
+
         // ── Visual overrides (applied in InteractableEntity.Draw, never to Position/LayerDepth) ──
         public float  Scale   { get; }   // default 1.0
         public string Align   { get; }   // "BottomCenter" | "Center" | "TopLeft"
@@ -44,7 +78,8 @@ namespace CatDetective.Entities
 
         public InteractionData(string text, Keyword[] keywords,
             float scale = 1.0f, string align = "BottomCenter",
-            int offsetX = 0, int offsetY = 0, string texturePath = "")
+            int offsetX = 0, int offsetY = 0, string texturePath = "",
+            DialogueTopic[]? topics = null)
         {
             Text        = text;
             Keywords    = keywords;
@@ -53,6 +88,7 @@ namespace CatDetective.Entities
             OffsetX     = offsetX;
             OffsetY     = offsetY;
             TexturePath = texturePath;
+            Topics      = topics ?? System.Array.Empty<DialogueTopic>();
         }
 
         // ── Shared colour palette ──────────────────────────────────────────────

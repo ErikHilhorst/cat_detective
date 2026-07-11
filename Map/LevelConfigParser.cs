@@ -67,12 +67,23 @@ namespace CatDetective.Map
         [JsonPropertyName("id")]       public string                  Id       { get; set; } = "";
         [JsonPropertyName("text")]     public string                  Text     { get; set; } = "";
         [JsonPropertyName("keywords")] public List<KeywordConfigData> Keywords { get; set; } = new();
+        /// <summary>Optional interrogation topics (characters); empty = plain inspection.</summary>
+        [JsonPropertyName("topics")]   public List<TopicConfigData>   Topics   { get; set; } = new();
         [JsonPropertyName("scale")]    public float                   Scale    { get; set; } = 1.0f;
         [JsonPropertyName("align")]    public string                  Align    { get; set; } = "BottomCenter";
         [JsonPropertyName("offsetX")]  public int                     OffsetX  { get; set; } = 0;
         [JsonPropertyName("offsetY")]  public int                     OffsetY  { get; set; } = 0;
         /// <summary>Fallback sprite content path (e.g. "Shared/placeholder_object").</summary>
         [JsonPropertyName("texture")]  public string                  Texture  { get; set; } = "";
+    }
+
+    internal sealed class TopicConfigData
+    {
+        [JsonPropertyName("prompt")]       public string                  Prompt       { get; set; } = "";
+        [JsonPropertyName("text")]         public string                  Text         { get; set; } = "";
+        [JsonPropertyName("keywords")]     public List<KeywordConfigData> Keywords     { get; set; } = new();
+        /// <summary>Clue id required before the topic shows on the menu. Empty = always.</summary>
+        [JsonPropertyName("requiresClue")] public string                  RequiresClue { get; set; } = "";
     }
 
     internal sealed class KeywordConfigData
@@ -204,16 +215,25 @@ namespace CatDetective.Map
             var dict = new Dictionary<string, InteractionData>(raw.Count);
             foreach (var i in raw)
             {
-                var keywords = new Keyword[i.Keywords.Count];
-                for (int k = 0; k < i.Keywords.Count; k++)
+                var topics = new DialogueTopic[i.Topics.Count];
+                for (int t = 0; t < i.Topics.Count; t++)
                 {
-                    var kw = i.Keywords[k];
-                    keywords[k] = new Keyword(kw.DisplayText, kw.Id, ParseColor(kw.Color));
+                    var tc = i.Topics[t];
+                    topics[t] = new DialogueTopic(tc.Prompt, tc.Text,
+                        ParseKeywords(tc.Keywords), tc.RequiresClue);
                 }
-                dict[i.Id] = new InteractionData(i.Text, keywords,
-                    i.Scale, i.Align, i.OffsetX, i.OffsetY, i.Texture);
+                dict[i.Id] = new InteractionData(i.Text, ParseKeywords(i.Keywords),
+                    i.Scale, i.Align, i.OffsetX, i.OffsetY, i.Texture, topics);
             }
             return dict;
+        }
+
+        private static Keyword[] ParseKeywords(List<KeywordConfigData> raw)
+        {
+            var keywords = new Keyword[raw.Count];
+            for (int k = 0; k < raw.Count; k++)
+                keywords[k] = new Keyword(raw[k].DisplayText, raw[k].Id, ParseColor(raw[k].Color));
+            return keywords;
         }
 
         private static ClueCategory ParseCategory(string value) => value switch

@@ -21,9 +21,21 @@ Every piece of information exists at multiple levels. Follow these strict rules 
   - **What** — a stolen/relevant object or event ("broken trophy", "torn contract")
   - **Why** — a motive ("insurance fraud", "jealousy")
   - **WhereWhen** — a location or time ("Malibu Mansion", "Day Before Premiere")
-- `name`: 1–3 words, Title Case. Shown on the Deduction Board card.
+- `name`: short, Title Case. Shown on the Deduction Board card. If the clue carries a time, put it
+  in the name ("Dinner Cart - 7:00 PM") so the board reads as a timeline. Include character names
+  where relevant ("Rosa the Maid"). Never reuse a timestamp already used by an unrelated clue.
 - `context`: Exactly one complete sentence. Shown in the Notebook.
-- `inspectorDescription`: 1-2 sentences of extended lore/flavor text for the UI Inspector Panel.
+- `inspectorDescription`: 1-2 sentences for the UI Inspector Panel, in the cat's voice.
+- **Describe evidence, not conclusions.** State facts and let the player connect them. Never write
+  the deduction into the clue ("this proves he was already inside" is forbidden; "sealed at
+  8:15 PM" is right).
+- **Category balance**: check the room's existing clues — avoid piling a 4th clue onto a tab while
+  other tabs sit empty.
+- **Decoys are welcome**: an `isMacroClue: false` clue that shares a category with a real answer
+  pads the word bank and raises difficulty. Only `isMacroClue: true` clues appear on the final
+  board's word bank.
+- **ASCII only** — the sprite font covers ASCII 32–126. No em-dashes (use ` - `), no curly quotes,
+  no ✓. This applies to every string in all three files.
 
 ### Interactable Rules (goes into `room_config.json`)
 - `id`: `inspect_<prop_name>` by convention.
@@ -33,8 +45,25 @@ Every piece of information exists at multiple levels. Follow these strict rules 
   - `id`: the `id` of the clue this keyword unlocks.
   - `color`: one of `"plot"` (story-critical), `"crime"` (directly criminal), `"misc"` (background detail).
 - Optional display fields (omit if using defaults):
+  - `texture` — fallback content path used when no per-name sprite exists under the room's
+    `Interactables/` folder. Until real art lands, always set `"Shared/placeholder_person"`
+    (people, `scale` 0.15) or `"Shared/placeholder_object"` (objects, `scale` 0.07–0.13 by size).
   - `scale` (float, default 1.0)
   - `align` — `"BottomCenter"` (default), `"Center"`, `"Left"`.
+
+### Topic Rules (characters only — `topics[]` in the interactable)
+Objects use a single `text`. **Characters** additionally get an interrogation menu:
+`text` becomes the intro (first meeting beat), and `topics[]` lists 3-4 selectable entries.
+- `prompt`: a **cat action**, not a question — the detective cannot talk ("Stare at him. Do not
+  blink.", "Sit hopefully beneath the treat jar"). One line, distinct per character; never reuse
+  a generic "ask about X" phrasing across characters.
+- `text`: the character's monologue in response (humans love explaining themselves to a cat).
+  Pages split on `|`; same `[keyword]` rules as the intro.
+- `keywords[]`: unlocked when the topic is chosen, not on approach. Local deduction answers must
+  be reachable via the intro or an **ungated** topic (or an object) in the same room.
+- `requiresClue` (optional): clue id that must be found before the topic appears. Use it for
+  confrontation beats — reacting to evidence the player has found. Gated topics are for bonus
+  depth, red-herring resolution, or incriminating slips; never the only source of a local answer.
 
 ---
 
@@ -59,19 +88,30 @@ When the user gives a prompt like: *"Use add-clue-interactable. In `malibu_mansi
 ### 3. The Tiled Map (`Content/Levels/<case_id>/<room_id>/room_map.json`)
 - **Read** the file.
 - Find the layer where `"name": "Interactables"`.
-- Append a new Tiled object to its `"objects"` array.
+- Append a new Tiled object to its `"objects"` array, using the map's top-level `nextobjectid` as
+  the object `id`, then increment `nextobjectid`.
 - **Example format:**
-  `{ "id": <generate_random_int_over_100>, "name": "inspect_bookshelf", "x": 500, "y": 500, "width": 64, "height": 64, "type": "", "visible": true, "rotation": 0 }`
-  *(Place it at arbitrary coordinates like 500,500; the user will move it in Tiled).*
+  `{ "id": <nextobjectid>, "name": "inspect_bookshelf", "x": 500, "y": 500, "width": 90, "height": 70, "type": "", "visible": true, "rotation": 0 }`
+  Typical sizes: people ~100×140, objects ~90×70, small items ~60×50.
+- **Place it deliberately**, not arbitrarily: on/near the furniture it belongs to in the background
+  art, clear of `Transfers` zones and `Collisions` rects (the cat must be able to reach it —
+  never edit the Collisions layer itself).
 - **Write** the updated JSON back to the file.
+
+### 4. Verify
+- Run `python tools/verify_level.py` from the repo root — it checks reachability, keyword→clue id
+  wiring, and deduction-board consistency.
+- Optionally capture `dotnet run --no-build -- --screenshot <case_id> <room_id>` and check the
+  placement in `debug_output/`.
 
 ---
 
 ## Quality Checklist
 Before concluding your task, verify:
 - [ ] Every `[bracketed phrase]` in `text` has a matching entry in `keywords[]` with identical `displayText`.
--[ ] Every keyword `id` references a clue that was just added to `case_config.json`.
-- [ ] Each clue `name` is 1–3 words.
-- [ ] Each clue `context` is exactly one sentence.
+- [ ] Every keyword `id` references a clue that exists in `case_config.json`.
+- [ ] Each clue `context` is exactly one sentence; descriptions state evidence, not conclusions.
 - [ ] The `roomId` in the clue exactly matches the current room you are editing.
-- [ ] You have reminded the user to place the `.png` file in the room's `Interactables/` folder and add it to `Content.mgcb` with `PremultiplyAlpha=False`.
+- [ ] All strings are pure ASCII (no em-dashes, curly quotes, or check marks).
+- [ ] `python tools/verify_level.py` passes.
+- [ ] If no `texture` fallback was set: remind the user to place the `.png` in the room's `Interactables/` folder and add it to `Content.mgcb` with `PremultiplyAlpha=False`.

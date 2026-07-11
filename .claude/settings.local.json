@@ -15,7 +15,8 @@
       "TodoRead",
       "TodoWrite",
       "WebSearch",
-      "Bash(dotnet build *)"
+      "Bash(dotnet build *)",
+      "PowerShell(dotnet build *)"
     ]
   }
 }

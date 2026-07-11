@@ -3,21 +3,66 @@
   "interactables": [
     {
       "id": "inspect_police_officer",
-      "text": "[Officer Reyes] guards the door with the weary dignity of a man who trained for hostage negotiations and got [missing poultry] instead. 'Lockdown since [8:15 PM]. Nobody in or out. Not even you, cat.'",
+      "text": "[Officer Reyes] guards the door with the weary dignity of a man who trained for hostage negotiations and got missing poultry instead. He clocks you immediately. 'Don't start, cat.'",
       "keywords": [
-        { "displayText": "Officer Reyes", "id": "lockdown_815pm", "color": "misc" },
-        { "displayText": "8:15 PM", "id": "lockdown_815pm", "color": "misc" }
+        { "displayText": "Officer Reyes", "id": "lockdown_815pm", "color": "misc" }
+      ],
+      "topics": [
+        {
+          "prompt": "Sit at attention beside him",
+          "text": "He looks down. You sit straighter. Something in him approves. 'Lockdown since [8:15 PM]. Full perimeter, my seal on every door. Nobody in, nobody out.' A pause. 'You were already inside. Don't make it weird.'",
+          "keywords": [
+            { "displayText": "8:15 PM", "id": "lockdown_815pm", "color": "misc" }
+          ]
+        },
+        {
+          "prompt": "Meow at the sealed front door",
+          "text": "'Door stays shut.' He crouches, scratches your ear once, and stands back up like it never happened. 'Think it through, whiskers. [Gate locked, doors sealed]. If that bird left the property, it left before my lockdown - or it never left at all.'",
+          "keywords": [
+            { "displayText": "Gate locked, doors sealed", "id": "north_gate_locked", "color": "misc" }
+          ]
+        },
+        {
+          "prompt": "Nudge the guest registry toward him",
+          "requiresClue": "guest_registry",
+          "text": "'The book? Everyone signs it. The crew called it old-fashioned. I call it evidence.' He taps the first crew line without looking at it. '[Six-thirty arrival]. Said he wanted to beat traffic. Nobody beats traffic INTO Malibu, cat.'",
+          "keywords": [
+            { "displayText": "Six-thirty arrival", "id": "guest_registry", "color": "misc" }
+          ]
+        }
       ],
       "texture": "Shared/placeholder_person",
       "scale": 0.15
     },
     {
       "id": "inspect_manager",
-      "text": "The [Manager], a man named Chip Sterling, paces the rug, shouting into his phone: 'A missing parrot?! Do you know what this does to her brand?! It's a [PR Disaster]! That bird's documentary fee is [fifteen percent] of my year!' He steps over you without looking down. You memorize his face.",
+      "text": "The Manager, [Chip Sterling], paces a groove into the rug, phone welded to his ear. 'No comment. NO comment. Fine, one comment: my client LOVES animals.' He hangs up and stares at nothing. You memorize his face.",
       "keywords": [
-        { "displayText": "Manager", "id": "pr_disaster", "color": "misc" },
-        { "displayText": "PR Disaster", "id": "pr_disaster", "color": "misc" },
-        { "displayText": "fifteen percent", "id": "managers_commission", "color": "misc" }
+        { "displayText": "Chip Sterling", "id": "pr_disaster", "color": "misc" }
+      ],
+      "topics": [
+        {
+          "prompt": "Rub against his very expensive trousers",
+          "text": "'Off. OFF. This suit costs more than-' He stops. Deflates like a man remembering his week. 'A missing parrot. Front page news. Do you know what this does to her brand? It's a [PR Disaster]. I have three interviews to cancel and a bird to un-lose.'",
+          "keywords": [
+            { "displayText": "PR Disaster", "id": "pr_disaster", "color": "misc" }
+          ]
+        },
+        {
+          "prompt": "Knock his phone off the side table",
+          "text": "He catches it one-handed without looking. A man with practice. 'That bird is not just a bird. Rudebeak has a documentary deal, and I take [fifteen percent] of everything my clients earn. Feathers included.' He hears himself. 'Which is exactly why I would never LOSE him.'",
+          "keywords": [
+            { "displayText": "fifteen percent", "id": "managers_commission", "color": "misc" }
+          ]
+        },
+        {
+          "prompt": "Stare at the sealed door with him",
+          "requiresClue": "lockdown_815pm",
+          "text": "'Yeah. Locked in with a crime scene and a film crew. My publicist says stay visible, look concerned.' He practices a concerned face in the hall mirror. It needs work. 'Want my theory? Whoever did this is [still in the house]. Nobody has left since eight-fifteen.'",
+          "keywords": [
+            { "displayText": "still in the house", "id": "lockdown_815pm", "color": "misc" }
+          ]
+        }
       ],
       "texture": "Shared/placeholder_person",
       "scale": 0.15

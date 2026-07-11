@@ -3,11 +3,33 @@
   "interactables": [
     {
       "id": "inspect_gardener",
-      "text": "The [Gardener], Basil, is trimming the same hedge for the fourth time. 'Animals belong in [Nature]. Cages are cruel. I... I didn't do anything wrong.' His [gloves are caked in fresh mud]. So is the newly planted bulb bed behind him.",
+      "text": "The Gardener, [Basil], is trimming a hedge that has nothing left to give. 'Oh good,' he tells it, not looking up. 'A cat. Cats are natural. Cats belong outside. Like ALL animals.' Snip. Snip.",
       "keywords": [
-        { "displayText": "Gardener", "id": "the_gardener", "color": "misc" },
-        { "displayText": "Nature", "id": "the_gardener", "color": "misc" },
-        { "displayText": "gloves are caked in fresh mud", "id": "muddy_gloves", "color": "misc" }
+        { "displayText": "Basil", "id": "the_gardener", "color": "misc" }
+      ],
+      "topics": [
+        {
+          "prompt": "Watch his hands while he trims",
+          "text": "The shears wobble mid-snip. 'Animals belong in [Nature],' he announces - to the hedge, to the fountain, to the concept of justice. 'A cage is a prison with better catering.' He glances at the mansion. 'Not that I would DO anything about it. That would be wrong. Probably.'",
+          "keywords": [
+            { "displayText": "Nature", "id": "the_gardener", "color": "misc" }
+          ]
+        },
+        {
+          "prompt": "Sniff his muddy gloves, loudly",
+          "text": "'The mud? BULBS. I was planting bulbs.' He holds up the [mud-caked gloves] as evidence, realizes evidence is exactly the problem, and puts them behind his back. 'Daffodils. For spring. Ask the flower bed.' The flower bed, freshly turned, backs him up.",
+          "keywords": [
+            { "displayText": "mud-caked gloves", "id": "muddy_gloves", "color": "misc" }
+          ]
+        },
+        {
+          "prompt": "Sit between him and the bent shears. Wait.",
+          "requiresClue": "shears_match_latch",
+          "text": "The snipping stops. The fountain burbles. Somewhere, a gull. You wait the way only a cat can wait.|'ALRIGHT. FINE. [I opened the cage]. Me, with the shears, just before six - everyone was fussing over dinner.' It falls out of him like loose soil. 'But he stayed RIGHT HERE. Splashing in his bath, yelling his little phrases, happy as spring. I would never take him AWAY. Away from a garden? That is just a smaller cage, cat.'",
+          "keywords": [
+            { "displayText": "I opened the cage", "id": "shears_match_latch", "color": "misc" }
+          ]
+        }
       ],
       "texture": "Shared/placeholder_person",
       "scale": 0.15

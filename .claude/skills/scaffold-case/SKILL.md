@@ -12,12 +12,25 @@ This skill creates the directory structure and base configuration files for a ne
 When the user asks to scaffold a case (e.g., "Scaffold the Malibu Mansion with Entrance, Living Room, and Kitchen. Entrance connects to Living Room, Living Room to Kitchen"):
 
 1. **Create Folders**: Use the Bash tool to create `Content/Levels/<case_id>/` and a subfolder for each room (e.g., `Content/Levels/<case_id>/<room_id>/Interactables/`).
-2. **Create `case_config.json`**: In the root of the case folder, create a JSON file with empty arrays for `clues` and an empty string for `finalSolveSentence`.
-3. **Create `room_config.json`**: In each room folder, create a JSON file with empty arrays for `props` and `interactables`, and an empty string for `localDeductionSentence`.
+2. **Create `case_config.json`**: In the root of the case folder, create a JSON file with:
+   - `clues`: empty array
+   - `rooms`: array of ALL room ids in display order (required — feeds `AllRoomsSolved` and the
+     journal's Investigation overview; the FINAL SOLVE board stays locked without it)
+   - `finalSolveSentence`: empty string
+   - `finalSolveClueIds`: empty array (answer clue ids in slot **parse order**; a slot's category
+     comes from its answer clue)
+3. **Create `room_config.json`**: In each room folder, create a JSON file with empty arrays for `props` and `interactables`, an empty string for `localDeductionSentence`, and an empty array for `localDeductionClueIds`.
 4. **Create `room_map.json`**: In each room folder, generate a minimal valid Tiled JSON map.
    - It MUST include layers: `background` (imagelayer), `Collisions` (objectgroup), `Transfers` (objectgroup), `Spawn` (objectgroup), and `Interactables` (objectgroup).
    - **Spawns**: For every room this room connects to, create a point object in the `Spawn` layer named `spawn_from_<other_room>`. Also create a `spawn_default`.
    - **Transfers**: For every room this room connects to, create a rectangle object in the `Transfers` layer. It must have custom string properties: `TargetRoom` (the id of the destination room) and `TargetSpawn` (e.g., `spawn_from_<this_room>`).
+   - **Spawn clearance (critical)**: a `spawn_from_X` point must clear every transfer zone by the
+     cat's collision box (±35 px horizontally, 32 px above the point) plus ~15 px margin, or the
+     player re-triggers the transfer in a loop. See CLAUDE.md "Spawn point placement rule".
+5. **Verify**: run `python tools/verify_level.py` from the repo root — it checks transfer/spawn
+   wiring both ways and spawn clearance.
+
+All strings in these JSON files must be pure ASCII (the sprite font covers ASCII 32–126 only).
 
 ## Tiled JSON Template
 Use this minimal structure for `room_map.json`:

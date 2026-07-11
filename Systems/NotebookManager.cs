@@ -31,6 +31,10 @@ namespace CatDetective.Systems
             UnlockedClues.Add(clue);
         }
 
+        /// <summary>True if the clue has already been found (gates dialogue topics).</summary>
+        public bool IsUnlocked(string clueId) =>
+            UnlockedClues.Exists(c => c.Id == clueId);
+
         /// <summary>Total number of clues in the case database (for the case-wide counter).</summary>
         public int TotalClueCount => _database.Count;
 
