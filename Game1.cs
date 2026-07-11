@@ -22,6 +22,7 @@ namespace CatDetective
     ///   Pass 2 — Blob Shadow      (AlphaBlend, Deferred)
     ///   Pass 3 — Y-Sorted Entities (NonPremultiplied, FrontToBack)
     ///   Pass 4 — Lighting / Sunbeams (Additive, Deferred)
+    ///   Pass 4b — Topic indicators ("..." over characters with unheard topics)
     ///   Pass 5 — Debug overlay (F1)
     ///   Pass 6 — Dialogue UI
     ///   Pass 7 — Notebook UI
@@ -75,6 +76,10 @@ namespace CatDetective
         private string    _dialogueEntityId = "";
         private readonly HashSet<string> _visitedTopics = new();      // "room/entity/topicIndex"
         private bool      _menuUpPressed, _menuDownPressed;           // edge-detected each Update
+
+        // Gate-unlock toast: clue id -> characters (name, roomId) with a topic it gates.
+        private readonly Dictionary<string, List<(string Name, string RoomId)>> _gateIndex = new();
+        private readonly HashSet<string> _firedGateToasts = new();
 
         // ── Notebook / inventory ───────────────────────────────────────────────
         private NotebookManager _notebook = null!;
@@ -360,6 +365,8 @@ namespace CatDetective
             var caseConfig = LevelConfigParser.LoadCase(caseConfigPath);
 
             _notebook  = new NotebookManager(caseConfig.Clues);
+            _notebook.OnClueUnlocked = HandleClueUnlocked;
+            BuildGateIndex(caseId, caseConfig.Rooms);
             _deduction = new DeductionManager(
                 caseConfig.DeductionSentence,
                 caseConfig.FinalSolveClueIds,
@@ -488,6 +495,75 @@ namespace CatDetective
             int x = (SCREEN_WIDTH - BTN_W) / 2;
             int y = 300 + index * (BTN_H + BTN_SPACING);
             return new Rectangle(x, y, BTN_W, BTN_H);
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        /// <summary>
+        /// Scans every room's config once per case and maps each gate clue id to
+        /// the characters whose topics it unlocks, so a cross-room find ("the
+        /// glove") can nudge the player back to the right person ("Basil").
+        /// </summary>
+        private void BuildGateIndex(string caseId, IReadOnlyList<string> rooms)
+        {
+            _gateIndex.Clear();
+            _firedGateToasts.Clear();
+            foreach (var roomId in rooms)
+            {
+                string configPath = Path.Combine(
+                    Content.RootDirectory, "Levels", caseId, roomId, "room_config.json");
+                if (!File.Exists(configPath)) continue;
+
+                var config = LevelConfigParser.LoadRoom(configPath);
+                foreach (var (entityId, data) in config.Interactables)
+                {
+                    string name = data.DisplayName.Length > 0
+                        ? data.DisplayName
+                        : ToDisplayName(entityId.Replace("inspect_", ""));
+                    foreach (var topic in data.Topics)
+                    {
+                        if (topic.RequiresClue.Length == 0) continue;
+                        if (!_gateIndex.TryGetValue(topic.RequiresClue, out var list))
+                            _gateIndex[topic.RequiresClue] = list = new();
+                        if (!list.Contains((name, roomId)))
+                            list.Add((name, roomId));
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// True if the entity offers at least one topic that is currently
+        /// available (gate clue found, or ungated) and not yet heard.
+        /// Drives the "..." indicator in Pass 4b.
+        /// </summary>
+        private bool HasUnseenTopics(InteractableEntity entity)
+        {
+            if (entity.Data == null) return false;
+            var topics = entity.Data.Topics;
+            for (int i = 0; i < topics.Length; i++)
+            {
+                if (topics[i].RequiresClue.Length > 0 &&
+                    !_notebook.IsUnlocked(topics[i].RequiresClue))
+                    continue;
+                if (!_visitedTopics.Contains($"{_currentRoomId}/{entity.Id}/{i}"))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Fires the one-time gate-unlock toast: a person/story nudge, never a
+        /// checklist pointer (see CLAUDE.md dialogue-topic conventions).
+        /// </summary>
+        private void HandleClueUnlocked(string clueId)
+        {
+            if (_screenshotMode) return;
+            if (!_gateIndex.TryGetValue(clueId, out var gated)) return;
+            if (!_firedGateToasts.Add(clueId)) return;
+
+            string who = string.Join(" and ",
+                gated.ConvertAll(g => $"{g.Name} ({ToDisplayName(g.RoomId)})"));
+            ShowToast($"{who} might have some explaining to do...");
         }
 
         // ══════════════════════════════════════════════════════════════════════
@@ -719,7 +795,9 @@ namespace CatDetective
 
                 float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                if (_toastTimer > 0f)
+                // Toasts are hidden while the dialogue box is open (Pass 7), and gate
+                // toasts usually fire mid-dialogue - hold the timer until it can be seen.
+                if (_toastTimer > 0f && !_isDialogueActive)
                     _toastTimer -= dt;
 
                 if (_isDialogueActive)
@@ -949,6 +1027,33 @@ namespace CatDetective
                     transformMatrix: _cameraTransform);
                 _spriteBatch.Draw(_sunbeamsMask, Vector2.Zero, Color.White);
                 _spriteBatch.End();
+
+                // ════════════════════════════════════════════════════════════════
+                // PASS 4b — TOPIC INDICATORS  (world-anchored "..." over characters
+                // with available, unheard topics)
+                // ════════════════════════════════════════════════════════════════
+                if (!_isDialogueActive)
+                {
+                    _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                        transformMatrix: _cameraTransform);
+                    const float markerScale = 1.2f;
+                    var markerSize = _dialogueFont.MeasureString("...") * markerScale;
+                    float bob = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 2.5) * 4f;
+                    foreach (var entity in _interactables)
+                    {
+                        if (!HasUnseenTopics(entity)) continue;
+                        var pos = new Vector2(
+                            entity.TriggerZone.Center.X - markerSize.X * 0.5f,
+                            entity.TriggerZone.Y - markerSize.Y - 10f + bob);
+                        _spriteBatch.DrawString(_dialogueFont, "...", pos + new Vector2(3, 3),
+                            new Color(40, 30, 20), 0f, Vector2.Zero, markerScale,
+                            SpriteEffects.None, 0f);
+                        _spriteBatch.DrawString(_dialogueFont, "...", pos,
+                            InteractionData.Crime, 0f, Vector2.Zero, markerScale,
+                            SpriteEffects.None, 0f);
+                    }
+                    _spriteBatch.End();
+                }
 
                 // ════════════════════════════════════════════════════════════════
                 // PASS 5 — DEBUG OVERLAY  (F1 to toggle)

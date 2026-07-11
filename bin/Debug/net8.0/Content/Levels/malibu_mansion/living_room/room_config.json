@@ -3,6 +3,7 @@
   "interactables": [
     {
       "id": "inspect_movie_star",
+      "name": "Vivienne Vale",
       "text": "The Movie Star, [Vivienne Vale], is draped across the chaise in full mourning couture. She points at you with a tissue. 'You. You have KIND eyes. Not like the rest of these vultures.'",
       "keywords": [
         { "displayText": "Vivienne Vale", "id": "squawk_at_8pm", "color": "plot" }
@@ -36,6 +37,7 @@
     },
     {
       "id": "inspect_bird_handler",
+      "name": "Petra",
       "text": "The Bird Handler, [Petra], sits perfectly still beside an untouched bowl of seed, the way professionals wait. She gives you a nod, one working animal expert to another.",
       "keywords": [
         { "displayText": "Petra", "id": "broken_latch", "color": "crime" }
@@ -50,7 +52,7 @@
         },
         {
           "prompt": "Tilt your head at her, professionally",
-          "text": "'You want the profile? Blue-and-gold macaw, nineteen years old, ego like a co-star, lungs like a fire alarm.' She almost smiles. 'Loud in daylight. But put him somewhere [dark and quiet] and he goes silent as a stone. Handler trick. Works every time.'",
+          "text": "'You want the profile? Blue-and-gold macaw, nineteen years old, ego like a co-star, lungs like a fire alarm.' She almost smiles. 'Vain, too. Never misses his evening splash in the garden bird bath. You could set a clock by that bird's grooming.'",
           "keywords": []
         },
         {
@@ -59,6 +61,14 @@
           "text": "You aim a long, deliberate blink toward the garden. She reads you perfectly. 'The bird bath. Of course - he loves that thing.' Her jaw sets. 'Understand something, cat. [Wet feathers mean a happy bird]. A happy bird does not fly away from his own bath. Someone picked him up. He only allows that when he is soggy and smug.'",
           "keywords": [
             { "displayText": "Wet feathers mean a happy bird", "id": "bird_bath_feathers", "color": "misc" }
+          ]
+        },
+        {
+          "prompt": "Describe the big black cases, tail twitching",
+          "requiresClue": "sound_proof_cases",
+          "text": "You sketch the shape of them in the air with your tail. Her face goes very still. 'Acoustic cases. The padded kind.' A long silence. 'Put him somewhere [dark and padded] and he goes quiet as a stone. He would not even cry out. Whoever picked those cases knew birds - or knew sound.'",
+          "keywords": [
+            { "displayText": "dark and padded", "id": "sound_proof_cases", "color": "crime" }
           ]
         }
       ],
@@ -77,10 +87,28 @@
     },
     {
       "id": "inspect_hidden_speaker",
-      "text": "Tucked behind the cage stand, half-hidden by a fern: a small [Wireless Speaker]. A thin [Audio Cable] trails behind the furniture toward the wall.",
+      "text": "A thin [cable] runs up the back leg of the cage stand and slips away behind the wainscoting. You follow it the other way instead, to the underside of the seed tray: a [tiny speaker], taped where only somebody at whisker height would ever look.",
       "keywords": [
-        { "displayText": "Wireless Speaker", "id": "hidden_speaker", "color": "crime" },
-        { "displayText": "Audio Cable", "id": "hidden_speaker", "color": "crime" }
+        { "displayText": "cable", "id": "hidden_speaker", "color": "crime" },
+        { "displayText": "tiny speaker", "id": "hidden_speaker", "color": "crime" }
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.07
+    },
+    {
+      "id": "inspect_dropped_glove",
+      "text": "Half under the cage stand: a single [canvas glove], smelling of mulch and outdoors. It has no business on a parquet floor.",
+      "keywords": [
+        { "displayText": "canvas glove", "id": "glove_by_cage", "color": "misc" }
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.07
+    },
+    {
+      "id": "inspect_polish_cloth",
+      "text": "A [lemon-oil cloth] hangs neatly over the cage stand rail. The brass gleams. Somebody polishes this cage every day - standing close enough to reach right in.",
+      "keywords": [
+        { "displayText": "lemon-oil cloth", "id": "polish_cloth", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 0.07

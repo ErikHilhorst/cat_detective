@@ -3,6 +3,7 @@
   "interactables": [
     {
       "id": "inspect_gardener",
+      "name": "Basil",
       "text": "The Gardener, [Basil], is trimming a hedge that has nothing left to give. 'Oh good,' he tells it, not looking up. 'A cat. Cats are natural. Cats belong outside. Like ALL animals.' Snip. Snip.",
       "keywords": [
         { "displayText": "Basil", "id": "the_gardener", "color": "misc" }
@@ -16,18 +17,19 @@
           ]
         },
         {
-          "prompt": "Sniff his muddy gloves, loudly",
-          "text": "'The mud? BULBS. I was planting bulbs.' He holds up the [mud-caked gloves] as evidence, realizes evidence is exactly the problem, and puts them behind his back. 'Daffodils. For spring. Ask the flower bed.' The flower bed, freshly turned, backs him up.",
+          "prompt": "Sniff his muddy glove, loudly",
+          "text": "'The mud? BULBS. I was planting bulbs.' He holds up a [mud-caked glove] as evidence, realizes evidence is exactly the problem, and puts it behind his back. 'Daffodils. For spring. Ask the flower bed.' The flower bed, freshly turned, backs him up. His other hand, you notice, is bare.",
           "keywords": [
-            { "displayText": "mud-caked gloves", "id": "muddy_gloves", "color": "misc" }
+            { "displayText": "mud-caked glove", "id": "muddy_gloves", "color": "misc" }
           ]
         },
         {
-          "prompt": "Sit between him and the bent shears. Wait.",
-          "requiresClue": "shears_match_latch",
-          "text": "The snipping stops. The fountain burbles. Somewhere, a gull. You wait the way only a cat can wait.|'ALRIGHT. FINE. [I opened the cage]. Me, with the shears, just before six - everyone was fussing over dinner.' It falls out of him like loose soil. 'But he stayed RIGHT HERE. Splashing in his bath, yelling his little phrases, happy as spring. I would never take him AWAY. Away from a garden? That is just a smaller cage, cat.'",
+          "prompt": "Stare from his bare left hand to the mansion. Slowly.",
+          "requiresClue": "glove_by_cage",
+          "text": "The snipping stops. The fountain burbles. Somewhere, a gull. His bare hand curls closed. You wait the way only a cat can wait.|'ALRIGHT. FINE. It is my glove. By the cage. [I broke the latch] - me, with the shears, just before six. Then the front door went, and I panicked, and I ran for the garden.' It falls out of him like loose soil.|'I hid behind the shed. Rudebeak let HIMSELF out - went straight to his bird bath, happy as spring. Then one of those television people came wheeling [big black boxes] through, and I stayed hidden. I am a coward, cat. But I am not a thief.'",
           "keywords": [
-            { "displayText": "I opened the cage", "id": "shears_match_latch", "color": "misc" }
+            { "displayText": "I broke the latch", "id": "shears_match_latch", "color": "misc" },
+            { "displayText": "big black boxes", "id": "eyewitness_645pm", "color": "plot" }
           ]
         }
       ],
@@ -43,6 +45,16 @@
       ],
       "texture": "Shared/placeholder_object",
       "scale": 0.09
+    },
+    {
+      "id": "inspect_hidden_cases",
+      "text": "Behind the potting shed, under a tarp thrown in a hurry: two big black road cases. The stencil reads '[Acoustic Isolation] - No Sound Transmission.' You press an ear to one. [Silence]. The deep, upholstered kind.",
+      "keywords": [
+        { "displayText": "Acoustic Isolation", "id": "sound_proof_cases", "color": "crime" },
+        { "displayText": "Silence", "id": "sound_proof_cases", "color": "crime" }
+      ],
+      "texture": "Shared/placeholder_object",
+      "scale": 0.13
     },
     {
       "id": "inspect_bird_bath",

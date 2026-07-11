@@ -54,6 +54,9 @@ Every piece of information exists at multiple levels. Follow these strict rules 
 ### Topic Rules (characters only — `topics[]` in the interactable)
 Objects use a single `text`. **Characters** additionally get an interrogation menu:
 `text` becomes the intro (first meeting beat), and `topics[]` lists 3-4 selectable entries.
+Characters also get a `name` field ("Basil", "Officer Reyes") — it feeds the gate-unlock
+toast ("Basil (Garden) might have some explaining to do..."). Use a non-spoiler name if the
+character's real name is itself a reveal (D. Marsh is "The Sound Guy").
 - `prompt`: a **cat action**, not a question — the detective cannot talk ("Stare at him. Do not
   blink.", "Sit hopefully beneath the treat jar"). One line, distinct per character; never reuse
   a generic "ask about X" phrasing across characters.
@@ -63,7 +66,10 @@ Objects use a single `text`. **Characters** additionally get an interrogation me
   be reachable via the intro or an **ungated** topic (or an object) in the same room.
 - `requiresClue` (optional): clue id that must be found before the topic appears. Use it for
   confrontation beats — reacting to evidence the player has found. Gated topics are for bonus
-  depth, red-herring resolution, or incriminating slips; never the only source of a local answer.
+  depth, red-herring resolution, or incriminating slips; they must **never be the only source of
+  any clue**. Every keyword id used in a gated topic must also be unlockable ungated in the
+  clue's own room (so the room clue counter can always complete without backtracking).
+  `verify_level.py` enforces this.
 
 ---
 

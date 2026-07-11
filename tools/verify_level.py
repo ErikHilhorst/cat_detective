@@ -7,11 +7,12 @@ Checks:
    and the spawn's feet box clears every transfer zone AND collision in target.
 3. Configs: local sentence [slot] count == localDeductionClueIds length; every
    local answer id is discoverable via UNGATED keywords in that room (intro or
-   ungated topic); final sentence slots == finalSolveClueIds; every clue in the
-   case DB is discoverable somewhere (gated topics count only once their
-   requiresClue is itself discoverable — computed to a fixpoint); every
-   requiresClue id exists; every map Interactable name has a room_config entry
-   and vice versa; all content strings are pure ASCII (sprite font limit).
+   ungated topic); EVERY clue is discoverable ungated in its OWN room (gated
+   topics never carry unique clues - gates gate story, not completion, so the
+   room clue counter always completes without backtracking); final sentence
+   slots == finalSolveClueIds; every requiresClue id exists and is discoverable;
+   every map Interactable name has a room_config entry and vice versa; all
+   content strings are pure ASCII (sprite font limit).
 """
 import json, os, re, sys
 
@@ -107,6 +108,7 @@ def check_ascii(where, obj):
 check_ascii("case_config", case)
 
 discoverable = set()          # ungated keywords, all rooms
+ungated_by_room = {}          # room -> set of ungated-unlockable clue ids
 gated = []                    # (requiresClue, {kw ids}) pairs, all rooms
 for room in ROOMS:
     _, layers, cfg = maps[room]
@@ -141,6 +143,7 @@ for room in ROOMS:
                 gated.append((req, kw_ids))
             else:
                 room_kw_ungated |= kw_ids
+    ungated_by_room[room] = room_kw_ungated
     discoverable |= room_kw_ungated
 
     slots = re.findall(r"\[([^\]]+)\]", cfg.get("localDeductionSentence", ""))
@@ -168,6 +171,15 @@ for req, _ in gated:
 for cid in db:
     if cid not in discoverable:
         errors.append(f"clue '{cid}' exists in clueDatabase but no keyword unlocks it anywhere")
+
+# Gated topics must never be a clue's only source: every clue needs an ungated
+# unlock in its OWN room, or the room clue counter can't complete without
+# backtracking behind cross-room gates.
+for cid, c in db.items():
+    home = c.get("roomId", "")
+    if home in ungated_by_room and cid not in ungated_by_room[home]:
+        errors.append(f"clue '{cid}' is not ungated-discoverable in its own room "
+                      f"'{home}' (gated topics must never carry unique clues)")
 
 fslots = re.findall(r"\[([^\]]+)\]", case["finalSolveSentence"])
 fans = case.get("finalSolveClueIds", [])

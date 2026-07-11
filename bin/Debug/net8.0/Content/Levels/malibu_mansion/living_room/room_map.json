@@ -336,6 +336,30 @@
      "width": 80,
      "x": 1090,
      "y": 630
+    },
+    {
+     "height": 50,
+     "id": 66,
+     "name": "inspect_dropped_glove",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 70,
+     "x": 640,
+     "y": 590
+    },
+    {
+     "height": 50,
+     "id": 67,
+     "name": "inspect_polish_cloth",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 70,
+     "x": 770,
+     "y": 555
     }
    ],
    "opacity": 0,
@@ -346,7 +370,7 @@
   }
  ],
  "nextlayerid": 6,
- "nextobjectid": 66,
+ "nextobjectid": 68,
  "orientation": "orthogonal",
  "renderorder": "right-down",
  "tiledversion": "1.12.1",

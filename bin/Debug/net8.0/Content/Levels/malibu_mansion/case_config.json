@@ -23,9 +23,9 @@
       "roomId": "entrance",
       "isMacroClue": true,
       "category": "WhereWhen",
-      "name": "D. Marsh - 6:30 PM",
-      "context": "The sign-in book by the entrance. One entry reads: 'D. Marsh - 6:30 PM.'",
-      "inspectorDescription": "He signed the registry at 6:30 PM. The rest of the crew trickled in after. I can hold two numbers in my head at once. Barely."
+      "name": "Crew Arrivals - 6:30 PM",
+      "context": "The sign-in book logs the whole household coming and going all afternoon; the film crew's column begins at 6:30 PM.",
+      "inspectorDescription": "Wexler at 4:15. Petra plus one bird at 5:05. Coco at 5:50. Staff all day. And a crew column that starts at 6:30 PM. My eyes glazed twice."
     },
     {
       "id": "husband_hall_7pm",
@@ -41,18 +41,18 @@
       "roomId": "bedroom",
       "isMacroClue": true,
       "category": "WhereWhen",
-      "name": "D. Marsh - 7:00 PM",
-      "context": "The delivery manifest lists several crew members. One signed in two acoustic cases at exactly 7:00 PM: D. Marsh.",
-      "inspectorDescription": "Two acoustic cases, signed in at 7:00 PM sharp. The only line on the manifest with the word 'sound-proof' in it."
+      "name": "Heavy Cases - 7:00 PM",
+      "context": "The delivery manifest logs two equipment cases signed in at 7:00 PM. The signature is an illegible scrawl.",
+      "inspectorDescription": "Two cases, 7:00 PM sharp. The signature is a scribble with a tail. I have seen tidier pawprints."
     },
     {
       "id": "sound_proof_cases",
-      "roomId": "bedroom",
+      "roomId": "garden",
       "isMacroClue": true,
       "category": "What",
       "name": "Sound-Proof Cases",
-      "context": "The cases are rated for complete acoustic isolation.",
-      "inspectorDescription": "Rated for total acoustic isolation. I pressed an ear against one for science. Nothing."
+      "context": "Two big black road cases, stashed behind the garden shed under a hastily thrown tarp - rated for complete acoustic isolation.",
+      "inspectorDescription": "Rated for total acoustic isolation. I pressed an ear against one for science. Nothing. Which proves nothing. Which is the point."
     },
     {
       "id": "star_note_to_husband",
@@ -71,6 +71,15 @@
       "name": "Derek's Headphones",
       "context": "A freshly opened box of top-of-the-line noise-canceling headphones. The receipt is dated yesterday.",
       "inspectorDescription": "Ordered the day before the shoot. The bird drove him to it. His solution was at least legal."
+    },
+    {
+      "id": "service_tray",
+      "roomId": "bedroom",
+      "isMacroClue": false,
+      "category": "What",
+      "name": "Service Tray",
+      "context": "A collected dinner tray sits on the dresser - soup bowls emptied, dinner delivered and cleared on schedule.",
+      "inspectorDescription": "Soup happened here. The cart came, the cart went. I checked the bowls for further secrets. None. Shame."
     },
     {
       "id": "squawk_at_8pm",
@@ -96,8 +105,26 @@
       "isMacroClue": true,
       "category": "What",
       "name": "Hidden Speaker",
-      "context": "A small wireless speaker was tucked behind the cage stand, half-hidden by a fern.",
-      "inspectorDescription": "Taped where nobody would look unless they were cat-height. A thin cable runs from it into the wall."
+      "context": "A thin cable climbs the cage stand; taped beneath the seed tray sits a small wireless speaker.",
+      "inspectorDescription": "Taped where nobody would look unless they were cat-height. The cable slips away behind the wainscoting."
+    },
+    {
+      "id": "glove_by_cage",
+      "roomId": "living_room",
+      "isMacroClue": false,
+      "category": "Who",
+      "name": "Dropped Glove",
+      "context": "A single canvas gardening glove lies beneath the birdcage stand, smelling of mulch.",
+      "inspectorDescription": "One canvas glove, garden-flavored, indoors on parquet. Gloves come in pairs. This one has lost its partner."
+    },
+    {
+      "id": "polish_cloth",
+      "roomId": "living_room",
+      "isMacroClue": false,
+      "category": "Who",
+      "name": "Lemon Polish Cloth",
+      "context": "A lemon-oil polishing cloth is draped over the cage stand rail - the housekeeping kind.",
+      "inspectorDescription": "Lemon oil, fresh. The whole stand gleams. Somebody dusts this cage daily, and close enough to reach right in."
     },
     {
       "id": "documentary_camera",
@@ -195,8 +222,8 @@
       "isMacroClue": false,
       "category": "What",
       "name": "Feathers in the Bin",
-      "context": "A bin of feathers by the prep counter. Chicken feathers - tonight's roast, plucked in-house.",
-      "inspectorDescription": "My heart stopped. Then I sniffed: chicken, not macaw. Rosa plucks the dinner herself. Noted, with respect."
+      "context": "A bin of feathers by the prep counter, next to tonight's roast. Rosa plucks the dinner birds herself.",
+      "inspectorDescription": "Feathers. In the kitchen of a woman with a list. I looked for a long time. Kitchen-bird feathers. Probably. I am keeping one eye on that bin."
     },
     {
       "id": "dinner_cart_7pm",
@@ -249,8 +276,8 @@
       "isMacroClue": true,
       "category": "WhereWhen",
       "name": "Photo - 6:47 PM",
-      "context": "A timestamped pool selfie. In the blurry background, a figure hauls large cases along the garden path.",
-      "inspectorDescription": "Timestamped 6:47 PM. The figure is blurry. The cases are not."
+      "context": "A timestamped pool selfie. In the blurry background, a figure hauls large cases along the garden path - and at the frame's edge, someone peeks out from behind the potting shed.",
+      "inspectorDescription": "Timestamped 6:47 PM. The figure is blurry. The cases are not. And behind the shed: one very worried straw hat."
     },
     {
       "id": "production_schedule",
@@ -293,9 +320,9 @@
       "roomId": "garden",
       "isMacroClue": false,
       "category": "What",
-      "name": "Muddy Gloves",
-      "context": "Basil's gloves are caked in fresh mud. He says he was planting bulbs. The flower bed agrees with him.",
-      "inspectorDescription": "Fresh mud, matching the freshly planted bulb bed. Suspicious hands, innocent dirt."
+      "name": "Muddy Glove",
+      "context": "Basil's right glove is caked in fresh mud. He says he was planting bulbs. The flower bed agrees with him. His left hand is bare.",
+      "inspectorDescription": "Fresh mud, matching the freshly planted bulb bed. One glove working hard. Its partner is nowhere on him."
     },
     {
       "id": "feather_in_filter",
@@ -308,6 +335,6 @@
     }
   ],
   "rooms": ["entrance", "living_room", "bedroom", "library", "kitchen", "garden", "pool_area"],
-  "finalSolveSentence": "[WHO] snatched Rudebeak from the garden, sealed him inside the [WHAT] - signed in as [WHEN] - and faked the 8 PM squawk through a [HOW]. It all traces back to the [WHY].",
+  "finalSolveSentence": "[WHO] snatched Rudebeak from the garden, sealed him inside the [WHAT] - logged on the manifest at [WHEN] - and faked the 8 PM squawk through a [HOW]. It all traces back to the [WHY].",
   "finalSolveClueIds": ["d_marsh_sound_guy", "sound_proof_cases", "d_marsh_7pm", "hidden_speaker", "ruined_takes"]
 }

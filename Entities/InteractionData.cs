@@ -64,6 +64,12 @@ namespace CatDetective.Entities
         /// </summary>
         public DialogueTopic[] Topics { get; }
 
+        /// <summary>
+        /// Display name for characters ("Basil the Gardener") - used in the
+        /// gate-unlock toast. Empty = derive from the interactable id.
+        /// </summary>
+        public string DisplayName { get; }
+
         // ── Visual overrides (applied in InteractableEntity.Draw, never to Position/LayerDepth) ──
         public float  Scale   { get; }   // default 1.0
         public string Align   { get; }   // "BottomCenter" | "Center" | "TopLeft"
@@ -79,7 +85,7 @@ namespace CatDetective.Entities
         public InteractionData(string text, Keyword[] keywords,
             float scale = 1.0f, string align = "BottomCenter",
             int offsetX = 0, int offsetY = 0, string texturePath = "",
-            DialogueTopic[]? topics = null)
+            DialogueTopic[]? topics = null, string displayName = "")
         {
             Text        = text;
             Keywords    = keywords;
@@ -89,6 +95,7 @@ namespace CatDetective.Entities
             OffsetY     = offsetY;
             TexturePath = texturePath;
             Topics      = topics ?? System.Array.Empty<DialogueTopic>();
+            DisplayName = displayName;
         }
 
         // ── Shared colour palette ──────────────────────────────────────────────

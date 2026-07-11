@@ -103,6 +103,30 @@
      "width": 392.901200369345,
      "x": 1005.99659814356,
      "y": 633.833892209749
+    },
+    {
+     "height": 220,
+     "id": 61,
+     "name": "transfer_to_garden",
+     "opacity": 1,
+     "properties": [
+      {
+       "name": "TargetRoom",
+       "type": "string",
+       "value": "garden"
+      },
+      {
+       "name": "TargetSpawn",
+       "type": "string",
+       "value": "spawn_from_kitchen"
+      }
+     ],
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 70,
+     "x": 20,
+     "y": 360
     }
    ],
    "opacity": 0,
@@ -141,6 +165,19 @@
      "width": 0,
      "x": 940,
      "y": 700
+    },
+    {
+     "height": 0,
+     "id": 62,
+     "name": "spawn_from_garden",
+     "opacity": 1,
+     "point": true,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 0,
+     "x": 170,
+     "y": 480
     }
    ],
    "opacity": 0,
@@ -235,7 +272,7 @@
   }
  ],
  "nextlayerid": 6,
- "nextobjectid": 61,
+ "nextobjectid": 63,
  "orientation": "orthogonal",
  "renderorder": "right-down",
  "tiledversion": "1.12.1",

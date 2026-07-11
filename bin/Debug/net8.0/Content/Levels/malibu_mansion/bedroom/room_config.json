@@ -3,6 +3,7 @@
   "interactables": [
     {
       "id": "inspect_husband",
+      "name": "Derek",
       "text": "The Husband, [Derek], lies flat on the bed in brand-new noise-canceling headphones, radiating the deep peace of a man who has finally solved his one problem.",
       "keywords": [
         { "displayText": "Derek", "id": "husband_hall_7pm", "color": "misc" }
@@ -36,23 +37,22 @@
     },
     {
       "id": "inspect_delivery_manifest",
-      "text": "A crew manifest on the dresser. Multiple names. One line stands out: '[D. Marsh] - 2x Acoustic Cases (sound-proof) - [7:00 PM].'",
+      "text": "A crew manifest on the dresser, entries all evening. One line stands out, dashed off in a hurried scrawl: '[2x equipment cases] - [7:00 PM].' The signature is a scribble with a tail.",
       "keywords": [
-        { "displayText": "D. Marsh", "id": "d_marsh_7pm", "color": "crime" },
+        { "displayText": "2x equipment cases", "id": "d_marsh_7pm", "color": "crime" },
         { "displayText": "7:00 PM", "id": "d_marsh_7pm", "color": "crime" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 0.10
     },
     {
-      "id": "inspect_acoustic_cases",
-      "text": "Massive road cases. The label reads: '[Acoustic Isolation] - No Sound Transmission.' You press an ear to the surface. Silence. Whatever's inside, you wouldn't hear it [squawk].",
+      "id": "inspect_service_tray",
+      "text": "A collected dinner tray waits on the dresser: [soup bowls scraped clean], silverware squared away. The dinner cart came through this wing on schedule, then, and somebody ate well.",
       "keywords": [
-        { "displayText": "Acoustic Isolation", "id": "sound_proof_cases", "color": "crime" },
-        { "displayText": "squawk", "id": "sound_proof_cases", "color": "crime" }
+        { "displayText": "soup bowls scraped clean", "id": "service_tray", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.13
+      "scale": 0.09
     },
     {
       "id": "inspect_star_note",
@@ -75,6 +75,6 @@
       "scale": 0.09
     }
   ],
-  "localDeductionSentence": "Two [Sound-Proof Cases] came upstairs per the manifest entry [Delivery Manifest] - right when Derek blamed that [Hallway Rumble] on the dinner cart.",
-  "localDeductionClueIds": ["sound_proof_cases", "d_marsh_7pm", "husband_hall_7pm"]
+  "localDeductionSentence": "Derek shrugged off the [Hallway Rumble] as the dinner service - the [Service Tray] says the cart did come - but the manifest also logged [Heavy Cases] at seven.",
+  "localDeductionClueIds": ["husband_hall_7pm", "service_tray", "d_marsh_7pm"]
 }

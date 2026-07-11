@@ -3,6 +3,7 @@
   "interactables": [
     {
       "id": "inspect_socialite",
+      "name": "Coco",
       "text": "The Socialite, [Coco], lowers her sunglasses exactly one centimeter. 'Oh thank GOD. Someone with cheekbones.' She pats the sun lounger. You do not sit on it. She respects that.",
       "keywords": [
         { "displayText": "Coco", "id": "eyewitness_645pm", "color": "plot" }
@@ -37,7 +38,7 @@
     },
     {
       "id": "inspect_pool_selfie",
-      "text": "Coco's phone has a pool selfie timestamped [6:47 PM]. Visible in the blurry background: a [figure with large dark cases] on the garden path.",
+      "text": "Coco's phone has a pool selfie timestamped [6:47 PM]. In the blurry background, a [figure with large dark cases] rolls up the garden path. And at the very edge of the frame, half-hidden behind the potting shed: a straw hat, peeking.",
       "keywords": [
         { "displayText": "6:47 PM", "id": "selfie_figure_cases", "color": "plot" },
         { "displayText": "figure with large dark cases", "id": "selfie_figure_cases", "color": "plot" }

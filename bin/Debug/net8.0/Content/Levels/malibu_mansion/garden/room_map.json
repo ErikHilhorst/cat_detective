@@ -151,6 +151,30 @@
      "width": 283,
      "x": 143,
      "y": 690
+    },
+    {
+     "height": 160,
+     "id": 59,
+     "name": "transfer_to_kitchen",
+     "opacity": 1,
+     "properties": [
+      {
+       "name": "TargetRoom",
+       "type": "string",
+       "value": "kitchen"
+      },
+      {
+       "name": "TargetSpawn",
+       "type": "string",
+       "value": "spawn_from_garden"
+      }
+     ],
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 56,
+     "x": 1380,
+     "y": 560
     }
    ],
    "opacity": 0,
@@ -202,6 +226,19 @@
      "width": 0,
      "x": 440,
      "y": 680
+    },
+    {
+     "height": 0,
+     "id": 60,
+     "name": "spawn_from_kitchen",
+     "opacity": 1,
+     "point": true,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 0,
+     "x": 1300,
+     "y": 660
     }
    ],
    "opacity": 0,
@@ -250,6 +287,18 @@
      "width": 90,
      "x": 1210,
      "y": 545
+    },
+    {
+     "height": 80,
+     "id": 61,
+     "name": "inspect_hidden_cases",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 110,
+     "x": 980,
+     "y": 690
     }
    ],
    "opacity": 0,
@@ -260,7 +309,7 @@
   }
  ],
  "nextlayerid": 6,
- "nextobjectid": 59,
+ "nextobjectid": 62,
  "orientation": "orthogonal",
  "renderorder": "right-down",
  "tiledversion": "1.12.1",

@@ -14,6 +14,13 @@ namespace CatDetective.Systems
 
         public List<Clue> UnlockedClues { get; } = new();
 
+        /// <summary>
+        /// Fired once per clue, the moment it is first unlocked - regardless of
+        /// the unlock path (keyword, topic, or room-solve auto-unlock).
+        /// Game1 uses it for the gate-unlock toast.
+        /// </summary>
+        public System.Action<string>? OnClueUnlocked { get; set; }
+
         public NotebookManager(Dictionary<string, Clue> database)
         {
             _database = database;
@@ -29,6 +36,7 @@ namespace CatDetective.Systems
             if (!_database.TryGetValue(clueId, out var clue)) return;
             if (UnlockedClues.Exists(c => c.Id == clueId))    return;
             UnlockedClues.Add(clue);
+            OnClueUnlocked?.Invoke(clueId);
         }
 
         /// <summary>True if the clue has already been found (gates dialogue topics).</summary>

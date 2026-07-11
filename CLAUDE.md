@@ -7,7 +7,7 @@ Cozy Studio Ghibli aesthetic, pre-rendered backgrounds, point-and-click/free-roa
 Built in C# using **MonoGame (KNI fork)**, targeting **Web/WASM** as the final platform.
 
 Current state: the case system is playable end-to-end. The first case, **Malibu Mansion / "The Missing Macaw"**
-(7 rooms, 34 clues), is fully wired with placeholder sprites: free-roam movement, room transfers,
+(7 rooms, 37 clues), is fully wired with placeholder sprites: free-roam movement, room transfers,
 interactable dialogue with keyword-unlocked clues, character interrogation menus (intro + selectable
 cat-action topics, some evidence-gated), per-room deduction boards, and a final solve board.
 Real art for interactables is still pending — `Shared/placeholder_person` / `placeholder_object` fill in.
@@ -92,6 +92,8 @@ layerDepth = Math.Clamp(Position.Y / screenHeight, 0f, 1f);
 Inserting a new entity: decide which pass it belongs to and draw it there.
 New lighting overlays → Pass 4 (additive). New floor decals → Pass 1 or 2. New Y-sortable objects → Pass 3.
 
+Pass 4b (AlphaBlend, world-anchored) draws a bobbing amber "..." over characters that have
+available, unheard topics — hidden while dialogue is open.
 UI passes follow the world passes: Pass 6 = dialogue box, Pass 7 = HUD (SOLVE buttons, clue counters,
 toasts), Pass 8 = journal/deduction board. UI layout constants live in reference space **2020×1136**
 and are scaled to the current canvas in `UpdateLayout()` / with `jsx`/`jsy` in Pass 8.
@@ -186,9 +188,25 @@ Deduction validation is enforced: a slot with a non-empty correct id rejects wro
   reacting to evidence the player found. Gate with a same-room clue, or cross-room only for
   bonus depth (Derek's second rumble needs the kitchen roster; Petra's snatch theory needs the
   garden feathers).
+- **Gated topics never carry unique clues.** Every clue in the database must be unlockable via an
+  ungated source (object, intro, or non-gated topic) **in its own room** - gates gate *story*,
+  not completion. The room clue counter must always be able to reach N/N without leaving the
+  room; cross-room gates exist purely as optional confrontation payoffs. Enforced by
+  `verify_level.py`.
 - **Gated payoffs are slips and near-confessions, never solutions.** Basil admits the latch but
   not the theft; Marsh blurts "the cases are EMPTY, both of them"; the narrator never comments
   on what a slip means.
+- **Gate-unlock toast.** Finding a clue that gates a topic fires a one-time toast:
+  "Basil (Garden) might have some explaining to do..." - a *person/story* nudge, never a
+  checklist pointer. Character names come from the interactable's optional `name` field
+  (fallback: prettified id); keep D. Marsh's as "The Sound Guy" so a cross-room toast can't
+  leak his name early. The toast timer holds while the dialogue box is open, since gate clues
+  usually unlock mid-dialogue. Wiring: `NotebookManager.OnClueUnlocked` ->
+  `Game1.HandleClueUnlocked` + `BuildGateIndex` (scans all room configs at case load).
+- **Unheard-topic indicator.** Characters with at least one available (gate satisfied) topic the
+  player has not heard show a bobbing amber "..." above their trigger zone (Pass 4b,
+  `HasUnseenTopics`). It disappears when every available topic is visited and reappears when a
+  gate unlocks a new one. The toast says *who* to revisit across rooms; the "..." says *here*.
 - **Cross-reference the cast.** Characters mention each other's timeline facts (Coco's squeaky
   wheels vs Derek's hall rumble; Wexler noting Marsh stopped complaining) so the timeline
   assembles across rooms.
@@ -211,9 +229,11 @@ bedroom ──► entrance       (transfer bottom-center; spawn_from_bedroom)
 library ──► living_room    (transfer right-side; spawn_from_library)
 
 kitchen ──► living_room    (transfer right-side; spawn_from_kitchen)
+        └─► garden         (transfer west-door;  spawn_from_kitchen)
 
-garden ──► living_room     (transfer right-side; spawn_from_garden)
-       └─► pool_area       (transfer bottom-left; spawn_from_garden)
+garden ──► living_room     (transfer right-side;    spawn_from_garden)
+       ├─► kitchen         (transfer right-edge;    spawn_from_garden)
+       └─► pool_area       (transfer bottom-left;   spawn_from_garden)
 
 pool_area ──► garden       (transfer bottom-center; spawn_from_pool_area)
 ```
@@ -231,25 +251,44 @@ Officer Reyes (Police), Rosa (Maid), Basil (Gardener), Wexler (Director),
 Petra (Bird Handler), Coco (Socialite), **D. Marsh a.k.a. the Sound Guy — the culprit**.
 Rudebeak is the missing macaw.
 
-**True timeline**:
-- Early evening — Basil forces the cage latch with his pruning shears and frees Rudebeak into
-  the garden (bird-bath feathers, bent shears). He freed the bird but did not take it.
-- 6:30 PM — D. Marsh signs the entrance registry.
-- 6:45–6:47 PM — Coco sees (and accidentally photographs) him hauling big black cases through
-  the garden, where he grabs Rudebeak.
-- 7:00 PM — He signs two sound-proof cases in at the bedroom (delivery manifest) while the
-  production schedule has him in the library. Rosa's dinner cart is also in the bedroom wing at
-  7:00 (duty roster) — that rumble is what Derek heard: the maid red herring.
-- 8:00 PM — Fake squawk: hidden speaker under the cage, fed by the audio cable from the library
-  mixing board. Motive: 47 takes ruined by the bird (session log).
+**True timeline** (the gardener and the sound guy interlock — revealed only through clues):
+- Just before 6:00 PM — Basil forces the cage latch with his pruning shears, meaning to free
+  Rudebeak. The front door goes (crew arriving early); he panics, drops one glove under the cage
+  (Dropped Glove), and bolts to the garden to hide behind the potting shed. He never opened the
+  cage door.
+- ~6:00 PM — Rudebeak lets himself out through the broken latch and heads for his evening splash
+  in the garden bird bath (missed 6:00 snack, evening feathers).
+- 6:30 PM — the crew column in the entrance registry begins; one crew member signed in half an
+  hour before the rest of his call sheet (Reyes's gated topic - never named).
+- 6:45–6:47 PM — Coco sees (and accidentally photographs) a figure wheeling big black cases
+  through the garden; he finds Rudebeak soggy and docile at the bird bath and seizes the moment.
+  Basil, still hiding, witnesses it (straw hat at the photo's edge; his gated confession).
+- 7:00 PM — Two equipment cases are signed in at the bedroom wing with an illegible scrawl
+  (delivery manifest) while the production schedule has D. Marsh in the library. Rosa's dinner
+  cart is also in the wing at 7:00 (duty roster, service tray) — Derek heard wheels twice:
+  once with soup smell, once without.
+- Before lockdown — the cases are stashed behind the garden potting shed under a tarp
+  (Sound-Proof Cases, found in the garden).
+- 8:00 PM — Fake squawk: tiny speaker taped under the seed tray, fed by the audio cable from the
+  library mixing board. Motive: 47 takes ruined by the bird (session log).
 - 8:15 PM — Police lockdown. Only the Police Lockdown clue carries the 8:15 timestamp.
 
-**Red herrings**: Basil (freed the bird, acts guilty), Rosa (motive note + cart at 7 PM +
-chicken feathers in the kitchen), Derek (headphones/ultimatum), Chip (PR panic — but he earns
-commission on the bird), Wexler (thrilled about the drama).
+**Deliberate pacing**: the early rooms (entrance, living room, bedroom) never name D. Marsh.
+The registry lists the whole household; the manifest signature is a scrawl; the cage-side
+evidence is a subtle cable plus suspect items from three characters (glove = Basil,
+lemon polish cloth = Rosa, vocab ledger = Vivienne-blames-Rosa). WHO only firms up in the
+library (badge, Wexler's "stopped complaining") and the pool area stitches the timeline
+(sighting + 6:47 photo + schedule contradiction). Keep it that way — the playtest found
+front-loaded Marsh evidence killed the mystery.
 
-**Final board answers** (parse order): `d_marsh_sound_guy` (WHO), `sound_proof_cases` (WHAT),
-`d_marsh_7pm` (WHEN — decoy: `guest_registry` 6:30), `hidden_speaker` (HOW), `ruined_takes` (WHY).
+**Red herrings**: Basil (broke the latch, acts guilty, confesses only when confronted with his
+glove), Rosa (motive note + cart at 7 PM + ambiguous feathers + polish cloth at the cage +
+"maybe they are not wrong to look"), Derek (headphones/ultimatum), Chip (PR panic — but he
+earns commission on the bird), Wexler (thrilled about the drama).
+
+**Final board answers** (parse order): `d_marsh_sound_guy` (WHO), `sound_proof_cases` (WHAT,
+found in the garden), `d_marsh_7pm` "Heavy Cases - 7:00 PM" (WHEN — decoy: `guest_registry`
+"Crew Arrivals - 6:30 PM"), `hidden_speaker` (HOW), `ruined_takes` (WHY).
 
 ---
 
@@ -293,7 +332,7 @@ python tools/verify_level.py   # run from the repo root
 ```
 
 Validates without launching the game: interactable reachability vs collisions (cat feet box),
-transfer ↔ spawn wiring (12 checks for Malibu), spawn clearance from transfer zones, config
+transfer ↔ spawn wiring (14 checks for Malibu), spawn clearance from transfer zones, config
 consistency (keyword ids exist, local/final answers present & discoverable), and final-board slot
 validity. Run it after any content change.
 

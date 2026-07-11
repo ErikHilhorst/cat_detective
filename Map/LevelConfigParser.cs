@@ -65,6 +65,8 @@ namespace CatDetective.Map
     internal sealed class InteractableConfigData
     {
         [JsonPropertyName("id")]       public string                  Id       { get; set; } = "";
+        /// <summary>Display name for characters ("Basil the Gardener"); used in toasts.</summary>
+        [JsonPropertyName("name")]     public string                  Name     { get; set; } = "";
         [JsonPropertyName("text")]     public string                  Text     { get; set; } = "";
         [JsonPropertyName("keywords")] public List<KeywordConfigData> Keywords { get; set; } = new();
         /// <summary>Optional interrogation topics (characters); empty = plain inspection.</summary>
@@ -223,7 +225,7 @@ namespace CatDetective.Map
                         ParseKeywords(tc.Keywords), tc.RequiresClue);
                 }
                 dict[i.Id] = new InteractionData(i.Text, ParseKeywords(i.Keywords),
-                    i.Scale, i.Align, i.OffsetX, i.OffsetY, i.Texture, topics);
+                    i.Scale, i.Align, i.OffsetX, i.OffsetY, i.Texture, topics, i.Name);
             }
             return dict;
         }

@@ -3,6 +3,7 @@
   "interactables": [
     {
       "id": "inspect_police_officer",
+      "name": "Officer Reyes",
       "text": "[Officer Reyes] guards the door with the weary dignity of a man who trained for hostage negotiations and got missing poultry instead. He clocks you immediately. 'Don't start, cat.'",
       "keywords": [
         { "displayText": "Officer Reyes", "id": "lockdown_815pm", "color": "misc" }
@@ -25,9 +26,9 @@
         {
           "prompt": "Nudge the guest registry toward him",
           "requiresClue": "guest_registry",
-          "text": "'The book? Everyone signs it. The crew called it old-fashioned. I call it evidence.' He taps the first crew line without looking at it. '[Six-thirty arrival]. Said he wanted to beat traffic. Nobody beats traffic INTO Malibu, cat.'",
+          "text": "'The book? Everyone signs it. The crew called it old-fashioned. I call it evidence.' He taps the crew column without reading it. 'One of them signed in [half an hour before] the rest of his own call sheet. Said he wanted to beat traffic. Nobody beats traffic INTO Malibu, cat.'",
           "keywords": [
-            { "displayText": "Six-thirty arrival", "id": "guest_registry", "color": "misc" }
+            { "displayText": "half an hour before", "id": "guest_registry", "color": "misc" }
           ]
         }
       ],
@@ -36,6 +37,7 @@
     },
     {
       "id": "inspect_manager",
+      "name": "Chip Sterling",
       "text": "The Manager, [Chip Sterling], paces a groove into the rug, phone welded to his ear. 'No comment. NO comment. Fine, one comment: my client LOVES animals.' He hangs up and stares at nothing. You memorize his face.",
       "keywords": [
         { "displayText": "Chip Sterling", "id": "pr_disaster", "color": "misc" }
@@ -78,15 +80,14 @@
     },
     {
       "id": "inspect_guest_registry",
-      "text": "A formal sign-in book by the entrance. Everyone logged their arrival. The first crew entry reads: '[D. Marsh] - [6:30 PM].'",
+      "text": "A formal sign-in book by the entrance. The whole household parades through it: 'Wexler - 4:15 PM. Petra (plus bird) - 5:05 PM. Coco - 5:50 PM.' Staff signatures all afternoon. The film crew's column begins at [6:30 PM].",
       "keywords": [
-        { "displayText": "D. Marsh", "id": "guest_registry", "color": "misc" },
         { "displayText": "6:30 PM", "id": "guest_registry", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 0.10
     }
   ],
-  "localDeductionSentence": "The [Police Lockdown] sealed the mansion at 8:15 PM - Chip only fears a [PR Disaster], and the registry's first crew entry reads [Guest Registry].",
+  "localDeductionSentence": "The [Police Lockdown] sealed the mansion at 8:15 PM - Chip only fears a [PR Disaster], and the sign-in book logs the [Crew Arrivals] from 6:30 PM on.",
   "localDeductionClueIds": ["lockdown_815pm", "pr_disaster", "guest_registry"]
 }

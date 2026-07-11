@@ -3,6 +3,7 @@
   "interactables": [
     {
       "id": "inspect_maid",
+      "name": "Rosa",
       "text": "The Maid, [Rosa], is chopping vegetables with feeling. The cleaver hits the board like a verdict. Without turning around: 'If you are here about the bird, get in line.'",
       "keywords": [
         { "displayText": "Rosa", "id": "the_maid", "color": "misc" }
@@ -10,7 +11,7 @@
       "topics": [
         {
           "prompt": "Meow the word 'bird', approximately",
-          "text": "The cleaver stops mid-air. 'That bird called my paella [garbage slop]. In front of guests. Eleven years I run this kitchen.' Chop. 'Did I dream of roasting him with a nice sofrito? Yes. Did I do it? No.' Chop. 'A woman can keep a list without acting on it.'",
+          "text": "The cleaver stops mid-air. 'That bird called my paella [garbage slop]. In front of guests. Eleven years I run this kitchen.' Chop. 'Did I dream of roasting him with a nice sofrito? A woman is allowed her dreams.' Chop. 'Now he is gone, and everyone looks at Rosa. Maybe they are not wrong to look.'",
           "keywords": [
             { "displayText": "garbage slop", "id": "insulted_cooking", "color": "misc" }
           ]
@@ -64,10 +65,10 @@
     },
     {
       "id": "inspect_poultry_crate",
-      "text": "A crate by the pantry - tonight's roast, plucked in-house. Beside it, a bin of [feathers]. Your heart stops. You sniff. [Chicken]. Not macaw. You compose yourself with dignity.",
+      "text": "A crate by the pantry - tonight's roast, plucked in-house. Beside it, a bin of [feathers]. You freeze. You look closer. Small ones. Plain ones. [Probably] the roast's. You keep one eye on that bin anyway.",
       "keywords": [
         { "displayText": "feathers", "id": "kitchen_feathers", "color": "misc" },
-        { "displayText": "Chicken", "id": "kitchen_feathers", "color": "misc" }
+        { "displayText": "Probably", "id": "kitchen_feathers", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 0.10

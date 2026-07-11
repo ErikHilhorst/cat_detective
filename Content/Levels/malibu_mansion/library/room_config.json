@@ -3,6 +3,7 @@
   "interactables": [
     {
       "id": "inspect_director",
+      "name": "Wexler",
       "text": "The Director, [Wexler], has three cameras of footage to review and is instead watching the room like it owes him a third act. He frames you between his fingers. 'Cat. Great texture. Stay in the light.'",
       "keywords": [
         { "displayText": "Wexler", "id": "director_notes", "color": "misc" }
@@ -36,6 +37,7 @@
     },
     {
       "id": "inspect_sound_guy",
+      "name": "The Sound Guy",
       "text": "The [Sound Guy]'s badge reads '[D. Marsh].' He is very busy re-coiling a cable that was already coiled. 'Nice cat,' he says, half an octave too high. The coil slips out of his hands.",
       "keywords": [
         { "displayText": "Sound Guy", "id": "d_marsh_sound_guy", "color": "crime" },
