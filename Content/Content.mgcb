@@ -371,3 +371,115 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Levels/malibu_mansion/pool_area/bg_base.jpg
+
+# ── Case: malibu_mansion — character sprites (per-name Interactables) ───────
+
+#begin Levels/malibu_mansion/entrance/Interactables/inspect_police_officer.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/entrance/Interactables/inspect_police_officer.png
+
+#begin Levels/malibu_mansion/entrance/Interactables/inspect_manager.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/entrance/Interactables/inspect_manager.png
+
+#begin Levels/malibu_mansion/living_room/Interactables/inspect_bird_handler.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/living_room/Interactables/inspect_bird_handler.png
+
+#begin Levels/malibu_mansion/living_room/Interactables/inspect_movie_star.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/living_room/Interactables/inspect_movie_star.png
+
+#begin Levels/malibu_mansion/bedroom/Interactables/inspect_husband.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/bedroom/Interactables/inspect_husband.png
+
+#begin Levels/malibu_mansion/library/Interactables/inspect_director.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/library/Interactables/inspect_director.png
+
+#begin Levels/malibu_mansion/library/Interactables/inspect_sound_guy.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/library/Interactables/inspect_sound_guy.png
+
+#begin Levels/malibu_mansion/kitchen/Interactables/inspect_maid.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/kitchen/Interactables/inspect_maid.png
+
+#begin Levels/malibu_mansion/garden/Interactables/inspect_gardener.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/garden/Interactables/inspect_gardener.png
+
+#begin Levels/malibu_mansion/pool_area/Interactables/inspect_socialite.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/pool_area/Interactables/inspect_socialite.png

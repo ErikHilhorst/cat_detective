@@ -5,7 +5,7 @@
       "roomId": "entrance",
       "isMacroClue": true,
       "category": "WhereWhen",
-      "name": "Police Lockdown",
+      "name": "Lockdown - 8:15 PM",
       "context": "Officer Reyes sealed the mansion at 8:15 PM. Nobody in or out since.",
       "inspectorDescription": "Doors sealed at 8:15 PM. Officer Reyes does not negotiate. I checked."
     },
@@ -67,10 +67,10 @@
       "id": "headphone_box",
       "roomId": "bedroom",
       "isMacroClue": false,
-      "category": "Why",
+      "category": "What",
       "name": "Derek's Headphones",
-      "context": "A freshly opened box of top-of-the-line noise-canceling headphones. The receipt is dated yesterday.",
-      "inspectorDescription": "Ordered the day before the shoot. The bird drove him to it. His solution was at least legal."
+      "context": "A freshly opened box of top-of-the-line noise-canceling headphones, a spare audio cable still coiled inside. The receipt is dated yesterday.",
+      "inspectorDescription": "Ordered the day before the shoot, audio cable and all. The bird drove him to it. His solution was at least legal."
     },
     {
       "id": "service_tray",
@@ -132,8 +132,8 @@
       "isMacroClue": false,
       "category": "What",
       "name": "Documentary Camera",
-      "context": "A film crew camera on a tripod with its recording light on, positioned near the birdcage.",
-      "inspectorDescription": "If it filmed anything useful, Director Wexler has already watched it and said nothing."
+      "context": "A film crew camera, recording all day - but aimed at the chaise for Vivienne's interviews. The cage sits just outside its frame.",
+      "inspectorDescription": "Recording all day, pointed at the wrong thing. Four hundred hours of Vivienne's good side, and not one frame of the cage."
     },
     {
       "id": "vocab_ledger",
@@ -332,6 +332,105 @@
       "name": "Feather in the Filter",
       "context": "A single bright feather floats in the pool filter. It could have blown in from anywhere.",
       "inspectorDescription": "One feather, in the filter. The wind carries feathers everywhere. The pool remains a suspect in my heart, but not in this case."
+    },
+    {
+      "id": "lamp_returns_720",
+      "roomId": "bedroom",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "Lamp Returns - 7:20 PM",
+      "context": "The manifest logs the grip department wheeling lamp returns through the east wing at 7:20 PM.",
+      "inspectorDescription": "More wheels in the wing at 7:20. This hallway was practically a freeway tonight. No wonder nobody looked twice."
+    },
+    {
+      "id": "household_roster",
+      "roomId": "entrance",
+      "isMacroClue": false,
+      "category": "Who",
+      "name": "Household Sign-In",
+      "context": "The registry lists the whole household by role: Wexler the director, Petra the bird handler, Coco the socialite, staff in since morning.",
+      "inspectorDescription": "Everyone signs the book. Directors, handlers, socialites, staff. A house this full is never short of suspects."
+    },
+    {
+      "id": "missed_snack_6pm",
+      "roomId": "living_room",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "Missed Snack - 6:00 PM",
+      "context": "Rudebeak's six o'clock seed bowl sits untouched beside the cage. Petra says he has never once missed it.",
+      "inspectorDescription": "The bowl is full. The bird is punctual. By six o'clock he was already somewhere he could not smell it."
+    },
+    {
+      "id": "flower_bed_bulbs",
+      "roomId": "garden",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "Fresh-Turned Flower Bed",
+      "context": "A flower bed of freshly planted daffodil bulbs, turned over this afternoon - exactly where Basil says he was working.",
+      "inspectorDescription": "Dug today, planted neatly. Somebody spent the afternoon out here with their hands in the dirt."
+    },
+    {
+      "id": "boot_prints_shed",
+      "roomId": "garden",
+      "isMacroClue": false,
+      "category": "Who",
+      "name": "Boot Prints by the Shed",
+      "context": "Heavy boot prints press the grass flat behind the potting shed - deep at the toe, like someone carrying weight.",
+      "inspectorDescription": "Deep at the toe. Whoever stood here was hauling something. Gardeners wear boots. So does a film crew."
+    },
+    {
+      "id": "the_director",
+      "roomId": "library",
+      "isMacroClue": false,
+      "category": "Who",
+      "name": "Wexler the Director",
+      "context": "Director Wexler has three cameras of footage to review and not a trace of grief. He keeps calling the crisis 'material'.",
+      "inspectorDescription": "He frames everything with his fingers, including me. A man who profits from drama, surrounded by drama."
+    },
+    {
+      "id": "marsh_headphones",
+      "roomId": "library",
+      "isMacroClue": false,
+      "category": "What",
+      "name": "Unplugged Headphones",
+      "context": "The Sound Guy's monitoring headphones end a foot short of the mixing board, plugged into nothing at all.",
+      "inspectorDescription": "He is 'monitoring levels' through a cable that connects to air. Either a genius or a man pretending to work."
+    },
+    {
+      "id": "rosa_keys",
+      "roomId": "kitchen",
+      "isMacroClue": false,
+      "category": "Who",
+      "name": "Ring of House Keys",
+      "context": "A ring of house keys jingles at Rosa's apron - the housekeeping set. It opens every room in the mansion.",
+      "inspectorDescription": "Every door in the house, one apron. Anyone who borrowed that ring for an hour could go anywhere they liked."
+    },
+    {
+      "id": "herb_run_545",
+      "roomId": "kitchen",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "Herb Run - 5:45 PM",
+      "context": "The duty roster logs a 5:45 PM herb run in from the garden, initialed 'B.'",
+      "inspectorDescription": "B. came in from the garden just before six. The roster does not say what else he passed on the way."
+    },
+    {
+      "id": "straw_hat_witness",
+      "roomId": "pool_area",
+      "isMacroClue": false,
+      "category": "Who",
+      "name": "Straw Hat in Frame",
+      "context": "At the very edge of Coco's 6:47 photo, someone in a straw hat peeks out from behind the potting shed.",
+      "inspectorDescription": "Hiding, not working. Whoever wears that hat watched the cases roll by and told nobody."
+    },
+    {
+      "id": "warm_spritz",
+      "roomId": "pool_area",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "Abandoned Spritz",
+      "context": "Coco's spritz sits abandoned on the chaise, warm through - poured for sunset, forgotten the moment the cases rolled past.",
+      "inspectorDescription": "Warm all the way through. She was out here well before the light went. Bored, and therefore reliable."
     }
   ],
   "rooms": ["entrance", "living_room", "bedroom", "library", "kitchen", "garden", "pool_area"],

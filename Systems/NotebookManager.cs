@@ -76,6 +76,19 @@ namespace CatDetective.Systems
             UnlockedClues.FindAll(c => c.IsMacroClue);
 
         /// <summary>
+        /// Unlocks every clue that belongs to <paramref name="roomId"/> - macro and
+        /// micro. Screenshot-mode helper for capturing fully populated boards.
+        /// </summary>
+        public void UnlockAllCluesForRoom(string roomId)
+        {
+            foreach (var clue in _database.Values)
+            {
+                if (clue.RoomId == roomId)
+                    UnlockClue(clue.Id);
+            }
+        }
+
+        /// <summary>
         /// Silently unlocks every macro clue in the database that belongs to
         /// <paramref name="roomId"/>. Called when the player solves a room's local puzzle.
         /// </summary>

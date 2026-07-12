@@ -4,9 +4,10 @@
     {
       "id": "inspect_maid",
       "name": "Rosa",
-      "text": "The Maid, [Rosa], is chopping vegetables with feeling. The cleaver hits the board like a verdict. Without turning around: 'If you are here about the bird, get in line.'",
+      "text": "The Maid, [Rosa], is chopping vegetables with feeling. The cleaver hits the board like a verdict. A ring of [house keys] jingles at her apron with every chop. Without turning around: 'If you are here about the bird, get in line.'",
       "keywords": [
-        { "displayText": "Rosa", "id": "the_maid", "color": "misc" }
+        { "displayText": "Rosa", "id": "the_maid", "color": "misc" },
+        { "displayText": "house keys", "id": "rosa_keys", "color": "misc" }
       ],
       "topics": [
         {
@@ -30,13 +31,22 @@
           "keywords": [
             { "displayText": "dinner cart", "id": "dinner_cart_7pm", "color": "misc" }
           ]
+        },
+        {
+          "prompt": "Lay your solved case notes at her feet, gently",
+          "requiresSolve": "kitchen",
+          "text": "She reads your board the way she reads a delivery invoice: fast, twice, looking for the cheat. Then she sets down the cleaver.|'So. The cart, the note, the skull. You did the arithmetic and it comes out Rosa.' She crouches to your eye level, which nobody does. 'Then do the rest of it, detective. My cart is heavy going out and light coming back - and that night the wing smelled of soup and [cable grease]. Soup was mine. Kitchens know their smells. Find whose the other one was.'",
+          "keywords": [
+            { "displayText": "cable grease", "id": "d_marsh_7pm", "color": "crime" }
+          ]
         }
       ],
       "texture": "Shared/placeholder_person",
-      "scale": 0.15
+      "scale": 0.20
     },
     {
       "id": "inspect_note_on_fridge",
+      "name": "Note on the Fridge",
       "text": "A note pinned to the fridge: 'That bird called my paella [garbage slop]. In front of guests.' Someone drew a [skull] next to it.",
       "keywords": [
         { "displayText": "garbage slop", "id": "insulted_cooking", "color": "misc" },
@@ -75,8 +85,10 @@
     },
     {
       "id": "inspect_duty_roster",
-      "text": "The kitchen duty roster, pinned by the door: '6:30 - plating. [7:00 PM - dinner cart, east wing - R.] 8:30 - clear service.' The east wing is where the bedrooms are.",
+      "name": "Duty Roster",
+      "text": "The kitchen duty roster, pinned by the door:\n- [5:45 - herbs in from the garden - B.]\n- 6:30 - plating\n- [7:00 PM - dinner cart, east wing - R.]\n- 8:30 - clear service\nThe east wing is where the bedrooms are.",
       "keywords": [
+        { "displayText": "5:45 - herbs in from the garden - B.", "id": "herb_run_545", "color": "misc" },
         { "displayText": "7:00 PM - dinner cart, east wing - R.", "id": "dinner_cart_7pm", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",

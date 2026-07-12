@@ -10,7 +10,7 @@
       ],
       "topics": [
         {
-          "prompt": "Paw at his headphone cable",
+          "prompt": "Paw at his trailing audio cable",
           "text": "He lifts one ear cup with two fingers. 'Something heavy rattled down the hall around [seven]. Wheels. Dinner cart, probably - the maid does her run at seven.' He considers the ceiling. 'Didn't look. Wasn't my problem.' The ear cup goes back down.",
           "keywords": [
             { "displayText": "seven", "id": "husband_hall_7pm", "color": "misc" }
@@ -25,7 +25,7 @@
         },
         {
           "prompt": "Knead the duvet beside him, thoughtfully",
-          "requiresClue": "dinner_cart_7pm",
+          "requiresSolve": "bedroom",
           "text": "He watches you knead. He does not stop you. 'You know what is funny,' he says slowly, 'now that somebody with whiskers asks. The hall rattled [twice] that night. Once with the soup smell. Once without.' He frowns for the first time all evening. 'Huh.'",
           "keywords": [
             { "displayText": "twice", "id": "husband_hall_7pm", "color": "misc" }
@@ -33,12 +33,15 @@
         }
       ],
       "texture": "Shared/placeholder_person",
-      "scale": 0.15
+      "scale": 0.20
     },
     {
       "id": "inspect_delivery_manifest",
-      "text": "A crew manifest on the dresser, entries all evening. One line stands out, dashed off in a hurried scrawl: '[2x equipment cases] - [7:00 PM].' The signature is a scribble with a tail.",
+      "name": "Delivery Manifest",
+      "text": "A crew manifest on the dresser, entries all evening:\n- Florist, out - 6:10 PM\n- [R. - dinner service] - 7:00 PM\n- [Grip dept., lamp returns] - 7:20 PM\nAnd one line dashed off in a hurried scrawl: '[2x equipment cases] - [7:00 PM].' The signature is a scribble with a tail.",
       "keywords": [
+        { "displayText": "R. - dinner service", "id": "dinner_cart_7pm", "color": "misc" },
+        { "displayText": "Grip dept., lamp returns", "id": "lamp_returns_720", "color": "misc" },
         { "displayText": "2x equipment cases", "id": "d_marsh_7pm", "color": "crime" },
         { "displayText": "7:00 PM", "id": "d_marsh_7pm", "color": "crime" }
       ],
@@ -56,6 +59,7 @@
     },
     {
       "id": "inspect_star_note",
+      "name": "Vivienne's Note",
       "text": "A handwritten note on the nightstand: 'Derek - Rudebeak woke me up at 5AM. AGAIN. Do [SOMETHING] about that bird or I am calling my [lawyer].' - V.",
       "keywords": [
         { "displayText": "SOMETHING", "id": "star_note_to_husband", "color": "misc" },
@@ -66,8 +70,9 @@
     },
     {
       "id": "inspect_headphone_box",
-      "text": "An open box for top-of-the-line noise-canceling headphones. Purchase receipt inside: [yesterday's date]. Someone finally [snapped].",
+      "text": "An open box for top-of-the-line noise-canceling headphones, a spare [audio cable] still coiled in the foam. Purchase receipt inside: [yesterday's date]. Someone finally [snapped].",
       "keywords": [
+        { "displayText": "audio cable", "id": "headphone_box", "color": "misc" },
         { "displayText": "yesterday's date", "id": "headphone_box", "color": "misc" },
         { "displayText": "snapped", "id": "headphone_box", "color": "misc" }
       ],

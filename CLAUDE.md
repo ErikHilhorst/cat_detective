@@ -7,10 +7,13 @@ Cozy Studio Ghibli aesthetic, pre-rendered backgrounds, point-and-click/free-roa
 Built in C# using **MonoGame (KNI fork)**, targeting **Web/WASM** as the final platform.
 
 Current state: the case system is playable end-to-end. The first case, **Malibu Mansion / "The Missing Macaw"**
-(7 rooms, 37 clues), is fully wired with placeholder sprites: free-roam movement, room transfers,
+(7 rooms, 48 clues), is fully wired with placeholder sprites: free-roam movement, room transfers,
 interactable dialogue with keyword-unlocked clues, character interrogation menus (intro + selectable
-cat-action topics, some evidence-gated), per-room deduction boards, and a final solve board.
-Real art for interactables is still pending — `Shared/placeholder_person` / `placeholder_object` fill in.
+cat-action topics, some evidence- or solve-gated), per-room deduction boards, and a final solve board.
+All ten character sprites are real art (per-name PNGs under each room's `Interactables/`, built via
+`.mgcb`); object interactables still use `Shared/placeholder_object`. `rudebeak.png` sits unwired in
+the case root for a possible ending reveal. Prompts for the missing object art (two 5x2 sheets):
+`Levels/malibu_mansion/sprite_prompts.txt`.
 
 ---
 
@@ -102,6 +105,11 @@ and are scaled to the current canvas in `UpdateLayout()` / with `jsx`/`jsy` in P
 - `Shared/dialogue_font.spritefont` covers **ASCII 32–126 only** (`DefaultCharacter` is `?` as a crash
   backstop). **All content JSON must be pure ASCII** — an em-dash or curly quote renders as `?`.
   Use ` - ` instead of `—` and straight quotes.
+- Dialogue/topic `text` may contain `\n` — `DrawRichText` treats it as a forced line break
+  (bulleted lists, radio transmissions). Keep bullets to `- ` (ASCII).
+- The dialogue box shows a small **name label** top-left: the interactable's `name` field,
+  falling back to the prettified id (`inspect_duty_roster` -> "Duty Roster"). Give objects a
+  `name` when the prettified id reads badly.
 - Text never draws at raw font size inside a panel; it uses these scales (keep them consistent):
   - Dialogue box text: `0.72f`
   - Journal body (`jt`): `0.80f * jsy`; inspector text (`jti`): `0.66f * jsy` — the inspector
@@ -134,7 +142,7 @@ Call them in that order from `Game1.Update()`. Do not merge them.
 - A layer-level `offsetx`/`offsety` on any layer shifts all its objects at parse time. The entrance Transfers layer uses offset `(-142, +192)` to align with the background art.
 
 ### Spawn point placement rule — critical
-The cat collision box is **~61 px wide (±31 px from center; ~70 px / ±35 when facing up) and 32 px tall** (from `Position.Y - 32` up to `Position.Y`). A spawn point that lands inside a transfer zone causes an instant re-trigger loop. When placing a `spawn_from_X` point, ensure the entire collision box clears the transfer zone:
+The cat collision box is **~49 px wide (±25 px from center; ~56 px / ±28 when facing up) and 32 px tall** (from `Position.Y - 32` up to `Position.Y`; derived from the 350 px frame at scale 0.28/0.32 in `Cat.cs`). `verify_level.py` deliberately checks with a wider 70 px box as a safety margin. A spawn point that lands inside a transfer zone causes an instant re-trigger loop. When placing a `spawn_from_X` point, ensure the entire collision box clears the transfer zone:
 
 - **Y clearance**: `spawnY > zoneBottom + 32` (spawn below a zone) or `spawnY - 32 > zoneTop` adjusted accordingly
 - **X clearance**: `spawnX - 35 > zoneRight` or `spawnX + 35 < zoneLeft` (spawn beside a zone)
@@ -147,19 +155,23 @@ A safe margin of ~15 px beyond the minimum is recommended.
 - `clues[]` — master clue database (`id`, `roomId`, `isMacroClue`, `category`, `name`, `context`, `inspectorDescription`).
 - `rooms[]` — every room id in the case, in display order. Feeds `AllRoomsSolved` and the journal's solves overview. Keep in sync when adding rooms.
 - `finalSolveSentence` — mad-libs template for the final board; `[bracketed]` tags become slots.
-- `finalSolveClueIds[]` — answer clue ids matched to slots **in parse order**. A slot's category is taken from its answer clue, so tags can be readable text (`[Police Lockdown]`), not just `[WHO]`.
+- `finalSolveClueIds[]` — answer clue ids matched to slots **in parse order**. A slot's category is taken from its answer clue, so tags can be readable text (`[Lockdown]`), not just `[WHO]`.
 
 `room_config.json` (per room):
 - `interactables[].texture` — fallback content path (e.g. `Shared/placeholder_person`) used when no per-name sprite exists under `Interactables/`. Combine with `scale` to size it.
 - `interactables[].topics[]` — interrogation menu for **characters** (objects use `text` alone).
   `text` is the intro; after its last page a menu opens. Each topic:
-  `{ "prompt": "<cat action>", "text": "<response, pages split on |>", "keywords": [...], "requiresClue": "<optional clue id>" }`.
+  `{ "prompt": "<cat action>", "text": "<response, pages split on |>", "keywords": [...], "requiresClue": "<optional clue id>", "requiresSolve": "<optional room id>" }`.
   Intro keywords unlock on interaction; a topic's keywords unlock when the topic is chosen.
-  Topics with `requiresClue` stay hidden until that clue is found. Visited topics render dimmed;
-  the menu always ends with a fixed "Pad away. (Leave)" entry. Navigation: W/S or arrows + Enter.
+  Topics with `requiresClue` stay hidden until that clue is found; topics with `requiresSolve`
+  stay hidden until that room's local board is solved (both set = AND). Visited topics render
+  dimmed; the menu always ends with a fixed "Pad away. (Leave)" entry. Navigation: W/S or arrows + Enter.
 - `localDeductionSentence` + `localDeductionClueIds[]` — same slot/answer scheme as the final board. Answers must be clue ids the room's own keywords can unlock **ungated** (intro, object, or non-gated topic — enforced by `verify_level.py`).
 
-Deduction validation is enforced: a slot with a non-empty correct id rejects wrong clues ("Incorrect logic."). Solving a room stores its filled sentence for the journal recap and unlocks the room's macro clues.
+Deduction validation is enforced: a wrong submit reports partial progress ("Incorrect logic - 2/3 fit.")
+so a failed solve is a deduction step, not trial-and-error. Solving a room stores its filled sentence
+for the journal recap, unlocks the room's macro clues, and unlocks any `requiresSolve` confrontation
+topics gated on that room (with a queued "X might have some explaining to do..." toast).
 
 ### Clue-writing conventions (from playtest feedback — keep these)
 - **Describe evidence, not conclusions.** `context`/`inspectorDescription` state facts and let the
@@ -178,16 +190,24 @@ Deduction validation is enforced: a slot with a non-empty correct id rejects wro
 - **Balance categories per room** — a word-bank tab with 4+ clues while others are empty makes
   sorting tedious. Only the **final** board's word bank shows macro clues; a clue the player should
   see there must be `isMacroClue: true`.
+- **No single-option solve slots.** Every category a local board uses must have at least one decoy
+  clue in that room, or the slot is an auto-fill instead of a deduction (playtest 2 finding;
+  `verify_level.py` warns). Prefer decoys that reinforce a red herring or the timeline.
 
 ### Dialogue-topic conventions (interrogation menus)
 - **The cat cannot talk.** Topic prompts are cat actions ("Stare at him. Do not blink.",
   "Knock his phone off the side table"), never questions. Characters monologue in response —
   people explain themselves to cats. Prompts are bespoke per character; never reuse one.
-- **3-4 topics per character.** Ungated topics carry the room's local answers and the
-  personality; one gated topic (`requiresClue`) is the confrontation beat — the character
-  reacting to evidence the player found. Gate with a same-room clue, or cross-room only for
-  bonus depth (Derek's second rumble needs the kitchen roster; Petra's snatch theory needs the
+- **3-5 topics per character.** Ungated topics carry the room's local answers and the
+  personality; gated topics are the confrontation beats — the character reacting to evidence
+  (`requiresClue`) or to being cornered by the player's deduction (`requiresSolve`). Clue-gate
+  with a same-room clue, or cross-room only for bonus depth (Petra's snatch theory needs the
   garden feathers).
+- **Solve-gated confrontations.** Each room's key character has a `requiresSolve` topic that
+  rewards solving that room's board: Vivienne (living_room), Derek (bedroom), Rosa (kitchen),
+  Basil (garden), Marsh (library). The payoff follows the slip rules below - a red herring
+  cracks their alibi or redirects suspicion; the culprit near-confesses. This makes the SOLVE
+  button an active investigative tool, not a checklist (playtest 2 finding).
 - **Gated topics never carry unique clues.** Every clue in the database must be unlockable via an
   ungated source (object, intro, or non-gated topic) **in its own room** - gates gate *story*,
   not completion. The room clue counter must always be able to reach N/N without leaving the
@@ -198,11 +218,13 @@ Deduction validation is enforced: a slot with a non-empty correct id rejects wro
   on what a slip means.
 - **Gate-unlock toast.** Finding a clue that gates a topic fires a one-time toast:
   "Basil (Garden) might have some explaining to do..." - a *person/story* nudge, never a
-  checklist pointer. Character names come from the interactable's optional `name` field
+  checklist pointer. Solving a room fires the same style of toast for its `requiresSolve`
+  topics. Character names come from the interactable's optional `name` field
   (fallback: prettified id); keep D. Marsh's as "The Sound Guy" so a cross-room toast can't
-  leak his name early. The toast timer holds while the dialogue box is open, since gate clues
-  usually unlock mid-dialogue. Wiring: `NotebookManager.OnClueUnlocked` ->
-  `Game1.HandleClueUnlocked` + `BuildGateIndex` (scans all room configs at case load).
+  leak his name early. Toasts are **queued** (back-to-back events all show) and the timer holds
+  while the dialogue box is open, since gate clues usually unlock mid-dialogue. Wiring:
+  `NotebookManager.OnClueUnlocked` -> `Game1.HandleClueUnlocked` + `BuildGateIndex` /
+  `_solveGateIndex` (scans all room configs at case load).
 - **Unheard-topic indicator.** Characters with at least one available (gate satisfied) topic the
   player has not heard show a bobbing amber "..." above their trigger zone (Pass 4b,
   `HasUnseenTopics`). It disappears when every available topic is visited and reappears when a
@@ -271,7 +293,7 @@ Rudebeak is the missing macaw.
   (Sound-Proof Cases, found in the garden).
 - 8:00 PM — Fake squawk: tiny speaker taped under the seed tray, fed by the audio cable from the
   library mixing board. Motive: 47 takes ruined by the bird (session log).
-- 8:15 PM — Police lockdown. Only the Police Lockdown clue carries the 8:15 timestamp.
+- 8:15 PM — Police lockdown. Only the lockdown clue ("Lockdown - 8:15 PM") carries the 8:15 timestamp.
 
 **Deliberate pacing**: the early rooms (entrance, living room, bedroom) never name D. Marsh.
 The registry lists the whole household; the manifest signature is a scrawl; the cage-side
@@ -281,10 +303,10 @@ library (badge, Wexler's "stopped complaining") and the pool area stitches the t
 (sighting + 6:47 photo + schedule contradiction). Keep it that way — the playtest found
 front-loaded Marsh evidence killed the mystery.
 
-**Red herrings**: Basil (broke the latch, acts guilty, confesses only when confronted with his
-glove), Rosa (motive note + cart at 7 PM + ambiguous feathers + polish cloth at the cage +
-"maybe they are not wrong to look"), Derek (headphones/ultimatum), Chip (PR panic — but he
-earns commission on the bird), Wexler (thrilled about the drama).
+**Red herrings**: Basil (broke the latch, acts guilty, confesses only after the garden solve),
+Rosa (motive note + cart at 7 PM + ambiguous feathers + polish cloth at the cage + house keys +
+"maybe they are not wrong to look"), Derek (headphones with a spare *audio cable*/ultimatum),
+Chip (PR panic — but he earns commission on the bird), Wexler (thrilled about the drama).
 
 **Final board answers** (parse order): `d_marsh_sound_guy` (WHO), `sound_proof_cases` (WHAT,
 found in the garden), `d_marsh_7pm` "Heavy Cases - 7:00 PM" (WHEN — decoy: `guest_registry`
@@ -333,8 +355,9 @@ python tools/verify_level.py   # run from the repo root
 
 Validates without launching the game: interactable reachability vs collisions (cat feet box),
 transfer ↔ spawn wiring (14 checks for Malibu), spawn clearance from transfer zones, config
-consistency (keyword ids exist, local/final answers present & discoverable), and final-board slot
-validity. Run it after any content change.
+consistency (keyword ids exist, local/final answers present & discoverable, `requiresSolve`
+rooms exist), final-board slot validity, and solve balance (warns on any local slot whose
+category has no decoy in the room — single-option auto-fill). Run it after any content change.
 
 ---
 

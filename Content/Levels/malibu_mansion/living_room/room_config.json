@@ -25,15 +25,15 @@
         },
         {
           "prompt": "Bat the little speaker out where she can see it",
-          "requiresClue": "hidden_speaker",
-          "text": "She stares at it for a long moment. Something sharpens behind the movie-star eyes. 'That is not mine. That is not RUDEBEAK'S.' Then, quieter: 'The [film people] wire everything, you know. There are cables in my walls I have never been introduced to.'",
+          "requiresSolve": "living_room",
+          "text": "She stares at it for a long moment. Something sharpens behind the movie-star eyes. 'That is not mine. That is not RUDEBEAK'S.' Then, quieter: 'This house is full of other people's equipment, darling. The [film people] wire everything. The staff hold keys to everything. Even Derek has been buying gadgets. There are cables in my walls I have never been introduced to.'",
           "keywords": [
             { "displayText": "film people", "id": "hidden_speaker", "color": "crime" }
           ]
         }
       ],
       "texture": "Shared/placeholder_person",
-      "scale": 0.15
+      "scale": 0.20
     },
     {
       "id": "inspect_bird_handler",
@@ -45,8 +45,9 @@
       "topics": [
         {
           "prompt": "Sniff the untouched seed bowl",
-          "text": "'His six o'clock snack. [He never misses it]. Never.' Her voice is flat and certain, a metronome of worry. 'Whatever happened, by six o'clock he was already somewhere he could not smell this bowl.'",
+          "text": "'His [six o'clock snack]. [He never misses it]. Never.' Her voice is flat and certain, a metronome of worry. 'Whatever happened, by six o'clock he was already somewhere he could not smell this bowl.'",
           "keywords": [
+            { "displayText": "six o'clock snack", "id": "missed_snack_6pm", "color": "plot" },
             { "displayText": "He never misses it", "id": "broken_latch", "color": "crime" }
           ]
         },
@@ -73,7 +74,7 @@
         }
       ],
       "texture": "Shared/placeholder_person",
-      "scale": 0.15
+      "scale": 0.20
     },
     {
       "id": "inspect_birdcage",
@@ -115,10 +116,10 @@
     },
     {
       "id": "inspect_documentary_camera",
-      "text": "A film crew camera on a tripod. The red light says [Recording]. It's been on all day. Someone forgot to check if it was aimed at the [cage].",
+      "text": "A film crew camera on a tripod, red light on. You line up behind the lens: it frames the [chaise] perfectly - Vivienne's interview spot. The cage sits [just out of frame].",
       "keywords": [
-        { "displayText": "Recording", "id": "documentary_camera", "color": "misc" },
-        { "displayText": "cage", "id": "documentary_camera", "color": "misc" }
+        { "displayText": "chaise", "id": "documentary_camera", "color": "misc" },
+        { "displayText": "just out of frame", "id": "documentary_camera", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 0.11

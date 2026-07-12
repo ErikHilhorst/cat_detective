@@ -81,6 +81,10 @@ namespace CatDetective
         private readonly Dictionary<string, List<(string Name, string RoomId)>> _gateIndex = new();
         private readonly HashSet<string> _firedGateToasts = new();
 
+        // Solve-gate toast: solved room id -> characters (name, roomId) whose
+        // confrontation topic that solve unlocks.
+        private readonly Dictionary<string, List<(string Name, string RoomId)>> _solveGateIndex = new();
+
         // ── Notebook / inventory ───────────────────────────────────────────────
         private NotebookManager _notebook = null!;
         private MouseState      _prevMouseState;
@@ -126,8 +130,10 @@ namespace CatDetective
         private Rectangle _journalCloseRect;
 
         // Transient HUD toast (progression feedback: room solved, FINAL SOLVE locked, ...)
+        // Queued so back-to-back events (room solved + confrontation unlocked) both show.
         private string _toastMessage = "";
         private float  _toastTimer;
+        private readonly Queue<string> _toastQueue = new();
         private const float TOAST_DURATION = 4f;
 
         private static readonly Color[] _tabColors = new[]
@@ -185,8 +191,6 @@ namespace CatDetective
         // is recreated on every LoadRoom, so this is the only durable copy).
         private readonly Dictionary<string, string> _roomSolvedSentences = new();
 
-        // Clue ids referenced by the current room's keywords — the room counter's basis.
-        private readonly HashSet<string> _currentRoomClueIds = new();
 
         // Slot the player last clicked on the board; INSERT prefers it.
         private DeductionSlot? _insertTargetSlot;
@@ -270,8 +274,7 @@ namespace CatDetective
                 // Optional view arg opens the journal so board layouts can be captured.
                 if (_screenshotView == "journal" || _screenshotView == "final")
                 {
-                    foreach (var id in _currentRoomClueIds)
-                        _notebook.UnlockClue(id);
+                    _notebook.UnlockAllCluesForRoom(_currentRoomId);
                     _isDeductionBoardOpen = true;
                     _isFinalSolveMode     = _screenshotView == "final";
                     if (_isFinalSolveMode)
@@ -307,6 +310,7 @@ namespace CatDetective
                     {
                         _currentInteraction  = best.Data;
                         _currentKeywords     = bestKw;
+                        _dialogueEntityId    = best.Id;
                         _dialoguePages       = bestText.Split('|');
                         _currentDialoguePage = 0;
                         _typewriterTimer     = 999999f;   // fully typed ((int) cast safe)
@@ -325,8 +329,12 @@ namespace CatDetective
                     if (fullest?.Data != null)
                     {
                         foreach (var topic in fullest.Data.Topics)
+                        {
                             if (topic.RequiresClue.Length > 0)
                                 _notebook.UnlockClue(topic.RequiresClue);
+                            if (topic.RequiresSolve.Length > 0)
+                                _roomSolvedStates[topic.RequiresSolve] = true;
+                        }
                         _currentInteraction  = fullest.Data;
                         _currentKeywords     = fullest.Data.Keywords;
                         _dialogueEntityId    = fullest.Id;
@@ -412,12 +420,6 @@ namespace CatDetective
                 roomConfig.LocalDeductionClueIds,
                 id => _notebook.GetClue(id)?.Category);
             _insertTargetSlot = null;
-
-            // Room counter basis: every clue id this room's keywords can unlock.
-            _currentRoomClueIds.Clear();
-            foreach (var data in _interactionDatabase.Values)
-                foreach (var kw in data.Keywords)
-                    _currentRoomClueIds.Add(kw.Id);
 
             // Re-entering a solved room: show its board as a completed recap.
             if (_roomSolvedStates.TryGetValue(roomId, out var wasSolved) && wasSolved)
@@ -507,6 +509,7 @@ namespace CatDetective
         {
             _gateIndex.Clear();
             _firedGateToasts.Clear();
+            _solveGateIndex.Clear();
             foreach (var roomId in rooms)
             {
                 string configPath = Path.Combine(
@@ -521,15 +524,33 @@ namespace CatDetective
                         : ToDisplayName(entityId.Replace("inspect_", ""));
                     foreach (var topic in data.Topics)
                     {
-                        if (topic.RequiresClue.Length == 0) continue;
-                        if (!_gateIndex.TryGetValue(topic.RequiresClue, out var list))
-                            _gateIndex[topic.RequiresClue] = list = new();
-                        if (!list.Contains((name, roomId)))
-                            list.Add((name, roomId));
+                        if (topic.RequiresClue.Length > 0)
+                        {
+                            if (!_gateIndex.TryGetValue(topic.RequiresClue, out var list))
+                                _gateIndex[topic.RequiresClue] = list = new();
+                            if (!list.Contains((name, roomId)))
+                                list.Add((name, roomId));
+                        }
+                        if (topic.RequiresSolve.Length > 0)
+                        {
+                            if (!_solveGateIndex.TryGetValue(topic.RequiresSolve, out var list))
+                                _solveGateIndex[topic.RequiresSolve] = list = new();
+                            if (!list.Contains((name, roomId)))
+                                list.Add((name, roomId));
+                        }
                     }
                 }
             }
         }
+
+        /// <summary>
+        /// True if the topic's gates are satisfied: its gate clue (if any) is
+        /// unlocked AND its gate room (if any) has a solved local board.
+        /// </summary>
+        private bool IsTopicAvailable(DialogueTopic topic) =>
+            (topic.RequiresClue.Length == 0 || _notebook.IsUnlocked(topic.RequiresClue)) &&
+            (topic.RequiresSolve.Length == 0 ||
+             (_roomSolvedStates.TryGetValue(topic.RequiresSolve, out var solved) && solved));
 
         /// <summary>
         /// True if the entity offers at least one topic that is currently
@@ -542,8 +563,7 @@ namespace CatDetective
             var topics = entity.Data.Topics;
             for (int i = 0; i < topics.Length; i++)
             {
-                if (topics[i].RequiresClue.Length > 0 &&
-                    !_notebook.IsUnlocked(topics[i].RequiresClue))
+                if (!IsTopicAvailable(topics[i]))
                     continue;
                 if (!_visitedTopics.Contains($"{_currentRoomId}/{entity.Id}/{i}"))
                     return true;
@@ -578,7 +598,7 @@ namespace CatDetective
             var topics = _currentInteraction!.Topics;
             for (int i = 0; i < topics.Length; i++)
             {
-                if (topics[i].RequiresClue.Length == 0 || _notebook.IsUnlocked(topics[i].RequiresClue))
+                if (IsTopicAvailable(topics[i]))
                     _menuTopics.Add((topics[i], i));
             }
             _selectedTopicIndex = 0;
@@ -742,6 +762,17 @@ namespace CatDetective
                                             ? "All rooms solved - the FINAL SOLVE board is unlocked!"
                                             : $"Room solved! ({done}/{_caseRooms.Count}) " +
                                               "Solve every room to unlock the FINAL SOLVE.");
+
+                                        // Solve-gated confrontations: nudge toward the
+                                        // character(s) this deduction just cornered.
+                                        if (_solveGateIndex.TryGetValue(_currentRoomId, out var cornered))
+                                        {
+                                            string who = string.Join(" and ", cornered.ConvertAll(
+                                                g => g.RoomId == _currentRoomId
+                                                    ? g.Name
+                                                    : $"{g.Name} ({ToDisplayName(g.RoomId)})"));
+                                            ShowToast($"{who} might have some explaining to do...");
+                                        }
                                     }
                                 }
                             }
@@ -797,8 +828,16 @@ namespace CatDetective
 
                 // Toasts are hidden while the dialogue box is open (Pass 7), and gate
                 // toasts usually fire mid-dialogue - hold the timer until it can be seen.
-                if (_toastTimer > 0f && !_isDialogueActive)
-                    _toastTimer -= dt;
+                if (!_isDialogueActive)
+                {
+                    if (_toastTimer > 0f)
+                        _toastTimer -= dt;
+                    if (_toastTimer <= 0f && _toastQueue.Count > 0)
+                    {
+                        _toastMessage = _toastQueue.Dequeue();
+                        _toastTimer   = TOAST_DURATION;
+                    }
+                }
 
                 if (_isDialogueActive)
                 {
@@ -1094,6 +1133,20 @@ namespace CatDetective
                     const float dialogueScale = 0.72f;
                     var hintColor = new Color(90, 70, 50);
 
+                    // Name label: who/what the player is looking at, small, top-left
+                    // corner of the box (playtest: identities got lost between rooms).
+                    string nameLabel = _currentInteraction.DisplayName.Length > 0
+                        ? _currentInteraction.DisplayName
+                        : ToDisplayName(_dialogueEntityId.Replace("inspect_", ""));
+                    if (nameLabel.Length > 0)
+                    {
+                        const float nameScale = 0.58f;
+                        _spriteBatch.DrawString(_dialogueFont, nameLabel,
+                            new Vector2(boxRect.X + PAD_X, boxRect.Y + PAD_Y - 52),
+                            hintColor * 0.85f, 0f, Vector2.Zero, nameScale,
+                            SpriteEffects.None, 0f);
+                    }
+
                     if (_isTopicMenuOpen)
                     {
                         const float menuScale = 0.66f;
@@ -1201,15 +1254,15 @@ namespace CatDetective
                     }
 
                     // Clue counters: current room progress + case-wide total.
+                    // Room basis = clues whose roomId is this room, matching the
+                    // journal's Investigation overview.
                     if (!_isGameWon && !_isDeductionBoardOpen)
                     {
-                        int roomFound = 0;
-                        foreach (var c in _notebook.UnlockedClues)
-                            if (_currentRoomClueIds.Contains(c.Id)) roomFound++;
+                        var (roomFound, roomTotal) = _notebook.GetRoomClueCounts(_currentRoomId);
 
                         const float hudScale = 0.8f;
                         string hud = $"Clues ({ToDisplayName(_currentRoomId)}): " +
-                                     $"{roomFound}/{_currentRoomClueIds.Count}    " +
+                                     $"{roomFound}/{roomTotal}    " +
                                      $"Case: {_notebook.UnlockedClues.Count}/{_notebook.TotalClueCount}";
                         _spriteBatch.DrawString(_dialogueFont, hud, new Vector2(26, 18),
                             Color.Black * 0.6f, 0f, Vector2.Zero, hudScale, SpriteEffects.None, 0f);
@@ -1591,8 +1644,8 @@ namespace CatDetective
 
         private void ShowToast(string message)
         {
-            _toastMessage = message;
-            _toastTimer   = TOAST_DURATION;
+            // Queued; Update() promotes the next message once the current one expires.
+            _toastQueue.Enqueue(message);
         }
 
         /// <summary>
@@ -1791,9 +1844,18 @@ namespace CatDetective
                 int pos = 0;
                 while (pos < spanText.Length)
                 {
+                    // Explicit '\n' forces a line break (bulleted lists, radio logs).
+                    if (spanText[pos] == '\n')
+                    {
+                        x  = origin.X;
+                        y += lineH;
+                        pos++;
+                        continue;
+                    }
                     bool isSpace = spanText[pos] == ' ';
                     int  start   = pos;
-                    while (pos < spanText.Length && (spanText[pos] == ' ') == isSpace)
+                    while (pos < spanText.Length && spanText[pos] != '\n' &&
+                           (spanText[pos] == ' ') == isSpace)
                         pos++;
                     string token  = spanText[start..pos];
                     float  tokenW = font.MeasureString(token).X * scale;

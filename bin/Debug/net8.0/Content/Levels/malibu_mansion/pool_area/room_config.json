@@ -19,8 +19,9 @@
         },
         {
           "prompt": "Investigate her abandoned spritz",
-          "text": "'It is a spritz, darling, and it is warm now. Like everything else about this evening.' She swirls it sadly. 'You know what I keep thinking about? The cases had [little squeaky wheels]. Rrr, rrr, rrr, all the way up the garden path. Some of us were trying to VIBE.'",
+          "text": "'It is a spritz, darling, and it is [warm now]. Like everything else about this evening.' She swirls it sadly. 'You know what I keep thinking about? The cases had [little squeaky wheels]. Rrr, rrr, rrr, all the way up the garden path. Some of us were trying to VIBE.'",
           "keywords": [
+            { "displayText": "warm now", "id": "warm_spritz", "color": "misc" },
             { "displayText": "little squeaky wheels", "id": "eyewitness_645pm", "color": "plot" }
           ]
         },
@@ -34,14 +35,16 @@
         }
       ],
       "texture": "Shared/placeholder_person",
-      "scale": 0.15
+      "scale": 0.20
     },
     {
       "id": "inspect_pool_selfie",
-      "text": "Coco's phone has a pool selfie timestamped [6:47 PM]. In the blurry background, a [figure with large dark cases] rolls up the garden path. And at the very edge of the frame, half-hidden behind the potting shed: a straw hat, peeking.",
+      "name": "Coco's Phone",
+      "text": "Coco's phone has a pool selfie timestamped [6:47 PM]. In the blurry background, a [figure with large dark cases] rolls up the garden path. And at the very edge of the frame, half-hidden behind the potting shed: a [straw hat], peeking.",
       "keywords": [
         { "displayText": "6:47 PM", "id": "selfie_figure_cases", "color": "plot" },
-        { "displayText": "figure with large dark cases", "id": "selfie_figure_cases", "color": "plot" }
+        { "displayText": "figure with large dark cases", "id": "selfie_figure_cases", "color": "plot" },
+        { "displayText": "straw hat", "id": "straw_hat_witness", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 0.07

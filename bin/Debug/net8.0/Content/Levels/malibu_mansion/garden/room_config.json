@@ -18,14 +18,15 @@
         },
         {
           "prompt": "Sniff his muddy glove, loudly",
-          "text": "'The mud? BULBS. I was planting bulbs.' He holds up a [mud-caked glove] as evidence, realizes evidence is exactly the problem, and puts it behind his back. 'Daffodils. For spring. Ask the flower bed.' The flower bed, freshly turned, backs him up. His other hand, you notice, is bare.",
+          "text": "'The mud? BULBS. I was planting bulbs.' He holds up a [mud-caked glove] as evidence, realizes evidence is exactly the problem, and puts it behind his back. 'Daffodils. For spring. Ask the flower bed.' The flower bed, [freshly turned], backs him up. His other hand, you notice, is bare.",
           "keywords": [
-            { "displayText": "mud-caked glove", "id": "muddy_gloves", "color": "misc" }
+            { "displayText": "mud-caked glove", "id": "muddy_gloves", "color": "misc" },
+            { "displayText": "freshly turned", "id": "flower_bed_bulbs", "color": "misc" }
           ]
         },
         {
           "prompt": "Stare from his bare left hand to the mansion. Slowly.",
-          "requiresClue": "glove_by_cage",
+          "requiresSolve": "garden",
           "text": "The snipping stops. The fountain burbles. Somewhere, a gull. His bare hand curls closed. You wait the way only a cat can wait.|'ALRIGHT. FINE. It is my glove. By the cage. [I broke the latch] - me, with the shears, just before six. Then the front door went, and I panicked, and I ran for the garden.' It falls out of him like loose soil.|'I hid behind the shed. Rudebeak let HIMSELF out - went straight to his bird bath, happy as spring. Then one of those television people came wheeling [big black boxes] through, and I stayed hidden. I am a coward, cat. But I am not a thief.'",
           "keywords": [
             { "displayText": "I broke the latch", "id": "shears_match_latch", "color": "misc" },
@@ -34,7 +35,7 @@
         }
       ],
       "texture": "Shared/placeholder_person",
-      "scale": 0.15
+      "scale": 0.20
     },
     {
       "id": "inspect_pruning_shears",
@@ -48,10 +49,11 @@
     },
     {
       "id": "inspect_hidden_cases",
-      "text": "Behind the potting shed, under a tarp thrown in a hurry: two big black road cases. The stencil reads '[Acoustic Isolation] - No Sound Transmission.' You press an ear to one. [Silence]. The deep, upholstered kind.",
+      "text": "Behind the potting shed, under a tarp thrown in a hurry: two big black road cases. The stencil reads '[Acoustic Isolation] - No Sound Transmission.' You press an ear to one. [Silence]. The deep, upholstered kind. The grass around them is pressed flat by [heavy boot prints].",
       "keywords": [
         { "displayText": "Acoustic Isolation", "id": "sound_proof_cases", "color": "crime" },
-        { "displayText": "Silence", "id": "sound_proof_cases", "color": "crime" }
+        { "displayText": "Silence", "id": "sound_proof_cases", "color": "crime" },
+        { "displayText": "heavy boot prints", "id": "boot_prints_shed", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 0.13
@@ -67,6 +69,6 @@
       "scale": 0.11
     }
   ],
-  "localDeductionSentence": "[Basil the Gardener] won't stop apologizing to the hedge, his [Bent Shears] fit the snapped latch - and the [Evening Feathers] say Rudebeak was loose in this garden tonight.",
-  "localDeductionClueIds": ["the_gardener", "shears_match_latch", "bird_bath_feathers"]
+  "localDeductionSentence": "[Basil the Gardener] won't stop apologizing to the hedge, his [Bent Shears] fit the snapped latch, his [Muddy Glove] has lost its partner - and the [Evening Feathers] say Rudebeak was loose in this garden tonight.",
+  "localDeductionClueIds": ["the_gardener", "shears_match_latch", "muddy_gloves", "bird_bath_feathers"]
 }

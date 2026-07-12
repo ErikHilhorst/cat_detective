@@ -135,14 +135,20 @@ namespace CatDetective.Systems
                     return false;
                 }
             }
+            int checkedSlots = 0, correct = 0;
             foreach (var slot in Slots)
             {
-                if (!string.IsNullOrEmpty(slot.CorrectClueId) &&
-                    slot.SelectedClueId != slot.CorrectClueId)
-                {
-                    ValidationMessage = "Incorrect logic.";
-                    return false;
-                }
+                if (string.IsNullOrEmpty(slot.CorrectClueId)) continue;
+                checkedSlots++;
+                if (slot.SelectedClueId == slot.CorrectClueId) correct++;
+            }
+            if (correct < checkedSlots)
+            {
+                // Partial feedback turns a wrong submit into a deduction step
+                // instead of pure trial-and-error (playtest: solve order felt
+                // arbitrary with no signal which pieces already fit).
+                ValidationMessage = $"Incorrect logic - {correct}/{checkedSlots} fit.";
+                return false;
             }
             ValidationMessage = "Case closed!";
             return true;

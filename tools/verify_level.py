@@ -11,16 +11,20 @@ Checks:
    topics never carry unique clues - gates gate story, not completion, so the
    room clue counter always completes without backtracking); final sentence
    slots == finalSolveClueIds; every requiresClue id exists and is discoverable;
+   every requiresSolve id is a known room (solve-gated confrontation topics);
    every map Interactable name has a room_config entry and vice versa; all
    content strings are pure ASCII (sprite font limit).
+4. Solve balance (WARN): a local board slot whose category has no decoy in the
+   room's own clue pool is a single-option auto-fill, not a deduction.
 """
 import json, os, re, sys
 
 BASE = r"C:\Users\Erik\Desktop\Python projects\cat_detective\Content\Levels\malibu_mansion"
 ROOMS = ["entrance", "living_room", "bedroom", "library", "kitchen", "garden", "pool_area"]
 
-# Cat feet box (down-facing, worst case up-facing is wider): from Cat.cs,
-# width = frameWidth*scale*0.5, height = 32. Use ~70 wide to cover up-facing.
+# Cat feet box: from Cat.cs, width = frameWidth*scale*0.5, height = 32.
+# Actual widths are ~49 (down) / ~56 (up) at scale 0.28/0.32; keep checking
+# with 70 as a deliberate safety margin against future scale bumps.
 FEET_W, FEET_H = 70, 32
 
 errors, warnings = [], []
@@ -109,7 +113,8 @@ check_ascii("case_config", case)
 
 discoverable = set()          # ungated keywords, all rooms
 ungated_by_room = {}          # room -> set of ungated-unlockable clue ids
-gated = []                    # (requiresClue, {kw ids}) pairs, all rooms
+gated = []                    # ([requirements], {kw ids}) pairs, all rooms
+                              # a requirement is a clue id or "solve:<room>"
 for room in ROOMS:
     _, layers, cfg = maps[room]
     check_ascii(f"{room}/room_config", cfg)
@@ -136,11 +141,19 @@ for room in ROOMS:
                 if k["id"] not in db:
                     errors.append(f"{room}: keyword id '{k['id']}' ({i['id']} topic {ti}) not in clueDatabase")
                 kw_ids.add(k["id"])
-            req = t.get("requiresClue", "")
-            if req:
-                if req not in db:
-                    errors.append(f"{room}: {i['id']} topic {ti} requiresClue '{req}' not in clueDatabase")
-                gated.append((req, kw_ids))
+            reqs = []
+            req_clue = t.get("requiresClue", "")
+            if req_clue:
+                if req_clue not in db:
+                    errors.append(f"{room}: {i['id']} topic {ti} requiresClue '{req_clue}' not in clueDatabase")
+                reqs.append(req_clue)
+            req_solve = t.get("requiresSolve", "")
+            if req_solve:
+                if req_solve not in ROOMS:
+                    errors.append(f"{room}: {i['id']} topic {ti} requiresSolve '{req_solve}' is not a room")
+                reqs.append(f"solve:{req_solve}")
+            if reqs:
+                gated.append((reqs, kw_ids))
             else:
                 room_kw_ungated |= kw_ids
     ungated_by_room[room] = room_kw_ungated
@@ -150,23 +163,44 @@ for room in ROOMS:
     answers = cfg.get("localDeductionClueIds", [])
     if len(slots) != len(answers):
         errors.append(f"{room}: {len(slots)} slots vs {len(answers)} localDeductionClueIds")
+    answers_ok = True
     for a in answers:
         if a not in room_kw_ungated:
             errors.append(f"{room}: local answer '{a}' not discoverable via ungated keywords in this room")
+            answers_ok = False
+    # A room whose answers are all reachable is solvable, so its solve-gated
+    # confrontation topics are reachable too.
+    if answers_ok and answers:
+        discoverable.add(f"solve:{room}")
+
+    # Solve balance: a slot category with no spare clue in the room pool is an
+    # auto-fill. Count slots per category vs clues of that category in the room.
+    slot_cats = {}
+    for a in answers:
+        if a in db:
+            slot_cats[db[a]["category"]] = slot_cats.get(db[a]["category"], 0) + 1
+    for cat, n_slots in slot_cats.items():
+        options = sum(1 for c in db.values()
+                      if c.get("roomId") == room and c.get("category") == cat)
+        if options <= n_slots:
+            warnings.append(f"{room}: {cat} slot(s) x{n_slots} but only {options} {cat} "
+                            f"clue(s) in the room - single-option auto-fill, add a decoy")
+
     print(f"{room}: {len(map_names)} interactables, {topic_count} topics, "
           f"{len(room_kw_ungated)} ungated clues, {len(slots)} local slots")
 
-# Gated topic keywords become discoverable once their gate clue is; iterate to fixpoint.
+# Gated topic keywords become discoverable once ALL their gates are; iterate to fixpoint.
 changed = True
 while changed:
     changed = False
-    for req, kw_ids in gated:
-        if req in discoverable and not kw_ids <= discoverable:
+    for reqs, kw_ids in gated:
+        if all(r in discoverable for r in reqs) and not kw_ids <= discoverable:
             discoverable |= kw_ids
             changed = True
-for req, _ in gated:
-    if req in db and req not in discoverable:
-        errors.append(f"gated topic requires '{req}' but that clue is never discoverable")
+for reqs, _ in gated:
+    for req in reqs:
+        if req in db and req not in discoverable:
+            errors.append(f"gated topic requires '{req}' but that clue is never discoverable")
 
 for cid in db:
     if cid not in discoverable:

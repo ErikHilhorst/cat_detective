@@ -86,6 +86,8 @@ namespace CatDetective.Map
         [JsonPropertyName("keywords")]     public List<KeywordConfigData> Keywords     { get; set; } = new();
         /// <summary>Clue id required before the topic shows on the menu. Empty = always.</summary>
         [JsonPropertyName("requiresClue")] public string                  RequiresClue { get; set; } = "";
+        /// <summary>Room id whose local board must be solved before the topic shows. Empty = never solve-gated.</summary>
+        [JsonPropertyName("requiresSolve")] public string                 RequiresSolve { get; set; } = "";
     }
 
     internal sealed class KeywordConfigData
@@ -222,7 +224,7 @@ namespace CatDetective.Map
                 {
                     var tc = i.Topics[t];
                     topics[t] = new DialogueTopic(tc.Prompt, tc.Text,
-                        ParseKeywords(tc.Keywords), tc.RequiresClue);
+                        ParseKeywords(tc.Keywords), tc.RequiresClue, tc.RequiresSolve);
                 }
                 dict[i.Id] = new InteractionData(i.Text, ParseKeywords(i.Keywords),
                     i.Scale, i.Align, i.OffsetX, i.OffsetY, i.Texture, topics, i.Name);

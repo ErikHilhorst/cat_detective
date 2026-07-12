@@ -37,8 +37,8 @@ namespace CatDetective.Entities
         private const int   FEET_BOX_HEIGHT = 32;   // px, covers only the paws on the floor
 
         // ── Sprite scale ───────────────────────────────────────────────────────
-        private const float SPRITE_SCALE_DOWN = 0.35f;
-        private const float SPRITE_SCALE_UP   = 0.40f;
+        private const float SPRITE_SCALE_DOWN = 0.28f;
+        private const float SPRITE_SCALE_UP   = 0.32f;
 
         private float CurrentScale => _facingUp ? SPRITE_SCALE_UP : SPRITE_SCALE_DOWN;
 
@@ -223,7 +223,7 @@ namespace CatDetective.Entities
     var shadowOrigin = new Vector2(ShadowTexture.Width * 0.5f, ShadowTexture.Height * 0.5f);
     
     // Offset significantly UP (negative Y) to close the transparent gap under the paws
-    var shadowPos = Position + new Vector2(0f, -14f);
+    var shadowPos = Position + new Vector2(0f, -12f);
 
     spriteBatch.Draw(
         ShadowTexture,
@@ -233,7 +233,7 @@ namespace CatDetective.Entities
         rotation: 0f,
         origin:   shadowOrigin,
         // Flattened Y scale to look painted onto the isometric floor
-        scale:    new Vector2(0.11f, 0.05f),
+        scale:    new Vector2(0.09f, 0.04f),
         effects:  SpriteEffects.None,
         layerDepth: 0f);
 }

@@ -33,12 +33,21 @@ namespace CatDetective.Entities
         /// <summary>Clue id that must be unlocked before this topic appears. Empty = always shown.</summary>
         public string RequiresClue { get; }
 
-        public DialogueTopic(string prompt, string text, Keyword[] keywords, string requiresClue = "")
+        /// <summary>
+        /// Room id whose local deduction board must be solved before this topic
+        /// appears - the "confrontation" reward for a room solve. Empty = no solve gate.
+        /// Combines with <see cref="RequiresClue"/> as AND when both are set.
+        /// </summary>
+        public string RequiresSolve { get; }
+
+        public DialogueTopic(string prompt, string text, Keyword[] keywords,
+            string requiresClue = "", string requiresSolve = "")
         {
-            Prompt       = prompt;
-            Text         = text;
-            Keywords     = keywords;
-            RequiresClue = requiresClue;
+            Prompt        = prompt;
+            Text          = text;
+            Keywords      = keywords;
+            RequiresClue  = requiresClue;
+            RequiresSolve = requiresSolve;
         }
     }
 

@@ -6,7 +6,7 @@
       "name": "Wexler",
       "text": "The Director, [Wexler], has three cameras of footage to review and is instead watching the room like it owes him a third act. He frames you between his fingers. 'Cat. Great texture. Stay in the light.'",
       "keywords": [
-        { "displayText": "Wexler", "id": "director_notes", "color": "misc" }
+        { "displayText": "Wexler", "id": "the_director", "color": "misc" }
       ],
       "topics": [
         {
@@ -33,7 +33,7 @@
         }
       ],
       "texture": "Shared/placeholder_person",
-      "scale": 0.15
+      "scale": 0.20
     },
     {
       "id": "inspect_sound_guy",
@@ -55,7 +55,7 @@
           "prompt": "Paw at his headphones",
           "text": "He grabs them protectively. 'I'm monitoring levels.' You look at the jack. He looks at the jack. The cable ends a foot short of the board, plugged into [nothing at all]. 'Wireless monitoring,' he explains, to a cat, with total conviction.",
           "keywords": [
-            { "displayText": "nothing at all", "id": "d_marsh_sound_guy", "color": "crime" }
+            { "displayText": "nothing at all", "id": "marsh_headphones", "color": "crime" }
           ]
         },
         {
@@ -73,10 +73,18 @@
           "keywords": [
             { "displayText": "EMPTY", "id": "sound_proof_cases", "color": "crime" }
           ]
+        },
+        {
+          "prompt": "Sit on the mixing board and stare into his soul",
+          "requiresSolve": "library",
+          "text": "He tries to wait you out. Nobody has ever waited out a cat.|'FINE. You want the truth? That bird ruined [forty-seven takes]. FORTY-SEVEN. Do you know what that does to a person who listens for a living? I hear the squawk when I close my eyes.'|He catches his breath, and something careful comes back into his voice. 'But nobody HURT anybody. Wherever that bird is, I am sure he is somewhere dark, and padded, and VERY comfortable. Seed. Water. A little mirror, probably.' He glances at the road case. He looks away slowly, like the road case is an ex.",
+          "keywords": [
+            { "displayText": "forty-seven takes", "id": "ruined_takes", "color": "crime" }
+          ]
         }
       ],
       "texture": "Shared/placeholder_person",
-      "scale": 0.15
+      "scale": 0.20
     },
     {
       "id": "inspect_mixing_board",

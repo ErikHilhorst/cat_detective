@@ -33,8 +33,28 @@
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/kitchen/bg_base.jpg</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/garden/bg_base.jpg</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/pool_area/bg_base.jpg</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/entrance/Interactables/inspect_police_officer.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/entrance/Interactables/inspect_manager.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_bird_handler.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_movie_star.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/bedroom/Interactables/inspect_husband.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/library/Interactables/inspect_director.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/library/Interactables/inspect_sound_guy.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/kitchen/Interactables/inspect_maid.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/garden/Interactables/inspect_gardener.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/pool_area/Interactables/inspect_socialite.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
