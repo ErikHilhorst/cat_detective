@@ -77,6 +77,13 @@ namespace CatDetective.Map
         [JsonPropertyName("offsetY")]  public int                     OffsetY  { get; set; } = 0;
         /// <summary>Fallback sprite content path (e.g. "Shared/placeholder_object").</summary>
         [JsonPropertyName("texture")]  public string                  Texture  { get; set; } = "";
+        /// <summary>Display name swap once the reveal clue is found ("The Sound Guy" -> "D. Marsh").</summary>
+        [JsonPropertyName("revealName")]           public string RevealName           { get; set; } = "";
+        [JsonPropertyName("revealNameOnClue")]     public string RevealNameOnClue     { get; set; } = "";
+        /// <summary>Alternate intro once its gates are satisfied; brackets must map to the regular keywords.</summary>
+        [JsonPropertyName("altText")]              public string AltText              { get; set; } = "";
+        [JsonPropertyName("altTextRequiresClue")]  public string AltTextRequiresClue  { get; set; } = "";
+        [JsonPropertyName("altTextRequiresSolve")] public string AltTextRequiresSolve { get; set; } = "";
     }
 
     internal sealed class TopicConfigData
@@ -227,7 +234,9 @@ namespace CatDetective.Map
                         ParseKeywords(tc.Keywords), tc.RequiresClue, tc.RequiresSolve);
                 }
                 dict[i.Id] = new InteractionData(i.Text, ParseKeywords(i.Keywords),
-                    i.Scale, i.Align, i.OffsetX, i.OffsetY, i.Texture, topics, i.Name);
+                    i.Scale, i.Align, i.OffsetX, i.OffsetY, i.Texture, topics, i.Name,
+                    i.RevealName, i.RevealNameOnClue,
+                    i.AltText, i.AltTextRequiresClue, i.AltTextRequiresSolve);
             }
             return dict;
         }

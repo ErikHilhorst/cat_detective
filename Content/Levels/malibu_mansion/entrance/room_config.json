@@ -26,7 +26,7 @@
         {
           "prompt": "Nudge the guest registry toward him",
           "requiresClue": "guest_registry",
-          "text": "'The book? Everyone signs it. The crew called it old-fashioned. I call it evidence.' He taps the crew column without reading it. 'One of them signed in [half an hour before] the rest of his own call sheet. Said he wanted to beat traffic. Nobody beats traffic INTO Malibu, cat.'",
+          "text": "'The book? Everyone signs it. The crew called it old-fashioned. I call it evidence.' He taps the page without reading it. 'More than one of these arrival times smells off to me. People drift in [half an hour before] anyone expects them, sign sloppy, blame traffic.'|He straightens back to his post. 'Somebody's evening in this book does not add up. Whose? That's your department, whiskers.'",
           "keywords": [
             { "displayText": "half an hour before", "id": "guest_registry", "color": "misc" }
           ]
@@ -38,7 +38,9 @@
     {
       "id": "inspect_manager",
       "name": "Chip Sterling",
-      "text": "The Manager, [Chip Sterling], paces a groove into the rug, phone welded to his ear. 'No comment. NO comment. Fine, one comment: my client LOVES animals.' He hangs up and stares at nothing. You memorize his face.",
+      "altText": "[Chip Sterling] has stopped pacing. The phone hangs dark at his side while he watches you work the room. 'Still on the case? Good. Whatever you are doing, do it faster - find that bird before the morning shows do.'",
+      "altTextRequiresClue": "pr_disaster",
+      "text": "The Manager, [Chip Sterling], paces a groove into the rug, phone welded to his ear. 'No comment. NO comment. Fine, one comment: my client LOVES animals.' He hangs up and stares at nothing. You memorize his face.|He points the dead phone at you. 'One rule, cat. Nobody repeats what that bird says. Rudebeak has opinions about everyone in this house, and none of them are printable.'",
       "keywords": [
         { "displayText": "Chip Sterling", "id": "pr_disaster", "color": "misc" }
       ],
@@ -52,7 +54,7 @@
         },
         {
           "prompt": "Swat the phone out of his hand mid-pace",
-          "text": "He catches it one-handed without looking. A man with practice. 'That bird is not just a bird. Rudebeak has a documentary deal, and I take [fifteen percent] of everything my clients earn. Feathers included.' He hears himself. 'Which is exactly why I would never LOSE him.'",
+          "text": "He catches it one-handed without looking. A man with practice. 'That bird is not just a bird. Rudebeak has a documentary deal, and I take [fifteen percent] of everything my clients earn. Feathers included.'|'Is he charming? No. He heckled a talk show host until the man cried. But rude SELLS, cat.' He hears himself. 'Which is exactly why I would never LOSE him.'",
           "keywords": [
             { "displayText": "fifteen percent", "id": "managers_commission", "color": "misc" }
           ]
@@ -60,7 +62,7 @@
         {
           "prompt": "Stare at the sealed door with him",
           "requiresClue": "lockdown_815pm",
-          "text": "'Yeah. Locked in with a crime scene and a film crew. My publicist says stay visible, look concerned.' He practices a concerned face in the hall mirror. It needs work. 'Want my theory? Whoever did this is [still in the house]. Nobody has left since eight-fifteen.'",
+          "text": "'Yeah. Locked in with a crime scene and a film crew. My publicist says stay visible, look concerned.' He practices a concerned face in the hall mirror. It needs work.|'Want my theory? Whoever did this is [still in the house]. Nobody has left since eight-fifteen.'",
           "keywords": [
             { "displayText": "still in the house", "id": "lockdown_815pm", "color": "misc" }
           ]
@@ -83,7 +85,7 @@
     {
       "id": "inspect_guest_registry",
       "name": "Guest Registry",
-      "text": "A formal sign-in book by the entrance. [The whole household] parades through it:\n- Wexler, director - 4:15 PM\n- Petra, bird handler (plus one macaw) - 5:05 PM\n- Coco, socialite - 5:50 PM\n- Staff, signed in since morning\nThe film crew's column begins at [6:30 PM].",
+      "text": "A formal sign-in book by the entrance. [The whole household] parades through it:\n- Wexler, director - 4:15 PM\n- Petra, bird handler (plus one macaw) - 5:05 PM\n- Coco, socialite - 5:50 PM\n- Staff, signed in since morning|The film crew's column begins at [6:30 PM]. The signatures blur together - hurried, overlapping, hard to count.",
       "keywords": [
         { "displayText": "The whole household", "id": "household_roster", "color": "misc" },
         { "displayText": "6:30 PM", "id": "guest_registry", "color": "misc" }

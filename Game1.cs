@@ -4,6 +4,7 @@ using CatDetective.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -48,6 +49,9 @@ namespace CatDetective
         private Texture2D _bgBase       = null!;
         private Texture2D _sunbeamsMask = null!;
 
+        // ── Audio ──────────────────────────────────────────────────────────────
+        private Song? _bgMusic;
+
         // ── Entities ───────────────────────────────────────────────────────────
         private Cat        _cat             = null!;
         private List<Prop> _foregroundProps = new();
@@ -85,6 +89,11 @@ namespace CatDetective
         // confrontation topic that solve unlocks.
         private readonly Dictionary<string, List<(string Name, string RoomId)>> _solveGateIndex = new();
 
+        // Every requiresSolve topic in the case is a confrontation; the FINAL SOLVE
+        // board stays locked until each one has been heard (visited).
+        private readonly List<(string RoomId, string EntityId, int TopicIndex, string Name)>
+            _confrontationTopics = new();
+
         // ── Notebook / inventory ───────────────────────────────────────────────
         private NotebookManager _notebook = null!;
         private MouseState      _prevMouseState;
@@ -97,6 +106,27 @@ namespace CatDetective
 
         private bool AllRoomsSolved =>
             _roomSolvedStates.Count > 0 && !_roomSolvedStates.ContainsValue(false);
+
+        private bool IsConfrontationHeard((string RoomId, string EntityId, int TopicIndex, string Name) c) =>
+            _visitedTopics.Contains($"{c.RoomId}/{c.EntityId}/{c.TopicIndex}");
+
+        private bool AllConfrontationsHeard
+        {
+            get
+            {
+                foreach (var c in _confrontationTopics)
+                    if (!IsConfrontationHeard(c)) return false;
+                return true;
+            }
+        }
+
+        private int HeardConfrontationCount()
+        {
+            int n = 0;
+            foreach (var c in _confrontationTopics)
+                if (IsConfrontationHeard(c)) n++;
+            return n;
+        }
 
         // Journal (two-page deduction board) UI state
         private ClueCategory _activeTab            = ClueCategory.Who;
@@ -155,6 +185,28 @@ namespace CatDetective
         private int      _currentDialoguePage  = 0;
         private float    _typewriterTimer       = 0f;
         private const float TYPEWRITER_SPEED    = 45f;
+
+        // ── Dialogue box geometry (shared by Pass 6 and PaginateDialogue) ─────
+        private const int   DIALOGUE_PAD_X      = 140;
+        private const int   DIALOGUE_PAD_Y      = 100;
+        private const float DIALOGUE_TEXT_SCALE = 0.72f;
+        private Rectangle DialogueBoxRect
+        {
+            get
+            {
+                int boxW = Math.Min(1400, SCREEN_WIDTH - 40);
+                return new Rectangle((SCREEN_WIDTH - boxW) / 2, SCREEN_HEIGHT - 450 - 40, boxW, 450);
+            }
+        }
+
+        // ── Dialogue portrait: top-crop of the speaker's own sprite ───────────
+        // Characters only (entities with topics); reserves a fixed text shift so
+        // pagination and drawing agree on the wrap width.
+        private Texture2D? _dialoguePortrait;
+        private Rectangle  _dialoguePortraitSource;
+        private const int PORTRAIT_MAX_W    = 300;
+        private const int PORTRAIT_MAX_H    = 280;
+        private const int PORTRAIT_TEXT_GAP = 24;
 
         // ── Debug overlay ──────────────────────────────────────────────────────
         private Texture2D     _debugPixel  = null!;
@@ -311,7 +363,8 @@ namespace CatDetective
                         _currentInteraction  = best.Data;
                         _currentKeywords     = bestKw;
                         _dialogueEntityId    = best.Id;
-                        _dialoguePages       = bestText.Split('|');
+                        SetDialoguePortrait(best);
+                        _dialoguePages       = PaginateDialogue(bestText, _dialoguePortrait != null);
                         _currentDialoguePage = 0;
                         _typewriterTimer     = 999999f;   // fully typed ((int) cast safe)
                         _isDialogueActive    = true;
@@ -338,7 +391,8 @@ namespace CatDetective
                         _currentInteraction  = fullest.Data;
                         _currentKeywords     = fullest.Data.Keywords;
                         _dialogueEntityId    = fullest.Id;
-                        _dialoguePages       = fullest.Data.Text.Split('|');
+                        SetDialoguePortrait(fullest);
+                        _dialoguePages       = PaginateDialogue(fullest.Data.Text, _dialoguePortrait != null);
                         _currentDialoguePage = 0;
                         _typewriterTimer     = 999999f;
                         _isDialogueActive    = true;
@@ -361,6 +415,16 @@ namespace CatDetective
             _hotReloadTimer       = 0f;
 
             _currentCaseId = caseId;
+
+            // Background music: starts when the case is entered, loops for its
+            // whole duration. Skipped in screenshot mode (headless captures).
+            if (!_screenshotMode && _bgMusic == null)
+            {
+                _bgMusic = Content.Load<Song>("Shared/moonlit_cat_case");
+                MediaPlayer.IsRepeating = true;
+                MediaPlayer.Volume      = 0.5f;
+                MediaPlayer.Play(_bgMusic);
+            }
 
             _sunbeamsMask = Content.Load<Texture2D>("Shared/mask_sunbeams");
 
@@ -402,6 +466,7 @@ namespace CatDetective
             _isDialogueActive   = false;
             _currentInteraction = null;
             _isTopicMenuOpen    = false;
+            _dialoguePortrait   = null;
 
             _currentRoomId  = roomId;
             _spawnPointName = spawnPointName;
@@ -510,6 +575,7 @@ namespace CatDetective
             _gateIndex.Clear();
             _firedGateToasts.Clear();
             _solveGateIndex.Clear();
+            _confrontationTopics.Clear();
             foreach (var roomId in rooms)
             {
                 string configPath = Path.Combine(
@@ -522,8 +588,9 @@ namespace CatDetective
                     string name = data.DisplayName.Length > 0
                         ? data.DisplayName
                         : ToDisplayName(entityId.Replace("inspect_", ""));
-                    foreach (var topic in data.Topics)
+                    for (int t = 0; t < data.Topics.Length; t++)
                     {
+                        var topic = data.Topics[t];
                         if (topic.RequiresClue.Length > 0)
                         {
                             if (!_gateIndex.TryGetValue(topic.RequiresClue, out var list))
@@ -537,6 +604,9 @@ namespace CatDetective
                                 _solveGateIndex[topic.RequiresSolve] = list = new();
                             if (!list.Contains((name, roomId)))
                                 list.Add((name, roomId));
+
+                            // Confrontation registry for the FINAL SOLVE lock.
+                            _confrontationTopics.Add((roomId, entityId, t, name));
                         }
                     }
                 }
@@ -544,13 +614,32 @@ namespace CatDetective
         }
 
         /// <summary>
-        /// True if the topic's gates are satisfied: its gate clue (if any) is
-        /// unlocked AND its gate room (if any) has a solved local board.
+        /// True when a (clue, solve) gate pair is satisfied: the gate clue (if any)
+        /// is unlocked AND the gate room (if any) has a solved local board.
+        /// Shared by topics and alt-intro texts.
         /// </summary>
+        private bool GateSatisfied(string requiresClue, string requiresSolve) =>
+            (requiresClue.Length == 0 || _notebook.IsUnlocked(requiresClue)) &&
+            (requiresSolve.Length == 0 ||
+             (_roomSolvedStates.TryGetValue(requiresSolve, out var solved) && solved));
+
         private bool IsTopicAvailable(DialogueTopic topic) =>
-            (topic.RequiresClue.Length == 0 || _notebook.IsUnlocked(topic.RequiresClue)) &&
-            (topic.RequiresSolve.Length == 0 ||
-             (_roomSolvedStates.TryGetValue(topic.RequiresSolve, out var solved) && solved));
+            GateSatisfied(topic.RequiresClue, topic.RequiresSolve);
+
+        /// <summary>
+        /// Dialogue-label name: applies the revealName swap ("The Sound Guy" ->
+        /// "D. Marsh") once its clue is found. Toasts deliberately do NOT use this
+        /// (BuildGateIndex captures the pre-reveal name - the anti-leak rule).
+        /// </summary>
+        private string ResolveDisplayName(InteractionData data, string entityId)
+        {
+            if (data.RevealName.Length > 0 && data.RevealNameOnClue.Length > 0 &&
+                _notebook.IsUnlocked(data.RevealNameOnClue))
+                return data.RevealName;
+            return data.DisplayName.Length > 0
+                ? data.DisplayName
+                : ToDisplayName(entityId.Replace("inspect_", ""));
+        }
 
         /// <summary>
         /// True if the entity offers at least one topic that is currently
@@ -759,19 +848,22 @@ namespace CatDetective
 
                                         int done = SolvedRoomCount();
                                         ShowToast(done == _caseRooms.Count
-                                            ? "All rooms solved - the FINAL SOLVE board is unlocked!"
+                                            ? (AllConfrontationsHeard
+                                                ? "All rooms solved - the FINAL SOLVE board is unlocked!"
+                                                : "All rooms solved - confront the suspects to unlock the FINAL SOLVE.")
                                             : $"Room solved! ({done}/{_caseRooms.Count}) " +
                                               "Solve every room to unlock the FINAL SOLVE.");
 
                                         // Solve-gated confrontations: nudge toward the
                                         // character(s) this deduction just cornered.
+                                        // Always names the room (playtest: a bare name
+                                        // sent players hunting in the wrong room).
                                         if (_solveGateIndex.TryGetValue(_currentRoomId, out var cornered))
                                         {
                                             string who = string.Join(" and ", cornered.ConvertAll(
-                                                g => g.RoomId == _currentRoomId
-                                                    ? g.Name
-                                                    : $"{g.Name} ({ToDisplayName(g.RoomId)})"));
-                                            ShowToast($"{who} might have some explaining to do...");
+                                                g => $"{g.Name} ({ToDisplayName(g.RoomId)})"));
+                                            ShowToast($"Your deduction corners {who} - " +
+                                                      "they have some explaining to do...");
                                         }
                                     }
                                 }
@@ -808,12 +900,26 @@ namespace CatDetective
                         }
                         else if (_finalSolveButtonRect.Contains(vm))
                         {
-                            if (AllRoomsSolved)
+                            if (AllRoomsSolved && AllConfrontationsHeard)
                             {
                                 _isFinalSolveMode     = true;
                                 _isDeductionBoardOpen = true;
                                 _selectedWordBankClue = null;
                                 _wordBankPage         = 0;
+                            }
+                            else if (AllRoomsSolved)
+                            {
+                                // Person/story nudge listing who still awaits their
+                                // confrontation - names from config (no reveal leak).
+                                var remaining = new List<string>();
+                                foreach (var c in _confrontationTopics)
+                                {
+                                    if (IsConfrontationHeard(c)) continue;
+                                    string label = $"{c.Name} ({ToDisplayName(c.RoomId)})";
+                                    if (!remaining.Contains(label)) remaining.Add(label);
+                                }
+                                ShowToast($"Locked - {string.Join(" and ", remaining)} " +
+                                          "still owe you some explaining...");
                             }
                             else
                             {
@@ -863,7 +969,7 @@ namespace CatDetective
                                 foreach (var kw in topic.Keywords)
                                     _notebook.UnlockClue(kw.Id);
                                 _currentKeywords     = topic.Keywords;
-                                _dialoguePages       = topic.Text.Split('|');
+                                _dialoguePages       = PaginateDialogue(topic.Text, _dialoguePortrait != null);
                                 _currentDialoguePage = 0;
                                 _typewriterTimer     = 0f;
                                 _isTopicMenuOpen     = false;
@@ -939,7 +1045,18 @@ namespace CatDetective
                         _currentInteraction  = _activeInteractable.Data;
                         _currentKeywords     = _currentInteraction.Keywords;
                         _dialogueEntityId    = _activeInteractable.Id;
-                        _dialoguePages       = _currentInteraction.Text.Split('|');
+                        SetDialoguePortrait(_activeInteractable);
+
+                        // Alt intro: characters acknowledge investigation progress.
+                        // The regular keywords still unlock and highlight either way.
+                        string introText =
+                            _currentInteraction.AltText.Length > 0 &&
+                            GateSatisfied(_currentInteraction.AltTextRequiresClue,
+                                          _currentInteraction.AltTextRequiresSolve)
+                                ? _currentInteraction.AltText
+                                : _currentInteraction.Text;
+
+                        _dialoguePages       = PaginateDialogue(introText, _dialoguePortrait != null);
                         _currentDialoguePage = 0;
                         _typewriterTimer     = 0f;
                         _isDialogueActive    = true;
@@ -1091,6 +1208,29 @@ namespace CatDetective
                             InteractionData.Crime, 0f, Vector2.Zero, markerScale,
                             SpriteEffects.None, 0f);
                     }
+
+                    // Doorway markers: permanent soft-white chevrons over transfer
+                    // zones so exits are discoverable without the F1 overlay.
+                    // Soft white, never amber - amber means "someone to talk to".
+                    const float doorScale = 1.0f;
+                    foreach (var zone in _transferZones)
+                    {
+                        float ndx = (zone.TriggerRect.Center.X - SCREEN_WIDTH  * 0.5f) / SCREEN_WIDTH;
+                        float ndy = (zone.TriggerRect.Center.Y - SCREEN_HEIGHT * 0.5f) / SCREEN_HEIGHT;
+                        string chevron = Math.Abs(ndx) > Math.Abs(ndy)
+                            ? (ndx < 0 ? "<" : ">")
+                            : (ndy < 0 ? "^" : "v");
+                        var chevronSize = _dialogueFont.MeasureString(chevron) * doorScale;
+                        var cpos = new Vector2(
+                            zone.TriggerRect.Center.X - chevronSize.X * 0.5f,
+                            zone.TriggerRect.Y - chevronSize.Y - 6f + bob);
+                        _spriteBatch.DrawString(_dialogueFont, chevron, cpos + new Vector2(3, 3),
+                            new Color(40, 30, 20) * 0.7f, 0f, Vector2.Zero, doorScale,
+                            SpriteEffects.None, 0f);
+                        _spriteBatch.DrawString(_dialogueFont, chevron, cpos,
+                            Color.White * 0.85f, 0f, Vector2.Zero, doorScale,
+                            SpriteEffects.None, 0f);
+                    }
                     _spriteBatch.End();
                 }
 
@@ -1116,33 +1256,47 @@ namespace CatDetective
                 // ════════════════════════════════════════════════════════════════
                 if (_isDialogueActive && _currentInteraction != null)
                 {
-                    int boxW    = Math.Min(1400, SCREEN_WIDTH - 40);
-                    var boxRect = new Rectangle(
-                        (SCREEN_WIDTH - boxW) / 2,
-                        SCREEN_HEIGHT - 450 - 40,
-                        boxW, 450);
+                    var boxRect = DialogueBoxRect;
 
-                    const int PAD_X = 140;
-                    const int PAD_Y = 100;
+                    const int PAD_X = DIALOGUE_PAD_X;
+                    const int PAD_Y = DIALOGUE_PAD_Y;
 
                     _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
                     _spriteBatch.Draw(_dialogueBoxTex, boxRect, Color.White);
 
                     // Dialogue text renders below full size so long clue texts stay
                     // inside the box art instead of running past its borders.
-                    const float dialogueScale = 0.72f;
+                    const float dialogueScale = DIALOGUE_TEXT_SCALE;
                     var hintColor = new Color(90, 70, 50);
+
+                    // Portrait: top crop of the speaker's own sprite, drawn larger
+                    // than in-world so faces read clearly. Text shifts right by the
+                    // reserved width (same shift PaginateDialogue budgeted for).
+                    float textX = boxRect.X + PAD_X;
+                    if (_dialoguePortrait != null)
+                    {
+                        var src = _dialoguePortraitSource;
+                        float pScale = Math.Min(
+                            (float)PORTRAIT_MAX_W / src.Width,
+                            (float)PORTRAIT_MAX_H / src.Height);
+                        var dest = new Rectangle(
+                            boxRect.X + PAD_X - 20,
+                            boxRect.Y + PAD_Y - 30,
+                            (int)(src.Width * pScale),
+                            (int)(src.Height * pScale));
+                        _spriteBatch.Draw(_dialoguePortrait, dest, src, Color.White);
+                        textX = boxRect.X + PAD_X + PORTRAIT_MAX_W + PORTRAIT_TEXT_GAP;
+                    }
+                    float textMaxWidth = boxRect.Right - PAD_X - textX;
 
                     // Name label: who/what the player is looking at, small, top-left
                     // corner of the box (playtest: identities got lost between rooms).
-                    string nameLabel = _currentInteraction.DisplayName.Length > 0
-                        ? _currentInteraction.DisplayName
-                        : ToDisplayName(_dialogueEntityId.Replace("inspect_", ""));
+                    string nameLabel = ResolveDisplayName(_currentInteraction, _dialogueEntityId);
                     if (nameLabel.Length > 0)
                     {
                         const float nameScale = 0.58f;
                         _spriteBatch.DrawString(_dialogueFont, nameLabel,
-                            new Vector2(boxRect.X + PAD_X, boxRect.Y + PAD_Y - 52),
+                            new Vector2(textX, boxRect.Y + PAD_Y - 52),
                             hintColor * 0.85f, 0f, Vector2.Zero, nameScale,
                             SpriteEffects.None, 0f);
                     }
@@ -1151,7 +1305,7 @@ namespace CatDetective
                     {
                         const float menuScale = 0.66f;
                         float lineH = _dialogueFont.LineSpacing * menuScale + 2f;
-                        var   pos   = new Vector2(boxRect.X + PAD_X, boxRect.Y + PAD_Y - 20);
+                        var   pos   = new Vector2(textX, boxRect.Y + PAD_Y - 20);
 
                         _spriteBatch.DrawString(_dialogueFont, "The detective considers his next move...",
                             pos, hintColor, 0f, Vector2.Zero, menuScale, SpriteEffects.None, 0f);
@@ -1192,8 +1346,8 @@ namespace CatDetective
                             _dialogueFont,
                             _dialoguePages[_currentDialoguePage],
                             _currentKeywords,
-                            new Vector2(boxRect.X + PAD_X, boxRect.Y + PAD_Y),
-                            boxRect.Width - PAD_X * 2,
+                            new Vector2(textX, boxRect.Y + PAD_Y),
+                            textMaxWidth,
                             (int)_typewriterTimer,
                             dialogueScale);
 
@@ -1224,13 +1378,40 @@ namespace CatDetective
 
                     if (!_isGameWon)
                     {
-                        DrawUiButton(_solveButtonRect, new Color(170, 120, 30), "SOLVE", Color.White);
+                        // SOLVE reflects room progress: pulsing glow once every clue
+                        // in the room is found (playtest: players left rooms without
+                        // solving), muted once the room's board is done.
+                        bool roomSolved = _roomSolvedStates.TryGetValue(_currentRoomId, out var rs) && rs;
+                        var (roomFound, roomTotal) = _notebook.GetRoomClueCounts(_currentRoomId);
+                        if (roomSolved)
+                        {
+                            DrawUiButton(_solveButtonRect, new Color(85, 125, 85), "SOLVED", Color.White);
+                        }
+                        else if (roomTotal > 0 && roomFound == roomTotal)
+                        {
+                            float pulse = 0.5f + 0.5f *
+                                (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 3.0);
+                            DrawUiButton(_solveButtonRect,
+                                Color.Lerp(new Color(170, 120, 30), new Color(255, 195, 60), pulse),
+                                "SOLVE", Color.White);
+                        }
+                        else
+                        {
+                            DrawUiButton(_solveButtonRect, new Color(170, 120, 30), "SOLVE", Color.White);
+                        }
 
-                        // FINAL SOLVE — locked until every room is solved; shows progress.
-                        if (AllRoomsSolved)
+                        // FINAL SOLVE — locked until every room is solved AND every
+                        // confrontation (requiresSolve topic) has been heard.
+                        if (AllRoomsSolved && AllConfrontationsHeard)
                         {
                             DrawUiButton(_finalSolveButtonRect, new Color(190, 60, 45),
                                 "FINAL\nSOLVE", Color.White);
+                        }
+                        else if (AllRoomsSolved)
+                        {
+                            DrawUiButton(_finalSolveButtonRect, new Color(70, 70, 78),
+                                $"FINAL SOLVE\n{HeardConfrontationCount()}/{_confrontationTopics.Count} confronted",
+                                Color.LightGray, maxLabelScale: 0.6f);
                         }
                         else
                         {
@@ -1821,6 +2002,147 @@ namespace CatDetective
                 i = close + 1;
             }
             return result;
+        }
+
+        /// <summary>
+        /// Height DrawRichText would occupy: same tokenizer ('\n' breaks, space
+        /// handling, wrap at maxWidth), no drawing. Brackets are stripped the way
+        /// ParseSpans removes them, so keyword spans measure at their visible width.
+        /// (MeasureWrappedHeight can't be used here - it ignores '\n'.)
+        /// </summary>
+        private float MeasureRichTextHeight(SpriteFont font, string text, float maxWidth, float scale)
+        {
+            string plain = text.Replace("[", "").Replace("]", "");
+            float x = 0f, y = 0f;
+            float lineH = font.LineSpacing * scale;
+            int pos = 0;
+            while (pos < plain.Length)
+            {
+                if (plain[pos] == '\n') { x = 0f; y += lineH; pos++; continue; }
+                bool isSpace = plain[pos] == ' ';
+                int  start   = pos;
+                while (pos < plain.Length && plain[pos] != '\n' &&
+                       (plain[pos] == ' ') == isSpace)
+                    pos++;
+                float tokenW = font.MeasureString(plain[start..pos]).X * scale;
+                if (isSpace)
+                {
+                    if (x > 0f) x += tokenW;
+                }
+                else
+                {
+                    if (x > 0f && x + tokenW > maxWidth) { x = 0f; y += lineH; }
+                    x += tokenW;
+                }
+            }
+            return y + lineH;
+        }
+
+        /// <summary>
+        /// Splits a line into sentences at ./!/? boundaries (trailing quotes kept),
+        /// never inside a [keyword] span.
+        /// </summary>
+        private static List<string> SplitSentences(string line)
+        {
+            var parts = new List<string>();
+            int depth = 0, start = 0;
+            for (int i = 0; i < line.Length; i++)
+            {
+                char c = line[i];
+                if (c == '[') depth++;
+                else if (c == ']') depth = Math.Max(0, depth - 1);
+                else if (depth == 0 && (c == '.' || c == '!' || c == '?'))
+                {
+                    int j = i + 1;
+                    while (j < line.Length && (line[j] == '\'' || line[j] == '"')) j++;
+                    if (j < line.Length && line[j] == ' ')
+                    {
+                        parts.Add(line[start..j]);
+                        start = j + 1;
+                        i = j;
+                    }
+                }
+            }
+            if (start < line.Length)
+                parts.Add(line[start..]);
+            return parts;
+        }
+
+        /// <summary>
+        /// Builds the dialogue page list: author '|' breaks first, then any page
+        /// that would overflow the box's text area is auto-split further - at '\n'
+        /// line boundaries, then at sentence boundaries (never inside a [keyword]).
+        /// </summary>
+        private string[] PaginateDialogue(string rawText, bool hasPortrait)
+        {
+            var box = DialogueBoxRect;
+            float maxWidth = box.Width - DIALOGUE_PAD_X * 2
+                             - (hasPortrait ? PORTRAIT_MAX_W + PORTRAIT_TEXT_GAP : 0);
+            float hintH     = _dialogueFont.LineSpacing * DIALOGUE_TEXT_SCALE;
+            float maxHeight = box.Height - DIALOGUE_PAD_Y
+                              - DIALOGUE_PAD_Y * 0.6f - hintH - 8f;
+
+            bool Fits(string s) =>
+                MeasureRichTextHeight(_dialogueFont, s, maxWidth, DIALOGUE_TEXT_SCALE) <= maxHeight;
+
+            var pages = new List<string>();
+            foreach (var page in rawText.Split('|'))
+            {
+                if (Fits(page)) { pages.Add(page); continue; }
+
+                // Units small enough to pack: lines, or sentences of an oversize line.
+                var units = new List<(string Text, string Sep)>();
+                var lines = page.Split('\n');
+                for (int li = 0; li < lines.Length; li++)
+                {
+                    string sep = li == 0 ? "" : "\n";
+                    if (Fits(lines[li])) { units.Add((lines[li], sep)); continue; }
+                    bool first = true;
+                    foreach (var sentence in SplitSentences(lines[li]))
+                    {
+                        units.Add((sentence, first ? sep : " "));
+                        first = false;
+                    }
+                }
+
+                string current = "";
+                foreach (var (text, sep) in units)
+                {
+                    string candidate = current.Length == 0 ? text : current + sep + text;
+                    if (current.Length > 0 && !Fits(candidate))
+                    {
+                        pages.Add(current);
+                        current = text;
+                    }
+                    else
+                    {
+                        current = candidate;
+                    }
+                }
+                if (current.Length > 0)
+                    pages.Add(current);
+            }
+            return pages.Count > 0 ? pages.ToArray() : new[] { "" };
+        }
+
+        /// <summary>
+        /// Sets the dialogue portrait: the top crop of the speaker's own in-world
+        /// sprite, characters only (entities with topics). Objects get no portrait
+        /// and keep the full text width.
+        /// </summary>
+        private void SetDialoguePortrait(InteractableEntity entity)
+        {
+            _dialoguePortrait = null;
+            if (entity.Data == null || entity.Data.Topics.Length == 0 || entity.Texture == null)
+                return;
+            // Middle 60% of the width x top 32%: sprites carry transparent side
+            // margins, so a full-width crop leaves the face tiny in the frame.
+            var tex = entity.Texture;
+            _dialoguePortrait       = tex;
+            _dialoguePortraitSource = new Rectangle(
+                (int)(tex.Width * 0.20f), 0,
+                Math.Max(1, (int)(tex.Width * 0.60f)),
+                Math.Max(1, (int)(tex.Height * 0.32f)));
         }
 
         private void DrawRichText(

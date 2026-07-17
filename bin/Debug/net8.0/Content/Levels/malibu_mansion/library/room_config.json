@@ -38,6 +38,8 @@
     {
       "id": "inspect_sound_guy",
       "name": "The Sound Guy",
+      "revealName": "D. Marsh",
+      "revealNameOnClue": "d_marsh_sound_guy",
       "text": "The [Sound Guy]'s badge reads '[D. Marsh].' He is very busy re-coiling a cable that was already coiled. 'Nice cat,' he says, half an octave too high. The coil slips out of his hands.",
       "keywords": [
         { "displayText": "Sound Guy", "id": "d_marsh_sound_guy", "color": "crime" },
@@ -46,7 +48,7 @@
       "topics": [
         {
           "prompt": "Stare at him. Do not blink.",
-          "text": "He lasts eleven seconds. 'What. WHAT. It's boom mics, okay? I do boom mics.' He wipes his palms on his lanyard. 'Look, I was HERE at seven. Library. Audio setup. It's [on the schedule]. Check the schedule. Everyone should check the schedule.'",
+          "text": "He lasts eleven seconds. 'What. WHAT. It's boom mics, okay? I do boom mics.' He wipes his palms on his sleeves. 'Look, I was HERE at seven. Library. Audio setup. It's [on the schedule]. Check the schedule. Everyone should check the schedule.'",
           "keywords": [
             { "displayText": "on the schedule", "id": "production_schedule", "color": "misc" }
           ]
@@ -67,9 +69,9 @@
           ]
         },
         {
-          "prompt": "Hop onto his road case and refuse to move",
+          "prompt": "Sit at his feet, smelling of tarp and potting shed",
           "requiresClue": "sound_proof_cases",
-          "text": "'Hey - careful - that's delicate equipment!' You knead it once, with meaning. 'They're empty! The cases are [EMPTY], both of them, why would I even-' He hears himself say it. The library gets very, very quiet. 'I have a lot of levels to monitor,' he whispers.",
+          "text": "You settle in close - close enough that he can smell exactly where you have been: mulch, tarp, cold metal latches. He goes pale. 'They're empty! The cases are [EMPTY], both of them, why would I even-' He hears himself say it. The library gets very, very quiet. 'I have a lot of levels to monitor,' he whispers.",
           "keywords": [
             { "displayText": "EMPTY", "id": "sound_proof_cases", "color": "crime" }
           ]
@@ -77,7 +79,7 @@
         {
           "prompt": "Sit on the mixing board and stare into his soul",
           "requiresSolve": "library",
-          "text": "He tries to wait you out. Nobody has ever waited out a cat.|'FINE. You want the truth? That bird ruined [forty-seven takes]. FORTY-SEVEN. Do you know what that does to a person who listens for a living? I hear the squawk when I close my eyes.'|He catches his breath, and something careful comes back into his voice. 'But nobody HURT anybody. Wherever that bird is, I am sure he is somewhere dark, and padded, and VERY comfortable. Seed. Water. A little mirror, probably.' He glances at the road case. He looks away slowly, like the road case is an ex.",
+          "text": "He tries to wait you out. Nobody has ever waited out a cat.|'FINE. You want the truth? That bird ruined [forty-seven takes]. FORTY-SEVEN. Do you know what that does to a person who listens for a living? I hear the squawk when I close my eyes.'|He catches his breath, and something careful comes back into his voice. 'But nobody HURT anybody. Wherever that bird is, I am sure he is... comfortable. Safer than that circus of a living room, probably.' His eyes drift to the window, out toward the garden. He looks away slowly, like the view is an ex.",
           "keywords": [
             { "displayText": "forty-seven takes", "id": "ruined_takes", "color": "crime" }
           ]

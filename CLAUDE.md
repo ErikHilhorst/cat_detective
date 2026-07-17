@@ -7,11 +7,13 @@ Cozy Studio Ghibli aesthetic, pre-rendered backgrounds, point-and-click/free-roa
 Built in C# using **MonoGame (KNI fork)**, targeting **Web/WASM** as the final platform.
 
 Current state: the case system is playable end-to-end. The first case, **Malibu Mansion / "The Missing Macaw"**
-(7 rooms, 48 clues), is fully wired with placeholder sprites: free-roam movement, room transfers,
+(7 rooms, 50 clues), is fully wired with placeholder sprites: free-roam movement, room transfers,
 interactable dialogue with keyword-unlocked clues, character interrogation menus (intro + selectable
 cat-action topics, some evidence- or solve-gated), per-room deduction boards, and a final solve board.
-All ten character sprites are real art (per-name PNGs under each room's `Interactables/`, built via
-`.mgcb`); object interactables still use `Shared/placeholder_object`. `rudebeak.png` sits unwired in
+All ten character sprites and all object sprites are real art (per-name PNGs under each room's
+`Interactables/`, built via `.mgcb`) - except `inspect_pool_water` (pool_area), which uses
+`Shared/placeholder_object` at `scale: 0.12` until its sprite is generated (see the pool-water
+prompt in `sprite_prompts.txt`). `rudebeak.png` sits unwired in
 the case root for a possible ending reveal. Prompts for the missing object art (two 5x2 sheets):
 `Levels/malibu_mansion/sprite_prompts.txt`.
 
@@ -96,7 +98,10 @@ Inserting a new entity: decide which pass it belongs to and draw it there.
 New lighting overlays → Pass 4 (additive). New floor decals → Pass 1 or 2. New Y-sortable objects → Pass 3.
 
 Pass 4b (AlphaBlend, world-anchored) draws a bobbing amber "..." over characters that have
-available, unheard topics — hidden while dialogue is open.
+available, unheard topics — hidden while dialogue is open. The same pass draws permanent
+soft-white chevrons (`^ v < >`, direction from the zone's position vs room center) over every
+transfer zone so exits are discoverable without the F1 overlay. Chevrons are never amber —
+amber means "someone to talk to".
 UI passes follow the world passes: Pass 6 = dialogue box, Pass 7 = HUD (SOLVE buttons, clue counters,
 toasts), Pass 8 = journal/deduction board. UI layout constants live in reference space **2020×1136**
 and are scaled to the current canvas in `UpdateLayout()` / with `jsx`/`jsy` in Pass 8.
@@ -107,6 +112,15 @@ and are scaled to the current canvas in `UpdateLayout()` / with `jsx`/`jsy` in P
   Use ` - ` instead of `—` and straight quotes.
 - Dialogue/topic `text` may contain `\n` — `DrawRichText` treats it as a forced line break
   (bulleted lists, radio transmissions). Keep bullets to `- ` (ASCII).
+- **Auto-pagination**: `PaginateDialogue` splits on author `|` first, then auto-splits any page
+  that would overflow the box's text area — at `\n` boundaries, then sentence ends, never inside
+  a `[keyword]`. Long texts can no longer overflow the box, but still prefer hand-placed `|`
+  breaks at narrative beats (2-3 sentences per page).
+- **Portraits**: characters (interactables with `topics`) show a portrait beside the dialogue
+  text — the top 32% x middle 60% crop of their own in-world sprite, scaled up
+  (`SetDialoguePortrait`). Objects get no portrait and keep the full text width. The text
+  origin shifts right by `PORTRAIT_MAX_W + PORTRAIT_TEXT_GAP`; pagination budgets the same
+  shift, so keep those constants in sync.
 - The dialogue box shows a small **name label** top-left: the interactable's `name` field,
   falling back to the prettified id (`inspect_duty_roster` -> "Duty Roster"). Give objects a
   `name` when the prettified id reads badly.
@@ -159,6 +173,14 @@ A safe margin of ~15 px beyond the minimum is recommended.
 
 `room_config.json` (per room):
 - `interactables[].texture` — fallback content path (e.g. `Shared/placeholder_person`) used when no per-name sprite exists under `Interactables/`. Combine with `scale` to size it.
+- `interactables[].revealName` + `revealNameOnClue` — dialogue-label name swap once the reveal
+  clue is unlocked (The Sound Guy -> "D. Marsh" after `d_marsh_sound_guy`). Toasts deliberately
+  keep the pre-reveal `name` (anti-leak rule).
+- `interactables[].altText` (+ `altTextRequiresClue` / `altTextRequiresSolve`, AND-combined) —
+  alternate intro shown once its gates are satisfied, so characters react to investigation
+  progress instead of repeating their cold intro. The regular `keywords` still unlock and
+  highlight either way, so alt intros never affect clue discoverability; every `[bracket]` in
+  `altText` must match an entry in the interactable's `keywords`.
 - `interactables[].topics[]` — interrogation menu for **characters** (objects use `text` alone).
   `text` is the intro; after its last page a menu opens. Each topic:
   `{ "prompt": "<cat action>", "text": "<response, pages split on |>", "keywords": [...], "requiresClue": "<optional clue id>", "requiresSolve": "<optional room id>" }`.
@@ -208,6 +230,14 @@ topics gated on that room (with a queued "X might have some explaining to do..."
   Basil (garden), Marsh (library). The payoff follows the slip rules below - a red herring
   cracks their alibi or redirects suspicion; the culprit near-confesses. This makes the SOLVE
   button an active investigative tool, not a checklist (playtest 2 finding).
+- **FINAL SOLVE confrontation lock (playtest 3).** The final board opens only when every room
+  is solved AND every `requiresSolve` topic has been heard (`_confrontationTopics`, built in
+  `BuildGateIndex`; `AllConfrontationsHeard`). The button shows "M/N confronted" between those
+  states, and the locked toast names who still owes an explanation. Adding a `requiresSolve`
+  topic automatically adds it to the lock.
+- **HUD progress cues (playtest 3).** The SOLVE button pulses gold once every clue in the room
+  is found and turns muted green "SOLVED" after the room's board is solved - players kept
+  leaving rooms without solving them.
 - **Gated topics never carry unique clues.** Every clue in the database must be unlockable via an
   ungated source (object, intro, or non-gated topic) **in its own room** - gates gate *story*,
   not completion. The room clue counter must always be able to reach N/N without leaving the
@@ -291,8 +321,9 @@ Rudebeak is the missing macaw.
   once with soup smell, once without.
 - Before lockdown — the cases are stashed behind the garden potting shed under a tarp
   (Sound-Proof Cases, found in the garden).
-- 8:00 PM — Fake squawk: tiny speaker taped under the seed tray, fed by the audio cable from the
-  library mixing board. Motive: 47 takes ruined by the bird (session log).
+- 8:00 PM — Fake squawk: tiny speaker taped behind the living room couch (the couch is
+  background art, not an object — the interactable sits beside the cage), fed by the audio
+  cable from the library mixing board. Motive: 47 takes ruined by the bird (session log).
 - 8:15 PM — Police lockdown. Only the lockdown clue ("Lockdown - 8:15 PM") carries the 8:15 timestamp.
 
 **Deliberate pacing**: the early rooms (entrance, living room, bedroom) never name D. Marsh.
@@ -311,6 +342,12 @@ Chip (PR panic — but he earns commission on the bird), Wexler (thrilled about 
 **Final board answers** (parse order): `d_marsh_sound_guy` (WHO), `sound_proof_cases` (WHAT,
 found in the garden), `d_marsh_7pm` "Heavy Cases - 7:00 PM" (WHEN — decoy: `guest_registry`
 "Crew Arrivals - 6:30 PM"), `hidden_speaker` (HOW), `ruined_takes` (WHY).
+
+**Final board decoys** (playtest 3 expansion — keep each category at ~4-5 macro options):
+WHO adds `derek_the_husband`; WHY adds `star_note_to_husband` and `basil_free_the_bird`
+("Cages Are Prisons", garden); HOW/WHAT adds `headphone_box` (Derek's rival audio device,
+the near-miss for the speaker slot). All are macro flips or new clues with ungated same-room
+keyword sources.
 
 ---
 

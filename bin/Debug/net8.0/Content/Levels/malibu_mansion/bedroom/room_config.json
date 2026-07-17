@@ -4,9 +4,11 @@
     {
       "id": "inspect_husband",
       "name": "Derek",
-      "text": "The Husband, [Derek], lies flat on the bed in brand-new noise-canceling headphones, radiating the deep peace of a man who has finally solved his one problem.",
+      "altText": "[Derek] has the headphones down around his neck for once, staring at the wall like it owes him sleep. 'You are still working? At night? In a house full of adults?' A long pause. 'Respect.'",
+      "altTextRequiresSolve": "bedroom",
+      "text": "The Husband, [Derek], stands beside the bed in brand-new noise-canceling headphones, radiating the deep peace of a man who has finally solved his one problem.",
       "keywords": [
-        { "displayText": "Derek", "id": "husband_hall_7pm", "color": "misc" }
+        { "displayText": "Derek", "id": "derek_the_husband", "color": "misc" }
       ],
       "topics": [
         {
@@ -38,12 +40,12 @@
     {
       "id": "inspect_delivery_manifest",
       "name": "Delivery Manifest",
-      "text": "A crew manifest on the dresser, entries all evening:\n- Florist, out - 6:10 PM\n- [R. - dinner service] - 7:00 PM\n- [Grip dept., lamp returns] - 7:20 PM\nAnd one line dashed off in a hurried scrawl: '[2x equipment cases] - [7:00 PM].' The signature is a scribble with a tail.",
+      "text": "A crew manifest on the dresser, entries all evening:\n- Florist, out - 6:10 PM\n- Garden supply run, B. - 6:55 PM\n- [R. - dinner service] - 7:00 PM\n- '[2x equipment cases]', hurried scrawl - [7:00 PM]\n- Linen return, housekeeping - 7:10 PM\n- [Grip dept., lamp returns] - 7:20 PM|Half the house rolled through this wing inside one hour. The scrawl's signature is a scribble with a tail - it could belong to almost anybody.",
       "keywords": [
         { "displayText": "R. - dinner service", "id": "dinner_cart_7pm", "color": "misc" },
         { "displayText": "Grip dept., lamp returns", "id": "lamp_returns_720", "color": "misc" },
-        { "displayText": "2x equipment cases", "id": "d_marsh_7pm", "color": "crime" },
-        { "displayText": "7:00 PM", "id": "d_marsh_7pm", "color": "crime" }
+        { "displayText": "2x equipment cases", "id": "d_marsh_7pm", "color": "misc" },
+        { "displayText": "7:00 PM", "id": "d_marsh_7pm", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 1.0

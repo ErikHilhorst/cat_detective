@@ -4,6 +4,8 @@
     {
       "id": "inspect_maid",
       "name": "Rosa",
+      "altText": "The chopping has stopped. [Rosa] wipes the board clean and watches you pad in, arms crossed, the ring of [house keys] still at her apron. 'So. You did your arithmetic, detective. Then you also know a dinner cart was not the only thing on wheels in that wing. Go on. Finish it.'",
+      "altTextRequiresSolve": "kitchen",
       "text": "The Maid, [Rosa], is chopping vegetables with feeling. The cleaver hits the board like a verdict. A ring of [house keys] jingles at her apron with every chop. Without turning around: 'If you are here about the bird, get in line.'",
       "keywords": [
         { "displayText": "Rosa", "id": "the_maid", "color": "misc" },

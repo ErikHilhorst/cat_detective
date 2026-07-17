@@ -11,9 +11,10 @@
       "topics": [
         {
           "prompt": "Watch his hands while he trims",
-          "text": "The shears wobble mid-snip. 'Animals belong in [Nature],' he announces - to the hedge, to the fountain, to the concept of justice. 'A cage is a prison with better catering.' He glances at the mansion. 'Not that I would DO anything about it. That would be wrong. Probably.'",
+          "text": "The shears wobble mid-snip. 'Animals belong in [Nature],' he announces - to the hedge, to the fountain, to the concept of justice. '[A cage is a prison] with better catering.' He glances at the mansion. 'Not that I would DO anything about it. That would be wrong. Probably.'",
           "keywords": [
-            { "displayText": "Nature", "id": "the_gardener", "color": "misc" }
+            { "displayText": "Nature", "id": "the_gardener", "color": "misc" },
+            { "displayText": "A cage is a prison", "id": "basil_free_the_bird", "color": "misc" }
           ]
         },
         {
@@ -49,9 +50,9 @@
     },
     {
       "id": "inspect_hidden_cases",
-      "text": "Behind the potting shed, under a tarp thrown in a hurry: two big black road cases. The stencil reads '[Acoustic Isolation] - No Sound Transmission.' You press an ear to one. [Silence]. The deep, upholstered kind. The grass around them is pressed flat by [heavy boot prints].",
+      "text": "Behind the potting shed, under a tarp thrown in a hurry: two big black road cases stenciled 'STUDIO 4 - THIS SIDE UP - FRAGILE.' Heavy latches, thick [foam-lined] walls. You press an ear to one. [Silence]. The deep, upholstered kind. The grass around them is pressed flat by [heavy boot prints].",
       "keywords": [
-        { "displayText": "Acoustic Isolation", "id": "sound_proof_cases", "color": "crime" },
+        { "displayText": "foam-lined", "id": "sound_proof_cases", "color": "crime" },
         { "displayText": "Silence", "id": "sound_proof_cases", "color": "crime" },
         { "displayText": "heavy boot prints", "id": "boot_prints_shed", "color": "misc" }
       ],

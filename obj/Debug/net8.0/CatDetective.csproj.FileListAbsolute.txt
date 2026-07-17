@@ -177,3 +177,5 @@ C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Lev
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\living_room\Interactables\inspect_vocab_ledger.xnb
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\pool_area\Interactables\inspect_pool_selfie.xnb
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\pool_area\Interactables\inspect_production_schedule.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Shared\moonlit_cat_case.ogg
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Shared\moonlit_cat_case.xnb

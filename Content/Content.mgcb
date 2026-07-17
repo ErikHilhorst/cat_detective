@@ -47,6 +47,12 @@
 /processorParam:TextureFormat=Color
 /build:Shared/mask_sunbeams.png
 
+#begin Shared/moonlit_cat_case.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Shared/moonlit_cat_case.mp3
+
 #begin Shared/shadow_blob.png
 /importer:TextureImporter
 /processor:TextureProcessor

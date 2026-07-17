@@ -79,6 +79,25 @@ namespace CatDetective.Entities
         /// </summary>
         public string DisplayName { get; }
 
+        /// <summary>
+        /// Replacement display name shown once <see cref="RevealNameOnClue"/> is
+        /// unlocked ("The Sound Guy" -> "D. Marsh"). Empty = no reveal.
+        /// Toast names deliberately keep <see cref="DisplayName"/> (anti-leak rule).
+        /// </summary>
+        public string RevealName       { get; }
+        public string RevealNameOnClue { get; }
+
+        /// <summary>
+        /// Alternate intro shown instead of <see cref="Text"/> once its gates are
+        /// satisfied, so characters react to investigation progress. The regular
+        /// <see cref="Keywords"/> still unlock and highlight - any [bracket] in the
+        /// alt text must match one of them. Empty = intro never changes.
+        /// Gates combine as AND, like topics.
+        /// </summary>
+        public string AltText              { get; }
+        public string AltTextRequiresClue  { get; }
+        public string AltTextRequiresSolve { get; }
+
         // ── Visual overrides (applied in InteractableEntity.Draw, never to Position/LayerDepth) ──
         public float  Scale   { get; }   // default 1.0
         public string Align   { get; }   // "BottomCenter" | "Center" | "TopLeft"
@@ -94,17 +113,24 @@ namespace CatDetective.Entities
         public InteractionData(string text, Keyword[] keywords,
             float scale = 1.0f, string align = "BottomCenter",
             int offsetX = 0, int offsetY = 0, string texturePath = "",
-            DialogueTopic[]? topics = null, string displayName = "")
+            DialogueTopic[]? topics = null, string displayName = "",
+            string revealName = "", string revealNameOnClue = "",
+            string altText = "", string altTextRequiresClue = "", string altTextRequiresSolve = "")
         {
-            Text        = text;
-            Keywords    = keywords;
-            Scale       = scale;
-            Align       = align;
-            OffsetX     = offsetX;
-            OffsetY     = offsetY;
-            TexturePath = texturePath;
-            Topics      = topics ?? System.Array.Empty<DialogueTopic>();
-            DisplayName = displayName;
+            Text                 = text;
+            Keywords             = keywords;
+            Scale                = scale;
+            Align                = align;
+            OffsetX              = offsetX;
+            OffsetY              = offsetY;
+            TexturePath          = texturePath;
+            Topics               = topics ?? System.Array.Empty<DialogueTopic>();
+            DisplayName          = displayName;
+            RevealName           = revealName;
+            RevealNameOnClue     = revealNameOnClue;
+            AltText              = altText;
+            AltTextRequiresClue  = altTextRequiresClue;
+            AltTextRequiresSolve = altTextRequiresSolve;
         }
 
         // ── Shared colour palette ──────────────────────────────────────────────

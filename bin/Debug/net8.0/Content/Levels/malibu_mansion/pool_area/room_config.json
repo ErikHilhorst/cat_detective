@@ -11,15 +11,16 @@
       "topics": [
         {
           "prompt": "Pose beside her chaise, chin up",
-          "text": "'Iconic. ICONIC.' She reaches for her phone, then remembers it is evidence now and pouts. 'Tonight is ruined anyway. Some crew person lugged [huge black cases] through the garden at, like, [quarter to seven]. Walked STRAIGHT through my sunset shot. The nerve. The NERVE.'",
+          "text": "'Iconic. ICONIC.' She reaches for her phone, then remembers it is evidence now and pouts. 'Tonight is ruined anyway. SOMEBODY lugged [huge black cases] through the garden at, like, [quarter to seven]. Walked STRAIGHT through my sunset shot. The nerve. The NERVE.'|'And it was not just them, darling. The gardener spent the whole evening [skulking behind that shed] like a garden gnome with secrets. And Rosa marched past with her cart looking absolutely FURIOUS about something. Everyone in this house had somewhere to be. Except me. I was radiant.'",
           "keywords": [
             { "displayText": "huge black cases", "id": "eyewitness_645pm", "color": "plot" },
-            { "displayText": "quarter to seven", "id": "eyewitness_645pm", "color": "plot" }
+            { "displayText": "quarter to seven", "id": "eyewitness_645pm", "color": "plot" },
+            { "displayText": "skulking behind that shed", "id": "straw_hat_witness", "color": "misc" }
           ]
         },
         {
           "prompt": "Investigate her abandoned spritz",
-          "text": "'It is a spritz, darling, and it is [warm now]. Like everything else about this evening.' She swirls it sadly. 'You know what I keep thinking about? The cases had [little squeaky wheels]. Rrr, rrr, rrr, all the way up the garden path. Some of us were trying to VIBE.'",
+          "text": "'It is a spritz, darling, and it is [warm now]. Like everything else about this evening.' She swirls it sadly. 'And the WHEELS. All evening, wheels: [little squeaky wheels] up the garden path, the dinner cart rattling through the house, rrr, rrr, rrr. Who can even tell one squeak from another? Some of us were trying to VIBE.'",
           "keywords": [
             { "displayText": "warm now", "id": "warm_spritz", "color": "misc" },
             { "displayText": "little squeaky wheels", "id": "eyewitness_645pm", "color": "plot" }
@@ -64,8 +65,8 @@
       "keywords": [
         { "displayText": "a single bright feather", "id": "feather_in_filter", "color": "misc" }
       ],
-      "texture": "",
-      "scale": 1.0
+      "texture": "Shared/placeholder_object",
+      "scale": 0.12
     }
   ],
   "localDeductionSentence": "[Coco's Sighting] and the [Timestamped Photo] agree: big dark cases crossed the garden before the [Production Schedule] says setup even began.",

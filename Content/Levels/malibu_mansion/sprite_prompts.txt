@@ -131,7 +131,9 @@ row first):
    recording light.
 6. A small open booklet of taught parrot phrases, one line crossed out in pen.
 7. A clipboard holding a crew delivery manifest sheet with handwritten lines.
-8. Two massive black sound-proof acoustic road cases with heavy latches, stacked.
+8. Two massive black road cases with heavy latches, stacked, half-covered by a
+   tarp, stenciled "STUDIO 4 - THIS SIDE UP - FRAGILE" (no acoustic markings -
+   the sound-proofing is a deduction, not a label).
 9. An elegant handwritten note on cream stationery.
 10. An open premium product box for luxury noise-canceling headphones, with
     tissue paper and a receipt visible.
@@ -145,7 +147,7 @@ CELL LEGEND (crop -> save as):
   5 -> inspect_documentary_camera.png   (living_room)
   6 -> inspect_vocab_ledger.png         (living_room)
   7 -> inspect_delivery_manifest.png    (bedroom)
-  8 -> inspect_acoustic_cases.png       (bedroom)
+  8 -> inspect_hidden_cases.png         (garden)
   9 -> inspect_star_note.png            (bedroom)
  10 -> inspect_headphone_box.png        (bedroom)
 
@@ -190,12 +192,19 @@ CELL LEGEND (crop -> save as):
  10 -> inspect_production_schedule.png  (pool_area)
 
 --------------------------------------------------------------------------------
-NOTE: inspect_pool_water (pool_area) is intentionally omitted — the glittering
-pool surface is better painted into the room background than cut out as a sprite.
+SINGLE OBJECT  (added after playtest 3 - the pool clue needs a visible,
+clickable object; currently ships as Shared/placeholder_object at scale 0.12)
 --------------------------------------------------------------------------------
+
+[inspect_pool_water.png]  (pool_area)
+I need a small videogame item sprite, in the style of Studio Ghibli, soft
+hand-painted cel shading, of a pool skimmer / filter corner at the tiled edge of
+a swimming pool, with a single bright red-green-blue parrot feather floating on
+the water in it. Small prop scale, seen from a slight isometric angle. Plain
+solid white background for easy cutout.
 
 ================================================================================
 SUMMARY
   Characters: 10 single prompts (+1 optional bird)
-  Objects:    20 across 2 sheets of 10 (5x2 grids)  (+1 pool, baked into bg)
+  Objects:    20 across 2 sheets of 10 (5x2 grids)  + 1 single (pool filter)
 ================================================================================

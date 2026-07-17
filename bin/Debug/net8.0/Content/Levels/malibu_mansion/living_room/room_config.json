@@ -4,7 +4,7 @@
     {
       "id": "inspect_movie_star",
       "name": "Vivienne Vale",
-      "text": "The Movie Star, [Vivienne Vale], is draped across the chaise in full mourning couture. She points at you with a tissue. 'You. You have KIND eyes. Not like the rest of these vultures.'",
+      "text": "The Movie Star, [Vivienne Vale], is draped across the chaise in couture far too glamorous for grief - though she is wearing it AS grief. She points at you with a tissue. 'You. You have KIND eyes. Not like the rest of these vultures.'",
       "keywords": [
         { "displayText": "Vivienne Vale", "id": "squawk_at_8pm", "color": "plot" }
       ],
@@ -38,7 +38,9 @@
     {
       "id": "inspect_bird_handler",
       "name": "Petra",
-      "text": "The Bird Handler, [Petra], sits perfectly still beside an untouched bowl of seed, the way professionals wait. She gives you a nod, one working animal expert to another.",
+      "altText": "[Petra] has moved to the window, scanning the garden the way handlers scan a horizon. 'You worked out the cage, didn't you. I can tell - you have that whisker set.' She nods once, professional to professional. 'Keep going. He is out there being inconvenient to somebody.'",
+      "altTextRequiresSolve": "living_room",
+      "text": "The Bird Handler, [Petra], stands perfectly still beside an untouched bowl of seed, the way professionals wait. She gives you a nod, one working animal expert to another.",
       "keywords": [
         { "displayText": "Petra", "id": "broken_latch", "color": "crime" }
       ],
@@ -53,7 +55,7 @@
         },
         {
           "prompt": "Tilt your head at her, professionally",
-          "text": "'You want the profile? Blue-and-gold macaw, nineteen years old, ego like a co-star, lungs like a fire alarm.' She almost smiles. 'Vain, too. Never misses his evening splash in the garden bird bath. You could set a clock by that bird's grooming.'",
+          "text": "'You want the profile? Blue-and-gold macaw, nineteen years old, ego like a rockstar, lungs like a fire alarm.' She almost smiles. 'Vain, too. Never misses his evening splash in the garden bird bath. You could set a clock by that bird's grooming.'",
           "keywords": []
         },
         {
@@ -88,7 +90,7 @@
     },
     {
       "id": "inspect_hidden_speaker",
-      "text": "A thin [cable] runs up the back leg of the cage stand and slips away behind the wainscoting. You follow it the other way instead, to the underside of the seed tray: a [tiny speaker], taped where only somebody at whisker height would ever look.",
+      "text": "A thin [cable] slips out from behind the couch and vanishes into the wainscoting. You wedge into the shadow beneath the cushions: a [tiny speaker], taped to the couch frame where only somebody at whisker height would ever look.",
       "keywords": [
         { "displayText": "cable", "id": "hidden_speaker", "color": "crime" },
         { "displayText": "tiny speaker", "id": "hidden_speaker", "color": "crime" }
@@ -135,6 +137,6 @@
       "scale": 1.0
     }
   ],
-  "localDeductionSentence": "Everyone heard the [8:00 PM Squawk] - but the [Broken Latch] and the [Hidden Speaker] under the cage tell a very different story.",
+  "localDeductionSentence": "Everyone heard the [8:00 PM Squawk] - but the [Broken Latch] and the [Hidden Speaker] behind the couch tell a very different story.",
   "localDeductionClueIds": ["squawk_at_8pm", "broken_latch", "hidden_speaker"]
 }

@@ -51,13 +51,22 @@
       "isMacroClue": true,
       "category": "What",
       "name": "Sound-Proof Cases",
-      "context": "Two big black road cases, stashed behind the garden shed under a hastily thrown tarp - rated for complete acoustic isolation.",
-      "inspectorDescription": "Rated for total acoustic isolation. I pressed an ear against one for science. Nothing. Which proves nothing. Which is the point."
+      "context": "Two big black road cases, stashed behind the garden shed under a hastily thrown tarp. Heavy latches, thick foam lining.",
+      "inspectorDescription": "Foam-lined and heavy-latched. I pressed an ear against one for science. Nothing. Which proves nothing. Which is the point."
+    },
+    {
+      "id": "derek_the_husband",
+      "roomId": "bedroom",
+      "isMacroClue": true,
+      "category": "Who",
+      "name": "Derek the Husband",
+      "context": "Derek bought top-of-the-line noise-canceling headphones the day before the bird vanished - a man pushed to the edge by 5 AM squawks, with a spare audio cable in the box.",
+      "inspectorDescription": "New headphones, a spare cable, an ultimatum from his wife. He solved his bird problem somehow. The question is which way."
     },
     {
       "id": "star_note_to_husband",
       "roomId": "bedroom",
-      "isMacroClue": false,
+      "isMacroClue": true,
       "category": "Why",
       "name": "Star's Ultimatum",
       "context": "A handwritten note from Vivienne Vale to her husband: 'Derek - Rudebeak woke me up at 5AM. AGAIN. Do SOMETHING about that bird or I am calling my lawyer.'",
@@ -66,7 +75,7 @@
     {
       "id": "headphone_box",
       "roomId": "bedroom",
-      "isMacroClue": false,
+      "isMacroClue": true,
       "category": "What",
       "name": "Derek's Headphones",
       "context": "A freshly opened box of top-of-the-line noise-canceling headphones, a spare audio cable still coiled inside. The receipt is dated yesterday.",
@@ -105,7 +114,7 @@
       "isMacroClue": true,
       "category": "What",
       "name": "Hidden Speaker",
-      "context": "A thin cable climbs the cage stand; taped beneath the seed tray sits a small wireless speaker.",
+      "context": "A thin cable slips out from behind the living room couch; taped to the couch frame sits a small wireless speaker.",
       "inspectorDescription": "Taped where nobody would look unless they were cat-height. The cable slips away behind the wainscoting."
     },
     {
@@ -233,6 +242,15 @@
       "name": "Dinner Cart - 7:00 PM",
       "context": "The kitchen duty roster: 'R. - dinner cart to the east wing, 7:00 PM.' The east wing is where the bedrooms are.",
       "inspectorDescription": "Rosa. A heavy cart. The bedroom wing. Seven o'clock. The plot thickens like a good bechamel."
+    },
+    {
+      "id": "basil_free_the_bird",
+      "roomId": "garden",
+      "isMacroClue": true,
+      "category": "Why",
+      "name": "Cages Are Prisons",
+      "context": "Basil the gardener preaches that animals belong in nature - to hedges, to fountains, to anyone who will listen. A man like that might free a bird on principle.",
+      "inspectorDescription": "He says it four times an hour, unprompted, to a cat. Principles that loud usually want a witness. Or an alibi."
     },
     {
       "id": "the_gardener",
@@ -434,6 +452,6 @@
     }
   ],
   "rooms": ["entrance", "living_room", "bedroom", "library", "kitchen", "garden", "pool_area"],
-  "finalSolveSentence": "[WHO] snatched Rudebeak from the garden, sealed him inside the [WHAT] - logged on the manifest at [WHEN] - and faked the 8 PM squawk through a [HOW]. It all traces back to the [WHY].",
+  "finalSolveSentence": "[WHO] snatched Rudebeak from the garden and hid him using the [WHAT] - logged on the manifest at [WHEN] - then faked the 8 PM squawk through a [HOW]. It all traces back to the [WHY].",
   "finalSolveClueIds": ["d_marsh_sound_guy", "sound_proof_cases", "d_marsh_7pm", "hidden_speaker", "ruined_takes"]
 }

@@ -6,6 +6,7 @@
   <SourceFiles>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/ui_dialogue_box.png</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/mask_sunbeams.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/moonlit_cat_case.mp3</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/shadow_blob.png</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/walk_animation_forward.png</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/walk_animation_upward.png</File>
@@ -70,6 +71,7 @@
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/pool_area/Interactables/inspect_production_schedule.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
