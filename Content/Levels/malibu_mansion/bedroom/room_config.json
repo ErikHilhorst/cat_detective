@@ -46,7 +46,7 @@
         { "displayText": "7:00 PM", "id": "d_marsh_7pm", "color": "crime" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.10
+      "scale": 1.0
     },
     {
       "id": "inspect_service_tray",
@@ -55,7 +55,7 @@
         { "displayText": "soup bowls scraped clean", "id": "service_tray", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.09
+      "scale": 1.0
     },
     {
       "id": "inspect_star_note",
@@ -66,7 +66,7 @@
         { "displayText": "lawyer", "id": "star_note_to_husband", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.07
+      "scale": 1.0
     },
     {
       "id": "inspect_headphone_box",
@@ -77,7 +77,7 @@
         { "displayText": "snapped", "id": "headphone_box", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.09
+      "scale": 1.0
     }
   ],
   "localDeductionSentence": "Derek shrugged off the [Hallway Rumble] as the dinner service - the [Service Tray] says the cart did come - but the manifest also logged [Heavy Cases] at seven.",

@@ -47,7 +47,7 @@
         { "displayText": "straw hat", "id": "straw_hat_witness", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.07
+      "scale": 1.0
     },
     {
       "id": "inspect_production_schedule",
@@ -56,7 +56,7 @@
         { "displayText": "D. Marsh - Library (audio setup)", "id": "production_schedule", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.09
+      "scale": 1.0
     },
     {
       "id": "inspect_pool_water",
@@ -64,8 +64,8 @@
       "keywords": [
         { "displayText": "a single bright feather", "id": "feather_in_filter", "color": "misc" }
       ],
-      "texture": "Shared/placeholder_object",
-      "scale": 0.10
+      "texture": "",
+      "scale": 1.0
     }
   ],
   "localDeductionSentence": "[Coco's Sighting] and the [Timestamped Photo] agree: big dark cases crossed the garden before the [Production Schedule] says setup even began.",

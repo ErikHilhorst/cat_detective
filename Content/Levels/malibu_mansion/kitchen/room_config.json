@@ -53,7 +53,7 @@
         { "displayText": "skull", "id": "insulted_cooking", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.08
+      "scale": 1.0
     },
     {
       "id": "inspect_paella_pot",
@@ -62,7 +62,7 @@
         { "displayText": "he was wrong", "id": "paella_pot", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.09
+      "scale": 1.0
     },
     {
       "id": "inspect_treat_jar",
@@ -71,7 +71,7 @@
         { "displayText": "FOR THE CAT", "id": "treat_jar_bribe", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.08
+      "scale": 1.0
     },
     {
       "id": "inspect_poultry_crate",
@@ -81,7 +81,7 @@
         { "displayText": "Probably", "id": "kitchen_feathers", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.10
+      "scale": 1.0
     },
     {
       "id": "inspect_duty_roster",
@@ -92,7 +92,7 @@
         { "displayText": "7:00 PM - dinner cart, east wing - R.", "id": "dinner_cart_7pm", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.08
+      "scale": 1.0
     }
   ],
   "localDeductionSentence": "[Rosa the Maid] wrote the [Insulted Cooking] note, skull and all - and the roster puts her [Dinner Cart] in the bedroom wing.",

@@ -84,7 +84,7 @@
         { "displayText": "snapped clean off", "id": "broken_latch", "color": "crime" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.12
+      "scale": 1.0
     },
     {
       "id": "inspect_hidden_speaker",
@@ -94,7 +94,7 @@
         { "displayText": "tiny speaker", "id": "hidden_speaker", "color": "crime" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.07
+      "scale": 1.0
     },
     {
       "id": "inspect_dropped_glove",
@@ -103,7 +103,7 @@
         { "displayText": "canvas glove", "id": "glove_by_cage", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.07
+      "scale": 1.0
     },
     {
       "id": "inspect_polish_cloth",
@@ -112,7 +112,7 @@
         { "displayText": "lemon-oil cloth", "id": "polish_cloth", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.07
+      "scale": 1.0
     },
     {
       "id": "inspect_documentary_camera",
@@ -122,7 +122,7 @@
         { "displayText": "just out of frame", "id": "documentary_camera", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.11
+      "scale": 1.0
     },
     {
       "id": "inspect_vocab_ledger",
@@ -132,7 +132,7 @@
         { "displayText": "Maid's fault", "id": "vocab_ledger", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.08
+      "scale": 1.0
     }
   ],
   "localDeductionSentence": "Everyone heard the [8:00 PM Squawk] - but the [Broken Latch] and the [Hidden Speaker] under the cage tell a very different story.",

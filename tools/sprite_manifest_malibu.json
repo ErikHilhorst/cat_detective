@@ -1,0 +1,163 @@
+{
+  "case": "malibu_mansion",
+  "prompt_template": "Create an object that I can use for a videogame sprite, in the style of Studio Ghibli, soft hand-painted cel shading, cozy warm palette. Draw exactly one object, centered and filling most of the frame: {description} Create a full white background so the object can be easily cut out - no drop shadow, no ground plane, no text, no watermark.",
+  "objects": [
+    {
+      "id": "inspect_walkie_talkie",
+      "room": "entrance",
+      "size": 82,
+      "prompt": "A police handheld walkie-talkie radio with a small antenna and worn buttons."
+    },
+    {
+      "id": "inspect_guest_registry",
+      "room": "entrance",
+      "size": 102,
+      "prompt": "A formal leather-bound guest sign-in registry book, open on a small stand, a pen resting on the page."
+    },
+    {
+      "id": "inspect_birdcage",
+      "room": "living_room",
+      "size": 123,
+      "prompt": "An ornate empty brass birdcage on a tall stand, its little door hanging open with a snapped latch, a few stray feathers settled at the bottom."
+    },
+    {
+      "id": "inspect_hidden_speaker",
+      "room": "living_room",
+      "size": 72,
+      "prompt": "A small hidden wireless speaker with a thin audio cable trailing from it."
+    },
+    {
+      "id": "inspect_dropped_glove",
+      "room": "living_room",
+      "size": 72,
+      "prompt": "A single empty canvas gardening work glove, cream fabric with a ribbed cuff, smudged with dark soil, limp and slightly crumpled with deflated floppy fingers, clearly no hand inside it."
+    },
+    {
+      "id": "inspect_polish_cloth",
+      "room": "living_room",
+      "size": 72,
+      "prompt": "A soft yellow lemon-oil polishing cloth draped neatly over a short brass rail."
+    },
+    {
+      "id": "inspect_documentary_camera",
+      "room": "living_room",
+      "size": 113,
+      "prompt": "A professional film documentary camera on a tripod with a glowing red recording light."
+    },
+    {
+      "id": "inspect_vocab_ledger",
+      "room": "living_room",
+      "size": 82,
+      "prompt": "A small open booklet of taught parrot phrases, one handwritten line crossed out in pen."
+    },
+    {
+      "id": "inspect_delivery_manifest",
+      "room": "bedroom",
+      "size": 102,
+      "prompt": "A clipboard holding a crew delivery manifest sheet with handwritten lines and a scrawled signature."
+    },
+    {
+      "id": "inspect_service_tray",
+      "room": "bedroom",
+      "size": 92,
+      "prompt": "A collected room-service dinner tray with scraped-clean soup bowls and silverware squared away neatly."
+    },
+    {
+      "id": "inspect_star_note",
+      "room": "bedroom",
+      "size": 72,
+      "prompt": "An elegant handwritten note on cream stationery."
+    },
+    {
+      "id": "inspect_headphone_box",
+      "room": "bedroom",
+      "size": 92,
+      "prompt": "An open premium product box for luxury noise-canceling headphones, with tissue paper and a receipt visible."
+    },
+    {
+      "id": "inspect_mixing_board",
+      "room": "library",
+      "size": 113,
+      "prompt": "An audio mixing board sound desk covered in knobs and faders, one cable running off the back."
+    },
+    {
+      "id": "inspect_session_log",
+      "room": "library",
+      "size": 82,
+      "prompt": "A stack of recording session log pages covered in angry handwriting, the last sheet torn."
+    },
+    {
+      "id": "inspect_shot_list",
+      "room": "library",
+      "size": 92,
+      "prompt": "A director's printed shot list on a clipboard, one line crossed out in red pen."
+    },
+    {
+      "id": "inspect_note_on_fridge",
+      "room": "kitchen",
+      "size": 82,
+      "prompt": "A handwritten note held by a small round fridge magnet at its top edge, with an angry little skull doodle on it."
+    },
+    {
+      "id": "inspect_paella_pot",
+      "room": "kitchen",
+      "size": 92,
+      "prompt": "A large steaming paella pan full of colorful saffron rice and seafood."
+    },
+    {
+      "id": "inspect_treat_jar",
+      "room": "kitchen",
+      "size": 82,
+      "prompt": "A cute ceramic treat jar with a handwritten 'FOR THE CAT' label."
+    },
+    {
+      "id": "inspect_poultry_crate",
+      "room": "kitchen",
+      "size": 102,
+      "prompt": "A wooden poultry delivery crate with a small bin of plain little feathers beside it."
+    },
+    {
+      "id": "inspect_duty_roster",
+      "room": "kitchen",
+      "size": 82,
+      "prompt": "A kitchen duty roster sheet with a pushpin through one corner, slightly curling paper with a handwritten list of times."
+    },
+    {
+      "id": "inspect_pruning_shears",
+      "room": "garden",
+      "size": 92,
+      "prompt": "A pair of heavy iron pruning shears with slightly bent blade tips."
+    },
+    {
+      "id": "inspect_hidden_cases",
+      "room": "garden",
+      "size": 133,
+      "prompt": "Two massive black sound-proof acoustic road cases with heavy latches, stacked, a gray tarp thrown halfway over them in a hurry."
+    },
+    {
+      "id": "inspect_bird_bath",
+      "room": "garden",
+      "size": 113,
+      "prompt": "A weathered stone garden bird bath with a few bright red and blue feathers floating on the water."
+    },
+    {
+      "id": "inspect_pool_selfie",
+      "room": "pool_area",
+      "size": 72,
+      "prompt": "A smartphone held upright showing a poolside selfie on its screen, a blurry figure with dark cases visible in the photo's background."
+    },
+    {
+      "id": "inspect_production_schedule",
+      "room": "pool_area",
+      "size": 92,
+      "prompt": "A printed film production schedule sheet on a clipboard with listed times."
+    },
+    {
+      "id": "inspect_pool_water",
+      "room": "pool_area",
+      "size": 102,
+      "skip": true,
+      "prompt": "SKIPPED - the glittering pool surface is painted into the room background, not a cutout sprite (see sprite_prompts.txt)."
+    }
+  ]
+}
