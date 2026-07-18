@@ -188,3 +188,14 @@ C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Lev
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\room_map.json
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_one\bg_base.xnb
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\bg_base.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_one\Interactables\inspect_board_placard.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_one\Interactables\inspect_kitten.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_one\Interactables\inspect_old_dog.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_one\Interactables\inspect_saucer.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_one\Interactables\inspect_water_bowl.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_one\Interactables\inspect_welcome_placard.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\Interactables\inspect_doorway_placard.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\Interactables\inspect_graduation_scroll.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\Interactables\inspect_latch.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\Interactables\inspect_mailman_cutout.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\Interactables\inspect_window.xnb

@@ -7,8 +7,11 @@ description: Generate in-game object sprites end-to-end via the Gemini image API
 
 Automates the manual pipeline the user used to do by hand: prompt Gemini for object art,
 cut out the background, resize, save under the right room's `Interactables/` folder, and
-wire the content pipeline. Character sprites are done the same way in principle but are
-usually generated one-off by the user; this skill's sweet spot is **object** interactables.
+wire the content pipeline. Handles both **object** interactables and **character**
+interactables: mark a manifest entry with `"character": true` and it uses the manifest's
+`character_prompt_template` instead (full body, head kept in the upper part of the frame
+so the dialogue-portrait crop - top 32% x middle 60% - lands on the face). `--scan` tags
+`placeholder_person` entries as characters automatically.
 
 ## Prerequisites
 
@@ -34,6 +37,13 @@ complete for all 25 objects + 1 intentionally skipped). Entry format:
   the object's current placeholder tuning: `round(1024 * scale)` (the shared placeholder
   is 1024 px square). For a brand-new object with no tuned scale, estimate against room
   furniture: papers/small props ~70-85, medium props ~90-110, large set pieces ~120-140.
+  Characters: estimate against the cast instead - Dikkie is ~100 px tall, adult humans
+  ~230-300; the `1024 * scale` formula does NOT apply to `placeholder_person` entries,
+  so always hand-pick character sizes.
+- `"character": true` = use `character_prompt_template` (full-body, portrait-safe head
+  placement). The prompt should still describe pose explicitly; for non-upright poses
+  (a sleeping animal) keep the head toward the top of the composition or the dialogue
+  portrait crops to fur.
 - `prompt` = one or two sentences describing ONLY the object, matching the clue's dialogue
   text in `room_config.json`. Pure ASCII. The manifest's `prompt_template` wraps it with
   the Ghibli style + white-background boilerplate; do not repeat that in the prompt.

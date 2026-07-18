@@ -110,12 +110,21 @@ namespace CatDetective.Entities
         /// </summary>
         public string TexturePath { get; }
 
+        /// <summary>
+        /// Optional dialogue-portrait crop override as texture fractions
+        /// [x, y, width, height]. Null = the default head crop (x 0.20, y 0,
+        /// w 0.60, h 0.32), which suits upright characters; wide or lying poses
+        /// (a sleeping dog) set this so the crop lands on the face.
+        /// </summary>
+        public float[]? PortraitCrop { get; }
+
         public InteractionData(string text, Keyword[] keywords,
             float scale = 1.0f, string align = "BottomCenter",
             int offsetX = 0, int offsetY = 0, string texturePath = "",
             DialogueTopic[]? topics = null, string displayName = "",
             string revealName = "", string revealNameOnClue = "",
-            string altText = "", string altTextRequiresClue = "", string altTextRequiresSolve = "")
+            string altText = "", string altTextRequiresClue = "", string altTextRequiresSolve = "",
+            float[]? portraitCrop = null)
         {
             Text                 = text;
             Keywords             = keywords;
@@ -131,6 +140,8 @@ namespace CatDetective.Entities
             AltText              = altText;
             AltTextRequiresClue  = altTextRequiresClue;
             AltTextRequiresSolve = altTextRequiresSolve;
+            PortraitCrop         = portraitCrop != null && portraitCrop.Length == 4
+                ? portraitCrop : null;
         }
 
         // ── Shared colour palette ──────────────────────────────────────────────

@@ -817,3 +817,126 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Levels/malibu_mansion/pool_area/Interactables/inspect_production_schedule.png
+
+# ── Case: tutorial — object sprites (generated) ────────────────────────────
+
+#begin Levels/tutorial/lesson_one/Interactables/inspect_welcome_placard.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/tutorial/lesson_one/Interactables/inspect_welcome_placard.png
+
+#begin Levels/tutorial/lesson_one/Interactables/inspect_saucer.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/tutorial/lesson_one/Interactables/inspect_saucer.png
+
+#begin Levels/tutorial/lesson_one/Interactables/inspect_kitten.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/tutorial/lesson_one/Interactables/inspect_kitten.png
+
+#begin Levels/tutorial/lesson_one/Interactables/inspect_old_dog.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/tutorial/lesson_one/Interactables/inspect_old_dog.png
+
+#begin Levels/tutorial/lesson_one/Interactables/inspect_water_bowl.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/tutorial/lesson_one/Interactables/inspect_water_bowl.png
+
+#begin Levels/tutorial/lesson_one/Interactables/inspect_board_placard.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/tutorial/lesson_one/Interactables/inspect_board_placard.png
+
+#begin Levels/tutorial/lesson_two/Interactables/inspect_doorway_placard.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/tutorial/lesson_two/Interactables/inspect_doorway_placard.png
+
+#begin Levels/tutorial/lesson_two/Interactables/inspect_window.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/tutorial/lesson_two/Interactables/inspect_window.png
+
+#begin Levels/tutorial/lesson_two/Interactables/inspect_latch.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/tutorial/lesson_two/Interactables/inspect_latch.png
+
+#begin Levels/tutorial/lesson_two/Interactables/inspect_mailman_cutout.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/tutorial/lesson_two/Interactables/inspect_mailman_cutout.png
+
+#begin Levels/tutorial/lesson_two/Interactables/inspect_graduation_scroll.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/tutorial/lesson_two/Interactables/inspect_graduation_scroll.png

@@ -1,0 +1,76 @@
+{
+  "case": "tutorial",
+  "prompt_template": "Create an object that I can use for a videogame sprite, in the style of Studio Ghibli, soft hand-painted cel shading, cozy warm palette. Draw exactly one object, centered and filling most of the frame: {description} Create a full white background so the object can be easily cut out - no drop shadow, no ground plane, no text, no watermark.",
+  "character_prompt_template": "Create a character that I can use for a videogame sprite, in the style of Studio Ghibli, soft hand-painted cel shading, cozy warm palette. Draw exactly one character, full body visible, centered and filling most of the frame: {description} The head must be in the upper part of the image (it is cropped for a dialogue portrait). Create a full white background so the character can be easily cut out - no drop shadow, no ground plane, no text, no watermark.",
+  "objects": [
+    {
+      "id": "inspect_welcome_placard",
+      "room": "lesson_one",
+      "size": 130,
+      "prompt": "A freestanding wooden A-frame welcome sign, warm honey-colored wood, with a carved paw print emblem at the top and neat blank painted lines suggesting rows of instructions below it."
+    },
+    {
+      "id": "inspect_saucer",
+      "room": "lesson_one",
+      "size": 95,
+      "prompt": "A tipped-over porcelain cat saucer lying on its side, pale blue with a gold rim, with a glossy tongue of spilled milk spreading from its rim as part of the artwork."
+    },
+    {
+      "id": "inspect_kitten",
+      "room": "lesson_one",
+      "size": 120,
+      "character": true,
+      "prompt": "A tiny fluffy cream-and-orange kitten sitting upright facing the viewer, enormous round innocent eyes, a few milk droplets clinging to her whiskers, doing her very best to look like she has never done anything wrong in her life."
+    },
+    {
+      "id": "inspect_old_dog",
+      "room": "lesson_one",
+      "size": 180,
+      "character": true,
+      "prompt": "A big elderly basset hound fast asleep, lying with his body low and curled on a small round woven rug, his large droopy face with closed eyes and long ears resting on his front paws and clearly facing the viewer, the face positioned at the very top of the composition, deeply and professionally asleep."
+    },
+    {
+      "id": "inspect_water_bowl",
+      "room": "lesson_one",
+      "size": 90,
+      "prompt": "An upright ceramic pet water bowl, deep teal with a small painted fish on the side, filled to the brim with perfectly still clear water."
+    },
+    {
+      "id": "inspect_board_placard",
+      "room": "lesson_one",
+      "size": 130,
+      "prompt": "A wooden classroom easel holding a small chalkboard placard covered in chalk scribbles of arrows and boxes suggesting a diagram, with a stub of chalk resting on the easel tray."
+    },
+    {
+      "id": "inspect_doorway_placard",
+      "room": "lesson_two",
+      "size": 130,
+      "prompt": "A wooden directional signpost on a short round post with a sturdy base, holding a single arrow-shaped sign that points to the side, a simple carved chevron symbol on the arrow."
+    },
+    {
+      "id": "inspect_window",
+      "room": "lesson_two",
+      "size": 200,
+      "prompt": "A freestanding wooden cottage window frame with the sash swung open and a pale gauzy curtain billowing through it as if caught by a breeze, a small blank note pinned to the windowsill."
+    },
+    {
+      "id": "inspect_latch",
+      "room": "lesson_two",
+      "size": 70,
+      "prompt": "A small tarnished brass window latch hanging crookedly from a single loose screw, its other screw hole empty, the latch arm slightly bent."
+    },
+    {
+      "id": "inspect_mailman_cutout",
+      "room": "lesson_two",
+      "size": 250,
+      "character": true,
+      "prompt": "A life-size cardboard cutout standee of a cheerful vintage mailman in a blue uniform and cap holding a bundle of letters, with a crude curly mustache scribbled onto his face in black marker, visible corrugated cardboard edges and a fold-out cardboard support leg."
+    },
+    {
+      "id": "inspect_graduation_scroll",
+      "room": "lesson_two",
+      "size": 95,
+      "prompt": "A rolled parchment scroll tied with a red ribbon, displayed under a rounded glass dome on a small polished wooden base with a tiny blank brass plaque."
+    }
+  ]
+}

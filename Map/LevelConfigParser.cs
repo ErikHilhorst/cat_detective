@@ -84,6 +84,8 @@ namespace CatDetective.Map
         [JsonPropertyName("altText")]              public string AltText              { get; set; } = "";
         [JsonPropertyName("altTextRequiresClue")]  public string AltTextRequiresClue  { get; set; } = "";
         [JsonPropertyName("altTextRequiresSolve")] public string AltTextRequiresSolve { get; set; } = "";
+        /// <summary>Optional dialogue-portrait crop override, texture fractions [x, y, w, h].</summary>
+        [JsonPropertyName("portraitCrop")]         public float[]? PortraitCrop      { get; set; } = null;
     }
 
     internal sealed class TopicConfigData
@@ -236,7 +238,8 @@ namespace CatDetective.Map
                 dict[i.Id] = new InteractionData(i.Text, ParseKeywords(i.Keywords),
                     i.Scale, i.Align, i.OffsetX, i.OffsetY, i.Texture, topics, i.Name,
                     i.RevealName, i.RevealNameOnClue,
-                    i.AltText, i.AltTextRequiresClue, i.AltTextRequiresSolve);
+                    i.AltText, i.AltTextRequiresClue, i.AltTextRequiresSolve,
+                    i.PortraitCrop);
             }
             return dict;
         }

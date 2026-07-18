@@ -219,7 +219,11 @@ def write_mgcb_entries(case_id: str, rel_paths: list) -> int:
 # ── manifest scan helper ─────────────────────────────────────────────────────
 
 def scan_case(case_id: str):
-    """Print a manifest skeleton for every placeholder-textured interactable."""
+    """Print a manifest skeleton for every placeholder-textured interactable.
+
+    placeholder_object entries become plain objects; placeholder_person entries
+    are tagged "character": true so they use character_prompt_template.
+    """
     case_dir = REPO_ROOT / "Content" / "Levels" / case_id
     if not case_dir.is_dir():
         sys.exit(f"ERROR: no such case folder: {case_dir}")
@@ -228,15 +232,20 @@ def scan_case(case_id: str):
         room = cfg_path.parent.name
         cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
         for it in cfg.get("interactables", []):
-            if "placeholder_object" not in it.get("texture", ""):
+            tex = it.get("texture", "")
+            is_character = "placeholder_person" in tex
+            if "placeholder_object" not in tex and not is_character:
                 continue
             scale = float(it.get("scale", 0.1))
-            objects.append({
+            entry = {
                 "id": it["id"],
                 "room": room,
                 "size": round(1024 * scale),
-                "prompt": "TODO - one-sentence object description",
-            })
+                "prompt": "TODO - one-sentence description",
+            }
+            if is_character:
+                entry["character"] = True
+            objects.append(entry)
     manifest = {
         "case": case_id,
         "prompt_template": (
@@ -245,6 +254,14 @@ def scan_case(case_id: str):
             "one object, centered and filling most of the frame: {description} Create a "
             "full white background so the object can be easily cut out - no drop shadow, "
             "no ground plane, no text, no watermark."
+        ),
+        "character_prompt_template": (
+            "Create a character that I can use for a videogame sprite, in the style of "
+            "Studio Ghibli, soft hand-painted cel shading, cozy warm palette. Draw exactly "
+            "one character, full body visible, centered and filling most of the frame: "
+            "{description} The head must be in the upper part of the image (it is cropped "
+            "for a dialogue portrait). Create a full white background so the character can "
+            "be easily cut out - no drop shadow, no ground plane, no text, no watermark."
         ),
         "objects": objects,
     }
@@ -316,7 +333,12 @@ def main():
             elif not raw_path.exists() or args.force:
                 if api_key is None:
                     api_key = load_api_key()
-                prompt = template.format(description=obj["prompt"])
+                # Characters get their own template (portrait-safe head placement);
+                # falls back to the object template for older manifests.
+                tpl = template
+                if obj.get("character"):
+                    tpl = manifest.get("character_prompt_template", template)
+                prompt = tpl.format(description=obj["prompt"])
                 print(f"[gen ] {oid} ({room})...")
                 raw_bytes = generate_image(prompt, args.model, api_key)
                 RAW_DIR.mkdir(parents=True, exist_ok=True)

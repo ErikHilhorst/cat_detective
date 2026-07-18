@@ -2890,14 +2890,19 @@ namespace CatDetective
             _dialoguePortrait = null;
             if (entity.Data == null || entity.Data.Topics.Length == 0 || entity.Texture == null)
                 return;
-            // Middle 60% of the width x top 32%: sprites carry transparent side
-            // margins, so a full-width crop leaves the face tiny in the frame.
-            var tex = entity.Texture;
+            // Default: middle 60% of the width x top 32% - sprites carry transparent
+            // side margins, so a full-width crop leaves the face tiny in the frame.
+            // room_config "portraitCrop": [x, y, w, h] (texture fractions) overrides
+            // it for poses where the face is not at the top (a sleeping dog).
+            var tex  = entity.Texture;
+            var crop = entity.Data.PortraitCrop;
+            float cx = crop?[0] ?? 0.20f, cy = crop?[1] ?? 0f;
+            float cw = crop?[2] ?? 0.60f, ch = crop?[3] ?? 0.32f;
             _dialoguePortrait       = tex;
             _dialoguePortraitSource = new Rectangle(
-                (int)(tex.Width * 0.20f), 0,
-                Math.Max(1, (int)(tex.Width * 0.60f)),
-                Math.Max(1, (int)(tex.Height * 0.32f)));
+                (int)(tex.Width * cx), (int)(tex.Height * cy),
+                Math.Max(1, (int)(tex.Width * cw)),
+                Math.Max(1, (int)(tex.Height * ch)));
         }
 
         private void DrawRichText(
