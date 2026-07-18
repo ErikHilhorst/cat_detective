@@ -1,0 +1,248 @@
+{
+ "compressionlevel": -1,
+ "height": 24,
+ "infinite": true,
+ "layers": [
+  {
+   "id": 1,
+   "image": "bg_base.jpg",
+   "imageheight": 768,
+   "imagewidth": 1370,
+   "name": "background",
+   "opacity": 1,
+   "type": "imagelayer",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 2,
+   "name": "Collisions",
+   "objects": [
+    {
+     "height": 140,
+     "id": 200,
+     "name": "wall_top",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 1370,
+     "x": 0,
+     "y": 0
+    },
+    {
+     "height": 628,
+     "id": 201,
+     "name": "wall_left",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 20,
+     "x": 0,
+     "y": 140
+    },
+    {
+     "height": 628,
+     "id": 202,
+     "name": "wall_right",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 20,
+     "x": 1350,
+     "y": 140
+    },
+    {
+     "height": 28,
+     "id": 203,
+     "name": "wall_bottom",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 1370,
+     "x": 0,
+     "y": 740
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 3,
+   "name": "Transfers",
+   "objects": [
+    {
+     "height": 220,
+     "id": 1,
+     "name": "transfer_to_lesson_two",
+     "opacity": 1,
+     "properties": [
+      {
+       "name": "TargetRoom",
+       "type": "string",
+       "value": "lesson_two"
+      },
+      {
+       "name": "TargetSpawn",
+       "type": "string",
+       "value": "spawn_from_lesson_one"
+      }
+     ],
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 100,
+     "x": 1250,
+     "y": 380
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 4,
+   "name": "Spawn",
+   "objects": [
+    {
+     "height": 0,
+     "id": 50,
+     "name": "spawn_default",
+     "opacity": 1,
+     "point": true,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 0,
+     "x": 280,
+     "y": 650
+    },
+    {
+     "height": 0,
+     "id": 51,
+     "name": "spawn_from_lesson_two",
+     "opacity": 1,
+     "point": true,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 0,
+     "x": 1150,
+     "y": 650
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 5,
+   "name": "Interactables",
+   "objects": [
+    {
+     "height": 130,
+     "id": 60,
+     "name": "inspect_welcome_placard",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 110,
+     "x": 360,
+     "y": 380
+    },
+    {
+     "height": 90,
+     "id": 61,
+     "name": "inspect_saucer",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 100,
+     "x": 640,
+     "y": 490
+    },
+    {
+     "height": 150,
+     "id": 62,
+     "name": "inspect_kitten",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 100,
+     "x": 900,
+     "y": 330
+    },
+    {
+     "height": 100,
+     "id": 63,
+     "name": "inspect_old_dog",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 130,
+     "x": 1020,
+     "y": 560
+    },
+    {
+     "height": 70,
+     "id": 64,
+     "name": "inspect_water_bowl",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 90,
+     "x": 700,
+     "y": 650
+    },
+    {
+     "height": 120,
+     "id": 65,
+     "name": "inspect_board_placard",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 110,
+     "x": 450,
+     "y": 600
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  }
+ ],
+ "nextlayerid": 6,
+ "nextobjectid": 70,
+ "orientation": "orthogonal",
+ "renderorder": "right-down",
+ "tiledversion": "1.12.1",
+ "tileheight": 32,
+ "tilesets": [],
+ "tilewidth": 32,
+ "type": "map",
+ "version": "1.10",
+ "width": 43
+}

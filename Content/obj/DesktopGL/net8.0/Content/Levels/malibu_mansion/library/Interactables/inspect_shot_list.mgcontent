@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/library/Interactables/inspect_shot_list.png</SourceFile>
-  <SourceTime>2026-07-17T10:07:49.4870752+02:00</SourceTime>
+  <SourceTime>2026-07-18T10:06:18.4936518+02:00</SourceTime>
   <DestFile>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/library/Interactables/inspect_shot_list.xnb</DestFile>
-  <DestTime>2026-07-17T10:12:14.0247232+02:00</DestTime>
+  <DestTime>2026-07-18T10:36:05.8218197+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

@@ -1,0 +1,236 @@
+{
+ "compressionlevel": -1,
+ "height": 24,
+ "infinite": true,
+ "layers": [
+  {
+   "id": 1,
+   "image": "bg_base.jpg",
+   "imageheight": 768,
+   "imagewidth": 1370,
+   "name": "background",
+   "opacity": 1,
+   "type": "imagelayer",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 2,
+   "name": "Collisions",
+   "objects": [
+    {
+     "height": 140,
+     "id": 200,
+     "name": "wall_top",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 1370,
+     "x": 0,
+     "y": 0
+    },
+    {
+     "height": 628,
+     "id": 201,
+     "name": "wall_left",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 20,
+     "x": 0,
+     "y": 140
+    },
+    {
+     "height": 628,
+     "id": 202,
+     "name": "wall_right",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 20,
+     "x": 1350,
+     "y": 140
+    },
+    {
+     "height": 28,
+     "id": 203,
+     "name": "wall_bottom",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 1370,
+     "x": 0,
+     "y": 740
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 3,
+   "name": "Transfers",
+   "objects": [
+    {
+     "height": 220,
+     "id": 1,
+     "name": "transfer_to_lesson_one",
+     "opacity": 1,
+     "properties": [
+      {
+       "name": "TargetRoom",
+       "type": "string",
+       "value": "lesson_one"
+      },
+      {
+       "name": "TargetSpawn",
+       "type": "string",
+       "value": "spawn_from_lesson_two"
+      }
+     ],
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 100,
+     "x": 20,
+     "y": 380
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 4,
+   "name": "Spawn",
+   "objects": [
+    {
+     "height": 0,
+     "id": 50,
+     "name": "spawn_default",
+     "opacity": 1,
+     "point": true,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 0,
+     "x": 300,
+     "y": 650
+    },
+    {
+     "height": 0,
+     "id": 51,
+     "name": "spawn_from_lesson_one",
+     "opacity": 1,
+     "point": true,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 0,
+     "x": 260,
+     "y": 650
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
+   "id": 5,
+   "name": "Interactables",
+   "objects": [
+    {
+     "height": 130,
+     "id": 60,
+     "name": "inspect_doorway_placard",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 110,
+     "x": 380,
+     "y": 420
+    },
+    {
+     "height": 140,
+     "id": 61,
+     "name": "inspect_window",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 120,
+     "x": 620,
+     "y": 280
+    },
+    {
+     "height": 70,
+     "id": 62,
+     "name": "inspect_latch",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 80,
+     "x": 780,
+     "y": 320
+    },
+    {
+     "height": 150,
+     "id": 63,
+     "name": "inspect_mailman_cutout",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 110,
+     "x": 980,
+     "y": 440
+    },
+    {
+     "height": 90,
+     "id": 64,
+     "name": "inspect_graduation_scroll",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 100,
+     "x": 700,
+     "y": 600
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  }
+ ],
+ "nextlayerid": 6,
+ "nextobjectid": 70,
+ "orientation": "orthogonal",
+ "renderorder": "right-down",
+ "tiledversion": "1.12.1",
+ "tileheight": 32,
+ "tilesets": [],
+ "tilewidth": 32,
+ "type": "map",
+ "version": "1.10",
+ "width": 43
+}

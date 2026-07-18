@@ -65,6 +65,57 @@
 /processorParam:TextureFormat=Color
 /build:Shared/shadow_blob.png
 
+# Case poster (intro screen). The source file keeps its typo'd name on disk;
+# the ;output rename gives the game a clean load path: Shared/case_poster.
+#begin Shared/case of the mising maccaw.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Shared/case of the mising maccaw.png;Shared/case_poster.png
+
+# ── Tutorial (Whisker Academy) backgrounds ─────────────────────────────────
+
+#begin Levels/tutorial/lesson_one/bg_base.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/tutorial/lesson_one/bg_base.jpg
+
+#begin Levels/tutorial/lesson_two/bg_base.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/tutorial/lesson_two/bg_base.jpg
+
+# Rudebeak reveal (end scene, beat 4).
+#begin Levels/malibu_mansion/rudebeak.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/rudebeak.png
+
 # ── Cat sprite sheets ──────────────────────────────────────────────────────
 
 #begin Shared/walk_animation_forward.png

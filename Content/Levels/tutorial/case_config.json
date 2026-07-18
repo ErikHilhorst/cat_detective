@@ -1,0 +1,115 @@
+{
+  "clues": [
+    {
+      "id": "the_kitten",
+      "roomId": "lesson_one",
+      "isMacroClue": true,
+      "category": "Who",
+      "name": "The Kitten",
+      "context": "Whiskers that smell like fresh milk.",
+      "inspectorDescription": "A very small cat with very milky whiskers. She was somewhere milky tonight, and recently."
+    },
+    {
+      "id": "the_old_dog",
+      "roomId": "lesson_one",
+      "isMacroClue": false,
+      "category": "Who",
+      "name": "The Old Dog",
+      "context": "Asleep on the only rug in the void.",
+      "inspectorDescription": "He has been asleep since before the academy was built. His paws are dry and enormous."
+    },
+    {
+      "id": "tipped_saucer",
+      "roomId": "lesson_one",
+      "isMacroClue": true,
+      "category": "What",
+      "name": "The Tipped Saucer",
+      "context": "Flat on its back in a thin white lake.",
+      "inspectorDescription": "A saucer, capsized. The milk went everywhere. The saucer is not talking."
+    },
+    {
+      "id": "water_bowl",
+      "roomId": "lesson_one",
+      "isMacroClue": false,
+      "category": "What",
+      "name": "The Water Bowl",
+      "context": "Upright. Full. Blameless.",
+      "inspectorDescription": "Nothing happened to the water bowl. Not everything you write down is the answer."
+    },
+    {
+      "id": "the_zoomies",
+      "roomId": "lesson_one",
+      "isMacroClue": true,
+      "category": "Why",
+      "name": "The Zoomies - 3:00 AM",
+      "context": "Tiny wet prints in three tight circles, then gone.",
+      "inspectorDescription": "Paw prints leave the milk in a spiral and accelerate toward nothing in particular. That is not walking."
+    },
+    {
+      "id": "simple_hunger",
+      "roomId": "lesson_one",
+      "isMacroClue": false,
+      "category": "Why",
+      "name": "Hunger",
+      "context": "A stomach growling like distant thunder.",
+      "inspectorDescription": "The old dog is hungry the way mountains are tall - permanently, and without doing anything about it."
+    },
+    {
+      "id": "training_floor",
+      "roomId": "lesson_one",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "The Training Floor",
+      "context": "A white floor with exactly one thing wrong with it.",
+      "inspectorDescription": "The Hall of Basics. Nothing here is real except the lesson."
+    },
+    {
+      "id": "the_wind",
+      "roomId": "lesson_two",
+      "isMacroClue": true,
+      "category": "Who",
+      "name": "The Wind",
+      "context": "It has been through here, and recently.",
+      "inspectorDescription": "The curtain is still moving. The wind takes credit for a great many things it did do, and a few it did not."
+    },
+    {
+      "id": "the_mailman",
+      "roomId": "lesson_two",
+      "isMacroClue": false,
+      "category": "Who",
+      "name": "The Mailman",
+      "context": "Cardboard. Suspicious mustache, hand-drawn.",
+      "inspectorDescription": "A cutout propped against nothing. Somebody wanted him to look guilty, which is different from being guilty."
+    },
+    {
+      "id": "open_window",
+      "roomId": "lesson_two",
+      "isMacroClue": true,
+      "category": "What",
+      "name": "The Open Window",
+      "context": "Open, in a room with no weather.",
+      "inspectorDescription": "The window stands open. The curtain does its ghost impression. Something came through, or left."
+    },
+    {
+      "id": "loose_latch",
+      "roomId": "lesson_two",
+      "isMacroClue": false,
+      "category": "What",
+      "name": "The Loose Latch",
+      "context": "It would not stop a determined moth.",
+      "inspectorDescription": "The latch hangs by one screw. It has given up, professionally speaking."
+    },
+    {
+      "id": "windy_alibi",
+      "roomId": "lesson_two",
+      "isMacroClue": true,
+      "category": "Why",
+      "name": "Blaming the Wind",
+      "context": "A note on the sill: 'the wind did it, probably.'",
+      "inspectorDescription": "Somebody pinned a note blaming the wind. Blaming the wind is an old trick. The oldest."
+    }
+  ],
+  "rooms": [ "lesson_one", "lesson_two" ],
+  "finalSolveSentence": "The graduate concludes: [The Kitten] tipped over [The Saucer] because of [The Zoomies].",
+  "finalSolveClueIds": [ "the_kitten", "tipped_saucer", "the_zoomies" ]
+}

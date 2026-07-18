@@ -1,0 +1,95 @@
+{
+  "props": [],
+  "interactables": [
+    {
+      "id": "inspect_welcome_placard",
+      "name": "Welcome Placard",
+      "texture": "Shared/placeholder_object",
+      "scale": 0.12,
+      "text": "WHISKER ACADEMY - HALL OF BASICS.|A placard in a white room. It reads: 'Walk with WASD or the arrow keys. Stand near a thing. Press Enter to inspect it.'|Below, in smaller print: 'Words that light up are CLUES. They file themselves in your journal. Tonight's exercise: something tipped the saucer on [the training floor]. Work out what happened.'",
+      "keywords": [
+        { "displayText": "the training floor", "id": "training_floor", "color": "misc" }
+      ]
+    },
+    {
+      "id": "inspect_saucer",
+      "name": "Tipped Saucer",
+      "texture": "Shared/placeholder_object",
+      "scale": 0.10,
+      "text": "A [tipped saucer], flat on its back. The milk is a thin white lake with no survivors.|Tiny wet paw prints leave the lake in three tight circles, then rocket toward nothing in particular. That is not walking. That is [the zoomies].",
+      "keywords": [
+        { "displayText": "tipped saucer", "id": "tipped_saucer", "color": "crime" },
+        { "displayText": "the zoomies", "id": "the_zoomies", "color": "crime" }
+      ]
+    },
+    {
+      "id": "inspect_kitten",
+      "name": "The Kitten",
+      "texture": "Shared/placeholder_person",
+      "scale": 0.14,
+      "text": "A very small cat sits in the middle of the white room, looking extremely innocent. Nobody looks that innocent by accident.|A placard beside her reads: 'Some witnesses have more to say. Choose an action from the menu. You do not talk. You act.'",
+      "keywords": [],
+      "topics": [
+        {
+          "prompt": "Sniff her whiskers. Thoroughly.",
+          "text": "She holds very still, the way the guilty and the polite both do. Her whiskers smell like fresh milk and bad decisions. [The kitten] has been somewhere milky tonight.",
+          "keywords": [
+            { "displayText": "The kitten", "id": "the_kitten", "color": "crime" }
+          ]
+        },
+        {
+          "prompt": "Stare at her until someone blinks.",
+          "text": "You blink first. Unheard of. She is either innocent or a professional.|At [3:00 AM], kittens are neither. They are something else entirely.",
+          "keywords": [
+            { "displayText": "3:00 AM", "id": "the_zoomies", "color": "misc" }
+          ]
+        },
+        {
+          "prompt": "Show her your journal.",
+          "requiresSolve": "lesson_one",
+          "text": "You did the deduction. She knows you know.|She flops over, shows her belly, and squeaks once. In cat, that is a full confession, a plea bargain, and a request for snacks, all at the same time.|A new placard rises from the floor: 'CONFRONTATION COMPLETE. Some talks only unlock after a SOLVE. Hear them all, or the final board stays shut.'",
+          "keywords": []
+        }
+      ]
+    },
+    {
+      "id": "inspect_old_dog",
+      "name": "The Old Dog",
+      "texture": "Shared/placeholder_person",
+      "scale": 0.16,
+      "text": "[The old dog] is asleep on the only rug in the void. His placard reads: 'Every mystery needs more than one suspect. Otherwise it is just an accusation.'",
+      "keywords": [
+        { "displayText": "The old dog", "id": "the_old_dog", "color": "plot" }
+      ],
+      "topics": [
+        {
+          "prompt": "Bat his ear, gently.",
+          "text": "One eye opens. It has seen empires fall. It closes again.|His stomach growls like distant thunder. If [hunger] ever moves him, it has not managed it tonight.",
+          "keywords": [
+            { "displayText": "hunger", "id": "simple_hunger", "color": "misc" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "inspect_water_bowl",
+      "name": "Water Bowl",
+      "texture": "Shared/placeholder_object",
+      "scale": 0.10,
+      "text": "A [water bowl], upright, full, entirely blameless. Not everything you find is the answer. Write it down anyway.",
+      "keywords": [
+        { "displayText": "water bowl", "id": "water_bowl", "color": "misc" }
+      ]
+    },
+    {
+      "id": "inspect_board_placard",
+      "name": "Board Placard",
+      "texture": "Shared/placeholder_object",
+      "scale": 0.12,
+      "text": "'When you have clues, press SOLVE in the bottom-right corner - it pulses gold when the room is complete. Click a slot, click a clue from the tabs, click INSERT. Wrong guesses cost nothing but pride.'|'Solve this room. Then take the doorway east - the chevron marks the way.'",
+      "keywords": []
+    }
+  ],
+  "localDeductionSentence": "[The kitten] tipped over [the saucer] because of [the zoomies].",
+  "localDeductionClueIds": [ "the_kitten", "tipped_saucer", "the_zoomies" ]
+}

@@ -27,7 +27,8 @@ namespace CatDetective
     ///   Pass 5 — Debug overlay (F1)
     ///   Pass 6 — Dialogue UI
     ///   Pass 7 — Notebook UI
-    ///   Pass 8 — Deduction board / win state
+    ///   Pass 8 — Deduction board
+    ///   Pass 9 — CRT overlay (optional, all states; drawn into the render target)
     /// </summary>
     public class Game1 : Game
     {
@@ -49,8 +50,10 @@ namespace CatDetective
         private Texture2D _bgBase       = null!;
         private Texture2D _sunbeamsMask = null!;
 
-        // ── Audio ──────────────────────────────────────────────────────────────
-        private Song? _bgMusic;
+        // ── Audio / user settings ──────────────────────────────────────────────
+        private Song?        _bgMusic;
+        private SettingsData _settings = new();
+        private CrtOverlay   _crt      = null!;
 
         // ── Entities ───────────────────────────────────────────────────────────
         private Cat        _cat             = null!;
@@ -102,7 +105,6 @@ namespace CatDetective
         private DeductionManager _deduction            = null!;
         private bool             _isDeductionBoardOpen = false;
         private bool             _isFinalSolveMode     = false; // true = macro board, false = local room board
-        private bool             _isGameWon            = false;
 
         private bool AllRoomsSolved =>
             _roomSolvedStates.Count > 0 && !_roomSolvedStates.ContainsValue(false);
@@ -228,9 +230,43 @@ namespace CatDetective
         private float    _hotReloadTimer;
 
         // ── Game state / scene selection ───────────────────────────────────────
-        private enum GameState { DevMenu, Playing }
-        private GameState    _currentState    = GameState.DevMenu;
+        // MainMenu is the boot state; DevMenu (the scene picker) stays reachable
+        // from it via F12 as a dev tool.
+        private enum GameState { MainMenu, Settings, CaseIntro, Playing, EndScene, DevMenu }
+        private GameState    _currentState    = GameState.MainMenu;
         private List<string> _availableScenes = new();
+
+        // ── Main menu / settings UI ────────────────────────────────────────────
+        private static readonly string[] _mainMenuLabels =
+            { "CONTINUE", "NEW GAME", "TUTORIAL", "SETTINGS", "QUIT" };
+        private int         _menuIndex           = 1;   // default: NEW GAME
+        private Rectangle[] _mainMenuButtonRects = Array.Empty<Rectangle>();
+        private Rectangle   _settingsBackRect;
+        private Rectangle   _settingsVolMinusRect;
+        private Rectangle   _settingsVolPlusRect;
+        private Rectangle[] _settingsVolCellRects = Array.Empty<Rectangle>();
+        private Rectangle   _settingsCrtToggleRect;
+
+        // ── Case intro / end scene ─────────────────────────────────────────────
+        private Texture2D?     _posterTex;
+        private Texture2D?     _rudebeakTex;
+        private string[]       _introPages   = Array.Empty<string>();
+        private int            _introPageIndex;
+        private string         _introCaseId  = "";
+        private EndSceneBeat[] _endBeats     = Array.Empty<EndSceneBeat>();
+        private int            _endBeatIndex;
+
+        // Cached so the menu doesn't hit the filesystem every frame; refreshed on
+        // every save write/delete and on returning to the menu.
+        private bool _saveExists;
+        // Two-step NEW GAME confirm while a save exists.
+        private bool _confirmNewGame;
+        // Suppresses gate toasts while a save is being replayed into a fresh case.
+        private bool _isRestoring;
+
+        // Fixed canvas for every non-Playing state (rooms resize it per background).
+        private const int MENU_CANVAS_W = 1456;
+        private const int MENU_CANVAS_H = 816;
 
         // ── Case / room tracking ───────────────────────────────────────────────
         private string                   _currentCaseId    = "";
@@ -315,16 +351,41 @@ namespace CatDetective
             string configPath = Path.Combine(Content.RootDirectory, "scenes_config.json");
             _availableScenes = SceneConfigParser.GetAvailableScenes(configPath);
 
+            _settings   = SaveSystem.LoadSettings();
+            _saveExists = SaveSystem.SaveExists();
+            _menuIndex  = _saveExists ? 0 : 1;
+            _crt        = new CrtOverlay(GraphicsDevice);
+
+            // Music starts with the app (the menu has music too) and loops forever.
+            // Skipped in screenshot mode (headless captures).
+            if (!_screenshotMode)
+            {
+                _bgMusic = Content.Load<Song>("Shared/moonlit_cat_case");
+                MediaPlayer.IsRepeating = true;
+                MediaPlayer.Volume      = _settings.MusicVolume;
+                MediaPlayer.Play(_bgMusic);
+            }
+
             UpdateLayout();
 
-            if (_screenshotMode)
+            if (_screenshotMode && _screenshotCase == "ui")
+            {
+                // Pseudo-case "ui": captures menu/intro/end screens without a level.
+                SetupUiScreenshot();
+            }
+            else if (_screenshotMode)
             {
                 LoadCase(_screenshotCase);
-                if (_screenshotRoom != "entrance")
+                if (_screenshotRoom != _currentRoomId)
                     LoadRoom(_screenshotRoom, "spawn_default");
 
+                // "crt" captures the plain room with the CRT overlay forced on.
+                if (_screenshotView == "crt")
+                {
+                    _settings.CrtEnabled = true;
+                }
                 // Optional view arg opens the journal so board layouts can be captured.
-                if (_screenshotView == "journal" || _screenshotView == "final")
+                else if (_screenshotView == "journal" || _screenshotView == "final")
                 {
                     _notebook.UnlockAllCluesForRoom(_currentRoomId);
                     _isDeductionBoardOpen = true;
@@ -406,7 +467,6 @@ namespace CatDetective
         private void LoadCase(string caseId)
         {
             // Case-level resets (do not reset on room transitions).
-            _isGameWon            = false;
             _isDeductionBoardOpen = false;
             _isFinalSolveMode     = false;
             _activeTab            = ClueCategory.Who;
@@ -415,16 +475,7 @@ namespace CatDetective
             _hotReloadTimer       = 0f;
 
             _currentCaseId = caseId;
-
-            // Background music: starts when the case is entered, loops for its
-            // whole duration. Skipped in screenshot mode (headless captures).
-            if (!_screenshotMode && _bgMusic == null)
-            {
-                _bgMusic = Content.Load<Song>("Shared/moonlit_cat_case");
-                MediaPlayer.IsRepeating = true;
-                MediaPlayer.Volume      = 0.5f;
-                MediaPlayer.Play(_bgMusic);
-            }
+            _visitedTopics.Clear();   // heard-topic state must not leak across cases
 
             _sunbeamsMask = Content.Load<Texture2D>("Shared/mask_sunbeams");
 
@@ -451,7 +502,8 @@ namespace CatDetective
                 _roomSolvedStates[room] = false;
             _roomSolvedSentences.Clear();
 
-            LoadRoom("entrance", spawnPointName: "spawn_default");
+            LoadRoom(caseConfig.Rooms.Count > 0 ? caseConfig.Rooms[0] : "entrance",
+                     spawnPointName: "spawn_default");
 
             _currentState = GameState.Playing;
         }
@@ -507,18 +559,7 @@ namespace CatDetective
             _bgBase = Content.Load<Texture2D>($"{contentBase}/bg_base");
 
             // Resize virtual canvas and window to match the background exactly.
-            if (_bgBase.Width != SCREEN_WIDTH || _bgBase.Height != SCREEN_HEIGHT)
-            {
-                SCREEN_WIDTH  = _bgBase.Width;
-                SCREEN_HEIGHT = _bgBase.Height;
-                _renderTarget?.Dispose();
-                _renderTarget = new RenderTarget2D(GraphicsDevice, SCREEN_WIDTH, SCREEN_HEIGHT);
-                _graphics.PreferredBackBufferWidth  = (int)(SCREEN_WIDTH  * DISPLAY_SCALE);
-                _graphics.PreferredBackBufferHeight = (int)(SCREEN_HEIGHT * DISPLAY_SCALE);
-                _graphics.ApplyChanges();
-                GameObject.SetScreenHeight(SCREEN_HEIGHT);
-                UpdateLayout();
-            }
+            SetCanvas(_bgBase.Width, _bgBase.Height);
 
             // Background exactly fills the canvas — no centering offset needed.
             _cameraTransform = Matrix.Identity;
@@ -552,6 +593,270 @@ namespace CatDetective
                 }
 
                 _foregroundProps.Add(new Prop(tex, propConfig.SortY, triggerRect));
+            }
+        }
+
+        /// <summary>
+        /// Resizes the virtual canvas, render target, and OS window. No-op when the
+        /// size is unchanged. Rooms call this with their background size; every
+        /// non-Playing state pins the canvas to MENU_CANVAS_W x MENU_CANVAS_H so
+        /// menu layouts stay stable.
+        /// </summary>
+        private void SetCanvas(int width, int height)
+        {
+            if (width == SCREEN_WIDTH && height == SCREEN_HEIGHT)
+                return;
+            SCREEN_WIDTH  = width;
+            SCREEN_HEIGHT = height;
+            _renderTarget?.Dispose();
+            _renderTarget = new RenderTarget2D(GraphicsDevice, SCREEN_WIDTH, SCREEN_HEIGHT);
+            _graphics.PreferredBackBufferWidth  = (int)(SCREEN_WIDTH  * DISPLAY_SCALE);
+            _graphics.PreferredBackBufferHeight = (int)(SCREEN_HEIGHT * DISPLAY_SCALE);
+            _graphics.ApplyChanges();
+            GameObject.SetScreenHeight(SCREEN_HEIGHT);
+            UpdateLayout();
+        }
+
+        /// <summary>Closes every in-game overlay and returns to the main menu.</summary>
+        private void ReturnToMainMenu()
+        {
+            _isDialogueActive     = false;
+            _isTopicMenuOpen      = false;
+            _isDeductionBoardOpen = false;
+            _isFinalSolveMode     = false;
+            _selectedWordBankClue = null;
+            _insertTargetSlot     = null;
+            SetCanvas(MENU_CANVAS_W, MENU_CANVAS_H);
+            _saveExists     = SaveSystem.SaveExists();
+            _confirmNewGame = false;
+            _menuIndex      = IsMenuItemEnabled(0) ? 0 : 1;
+            _currentState   = GameState.MainMenu;
+        }
+
+        /// <summary>
+        /// Snapshots the durable case state into the single save slot. Called on
+        /// room transfers, local solves, and Escape-to-menu - not on every clue,
+        /// so a window-X quit can lose progress since the last of those (accepted
+        /// for a rudimentary save system).
+        /// </summary>
+        private void AutoSave()
+        {
+            if (_screenshotMode || _currentCaseId.Length == 0)
+                return;
+
+            var save = new SaveData
+            {
+                CaseId     = _currentCaseId,
+                RoomId     = _currentRoomId,
+                SavedAtUtc = DateTime.UtcNow.ToString("o"),
+            };
+            foreach (var clue in _notebook.UnlockedClues)        save.UnlockedClueIds.Add(clue.Id);
+            foreach (var (room, solved) in _roomSolvedStates)    save.RoomSolvedStates[room] = solved;
+            foreach (var (room, text) in _roomSolvedSentences)   save.RoomSolvedSentences[room] = text;
+            foreach (var topic in _visitedTopics)                save.VisitedTopics.Add(topic);
+            foreach (var toast in _firedGateToasts)              save.FiredGateToasts.Add(toast);
+
+            _saveExists = SaveSystem.SaveGame(save);
+        }
+
+        /// <summary>
+        /// Rebuilds a saved session: loads the case fresh, then replays the saved
+        /// clue ids through the notebook (toasts suppressed via _isRestoring) and
+        /// copies the solved/visited state back before entering the saved room.
+        /// </summary>
+        private void RestoreFromSave(SaveData save)
+        {
+            string configPath = Path.Combine(
+                Content.RootDirectory, "Levels", save.CaseId, "case_config.json");
+            if (!File.Exists(configPath))
+            {
+                Console.WriteLine($"[SaveSystem] Saved case '{save.CaseId}' no longer exists - deleting save.");
+                SaveSystem.DeleteSave();
+                _saveExists = false;
+                return;
+            }
+
+            _isRestoring = true;
+            LoadCase(save.CaseId);
+
+            foreach (var clueId in save.UnlockedClueIds)
+                _notebook.UnlockClue(clueId);
+
+            foreach (var (room, solved) in save.RoomSolvedStates)
+                if (_roomSolvedStates.ContainsKey(room))
+                    _roomSolvedStates[room] = solved;
+
+            _roomSolvedSentences.Clear();
+            foreach (var (room, text) in save.RoomSolvedSentences)
+                _roomSolvedSentences[room] = text;
+
+            _visitedTopics.Clear();
+            foreach (var topic in save.VisitedTopics)
+                _visitedTopics.Add(topic);
+
+            // After LoadCase: BuildGateIndex cleared the fired set, so this union
+            // must come after the clue replay or old toasts refire on Continue.
+            foreach (var toast in save.FiredGateToasts)
+                _firedGateToasts.Add(toast);
+
+            // Re-enter the saved room so a solved room's board shows its recap.
+            // (_roomSolvedStates holds a key for every room in the case.)
+            if (_roomSolvedStates.ContainsKey(save.RoomId) && save.RoomId != _currentRoomId)
+                LoadRoom(save.RoomId, "spawn_default");
+
+            // The replay must not leave queued toasts behind.
+            _toastQueue.Clear();
+            _toastMessage = "";
+            _toastTimer   = 0f;
+
+            _isRestoring = false;
+        }
+
+        /// <summary>Menu-driven case start; ignores cases that don't exist yet.</summary>
+        private void StartCase(string caseId)
+        {
+            string configPath = Path.Combine(
+                Content.RootDirectory, "Levels", caseId, "case_config.json");
+            if (!File.Exists(configPath))
+            {
+                Console.WriteLine($"[Menu] Case '{caseId}' not found - ignoring.");
+                return;
+            }
+            LoadCase(caseId);
+        }
+
+        /// <summary>
+        /// Case complete: clears the save slot (CONTINUE dims - the case is over)
+        /// and rolls the epilogue. Reached only from a valid final-solve submit.
+        /// </summary>
+        private void StartEndScene(string caseId)
+        {
+            _endBeats     = CaseScripts.GetEndScene(caseId);
+            _endBeatIndex = 0;
+            _typewriterTimer = 0f;
+
+            foreach (var beat in _endBeats)
+                if (beat.ShowRudebeak)
+                    _rudebeakTex ??= Content.Load<Texture2D>("Levels/malibu_mansion/rudebeak");
+
+            if (!_screenshotMode)
+            {
+                SaveSystem.DeleteSave();
+                _saveExists = false;
+            }
+
+            _isDialogueActive     = false;
+            _isTopicMenuOpen      = false;
+            _isDeductionBoardOpen = false;
+            _isFinalSolveMode     = false;
+            SetCanvas(MENU_CANVAS_W, MENU_CANVAS_H);
+            _currentState = GameState.EndScene;
+        }
+
+        /// <summary>
+        /// Opens the poster-and-typewriter intro for a case, falling straight
+        /// through to the case itself when it has no authored intro.
+        /// </summary>
+        private void StartCaseIntro(string caseId)
+        {
+            string configPath = Path.Combine(
+                Content.RootDirectory, "Levels", caseId, "case_config.json");
+            if (!File.Exists(configPath))
+            {
+                Console.WriteLine($"[Menu] Case '{caseId}' not found - ignoring.");
+                return;
+            }
+
+            var pages = CaseScripts.GetIntro(caseId);
+            if (pages.Length == 0)
+            {
+                LoadCase(caseId);
+                return;
+            }
+
+            _posterTex ??= Content.Load<Texture2D>("Shared/case_poster");
+            _introCaseId     = caseId;
+            _introPages      = pages;
+            _introPageIndex  = 0;
+            _typewriterTimer = 0f;
+            SetCanvas(MENU_CANVAS_W, MENU_CANVAS_H);
+            _currentState = GameState.CaseIntro;
+        }
+
+        /// <summary>CONTINUE is only offered while a saved case exists.</summary>
+        private bool IsMenuItemEnabled(int index) =>
+            index != 0 || _saveExists;
+
+        private void ActivateMainMenuItem(int index)
+        {
+            switch (_mainMenuLabels[index])
+            {
+                case "CONTINUE":
+                    var save = SaveSystem.LoadGame();
+                    if (save != null)
+                        RestoreFromSave(save);
+                    else
+                    {
+                        _saveExists = false;
+                        _menuIndex  = 1;
+                    }
+                    break;
+
+                case "NEW GAME":
+                    // A second Enter/click confirms overwriting an existing save.
+                    if (_saveExists && !_confirmNewGame)
+                    {
+                        _confirmNewGame = true;
+                    }
+                    else
+                    {
+                        _confirmNewGame = false;
+                        SaveSystem.DeleteSave();
+                        _saveExists = false;
+                        StartCaseIntro("malibu_mansion");
+                    }
+                    break;
+
+                case "TUTORIAL": StartCase("tutorial");                 break;
+                case "SETTINGS": _currentState = GameState.Settings;    break;
+                case "QUIT":     Exit();                                break;
+            }
+        }
+
+        /// <summary>Puts the game straight into a UI state for --screenshot ui captures.</summary>
+        private void SetupUiScreenshot()
+        {
+            switch (_screenshotRoom)
+            {
+                case "settings": _currentState = GameState.Settings; break;
+
+                // Poster intro, fully typed; optional view arg = page index.
+                case "intro":
+                    StartCaseIntro("malibu_mansion");
+                    if (int.TryParse(_screenshotView, out int page))
+                        _introPageIndex = Math.Clamp(page, 0, _introPages.Length - 1);
+                    _typewriterTimer = 999999f;
+                    break;
+
+                // End scene, fully typed; optional view arg = beat index.
+                case "end":
+                    StartEndScene("malibu_mansion");
+                    if (int.TryParse(_screenshotView, out int beat))
+                        _endBeatIndex = Math.Clamp(beat, 0, _endBeats.Length - 1);
+                    _typewriterTimer = 999999f;
+                    break;
+
+                // Headless save/restore check: loads the save slot exactly like the
+                // CONTINUE button and captures whatever room it lands in.
+                case "continue":
+                    var save = SaveSystem.LoadGame();
+                    if (save != null)
+                        RestoreFromSave(save);
+                    else
+                        Console.WriteLine("[Screenshot] No save to continue - staying on the menu.");
+                    break;
+
+                default: _currentState = GameState.MainMenu; break;
             }
         }
 
@@ -666,7 +971,7 @@ namespace CatDetective
         /// </summary>
         private void HandleClueUnlocked(string clueId)
         {
-            if (_screenshotMode) return;
+            if (_screenshotMode || _isRestoring) return;
             if (!_gateIndex.TryGetValue(clueId, out var gated)) return;
             if (!_firedGateToasts.Add(clueId)) return;
 
@@ -698,8 +1003,14 @@ namespace CatDetective
         protected override void Update(GameTime gameTime)
         {
             var kbState = Keyboard.GetState();
-            if (kbState.IsKeyDown(Keys.Escape))
-                Exit();
+
+            // Edge-detected keys (computed before _prevKbState is overwritten).
+            // Escape is contextual per state - it only quits from the main menu.
+            bool escPressed     = kbState.IsKeyDown(Keys.Escape) && !_prevKbState.IsKeyDown(Keys.Escape);
+            bool confirmPressed = kbState.IsKeyDown(Keys.Enter)  && !_prevKbState.IsKeyDown(Keys.Enter);
+            bool f12Pressed     = kbState.IsKeyDown(Keys.F12)    && !_prevKbState.IsKeyDown(Keys.F12);
+            bool leftPressed    = kbState.IsKeyDown(Keys.Left)   && !_prevKbState.IsKeyDown(Keys.Left);
+            bool rightPressed   = kbState.IsKeyDown(Keys.Right)  && !_prevKbState.IsKeyDown(Keys.Right);
 
             if (kbState.IsKeyDown(Keys.F1) && !_prevKbState.IsKeyDown(Keys.F1))
                 _showDebug = !_showDebug;
@@ -720,9 +1031,165 @@ namespace CatDetective
                 (int)(mouseState.X / DISPLAY_SCALE),
                 (int)(mouseState.Y / DISPLAY_SCALE));
 
-            if (_currentState == GameState.DevMenu)
+            // Screenshot mode: save render target to file then exit. Runs in every
+            // state so ui (menu/settings/intro/end) captures work too.
+            if (_screenshotMode && !_screenshotSaved)
             {
-                if (clicked)
+                _screenshotTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (_screenshotTimer >= SCREENSHOT_DELAY)
+                {
+                    _screenshotSaved = true;
+                    SaveScreenshot();
+                    Exit();
+                    return;
+                }
+            }
+
+            if (_currentState == GameState.MainMenu)
+            {
+                if (escPressed)
+                {
+                    Exit();
+                    return;
+                }
+                if (f12Pressed)
+                {
+                    _currentState = GameState.DevMenu;
+                }
+                else
+                {
+                    int count = _mainMenuLabels.Length;
+                    if (_menuUpPressed || _menuDownPressed)
+                        _confirmNewGame = false;   // navigating away cancels the overwrite prompt
+                    if (_menuUpPressed)
+                        do { _menuIndex = (_menuIndex - 1 + count) % count; }
+                        while (!IsMenuItemEnabled(_menuIndex));
+                    if (_menuDownPressed)
+                        do { _menuIndex = (_menuIndex + 1) % count; }
+                        while (!IsMenuItemEnabled(_menuIndex));
+
+                    if (confirmPressed && IsMenuItemEnabled(_menuIndex))
+                    {
+                        ActivateMainMenuItem(_menuIndex);
+                    }
+                    else if (clicked)
+                    {
+                        for (int i = 0; i < _mainMenuButtonRects.Length; i++)
+                        {
+                            if (_mainMenuButtonRects[i].Contains(vm) && IsMenuItemEnabled(i))
+                            {
+                                _menuIndex = i;
+                                ActivateMainMenuItem(i);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            else if (_currentState == GameState.Settings)
+            {
+                if (escPressed || (clicked && _settingsBackRect.Contains(vm)))
+                {
+                    _currentState = GameState.MainMenu;
+                }
+                else
+                {
+                    float vol = _settings.MusicVolume;
+                    if (leftPressed  || (clicked && _settingsVolMinusRect.Contains(vm))) vol -= 0.1f;
+                    if (rightPressed || (clicked && _settingsVolPlusRect.Contains(vm)))  vol += 0.1f;
+                    if (clicked)
+                    {
+                        for (int i = 0; i < _settingsVolCellRects.Length; i++)
+                        {
+                            if (_settingsVolCellRects[i].Contains(vm))
+                            {
+                                vol = (i + 1) / 10f;
+                                break;
+                            }
+                        }
+                    }
+                    vol = Math.Clamp((float)Math.Round(vol, 1), 0f, 1f);
+                    if (Math.Abs(vol - _settings.MusicVolume) > 0.001f)
+                    {
+                        _settings.MusicVolume = vol;
+                        MediaPlayer.Volume    = vol;
+                        SaveSystem.SaveSettings(_settings);
+                    }
+
+                    if (clicked && _settingsCrtToggleRect.Contains(vm))
+                    {
+                        _settings.CrtEnabled = !_settings.CrtEnabled;
+                        SaveSystem.SaveSettings(_settings);
+                    }
+                }
+            }
+            else if (_currentState == GameState.CaseIntro)
+            {
+                if (escPressed)
+                {
+                    StartCase(_introCaseId);   // skip the intro entirely
+                }
+                else
+                {
+                    int totalChars = _introPages[_introPageIndex].Length;
+                    if (confirmPressed || clicked)
+                    {
+                        if (_typewriterTimer < totalChars)
+                            _typewriterTimer = totalChars;         // finish typing
+                        else if (_introPageIndex < _introPages.Length - 1)
+                        {
+                            _introPageIndex++;                     // next page
+                            _typewriterTimer = 0f;
+                        }
+                        else
+                            StartCase(_introCaseId);               // into the case
+                    }
+                    else
+                    {
+                        _typewriterTimer +=
+                            (float)gameTime.ElapsedGameTime.TotalSeconds * TYPEWRITER_SPEED;
+                    }
+                }
+            }
+            else if (_currentState == GameState.EndScene)
+            {
+                var beat       = _endBeats[_endBeatIndex];
+                int totalChars = beat.IsCard ? 0 : beat.Text.Length;   // cards show instantly
+                if (escPressed)
+                {
+                    if (_endBeatIndex < _endBeats.Length - 1)
+                    {
+                        _endBeatIndex    = _endBeats.Length - 1;   // jump to the card
+                        _typewriterTimer = 999999f;
+                    }
+                    else
+                        ReturnToMainMenu();
+                }
+                else if (confirmPressed || clicked)
+                {
+                    if (_typewriterTimer < totalChars)
+                        _typewriterTimer = totalChars;
+                    else if (_endBeatIndex < _endBeats.Length - 1)
+                    {
+                        _endBeatIndex++;
+                        _typewriterTimer = 0f;
+                    }
+                    else
+                        ReturnToMainMenu();
+                }
+                else
+                {
+                    _typewriterTimer +=
+                        (float)gameTime.ElapsedGameTime.TotalSeconds * TYPEWRITER_SPEED;
+                }
+            }
+            else if (_currentState == GameState.DevMenu)
+            {
+                if (escPressed)
+                {
+                    _currentState = GameState.MainMenu;
+                }
+                else if (clicked)
                 {
                     for (int i = 0; i < _availableScenes.Count; i++)
                     {
@@ -734,22 +1201,34 @@ namespace CatDetective
                     }
                 }
             }
-            else // Playing
+            else if (_currentState == GameState.Playing)
             {
-                // Screenshot mode: save render target to file then exit.
-                if (_screenshotMode && !_screenshotSaved)
+                // Escape backs out one layer at a time: topic menu / dialogue ->
+                // deduction board -> main menu.
+                if (escPressed)
                 {
-                    _screenshotTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if (_screenshotTimer >= SCREENSHOT_DELAY)
+                    if (_isTopicMenuOpen || _isDialogueActive)
                     {
-                        _screenshotSaved = true;
-                        SaveScreenshot();
-                        Exit();
+                        _isDialogueActive = false;
+                        _isTopicMenuOpen  = false;
+                    }
+                    else if (_isDeductionBoardOpen)
+                    {
+                        _isDeductionBoardOpen = false;
+                        _isFinalSolveMode     = false;
+                        _selectedWordBankClue = null;
+                        _insertTargetSlot     = null;
+                    }
+                    else
+                    {
+                        AutoSave();
+                        ReturnToMainMenu();
+                        _prevMouseState = mouseState;
                         return;
                     }
                 }
 
-                if (!_isGameWon && clicked)
+                if (clicked)
                 {
                     if (_isDeductionBoardOpen)
                     {
@@ -831,7 +1310,7 @@ namespace CatDetective
                                 if (_isFinalSolveMode)
                                 {
                                     if (_deduction.ValidateCase())
-                                        _isGameWon = true;
+                                        StartEndScene(_currentCaseId);
                                 }
                                 else
                                 {
@@ -865,6 +1344,8 @@ namespace CatDetective
                                             ShowToast($"Your deduction corners {who} - " +
                                                       "they have some explaining to do...");
                                         }
+
+                                        AutoSave();
                                     }
                                 }
                             }
@@ -1026,6 +1507,7 @@ namespace CatDetective
                     if (_activeTransferZone != null && _cat.IsInteractPressed())
                     {
                         LoadRoom(_activeTransferZone.TargetRoom, _activeTransferZone.TargetSpawn);
+                        AutoSave();
                         return; // state was rebuilt; skip rest of this Update
                     }
 
@@ -1140,7 +1622,23 @@ namespace CatDetective
 
                 _spriteBatch.End();
             }
-            else // Playing
+            else if (_currentState == GameState.MainMenu)
+            {
+                DrawMainMenu();
+            }
+            else if (_currentState == GameState.Settings)
+            {
+                DrawSettingsScreen();
+            }
+            else if (_currentState == GameState.CaseIntro)
+            {
+                DrawCaseIntro();
+            }
+            else if (_currentState == GameState.EndScene)
+            {
+                DrawEndScene();
+            }
+            else if (_currentState == GameState.Playing)
             {
                 GraphicsDevice.Clear(_ambientColor);
 
@@ -1376,7 +1874,6 @@ namespace CatDetective
                 {
                     _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-                    if (!_isGameWon)
                     {
                         // SOLVE reflects room progress: pulsing glow once every clue
                         // in the room is found (playtest: players left rooms without
@@ -1437,7 +1934,7 @@ namespace CatDetective
                     // Clue counters: current room progress + case-wide total.
                     // Room basis = clues whose roomId is this room, matching the
                     // journal's Investigation overview.
-                    if (!_isGameWon && !_isDeductionBoardOpen)
+                    if (!_isDeductionBoardOpen)
                     {
                         var (roomFound, roomTotal) = _notebook.GetRoomClueCounts(_currentRoomId);
 
@@ -1452,7 +1949,7 @@ namespace CatDetective
                     }
 
                     // Transient toast — bottom-center, fades out at the end.
-                    if (_toastTimer > 0f && !_isGameWon)
+                    if (_toastTimer > 0f)
                     {
                         const float toastScale = 0.8f;
                         float alpha   = Math.Min(1f, _toastTimer / 0.5f);
@@ -1472,40 +1969,12 @@ namespace CatDetective
                 }
 
                 // ════════════════════════════════════════════════════════════════
-                // PASS 8 — DEDUCTION BOARD / WIN STATE  (hidden while dialogue is open)
+                // PASS 8 — DEDUCTION BOARD  (hidden while dialogue is open)
                 // ════════════════════════════════════════════════════════════════
-                if ((_isDeductionBoardOpen || _isGameWon) && !_isDialogueActive)
+                if (_isDeductionBoardOpen && !_isDialogueActive)
                 {
                     _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-                    if (_isGameWon)
-                    {
-                        _spriteBatch.Draw(_debugPixel,
-                            new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
-                            Color.Black * 0.85f);
-
-                        const string banner      = "CASE CLOSED!";
-                        const float  bannerScale = 3f;
-                        var          bannerSz    = _dialogueFont.MeasureString(banner) * bannerScale;
-                        var          bannerPos   = new Vector2(
-                            (SCREEN_WIDTH  - bannerSz.X) * 0.5f,
-                            (SCREEN_HEIGHT - bannerSz.Y) * 0.5f);
-
-                        _spriteBatch.DrawString(_dialogueFont, banner,
-                            bannerPos + new Vector2(6, 6), Color.Black * 0.8f,
-                            0f, Vector2.Zero, bannerScale, SpriteEffects.None, 0f);
-                        _spriteBatch.DrawString(_dialogueFont, banner,
-                            bannerPos, Color.Gold,
-                            0f, Vector2.Zero, bannerScale, SpriteEffects.None, 0f);
-
-                        const string sub   = "Press Escape to quit";
-                        var          subSz = _dialogueFont.MeasureString(sub);
-                        _spriteBatch.DrawString(
-                            _dialogueFont, sub,
-                            new Vector2((SCREEN_WIDTH - subSz.X) * 0.5f, bannerPos.Y + bannerSz.Y + 20),
-                            Color.LightGray);
-                    }
-                    else
                     {
                         // ── Full-screen journal background ────────────────────
                         _spriteBatch.Draw(_notebookBgTex,
@@ -1799,6 +2268,13 @@ namespace CatDetective
                 }
             } // end Playing
 
+            // ════════════════════════════════════════════════════════════════
+            // PASS 9 — CRT OVERLAY (optional). Drawn into the render target so
+            // it covers every state and appears in screenshots.
+            // ════════════════════════════════════════════════════════════════
+            if (_settings.CrtEnabled)
+                _crt.Draw(_spriteBatch, SCREEN_WIDTH, SCREEN_HEIGHT);
+
             // ── Blit render target to the OS window at display scale ─────────
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
@@ -1827,6 +2303,268 @@ namespace CatDetective
         {
             // Queued; Update() promotes the next message once the current one expires.
             _toastQueue.Enqueue(message);
+        }
+
+        // ── Menu screens ───────────────────────────────────────────────────────
+
+        private void DrawMainMenu()
+        {
+            GraphicsDevice.Clear(new Color(16, 16, 22));
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
+            float sy = SCREEN_HEIGHT / 1136f;
+
+            const string title      = "CAT DETECTIVE";
+            float        titleScale = 3.2f * sy;
+            var          titleSz    = _dialogueFont.MeasureString(title) * titleScale;
+            var          titlePos   = new Vector2((SCREEN_WIDTH - titleSz.X) * 0.5f, 170f * sy);
+            _spriteBatch.DrawString(_dialogueFont, title, titlePos + new Vector2(6, 6),
+                Color.Black * 0.8f, 0f, Vector2.Zero, titleScale, SpriteEffects.None, 0f);
+            _spriteBatch.DrawString(_dialogueFont, title, titlePos, Color.Gold,
+                0f, Vector2.Zero, titleScale, SpriteEffects.None, 0f);
+
+            const string subtitle = "the casebook of Dikkie";
+            float        subScale = 0.9f * sy;
+            var          subSz    = _dialogueFont.MeasureString(subtitle) * subScale;
+            _spriteBatch.DrawString(_dialogueFont, subtitle,
+                new Vector2((SCREEN_WIDTH - subSz.X) * 0.5f, titlePos.Y + titleSz.Y + 14f * sy),
+                new Color(170, 170, 180), 0f, Vector2.Zero, subScale, SpriteEffects.None, 0f);
+
+            for (int i = 0; i < _mainMenuButtonRects.Length; i++)
+            {
+                bool  enabled  = IsMenuItemEnabled(i);
+                bool  selected = i == _menuIndex && enabled;
+                Color fill     = !enabled  ? new Color(40, 40, 48)
+                               : selected  ? new Color(125, 92, 28)
+                               :             new Color(50, 55, 75);
+                Color label    = enabled ? Color.White : new Color(110, 110, 118);
+                DrawUiButton(_mainMenuButtonRects[i], fill, _mainMenuLabels[i], label);
+            }
+
+            if (_confirmNewGame)
+            {
+                const string warn   = "This overwrites the saved case. Press Enter again to confirm.";
+                float        wScale = 0.7f * sy;
+                var          wSz    = _dialogueFont.MeasureString(warn) * wScale;
+                _spriteBatch.DrawString(_dialogueFont, warn,
+                    new Vector2((SCREEN_WIDTH - wSz.X) * 0.5f, SCREEN_HEIGHT - 62f * sy),
+                    new Color(230, 170, 60), 0f, Vector2.Zero, wScale, SpriteEffects.None, 0f);
+            }
+            else if (!IsMenuItemEnabled(0))
+            {
+                const string hint   = "New here? The TUTORIAL teaches the ropes.";
+                float        hScale = 0.7f * sy;
+                var          hSz    = _dialogueFont.MeasureString(hint) * hScale;
+                _spriteBatch.DrawString(_dialogueFont, hint,
+                    new Vector2((SCREEN_WIDTH - hSz.X) * 0.5f, SCREEN_HEIGHT - 62f * sy),
+                    new Color(140, 140, 150), 0f, Vector2.Zero, hScale, SpriteEffects.None, 0f);
+            }
+
+            const string devHint  = "F12 dev";
+            float        dScale   = 0.6f * sy;
+            var          dSz      = _dialogueFont.MeasureString(devHint) * dScale;
+            _spriteBatch.DrawString(_dialogueFont, devHint,
+                new Vector2(SCREEN_WIDTH - dSz.X - 16f, SCREEN_HEIGHT - dSz.Y - 12f),
+                new Color(90, 90, 100), 0f, Vector2.Zero, dScale, SpriteEffects.None, 0f);
+
+            _spriteBatch.End();
+        }
+
+        private void DrawSettingsScreen()
+        {
+            GraphicsDevice.Clear(new Color(16, 16, 22));
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
+            float sx = SCREEN_WIDTH  / 2020f;
+            float sy = SCREEN_HEIGHT / 1136f;
+
+            const string title      = "SETTINGS";
+            float        titleScale = 2.2f * sy;
+            var          titleSz    = _dialogueFont.MeasureString(title) * titleScale;
+            var          titlePos   = new Vector2((SCREEN_WIDTH - titleSz.X) * 0.5f, 150f * sy);
+            _spriteBatch.DrawString(_dialogueFont, title, titlePos + new Vector2(4, 4),
+                Color.Black * 0.8f, 0f, Vector2.Zero, titleScale, SpriteEffects.None, 0f);
+            _spriteBatch.DrawString(_dialogueFont, title, titlePos, Color.Gold,
+                0f, Vector2.Zero, titleScale, SpriteEffects.None, 0f);
+
+            float labelScale = 0.9f * sy;
+
+            // ── Music volume row ──────────────────────────────────────────────
+            _spriteBatch.DrawString(_dialogueFont, "MUSIC VOLUME",
+                new Vector2(560f * sx, _settingsVolMinusRect.Y +
+                    (_settingsVolMinusRect.Height - _dialogueFont.LineSpacing * labelScale) * 0.5f),
+                Color.White, 0f, Vector2.Zero, labelScale, SpriteEffects.None, 0f);
+
+            DrawUiButton(_settingsVolMinusRect, new Color(50, 55, 75), "-", Color.White);
+            int filledCells = (int)Math.Round(_settings.MusicVolume * 10f);
+            for (int i = 0; i < _settingsVolCellRects.Length; i++)
+            {
+                bool filled = i < filledCells;
+                _spriteBatch.Draw(_debugPixel, _settingsVolCellRects[i],
+                    filled ? new Color(212, 175, 55) : new Color(35, 35, 45));
+                DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel,
+                    _settingsVolCellRects[i], new Color(90, 90, 105));
+            }
+            DrawUiButton(_settingsVolPlusRect, new Color(50, 55, 75), "+", Color.White);
+
+            // ── CRT filter row ────────────────────────────────────────────────
+            _spriteBatch.DrawString(_dialogueFont, "CRT FILTER",
+                new Vector2(560f * sx, _settingsCrtToggleRect.Y +
+                    (_settingsCrtToggleRect.Height - _dialogueFont.LineSpacing * labelScale) * 0.5f),
+                Color.White, 0f, Vector2.Zero, labelScale, SpriteEffects.None, 0f);
+            DrawUiButton(_settingsCrtToggleRect,
+                _settings.CrtEnabled ? new Color(45, 110, 60) : new Color(50, 55, 75),
+                _settings.CrtEnabled ? "ON" : "OFF", Color.White);
+
+            DrawUiButton(_settingsBackRect, new Color(50, 55, 75), "BACK", Color.White);
+
+            const string hint   = "Left/Right or click to change volume.   Esc - back";
+            float        hScale = 0.62f * sy;
+            var          hSz    = _dialogueFont.MeasureString(hint) * hScale;
+            _spriteBatch.DrawString(_dialogueFont, hint,
+                new Vector2((SCREEN_WIDTH - hSz.X) * 0.5f, SCREEN_HEIGHT - 56f * sy),
+                new Color(140, 140, 150), 0f, Vector2.Zero, hScale, SpriteEffects.None, 0f);
+
+            _spriteBatch.End();
+        }
+
+        private void DrawCaseIntro()
+        {
+            GraphicsDevice.Clear(new Color(8, 8, 10));
+
+            // Poster art has straight alpha (PremultiplyAlpha=False in the .mgcb).
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+
+            // Poster letterboxed on the left, full height minus a margin.
+            float posterRight = 40f;
+            if (_posterTex != null)
+            {
+                float ph = SCREEN_HEIGHT - 40f;
+                float pw = _posterTex.Width * (ph / _posterTex.Height);
+                _spriteBatch.Draw(_posterTex,
+                    new Rectangle(40, 20, (int)pw, (int)ph), Color.White);
+                posterRight = 40f + pw;
+            }
+
+            // Typewriter narration on the right.
+            float textX     = posterRight + 80f;
+            float maxWidth  = SCREEN_WIDTH - textX - 60f;
+            DrawRichText(_spriteBatch, _dialogueFont,
+                _introPages[_introPageIndex], Array.Empty<Keyword>(),
+                new Vector2(textX, 120f), maxWidth,
+                maxChars: (int)_typewriterTimer, scale: 0.8f,
+                color: new Color(225, 220, 205));
+
+            // Page dots + controls footer.
+            string pager  = $"{_introPageIndex + 1}/{_introPages.Length}";
+            string footer = "Enter - continue   Esc - skip";
+            float  fScale = 0.62f;
+            var    fSz    = _dialogueFont.MeasureString(footer) * fScale;
+            _spriteBatch.DrawString(_dialogueFont, footer,
+                new Vector2(SCREEN_WIDTH - fSz.X - 40f, SCREEN_HEIGHT - fSz.Y - 24f),
+                new Color(140, 140, 150), 0f, Vector2.Zero, fScale, SpriteEffects.None, 0f);
+            _spriteBatch.DrawString(_dialogueFont, pager,
+                new Vector2(textX, SCREEN_HEIGHT - fSz.Y - 24f),
+                new Color(110, 110, 120), 0f, Vector2.Zero, fScale, SpriteEffects.None, 0f);
+
+            _spriteBatch.End();
+        }
+
+        private void DrawEndScene()
+        {
+            GraphicsDevice.Clear(Color.Black);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+
+            var   beat      = _endBeats[_endBeatIndex];
+            var   textColor = new Color(225, 220, 205);
+            float textScale = 0.85f;
+            float maxWidth  = Math.Min(1000f, SCREEN_WIDTH - 200f);
+            float textX     = (SCREEN_WIDTH - maxWidth) * 0.5f;
+
+            if (beat.IsCard)
+            {
+                // Title card: every line centered, first line big and gold.
+                string[] lines = beat.Text.Split('\n');
+                float blockH = 0f;
+                bool  first  = true;
+                foreach (var line in lines)
+                {
+                    if (line.Length == 0) { blockH += 34f; continue; }
+                    blockH += _dialogueFont.LineSpacing * (first ? 2.0f : 0.9f);
+                    first = false;
+                }
+
+                float cy = (SCREEN_HEIGHT - blockH) * 0.5f;
+                first = true;
+                foreach (var line in lines)
+                {
+                    if (line.Length == 0) { cy += 34f; continue; }
+                    float lscale = first ? 2.0f : 0.9f;
+                    var   lsz    = _dialogueFont.MeasureString(line) * lscale;
+                    var   lpos   = new Vector2((SCREEN_WIDTH - lsz.X) * 0.5f, cy);
+                    if (first)
+                        _spriteBatch.DrawString(_dialogueFont, line, lpos + new Vector2(4, 4),
+                            Color.Black * 0.8f, 0f, Vector2.Zero, lscale, SpriteEffects.None, 0f);
+                    _spriteBatch.DrawString(_dialogueFont, line, lpos,
+                        first ? Color.Gold : textColor,
+                        0f, Vector2.Zero, lscale, SpriteEffects.None, 0f);
+                    cy += _dialogueFont.LineSpacing * lscale;
+                    first = false;
+                }
+
+                string cardFooter = "Enter - menu";
+                var    cfSz       = _dialogueFont.MeasureString(cardFooter) * 0.62f;
+                _spriteBatch.DrawString(_dialogueFont, cardFooter,
+                    new Vector2(SCREEN_WIDTH - cfSz.X - 40f, SCREEN_HEIGHT - cfSz.Y - 24f),
+                    new Color(140, 140, 150), 0f, Vector2.Zero, 0.62f, SpriteEffects.None, 0f);
+
+                _spriteBatch.End();
+                return;
+            }
+
+            float textTop;
+            if (beat.ShowRudebeak && _rudebeakTex != null)
+            {
+                // Image beat: Rudebeak centered up top, speaker label in the gap,
+                // caption below.
+                float ih = 420f;
+                float iw = _rudebeakTex.Width * (ih / _rudebeakTex.Height);
+                _spriteBatch.Draw(_rudebeakTex,
+                    new Rectangle((int)((SCREEN_WIDTH - iw) * 0.5f), 30, (int)iw, (int)ih),
+                    Color.White);
+                textTop = 30f + ih + 30f;
+                if (beat.Speaker.Length > 0)
+                    textTop += _dialogueFont.LineSpacing * 0.75f + 20f;
+            }
+            else
+            {
+                // Text beat: vertically centered (label + text as one block).
+                float textH  = MeasureRichTextHeight(_dialogueFont, beat.Text, maxWidth, textScale);
+                float labelH = beat.Speaker.Length > 0 ? _dialogueFont.LineSpacing * 0.75f + 30f : 0f;
+                textTop = Math.Max(80f, (SCREEN_HEIGHT - textH - labelH) * 0.5f + labelH);
+            }
+
+            if (beat.Speaker.Length > 0)
+            {
+                float lScale = 0.75f;
+                var   lSz    = _dialogueFont.MeasureString(beat.Speaker) * lScale;
+                _spriteBatch.DrawString(_dialogueFont, beat.Speaker,
+                    new Vector2((SCREEN_WIDTH - lSz.X) * 0.5f, textTop - lSz.Y - 30f),
+                    Color.Gold, 0f, Vector2.Zero, lScale, SpriteEffects.None, 0f);
+            }
+
+            DrawRichText(_spriteBatch, _dialogueFont, beat.Text, Array.Empty<Keyword>(),
+                new Vector2(textX, textTop), maxWidth,
+                maxChars: (int)_typewriterTimer, scale: textScale, color: textColor);
+
+            string footer = _endBeatIndex < _endBeats.Length - 1 ? "Enter" : "Enter - menu";
+            float  fScale = 0.62f;
+            var    fSz    = _dialogueFont.MeasureString(footer) * fScale;
+            _spriteBatch.DrawString(_dialogueFont, footer,
+                new Vector2(SCREEN_WIDTH - fSz.X - 40f, SCREEN_HEIGHT - fSz.Y - 24f),
+                new Color(140, 140, 150), 0f, Vector2.Zero, fScale, SpriteEffects.None, 0f);
+
+            _spriteBatch.End();
         }
 
         /// <summary>
@@ -1927,6 +2665,22 @@ namespace CatDetective
                 _tabHotspots[i] = new Rectangle(
                     S((1050 + i * 200) * sx), S(100 * sy), S(200 * sx), S(150 * sy));
 
+            // Main menu: centered column of buttons; settings BACK shares the column.
+            _mainMenuButtonRects = new Rectangle[_mainMenuLabels.Length];
+            for (int i = 0; i < _mainMenuButtonRects.Length; i++)
+                _mainMenuButtonRects[i] = new Rectangle(
+                    S(700 * sx), S((460 + i * 122) * sy), S(620 * sx), S(96 * sy));
+            _settingsBackRect = new Rectangle(S(700 * sx), S(920 * sy), S(620 * sx), S(96 * sy));
+
+            // Settings rows: labels left, controls right (2020x1136 reference space).
+            _settingsVolMinusRect = new Rectangle(S(1000 * sx), S(450 * sy), S(70 * sx), S(80 * sy));
+            _settingsVolCellRects = new Rectangle[10];
+            for (int i = 0; i < 10; i++)
+                _settingsVolCellRects[i] = new Rectangle(
+                    S((1090 + i * 62) * sx), S(450 * sy), S(56 * sx), S(80 * sy));
+            _settingsVolPlusRect   = new Rectangle(S(1716 * sx), S(450 * sy), S(70 * sx), S(80 * sy));
+            _settingsCrtToggleRect = new Rectangle(S(1090 * sx), S(610 * sy), S(180 * sx), S(80 * sy));
+
             _journalPrevPageRect = new Rectangle(S(1050 * sx), S(692 * sy), S(90 * sx), S(35 * sy));
             _journalNextPageRect = new Rectangle(S(1710 * sx), S(692 * sy), S(90 * sx), S(35 * sy));
             // Top-right of the inspector paper, level with the clue name —
@@ -1946,7 +2700,8 @@ namespace CatDetective
                 AppDomain.CurrentDomain.BaseDirectory,
                 "..", "..", "..", "debug_output"));
             Directory.CreateDirectory(dir);
-            string path = Path.Combine(dir, $"{_screenshotCase}_{_screenshotRoom}.png");
+            string suffix = _screenshotView.Length > 0 ? $"_{_screenshotView}" : "";
+            string path = Path.Combine(dir, $"{_screenshotCase}_{_screenshotRoom}{suffix}.png");
             using var stream = File.OpenWrite(path);
             _renderTarget.SaveAsPng(stream, _renderTarget.Width, _renderTarget.Height);
             Console.WriteLine($"[Screenshot] Saved → {Path.GetFullPath(path)}");
@@ -2153,8 +2908,10 @@ namespace CatDetective
             Vector2     origin,
             float       maxWidth,
             int         maxChars = int.MaxValue,
-            float       scale    = 1f)
+            float       scale    = 1f,
+            Color?      color    = null)
         {
+            Color textColor  = color ?? _inkColor;   // dark ink unless a scene overrides
             var   spans      = ParseSpans(text, keywords);
             float x          = origin.X;
             float y          = origin.Y;
@@ -2208,7 +2965,7 @@ namespace CatDetective
                                               (int)drawTokenW, (int)(lineH - 12 * scale)),
                                 highlightColor * 0.4f);
                         }
-                        spriteBatch.DrawString(font, drawToken, new Vector2(x, y), _inkColor,
+                        spriteBatch.DrawString(font, drawToken, new Vector2(x, y), textColor,
                             0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
                         x          += tokenW;
                         charsDrawn += token.Length;

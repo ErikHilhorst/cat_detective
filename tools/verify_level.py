@@ -19,8 +19,18 @@ Checks:
 """
 import json, os, re, sys
 
-BASE = r"C:\Users\Erik\Desktop\Python projects\cat_detective\Content\Levels\malibu_mansion"
-ROOMS = ["entrance", "living_room", "bedroom", "library", "kitchen", "garden", "pool_area"]
+# Case id comes from argv (default: malibu_mansion); rooms come from the case
+# config itself, so any case under Content/Levels can be checked:
+#   python tools/verify_level.py [case_id]
+CASE = sys.argv[1] if len(sys.argv) > 1 else "malibu_mansion"
+LEVELS_ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                           "Content", "Levels")
+BASE = os.path.join(LEVELS_ROOT, CASE)
+if not os.path.isfile(os.path.join(BASE, "case_config.json")):
+    print(f"ERROR: no case_config.json under {BASE}")
+    sys.exit(1)
+_case_early = json.load(open(os.path.join(BASE, "case_config.json"), encoding="utf-8"))
+ROOMS = _case_early["rooms"]
 
 # Cat feet box: from Cat.cs, width = frameWidth*scale*0.5, height = 32.
 # Actual widths are ~49 (down) / ~56 (up) at scale 0.28/0.32; keep checking
@@ -50,7 +60,7 @@ def load(room):
     return m, layers, cfg
 
 maps = {r: load(r) for r in ROOMS}
-case = json.load(open(os.path.join(BASE, "case_config.json"), encoding="utf-8"))
+case = _case_early
 
 # ---- 1. interactable reachability ----
 for room in ROOMS:

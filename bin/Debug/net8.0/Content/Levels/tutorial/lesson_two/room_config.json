@@ -1,0 +1,55 @@
+{
+  "props": [],
+  "interactables": [
+    {
+      "id": "inspect_doorway_placard",
+      "name": "Doorway Placard",
+      "texture": "Shared/placeholder_object",
+      "scale": 0.12,
+      "text": "'That was a DOORWAY. Chevrons mark them - stand inside and press Enter.|New room, new board: each room keeps its own clues and its own SOLVE. Finished rooms turn the button green. The counter in the corner tells you what is left.'",
+      "keywords": []
+    },
+    {
+      "id": "inspect_window",
+      "name": "Open Window",
+      "texture": "Shared/placeholder_object",
+      "scale": 0.13,
+      "text": "An [open window] in a room with no weather. The curtain performs its impression of a ghost. [The wind] has been through here, and recently.|On the sill, someone has pinned a note: 'the wind did it, probably.' [Blaming the wind] is an old trick. The oldest.",
+      "keywords": [
+        { "displayText": "open window", "id": "open_window", "color": "crime" },
+        { "displayText": "The wind", "id": "the_wind", "color": "plot" },
+        { "displayText": "Blaming the wind", "id": "windy_alibi", "color": "plot" }
+      ]
+    },
+    {
+      "id": "inspect_latch",
+      "name": "Loose Latch",
+      "texture": "Shared/placeholder_object",
+      "scale": 0.09,
+      "text": "The [latch] hangs by one screw. It would not stop a determined moth. It did not stop whatever came through.",
+      "keywords": [
+        { "displayText": "latch", "id": "loose_latch", "color": "misc" }
+      ]
+    },
+    {
+      "id": "inspect_mailman_cutout",
+      "name": "The Mailman (Cardboard)",
+      "texture": "Shared/placeholder_person",
+      "scale": 0.15,
+      "text": "A cardboard cutout of [the mailman], propped against nothing. Someone has drawn a suspicious mustache on him.|His placard: 'A red herring. Every case has one. Some have five.'",
+      "keywords": [
+        { "displayText": "the mailman", "id": "the_mailman", "color": "plot" }
+      ]
+    },
+    {
+      "id": "inspect_graduation_scroll",
+      "name": "Graduation Scroll",
+      "texture": "Shared/placeholder_object",
+      "scale": 0.11,
+      "text": "A rolled scroll under glass: 'FINAL EXAM. Solve every room. Hear every confession. Then press FINAL SOLVE - the second button in the corner.|The final board only takes the big clues, the ones a room solve confirms. Pin down who, what, and why, and you graduate.'|Smaller, at the bottom: 'Then wake up, Dikkie. There is real work to do.'",
+      "keywords": []
+    }
+  ],
+  "localDeductionSentence": "[The wind] pushed open [the window].",
+  "localDeductionClueIds": [ "the_wind", "open_window" ]
+}

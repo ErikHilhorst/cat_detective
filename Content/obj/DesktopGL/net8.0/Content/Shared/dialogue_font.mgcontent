@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/dialogue_font.spritefont</SourceFile>
-  <SourceTime>2026-07-10T14:13:24.1255034+02:00</SourceTime>
+  <SourceTime>2026-07-18T10:06:18.5870686+02:00</SourceTime>
   <DestFile>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/bin/DesktopGL/Content/Shared/dialogue_font.xnb</DestFile>
-  <DestTime>2026-07-10T14:14:37.7636069+02:00</DestTime>
+  <DestTime>2026-07-18T10:36:04.5878946+02:00</DestTime>
   <Importer>FontDescriptionImporter</Importer>
   <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
   <Processor>FontDescriptionProcessor</Processor>

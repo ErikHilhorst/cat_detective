@@ -6,16 +6,54 @@ A 2.5D isometric detective adventure game where a cat solves human crimes.
 Cozy Studio Ghibli aesthetic, pre-rendered backgrounds, point-and-click/free-roam gameplay.
 Built in C# using **MonoGame (KNI fork)**, targeting **Web/WASM** as the final platform.
 
-Current state: the case system is playable end-to-end. The first case, **Malibu Mansion / "The Missing Macaw"**
-(7 rooms, 50 clues), is fully wired with placeholder sprites: free-roam movement, room transfers,
+Current state: the case system is playable end-to-end AND the game has its shell: a main menu
+(CONTINUE / NEW GAME / TUTORIAL / SETTINGS / QUIT), a single-slot autosave, a settings screen
+(music volume + CRT filter toggle, persisted), a poster-and-typewriter case intro, a five-beat
+end scene, and a two-room tutorial case. The protagonist's name is **Dikkie**.
+
+The first case, **Malibu Mansion / "The Missing Macaw"**
+(7 rooms, 50 clues), is fully wired: free-roam movement, room transfers,
 interactable dialogue with keyword-unlocked clues, character interrogation menus (intro + selectable
 cat-action topics, some evidence- or solve-gated), per-room deduction boards, and a final solve board.
 All ten character sprites and all object sprites are real art (per-name PNGs under each room's
 `Interactables/`, built via `.mgcb`) - except `inspect_pool_water` (pool_area), which uses
 `Shared/placeholder_object` at `scale: 0.12` until its sprite is generated (see the pool-water
-prompt in `sprite_prompts.txt`). `rudebeak.png` sits unwired in
-the case root for a possible ending reveal. Prompts for the missing object art (two 5x2 sheets):
-`Levels/malibu_mansion/sprite_prompts.txt`.
+prompt in `sprite_prompts.txt`). `rudebeak.png` is wired as the end scene's beat-4 reveal.
+Prompts for the missing object art (two 5x2 sheets): `Levels/malibu_mansion/sprite_prompts.txt`.
+
+The second case, **tutorial / "Whisker Academy - Hall of Basics"** (2 rooms `lesson_one` /
+`lesson_two`, 12 clues), is Dikkie's dream of his training: a white void with placards that teach
+movement, clues, interrogation menus, decoys, local solves, doorways, confrontations, and the
+final board - built entirely on the normal case systems (no special tutorial code paths) with
+`Shared/placeholder_object` / `placeholder_person` sprites and flat near-white `bg_base.jpg`s.
+
+### Game states & shell
+
+`Game1.GameState`: `MainMenu, Settings, CaseIntro, Playing, EndScene, DevMenu`. Boot = MainMenu.
+
+- **MainMenu**: W/S + Enter or mouse. CONTINUE only enabled while a save exists; NEW GAME over an
+  existing save asks for a second Enter ("overwrite" confirm); TUTORIAL starts the tutorial case;
+  F12 opens the legacy DevMenu scene picker; Esc quits. Menus run at a fixed 1456x816 canvas
+  (`SetCanvas`); rooms still resize the canvas per background.
+- **Escape is contextual**: in Playing it closes topic menu/dialogue first, then the board, then
+  autosaves and returns to the menu. It only quits the app from the main menu.
+- **Save system** (`Systems/SaveSystem.cs`): single slot at
+  `%LocalAppData%/CatDetective/save.json` (+ `settings.json`). AutoSave fires on room transfer,
+  local solve, and Esc-to-menu; the final solve deletes the save (case over). Restore =
+  `LoadCase` + replay `UnlockClue` per saved id (`_isRestoring` suppresses toasts) + copy
+  solved/visited state + `LoadRoom(saved room)`. All IO failure-tolerant; swap file bodies for
+  the KNI/WASM port.
+- **CaseIntro** (`StartCaseIntro`): poster (`Shared/case_poster`, an .mgcb output-rename of
+  `Shared/case of the mising maccaw.png` - keep the typo'd source filename) + typewriter pages
+  from `Systems/CaseScripts.cs`. Enter completes/advances, Esc skips into the case. Cases with
+  no authored intro skip straight to `LoadCase`.
+- **EndScene** (`StartEndScene`): beats from `CaseScripts.GetEndScene(caseId)`; a beat can show
+  `rudebeak.png` (`ShowRudebeak`) or render as a centered title card (`IsCard`). Replaces the old
+  `_isGameWon` win banner entirely. Reached from a valid final-solve submit.
+- **Settings**: music volume (10 cells, applies to `MediaPlayer.Volume` live) + CRT toggle;
+  persisted on every change. Music now starts in `LoadContent` (the menu has music).
+- **CRT filter** (`Systems/CrtOverlay.cs`): shader-free scanlines + vignette, drawn INTO the
+  render target as Pass 9 - deliberately no .fx/EffectProcessor (KNI/WASM portability).
 
 ---
 
@@ -45,6 +83,11 @@ Entities/
   Clue.cs                 — Clue + ClueCategory { Who, What, Why, WhereWhen }
   InteractionData.cs      — Dialogue text + keywords + texture fallback for an interactable
   InteractableEntity.cs   — In-world inspectable object (sprite + trigger rect)
+
+Systems/ (shell)
+  SaveSystem.cs           — Single-slot save + settings persistence (%LocalAppData%/CatDetective/)
+  CaseScripts.cs          — Intro pages + end-scene beats per case id (all epilogue/intro copy)
+  CrtOverlay.cs           — Shader-free CRT (scanline strip + vignette), Pass 9
 
 Map/
   MapParser.cs            — Reads Tiled room_map.json: Collisions, Triggers, Transfers, Spawn, Interactables
@@ -96,6 +139,8 @@ layerDepth = Math.Clamp(Position.Y / screenHeight, 0f, 1f);
 
 Inserting a new entity: decide which pass it belongs to and draw it there.
 New lighting overlays → Pass 4 (additive). New floor decals → Pass 1 or 2. New Y-sortable objects → Pass 3.
+Pass 9 (optional, `_settings.CrtEnabled`) draws the CRT overlay INTO the render target after all
+other passes and in every state - keep new passes before it.
 
 Pass 4b (AlphaBlend, world-anchored) draws a bobbing amber "..." over characters that have
 available, unheard topics — hidden while dialogue is open. The same pass draws permanent
@@ -359,7 +404,9 @@ dotnet run
 ```
 
 Controls: WASD or arrow keys. Enter to interact/advance dialogue. In an interrogation menu:
-W/S (or arrows) to choose a topic, Enter to act. Escape to quit.
+W/S (or arrows) to choose a topic, Enter to act. Escape backs out one layer (menu -> dialogue ->
+board -> autosave + main menu); it only quits the app from the main menu. F12 on the main menu
+opens the DevMenu scene picker. F1 toggles the debug overlay.
 
 To rebuild content assets after changing `.mgcb`:
 ```bash
@@ -375,7 +422,7 @@ no `dotnet build` needed (the running game also hot-reloads room config).
 dotnet run --no-build -- --screenshot <case_id> <room_id> [journal|final|dialogue]
 ```
 
-Saves `debug_output/<case>_<room>.png` after 1.5 s and exits.
+Saves `debug_output/<case>_<room>[_<view>].png` after 1.5 s and exits.
 - *(no view arg)* — the room with HUD, placeholders, debug rects.
 - `journal` — opens the local deduction board with the room's clues unlocked.
 - `final` — opens the final solve board with all macro clues unlocked.
@@ -383,14 +430,26 @@ Saves `debug_output/<case>_<room>.png` after 1.5 s and exits.
   (text-box fit check).
 - `topics` — opens the room's fullest interrogation menu with all gated topics unlocked
   (worst-case menu layout check).
+- `crt` — the plain room with the CRT overlay forced on.
+
+Shell screens use the pseudo-case `ui` (no level is loaded):
+```bash
+dotnet run --no-build -- --screenshot ui menu         # main menu
+dotnet run --no-build -- --screenshot ui settings     # settings screen
+dotnet run --no-build -- --screenshot ui intro [page] # malibu poster intro, fully typed
+dotnet run --no-build -- --screenshot ui end [beat]   # malibu end scene (beat 3 = rudebeak)
+dotnet run --no-build -- --screenshot ui continue     # loads save.json exactly like CONTINUE
+```
 
 ### Static level checker
 
 ```bash
-python tools/verify_level.py   # run from the repo root
+python tools/verify_level.py            # malibu_mansion (default)
+python tools/verify_level.py tutorial   # any case id under Content/Levels
 ```
 
-Validates without launching the game: interactable reachability vs collisions (cat feet box),
+Rooms are read from the case's own `rooms` list. Validates without launching the game:
+interactable reachability vs collisions (cat feet box),
 transfer ↔ spawn wiring (14 checks for Malibu), spawn clearance from transfer zones, config
 consistency (keyword ids exist, local/final answers present & discoverable, `requiresSolve`
 rooms exist), final-board slot validity, and solve balance (warns on any local slot whose

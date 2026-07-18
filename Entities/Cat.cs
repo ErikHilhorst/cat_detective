@@ -63,7 +63,10 @@ namespace CatDetective.Entities
         private SpriteEffects _spriteFlip = SpriteEffects.None;
 
         // ── Interaction input tracking ─────────────────────────────────────────
-        private KeyboardState _prevInteractKbState;
+        // Seeded with the live state so an Enter press that constructed this cat
+        // (menu confirm, room transfer) cannot fire a phantom interaction on the
+        // first frame.
+        private KeyboardState _prevInteractKbState = Keyboard.GetState();
 
         // ── Shadow ─────────────────────────────────────────────────────────────
         /// <summary>Assign shadow_blob.png after construction.</summary>
