@@ -32,6 +32,8 @@
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/Interactables/inspect_takeout_bag.png</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/Interactables/inspect_trash_can.png</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/entrance/bg_base.jpg</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/entrance/prop_outer_wall.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/entrance/prop_console.png</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/bedroom/bg_base.jpg</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/bg_base.jpg</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/library/bg_base.jpg</File>
@@ -91,6 +93,8 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File>Shared/case_poster.png</File>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

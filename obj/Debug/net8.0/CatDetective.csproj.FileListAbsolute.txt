@@ -199,3 +199,14 @@ C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Lev
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\Interactables\inspect_latch.xnb
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\Interactables\inspect_mailman_cutout.xnb
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\Interactables\inspect_window.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\bg_base.png
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\full scene.png
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\Interactables\inspect_answering_machine.png
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\Interactables\inspect_calendar.png
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\Interactables\inspect_newspaper.png
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\Interactables\inspect_takeout_bag.png
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\Interactables\inspect_trash_can.png
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\prop_cabinet.png
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\prop_desk.png
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\entrance\prop_console.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\entrance\prop_outer_wall.xnb

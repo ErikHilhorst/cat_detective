@@ -1,5 +1,8 @@
 {
-  "props": [],
+  "props": [
+    { "id": "prop_console",    "texture": "prop_console",    "sortY": 764, "triggerName": "prop_console_fade" },
+    { "id": "prop_outer_wall", "texture": "prop_outer_wall", "sortY": 764, "triggerName": "prop_outer_wall_fade" }
+  ],
   "interactables": [
     {
       "id": "inspect_police_officer",

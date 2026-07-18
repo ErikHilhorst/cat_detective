@@ -20,6 +20,11 @@ All ten character sprites and all object sprites are real art (per-name PNGs und
 `Shared/placeholder_object` at `scale: 0.12` until its sprite is generated (see the pool-water
 prompt in `sprite_prompts.txt`). `rudebeak.png` is wired as the end scene's beat-4 reveal.
 Prompts for the missing object art (two 5x2 sheets): `Levels/malibu_mansion/sprite_prompts.txt`.
+The entrance has two walk-behind foreground props (`prop_console` - hides the guest
+registry until it fades - and `prop_outer_wall`, the windowed exterior wall in the
+lower-left, whose ledge planters deliberately stay in the bg), generated from the flat
+bg via `tools/layer_room_props.py` + the `layer-room-props` skill; the untouched scene is
+kept as `entrance/full scene.jpg`.
 
 The second case, **tutorial / "Whisker Academy - Hall of Basics"** (2 rooms `lesson_one` /
 `lesson_two`, 12 clues), is Dikkie's dream of his training: a white void with placards that teach
@@ -100,6 +105,8 @@ Systems/
 
 tools/
   verify_level.py         — Static level checker (run from repo root, no game launch needed)
+  generate_object_sprites.py — Gemini sprite generator (see generate-object-sprites skill)
+  layer_room_props.py     — Walk-behind prop layer generator (see layer-room-props skill)
 
 Content/
   Content.mgcb            — Asset pipeline config (ALL sprites: PremultiplyAlpha=False)

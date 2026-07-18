@@ -77,6 +77,42 @@
   },
   {
    "draworder": "topdown",
+   "id": 6,
+   "name": "Triggers",
+   "objects": [
+    {
+     "height": 315,
+     "id": 62,
+     "name": "prop_console_fade",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 290,
+     "x": 1080,
+     "y": 430
+    },
+    {
+     "height": 275,
+     "id": 63,
+     "name": "prop_outer_wall_fade",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 570,
+     "x": 0,
+     "y": 470
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
    "id": 3,
    "name": "Transfers",
    "objects": [
@@ -249,8 +285,8 @@
    "y": 0
   }
  ],
- "nextlayerid": 6,
- "nextobjectid": 60,
+ "nextlayerid": 7,
+ "nextobjectid": 64,
  "orientation": "orthogonal",
  "renderorder": "right-down",
  "tiledversion": "1.12.1",

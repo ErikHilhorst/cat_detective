@@ -1,0 +1,84 @@
+{
+  "props": [
+    { "id": "prop_desk",    "texture": "prop_desk",    "sortY": 850,  "triggerName": "desk_fade"    },
+    { "id": "prop_cabinet", "texture": "prop_cabinet", "sortY": 1100, "triggerName": "cabinet_fade" }
+  ],
+
+  "clues": [
+    { "id": "stolen_pet",                  "category": "What",      "name": "Stolen Macaw",         "context": "Rudebeak, Lance's prized macaw, was reported stolen." },
+    { "id": "fish_tacos",                  "category": "What",      "name": "Fish Tacos",           "context": "Leftover takeout found in the bag at the office." },
+    { "id": "monday",                      "category": "WhereWhen", "name": "Monday",               "context": "A date in the detectives calendar." },
+    { "id": "tuesday",                      "category": "WhereWhen", "name": "Tuesday",               "context": "A date in the detectives calendar." },
+    { "id": "wednesday",                      "category": "WhereWhen", "name": "Wednesday",               "context": "A date in the detectives calendar." },
+    { "id": "thursday",                    "category": "WhereWhen", "name": "Thursday",             "context": "Detective has a dentist appointment this day." },
+    { "id": "friday",                      "category": "WhereWhen", "name": "Friday",               "context": "A date in the detectives calendar." },
+
+    { "id": "saturday",                    "category": "WhereWhen", "name": "Saturday",             "context": "'Pirate Cove 3' premieres this day." },
+    { "id": "sunday",                      "category": "WhereWhen", "name": "Sunday",               "context": "Someone's birthday falls on this day." },
+    
+    { "id": "the_day_before_the_premiere", "category": "WhereWhen", "name": "Day Before Premiere",  "context": "Manager needed Lance at the house this day." },
+    { "id": "downtown_office",             "category": "WhereWhen", "name": "Downtown Office",      "context": "The takeout delivery was brought here." },
+    { "id": "malibu_mansion",              "category": "WhereWhen", "name": "Malibu Mansion",       "context": "VIP parking pass for this location found in the trash." }
+  ],
+
+  "interactables": [
+    {
+      "id": "inspect_answering_machine",
+      "text": "BEEP. 'Hey, it's Lance's manager. We need you at the house [the day before the premiere]! Don't be late!' BEEP. 'Hi honey, don't forget my birthday on [Sunday]!'",
+      "keywords": [
+        { "displayText": "the day before the premiere", "id": "the_day_before_the_premiere", "color": "plot" },
+        { "displayText": "Sunday",                      "id": "sunday",                      "color": "plot" }
+      ],
+      "scale": 0.5,
+      "align": "Center",
+      "offsetY": -175
+    },
+    {
+      "id": "inspect_takeout_bag",
+      "text": "Smells like leftover [Fish Tacos]. The delivery receipt says it was brought to the [Downtown Office].",
+      "keywords": [
+        { "displayText": "Fish Tacos",      "id": "fish_tacos",      "color": "misc" },
+        { "displayText": "Downtown Office", "id": "downtown_office", "color": "plot" }
+      ]
+    },
+    {
+      "id": "inspect_calendar",
+      "text": "The month is almost over. The detective has circled [Thursday] for the dentist. [Monday], [Tuesday], [Wednesday] and [Friday] are marked with various motivational phrases. [Saturday] is left empty and [Sunday] reads 'call mom'.",
+      "keywords": [
+        { "displayText": "Monday", "id": "monday", "color": "plot" },
+                { "displayText": "Tuesday", "id": "tuesday", "color": "plot" },
+        { "displayText": "Wednesday", "id": "wednesday", "color": "plot" },
+  
+        { "displayText": "Thursday", "id": "thursday", "color": "plot" },
+        { "displayText": "Friday",   "id": "friday",   "color": "plot" },
+              { "displayText": "Saturday", "id": "saturday", "color": "plot" },
+        { "displayText": "Sunday", "id": "sunday", "color": "plot" }
+      ],
+      "scale": 0.5,
+      "align": "Center",
+      "offsetY": 0
+    },
+    {
+      "id": "inspect_newspaper",
+      "text": "'Pirate Cove 3' premieres this [Saturday]! But production halts as Lance's prized macaw, Rudebeak, is reported as a [stolen pet]!",
+      "keywords": [
+        { "displayText": "Saturday",   "id": "saturday",   "color": "plot"  },
+        { "displayText": "stolen pet", "id": "stolen_pet", "color": "crime" }
+      ],
+      "scale": 0.5,
+      "align": "Left",
+      "offsetY": 0
+    
+    },
+    {
+      "id": "inspect_trash_can",
+      "text": "A bunch of unpaid bills, and a shiny VIP parking pass for a [Malibu Mansion].",
+      "keywords": [
+        { "displayText": "Malibu Mansion", "id": "malibu_mansion", "color": "plot" }
+      ]
+    }
+  ],
+
+  "deductionSentence": "[WHO] kidnapped the macaw using [HOW] and hid it at the [WHERE] because[WHY]."
+
+}

@@ -1,0 +1,20 @@
+{
+  "case": "malibu_mansion",
+  "room": "entrance",
+  "background": "bg_base.jpg",
+  "model": "gemini-2.5-flash-image",
+  "max_total_images": 50,
+  "max_attempts_per_prop": 5,
+  "props": [
+    {
+      "id": "prop_console",
+      "remove": "the wooden console table in the bottom-right corner of the image, including the picture frames, the white shell and the small flower vase standing on it, AND the large potted fern directly behind it - remove all of it completely, revealing the marble floor and the wall behind them",
+      "region": [1095, 330, 275, 438]
+    },
+    {
+      "id": "prop_outer_wall",
+      "remove": "the exterior stone wall in the lower-left foreground that is cut open toward the viewer, including its two arched windows and the stone ledge along its top. Do NOT cover the orange carpet, the tiled floor, or the green plants sitting on the ledge",
+      "region": [0, 360, 730, 408]
+    }
+  ]
+}

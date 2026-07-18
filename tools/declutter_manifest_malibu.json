@@ -1,0 +1,37 @@
+{
+  "case": "malibu_mansion",
+  "model": "gemini-2.5-flash-image",
+  "variants": 3,
+  "keep_note": "Keep every wall, window, door, staircase, built-in wall cabinet and counter, and keep all rugs, carpets and floor mats exactly where they are. Where an object is removed, continue the floor (or lawn/paving) naturally underneath it, matching the surrounding tiles, boards, grass and lighting. Keep the exact same art style, framing and aspect ratio: no zoom, no crop, no color grading, no added text or watermark.",
+  "rooms": [
+    {
+      "room": "entrance",
+      "source": "full scene.jpg",
+      "remove": "the wooden console table in the bottom-right corner (with the picture frames, shell and flower vase) and the large potted fern behind it; the exterior stone wall with the two arched windows in the lower-left foreground including the green planters on its ledge; the small potted plant at the bottom of the staircase; and the large palm plant standing next to the stairs on the right. Keep the staircase itself with both gold newel posts, and keep the orange carpet runner"
+    },
+    {
+      "room": "living_room",
+      "remove": "both white sofas with their pillows and blankets, the cream armchair, the wooden coffee table and the brass birdcage on it, the wooden side cabinet in the bottom-right with everything on top of it, the TV cabinet on the left wall with the TV, the small wooden tables behind the couch, and every potted plant standing on the floor. Keep the teal rug and the red rug corner, the built-in bookcases, and the garden and kitchen views through the doorways"
+    },
+    {
+      "room": "bedroom",
+      "remove": "the bed with its orange blanket and pillows, the TV table with the TV, both wooden mirror cabinets on the left, the nightstand with the bottle, the tall free-standing glass display cabinet in the middle, the wooden dresser on the right with the flower vase and mirror, the small teal side table at the bottom with the perfume bottles, and every potted plant and flower pot standing on the floor. Keep the green floor mats, the orange rug at the foot of the bed, the doormat, the window curtains, and the flowering vines high on the walls"
+    },
+    {
+      "room": "library",
+      "remove": "the wooden settee bench with its cushions at the window, the lamp table with the lamp behind it, the wooden coffee table with the flowers and books, the sofa in the bottom-left corner, the free-standing reading desk cabinet in the middle with the books on top, the small side table with flowers near the staircase, the table and chairs in the bottom-right corner, and the large potted plants standing on the floor. Keep all the bookshelves along the walls and on the gallery, the staircase with its blue runner, the blue rugs on the floor, and the plant pots on the window sill"
+    },
+    {
+      "room": "kitchen",
+      "remove": "the wooden dining table with the fruit bowl and plant, all the dining chairs around it, the large kitchen island in the middle with the marble top and everything on it, the three blue bar stools, and the cluster of potted plants in the bottom-right corner. Keep all the counters, cabinets and appliances along the walls, the small shelves, the windows and the open door to the garden"
+    },
+    {
+      "room": "garden",
+      "remove": "the red-roofed wooden arbor table and the chair beside it on the left, the wooden barrel planter at the far left, and every terracotta pot and potted topiary standing on the lawn, on the steps and on the entrance porch pedestals. Keep the lawn, the stone paths and steps, the round pond, the raised entrance porch with its railing, the building, and all the flower beds, bushes and hedges that border the garden"
+    },
+    {
+      "room": "pool_area",
+      "remove": "every terracotta pot and potted plant standing on the pool deck and steps, the wooden planter boxes near the right side of the pool, and the stone bench at the top-right of the pool deck. Keep the pool itself with its ladder, the stone deck and steps, the lawn patches and paths, the house with its tiled roof, and all the surrounding bushes, hedges and flower beds"
+    }
+  ]
+}

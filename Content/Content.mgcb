@@ -357,6 +357,28 @@
 /processorParam:TextureFormat=Color
 /build:Levels/malibu_mansion/entrance/bg_base.jpg
 
+#begin Levels/malibu_mansion/entrance/prop_outer_wall.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/entrance/prop_outer_wall.png
+
+#begin Levels/malibu_mansion/entrance/prop_console.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/entrance/prop_console.png
+
 #begin Levels/malibu_mansion/bedroom/bg_base.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
