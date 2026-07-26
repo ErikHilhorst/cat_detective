@@ -1,5 +1,10 @@
 {
-  "props": [],
+  "props": [
+    { "id": "prop_table",       "texture": "prop_table",       "sortY": 650, "triggerName": "prop_table_fade" },
+    { "id": "prop_north_couch", "texture": "prop_north_couch", "sortY": 585, "triggerName": "prop_north_couch_fade" },
+    { "id": "prop_south_couch", "texture": "prop_south_couch", "sortY": 750, "triggerName": "prop_south_couch_fade" },
+    { "id": "prop_sofa_chair",  "texture": "prop_sofa_chair",  "sortY": 738, "triggerName": "prop_sofa_chair_fade" }
+  ],
   "interactables": [
     {
       "id": "inspect_movie_star",

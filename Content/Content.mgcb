@@ -403,6 +403,50 @@
 /processorParam:TextureFormat=Color
 /build:Levels/malibu_mansion/living_room/bg_base.jpg
 
+#begin Levels/malibu_mansion/living_room/prop_table.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/living_room/prop_table.png
+
+#begin Levels/malibu_mansion/living_room/prop_north_couch.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/living_room/prop_north_couch.png
+
+#begin Levels/malibu_mansion/living_room/prop_south_couch.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/living_room/prop_south_couch.png
+
+#begin Levels/malibu_mansion/living_room/prop_sofa_chair.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/living_room/prop_sofa_chair.png
+
 #begin Levels/malibu_mansion/library/bg_base.jpg
 /importer:TextureImporter
 /processor:TextureProcessor

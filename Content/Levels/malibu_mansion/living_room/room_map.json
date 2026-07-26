@@ -185,6 +185,66 @@
   },
   {
    "draworder": "topdown",
+   "id": 6,
+   "name": "Triggers",
+   "objects": [
+    {
+     "height": 285,
+     "id": 70,
+     "name": "prop_north_couch_fade",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 545,
+     "x": 620,
+     "y": 300
+    },
+    {
+     "height": 200,
+     "id": 71,
+     "name": "prop_table_fade",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 295,
+     "x": 580,
+     "y": 450
+    },
+    {
+     "height": 190,
+     "id": 72,
+     "name": "prop_south_couch_fade",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 230,
+     "x": 765,
+     "y": 560
+    },
+    {
+     "height": 208,
+     "id": 73,
+     "name": "prop_sofa_chair_fade",
+     "opacity": 1,
+     "rotation": 0,
+     "type": "",
+     "visible": true,
+     "width": 250,
+     "x": 410,
+     "y": 530
+    }
+   ],
+   "opacity": 0,
+   "type": "objectgroup",
+   "visible": true,
+   "x": 0,
+   "y": 0
+  },
+  {
+   "draworder": "topdown",
    "id": 4,
    "name": "Spawn",
    "objects": [
@@ -274,8 +334,8 @@
      "type": "",
      "visible": true,
      "width": 100,
-     "x": 880,
-     "y": 420
+     "x": 1205,
+     "y": 445
     },
     {
      "height": 140,
@@ -286,20 +346,20 @@
      "type": "",
      "visible": true,
      "width": 100,
-     "x": 545,
-     "y": 470
+     "x": 315,
+     "y": 500
     },
     {
-     "height": 160,
+     "height": 145,
      "id": 62,
      "name": "inspect_birdcage",
      "opacity": 1,
      "rotation": 0,
      "type": "",
      "visible": true,
-     "width": 110,
-     "x": 660,
-     "y": 390
+     "width": 135,
+     "x": 630,
+     "y": 399
     },
     {
      "height": 50,
@@ -310,8 +370,8 @@
      "type": "",
      "visible": true,
      "width": 55,
-     "x": 780,
-     "y": 470
+     "x": 862,
+     "y": 380
     },
     {
      "height": 120,
@@ -346,8 +406,8 @@
      "type": "",
      "visible": true,
      "width": 70,
-     "x": 640,
-     "y": 590
+     "x": 620,
+     "y": 545
     },
     {
      "height": 50,
@@ -358,8 +418,8 @@
      "type": "",
      "visible": true,
      "width": 70,
-     "x": 770,
-     "y": 555
+     "x": 545,
+     "y": 535
     }
    ],
    "opacity": 0,
@@ -369,8 +429,8 @@
    "y": 0
   }
  ],
- "nextlayerid": 6,
- "nextobjectid": 68,
+ "nextlayerid": 7,
+ "nextobjectid": 74,
  "orientation": "orthogonal",
  "renderorder": "right-down",
  "tiledversion": "1.12.1",

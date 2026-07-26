@@ -24,7 +24,11 @@ The entrance has two walk-behind foreground props (`prop_console` - hides the gu
 registry until it fades - and `prop_outer_wall`, the windowed exterior wall in the
 lower-left, whose ledge planters deliberately stay in the bg), generated from the flat
 bg via `tools/layer_room_props.py` + the `layer-room-props` skill; the untouched scene is
-kept as `entrance/full scene.jpg`.
+kept as `entrance/full scene.jpg`. The living room uses hand-layered art: `bg_base.jpg` is the
+furniture-free repaint (source `base_layer.jpg`) plus four full-canvas walk-behind props
+(`prop_table`, `prop_north_couch`, `prop_south_couch`, `prop_sofa_chair`) with fade zones in the
+map's Triggers layer; the birdcage sprite (`Interactables/inspect_birdcage.png`) is cropped from
+the layered `cage.png` and Y-sorts on its own as an interactable (no fade).
 
 The second case, **tutorial / "Whisker Academy - Hall of Basics"** (2 rooms `lesson_one` /
 `lesson_two`, 12 clues), is Dikkie's dream of his training: a white void with placards that teach
@@ -373,8 +377,9 @@ Rudebeak is the missing macaw.
   once with soup smell, once without.
 - Before lockdown — the cases are stashed behind the garden potting shed under a tarp
   (Sound-Proof Cases, found in the garden).
-- 8:00 PM — Fake squawk: tiny speaker taped behind the living room couch (the couch is
-  background art, not an object — the interactable sits beside the cage), fed by the audio
+- 8:00 PM — Fake squawk: tiny speaker taped behind the living room couch (the couch is a
+  walk-behind prop — the speaker interactable sits in the corridor behind it, hidden until
+  the couch fades), fed by the audio
   cable from the library mixing board. Motive: 47 takes ruined by the bird (session log).
 - 8:15 PM — Police lockdown. Only the lockdown clue ("Lockdown - 8:15 PM") carries the 8:15 timestamp.
 
