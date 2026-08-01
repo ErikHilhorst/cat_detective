@@ -90,6 +90,8 @@
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_latch.png</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_mailman_cutout.png</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_graduation_scroll.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/speech_bubble.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/arrow.png</File>
   </SourceFiles>
   <DestFiles>
     <File xsi:nil="true" />
@@ -97,6 +99,8 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File>Shared/case_poster.png</File>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

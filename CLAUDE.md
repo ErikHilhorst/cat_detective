@@ -153,11 +153,12 @@ New lighting overlays → Pass 4 (additive). New floor decals → Pass 1 or 2. N
 Pass 9 (optional, `_settings.CrtEnabled`) draws the CRT overlay INTO the render target after all
 other passes and in every state - keep new passes before it.
 
-Pass 4b (AlphaBlend, world-anchored) draws a bobbing amber "..." over characters that have
-available, unheard topics — hidden while dialogue is open. The same pass draws permanent
-soft-white chevrons (`^ v < >`, direction from the zone's position vs room center) over every
-transfer zone so exits are discoverable without the F1 overlay. Chevrons are never amber —
-amber means "someone to talk to".
+Pass 4b (NonPremultiplied, world-anchored) draws a bobbing `Shared/speech_bubble` sprite over
+characters that have available, unheard topics — hidden while dialogue is open. The same pass
+draws a permanent `Shared/arrow` paw-print arrow (art points right; left mirrors, up/down
+rotate a quarter turn; direction from the zone's position vs room center) over every transfer
+zone so exits are discoverable without the F1 overlay. Bubble = "someone to talk to",
+arrow = "exit" — keep the two sprites visually distinct and small (both draw at 64 px).
 UI passes follow the world passes: Pass 6 = dialogue box, Pass 7 = HUD (SOLVE buttons, clue counters,
 toasts), Pass 8 = journal/deduction board. UI layout constants live in reference space **2020×1136**
 and are scaled to the current canvas in `UpdateLayout()` / with `jsx`/`jsy` in Pass 8.
@@ -172,11 +173,12 @@ and are scaled to the current canvas in `UpdateLayout()` / with `jsx`/`jsy` in P
   that would overflow the box's text area — at `\n` boundaries, then sentence ends, never inside
   a `[keyword]`. Long texts can no longer overflow the box, but still prefer hand-placed `|`
   breaks at narrative beats (2-3 sentences per page).
-- **Portraits**: characters (interactables with `topics`) show a portrait beside the dialogue
-  text — the top 32% x middle 60% crop of their own in-world sprite, scaled up
-  (`SetDialoguePortrait`). Objects get no portrait and keep the full text width. The text
-  origin shifts right by `PORTRAIT_MAX_W + PORTRAIT_TEXT_GAP`; pagination budgets the same
-  shift, so keep those constants in sync.
+- **Portraits**: every interactable shows a portrait beside the dialogue text, from its own
+  in-world sprite (`SetDialoguePortrait`). Characters (interactables with `topics`) use the
+  top 32% x middle 60% face crop; objects show their full sprite. `portraitCrop` in
+  room_config overrides either default. The text origin shifts right by
+  `PORTRAIT_MAX_W + PORTRAIT_TEXT_GAP`; pagination budgets the same shift, so keep those
+  constants in sync.
 - The dialogue box shows a small **name label** top-left: the interactable's `name` field,
   falling back to the prettified id (`inspect_duty_roster` -> "Duty Roster"). Give objects a
   `name` when the prettified id reads badly.
@@ -312,7 +314,7 @@ topics gated on that room (with a queued "X might have some explaining to do..."
   `NotebookManager.OnClueUnlocked` -> `Game1.HandleClueUnlocked` + `BuildGateIndex` /
   `_solveGateIndex` (scans all room configs at case load).
 - **Unheard-topic indicator.** Characters with at least one available (gate satisfied) topic the
-  player has not heard show a bobbing amber "..." above their trigger zone (Pass 4b,
+  player has not heard show a bobbing speech bubble above their trigger zone (Pass 4b,
   `HasUnseenTopics`). It disappears when every available topic is visited and reappears when a
   gate unlocks a new one. The toast says *who* to revisit across rooms; the "..." says *here*.
 - **Cross-reference the cast.** Characters mention each other's timeline facts (Coco's squeaky

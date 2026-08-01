@@ -23,7 +23,8 @@ namespace CatDetective
     ///   Pass 2 — Blob Shadow      (AlphaBlend, Deferred)
     ///   Pass 3 — Y-Sorted Entities (NonPremultiplied, FrontToBack)
     ///   Pass 4 — Lighting / Sunbeams (Additive, Deferred)
-    ///   Pass 4b — Topic indicators ("..." over characters with unheard topics)
+    ///   Pass 4b — Indicators (speech bubble over characters with unheard topics,
+    ///             paw-print arrows over transfer zones)
     ///   Pass 5 — Debug overlay (F1)
     ///   Pass 6 — Dialogue UI
     ///   Pass 7 — Notebook UI
@@ -180,6 +181,8 @@ namespace CatDetective
         private SpriteFont  _dialogueFont    = null!;
         private Texture2D   _dialogueBoxTex  = null!;
         private Texture2D   _notebookBgTex   = null!;
+        private Texture2D   _speechBubbleTex = null!; // Pass 4b: unheard-topics marker
+        private Texture2D   _arrowTex        = null!; // Pass 4b: doorway marker (art points right)
         private Dictionary<ClueCategory, Texture2D> _tabTextures = new(); // deduction board bar (Pass 8)
 
         // ── Dialogue pagination & typewriter ──────────────────────────────────
@@ -342,6 +345,8 @@ namespace CatDetective
             _dialogueFont   = Content.Load<SpriteFont>("Shared/dialogue_font");
             _dialogueBoxTex = Content.Load<Texture2D>("Shared/ui_dialogue_box");
             _notebookBgTex  = Content.Load<Texture2D>("Shared/ui_notebook_bg");
+            _speechBubbleTex = Content.Load<Texture2D>("Shared/speech_bubble");
+            _arrowTex        = Content.Load<Texture2D>("Shared/arrow");
 
             _tabTextures[ClueCategory.Who]       = Content.Load<Texture2D>("Shared/who");
             _tabTextures[ClueCategory.What]      = Content.Load<Texture2D>("Shared/how");
@@ -949,7 +954,7 @@ namespace CatDetective
         /// <summary>
         /// True if the entity offers at least one topic that is currently
         /// available (gate clue found, or ungated) and not yet heard.
-        /// Drives the "..." indicator in Pass 4b.
+        /// Drives the speech-bubble indicator in Pass 4b.
         /// </summary>
         private bool HasUnseenTopics(InteractableEntity entity)
         {
@@ -1683,51 +1688,71 @@ namespace CatDetective
                 _spriteBatch.End();
 
                 // ════════════════════════════════════════════════════════════════
-                // PASS 4b — TOPIC INDICATORS  (world-anchored "..." over characters
-                // with available, unheard topics)
+                // PASS 4b — TOPIC INDICATORS  (world-anchored speech bubble over
+                // characters with available, unheard topics)
                 // ════════════════════════════════════════════════════════════════
                 if (!_isDialogueActive)
                 {
-                    _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                    // NonPremultiplied: both indicator sprites are built with
+                    // PremultiplyAlpha=False, like every other sprite.
+                    _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied,
                         transformMatrix: _cameraTransform);
-                    const float markerScale = 1.2f;
-                    var markerSize = _dialogueFont.MeasureString("...") * markerScale;
                     float bob = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 2.5) * 4f;
+
+                    const float BUBBLE_DRAW_W = 64f; // on-screen width; keep subtle
+                    float bubbleScale  = BUBBLE_DRAW_W / _speechBubbleTex.Width;
+                    var   bubbleOrigin = new Vector2(_speechBubbleTex.Width * 0.5f,
+                                                     _speechBubbleTex.Height);
                     foreach (var entity in _interactables)
                     {
                         if (!HasUnseenTopics(entity)) continue;
-                        var pos = new Vector2(
-                            entity.TriggerZone.Center.X - markerSize.X * 0.5f,
-                            entity.TriggerZone.Y - markerSize.Y - 10f + bob);
-                        _spriteBatch.DrawString(_dialogueFont, "...", pos + new Vector2(3, 3),
-                            new Color(40, 30, 20), 0f, Vector2.Zero, markerScale,
-                            SpriteEffects.None, 0f);
-                        _spriteBatch.DrawString(_dialogueFont, "...", pos,
-                            InteractionData.Crime, 0f, Vector2.Zero, markerScale,
-                            SpriteEffects.None, 0f);
+                        // Anchor above the drawn sprite, not the (floor-level)
+                        // trigger zone - the bubble must float over the head.
+                        float anchorY = entity.TriggerZone.Y;
+                        float anchorX = entity.TriggerZone.Center.X;
+                        if (entity.Texture != null)
+                        {
+                            float spriteTop = entity.Position.Y
+                                - entity.Texture.Height * (entity.Data?.Scale ?? 1f);
+                            anchorY = Math.Min(anchorY, spriteTop);
+                            anchorX = entity.Position.X;
+                        }
+                        var pos = new Vector2(anchorX, anchorY - 6f + bob);
+                        _spriteBatch.Draw(_speechBubbleTex, pos, null, Color.White, 0f,
+                            bubbleOrigin, bubbleScale, SpriteEffects.None, 0f);
                     }
 
-                    // Doorway markers: permanent soft-white chevrons over transfer
+                    // Doorway markers: permanent paw-print arrows over transfer
                     // zones so exits are discoverable without the F1 overlay.
-                    // Soft white, never amber - amber means "someone to talk to".
-                    const float doorScale = 1.0f;
+                    // The art points right; left mirrors it (keeps the paw prints
+                    // upright), up/down rotate it a quarter turn.
+                    const float ARROW_DRAW_W = 64f; // on-screen length; keep subtle
+                    float arrowScale  = ARROW_DRAW_W / _arrowTex.Width;
+                    var   arrowOrigin = new Vector2(_arrowTex.Width  * 0.5f,
+                                                    _arrowTex.Height * 0.5f);
                     foreach (var zone in _transferZones)
                     {
                         float ndx = (zone.TriggerRect.Center.X - SCREEN_WIDTH  * 0.5f) / SCREEN_WIDTH;
                         float ndy = (zone.TriggerRect.Center.Y - SCREEN_HEIGHT * 0.5f) / SCREEN_HEIGHT;
-                        string chevron = Math.Abs(ndx) > Math.Abs(ndy)
-                            ? (ndx < 0 ? "<" : ">")
-                            : (ndy < 0 ? "^" : "v");
-                        var chevronSize = _dialogueFont.MeasureString(chevron) * doorScale;
+                        bool horizontal = Math.Abs(ndx) > Math.Abs(ndy);
+                        float rotation = horizontal ? 0f
+                            : (ndy < 0 ? -MathHelper.PiOver2 : MathHelper.PiOver2);
+                        var effects = horizontal && ndx < 0
+                            ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                        // Vertical extent above the zone depends on orientation
+                        // (rotation happens around the sprite's center).
+                        float halfExtentY = (horizontal ? _arrowTex.Height : _arrowTex.Width)
+                                            * arrowScale * 0.5f;
+                        float halfExtentX = (horizontal ? _arrowTex.Width : _arrowTex.Height)
+                                            * arrowScale * 0.5f;
                         var cpos = new Vector2(
-                            zone.TriggerRect.Center.X - chevronSize.X * 0.5f,
-                            zone.TriggerRect.Y - chevronSize.Y - 6f + bob);
-                        _spriteBatch.DrawString(_dialogueFont, chevron, cpos + new Vector2(3, 3),
-                            new Color(40, 30, 20) * 0.7f, 0f, Vector2.Zero, doorScale,
-                            SpriteEffects.None, 0f);
-                        _spriteBatch.DrawString(_dialogueFont, chevron, cpos,
-                            Color.White * 0.85f, 0f, Vector2.Zero, doorScale,
-                            SpriteEffects.None, 0f);
+                            zone.TriggerRect.Center.X,
+                            zone.TriggerRect.Y - 8f - halfExtentY + bob);
+                        // Zones can hug the room edge; keep the arrow on-canvas.
+                        cpos.X = MathHelper.Clamp(cpos.X, halfExtentX + 6f, SCREEN_WIDTH  - halfExtentX - 6f);
+                        cpos.Y = MathHelper.Clamp(cpos.Y, halfExtentY + 6f, SCREEN_HEIGHT - halfExtentY - 6f);
+                        _spriteBatch.Draw(_arrowTex, cpos, null, Color.White * 0.9f, rotation,
+                            arrowOrigin, arrowScale, effects, 0f);
                     }
                     _spriteBatch.End();
                 }
@@ -1767,9 +1792,10 @@ namespace CatDetective
                     const float dialogueScale = DIALOGUE_TEXT_SCALE;
                     var hintColor = new Color(90, 70, 50);
 
-                    // Portrait: top crop of the speaker's own sprite, drawn larger
-                    // than in-world so faces read clearly. Text shifts right by the
-                    // reserved width (same shift PaginateDialogue budgeted for).
+                    // Portrait: the speaker's own sprite (face crop for characters,
+                    // full sprite for objects), drawn larger than in-world so it
+                    // reads clearly. Text shifts right by the reserved width (same
+                    // shift PaginateDialogue budgeted for).
                     float textX = boxRect.X + PAD_X;
                     if (_dialoguePortrait != null)
                     {
@@ -2881,23 +2907,26 @@ namespace CatDetective
         }
 
         /// <summary>
-        /// Sets the dialogue portrait: the top crop of the speaker's own in-world
-        /// sprite, characters only (entities with topics). Objects get no portrait
-        /// and keep the full text width.
+        /// Sets the dialogue portrait from the speaker's own in-world sprite.
+        /// Characters (entities with topics) use a face crop; objects show their
+        /// full sprite.
         /// </summary>
         private void SetDialoguePortrait(InteractableEntity entity)
         {
             _dialoguePortrait = null;
-            if (entity.Data == null || entity.Data.Topics.Length == 0 || entity.Texture == null)
+            if (entity.Data == null || entity.Texture == null)
                 return;
-            // Default: middle 60% of the width x top 32% - sprites carry transparent
-            // side margins, so a full-width crop leaves the face tiny in the frame.
-            // room_config "portraitCrop": [x, y, w, h] (texture fractions) overrides
-            // it for poses where the face is not at the top (a sleeping dog).
-            var tex  = entity.Texture;
+            var tex = entity.Texture;
             var crop = entity.Data.PortraitCrop;
-            float cx = crop?[0] ?? 0.20f, cy = crop?[1] ?? 0f;
-            float cw = crop?[2] ?? 0.60f, ch = crop?[3] ?? 0.32f;
+            // Character default: middle 60% of the width x top 32% - sprites carry
+            // transparent side margins, so a full-width crop leaves the face tiny in
+            // the frame. room_config "portraitCrop": [x, y, w, h] (texture fractions)
+            // overrides it for poses where the face is not at the top (a sleeping dog).
+            bool isCharacter = entity.Data.Topics.Length > 0;
+            float dx = isCharacter ? 0.20f : 0f, dy = 0f;
+            float dw = isCharacter ? 0.60f : 1f, dh = isCharacter ? 0.32f : 1f;
+            float cx = crop?[0] ?? dx, cy = crop?[1] ?? dy;
+            float cw = crop?[2] ?? dw, ch = crop?[3] ?? dh;
             _dialoguePortrait       = tex;
             _dialoguePortraitSource = new Rectangle(
                 (int)(tex.Width * cx), (int)(tex.Height * cy),

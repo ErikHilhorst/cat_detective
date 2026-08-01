@@ -1,6 +1,5 @@
 {
   "props": [
-    { "id": "prop_table",       "texture": "prop_table",       "sortY": 650, "triggerName": "prop_table_fade" },
     { "id": "prop_north_couch", "texture": "prop_north_couch", "sortY": 585, "triggerName": "prop_north_couch_fade" },
     { "id": "prop_south_couch", "texture": "prop_south_couch", "sortY": 750, "triggerName": "prop_south_couch_fade" },
     { "id": "prop_sofa_chair",  "texture": "prop_sofa_chair",  "sortY": 738, "triggerName": "prop_sofa_chair_fade" }
@@ -101,7 +100,7 @@
         { "displayText": "tiny speaker", "id": "hidden_speaker", "color": "crime" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.24
     },
     {
       "id": "inspect_dropped_glove",
@@ -110,7 +109,7 @@
         { "displayText": "canvas glove", "id": "glove_by_cage", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.24
     },
     {
       "id": "inspect_polish_cloth",
@@ -119,7 +118,7 @@
         { "displayText": "lemon-oil cloth", "id": "polish_cloth", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.24
     },
     {
       "id": "inspect_documentary_camera",
@@ -129,7 +128,7 @@
         { "displayText": "just out of frame", "id": "documentary_camera", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.38
     },
     {
       "id": "inspect_vocab_ledger",
@@ -139,7 +138,7 @@
         { "displayText": "Maid's fault", "id": "vocab_ledger", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.27
     }
   ],
   "localDeductionSentence": "Everyone heard the [8:00 PM Squawk] - but the [Broken Latch] and the [Hidden Speaker] behind the couch tell a very different story.",
