@@ -1,17 +1,17 @@
 {
     "activeFile": "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/room_map.json",
     "expandedProjectPaths": [
-        "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/entrance",
-        "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/kitchen",
         "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/pool_area",
-        "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/garden",
+        "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room",
+        "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels",
         "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/bedroom",
         "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion",
-        "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room",
-        "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office",
+        "C:/Users/Erik/Desktop/Python projects/cat_detective/Content",
+        "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/kitchen",
+        "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/garden",
         "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/library",
-        "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels",
-        "C:/Users/Erik/Desktop/Python projects/cat_detective/Content"
+        "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/entrance",
+        "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -24,19 +24,19 @@
             }
         },
         "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/entrance/room_map.json": {
-            "scale": 0.3058029197080292,
-            "selectedLayer": 4,
+            "scale": 0.75,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 685.0817519990452,
-                "y": 380.96431555078163
+                "x": 989.9999999999999,
+                "y": 660
             }
         },
         "C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/room_map.json": {
             "scale": 0.80507299270073,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 758.3163334693322,
-                "y": 464.5541502334647
+                "x": 697.4522870483702,
+                "y": 553.9870347703884
             }
         },
         "C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/room_map.json": {

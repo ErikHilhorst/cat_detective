@@ -94,12 +94,20 @@ namespace CatDetective.Map
         public string    TargetRoom  { get; }
         /// <summary>Name of the spawn-point object in the target room's map.</summary>
         public string    TargetSpawn { get; }
+        /// <summary>
+        /// Optional "ArrowDirection" property ("up"/"down"/"left"/"right"): overrides the
+        /// position-based doorway-arrow heading, e.g. a side doorway whose stairs lead up.
+        /// Empty = infer from the zone's position vs room center.
+        /// </summary>
+        public string    ArrowDirection { get; }
 
-        public TransferZone(Rectangle triggerRect, string targetRoom, string targetSpawn)
+        public TransferZone(Rectangle triggerRect, string targetRoom, string targetSpawn,
+                            string arrowDirection = "")
         {
-            TriggerRect = triggerRect;
-            TargetRoom  = targetRoom;
-            TargetSpawn = targetSpawn;
+            TriggerRect    = triggerRect;
+            TargetRoom     = targetRoom;
+            TargetSpawn    = targetSpawn;
+            ArrowDirection = arrowDirection;
         }
     }
 
@@ -198,18 +206,33 @@ namespace CatDetective.Map
                         break;
 
                     case "Spawn":
+                        // Fallback chain: requested spawn -> spawn_default -> any
+                        // spawn in the room. All spawn points are collision-safe
+                        // (verify_level.py), unlike the (500, 500) last resort a
+                        // caller applies when the room has no Spawn layer at all.
+                        Vector2? defaultSpawn = null;
+                        Vector2? firstSpawn   = null;
                         foreach (var obj in layer.Objects)
                         {
+                            var p = new Vector2(obj.X + layerOffX, obj.Y + layerOffY);
+                            firstSpawn ??= p;
+                            if (obj.Name.Equals("spawn_default", StringComparison.OrdinalIgnoreCase))
+                                defaultSpawn = p;
                             if (obj.Name.Equals(targetSpawnName, StringComparison.OrdinalIgnoreCase))
                             {
-                                spawnPoint = new Vector2(obj.X + layerOffX, obj.Y + layerOffY);
+                                spawnPoint = p;
                                 break;
                             }
                         }
                         if (spawnPoint == null)
+                        {
+                            spawnPoint = defaultSpawn ?? firstSpawn;
                             Console.WriteLine(
                                 $"[MapParser] WARNING: Spawn '{targetSpawnName}' not found in '{jsonPath}'. " +
-                                "Defaulting to (500, 500).");
+                                (spawnPoint.HasValue
+                                    ? "Falling back to another spawn point."
+                                    : "No spawn points at all - defaulting to (500, 500)."));
+                        }
                         break;
 
                     case "Transfers":
@@ -223,7 +246,8 @@ namespace CatDetective.Map
                                     $"[MapParser] WARNING: Transfer '{obj.Name}' is missing 'targetRoom' property.");
                                 continue;
                             }
-                            transfers.Add(new TransferZone(ToRect(obj, layerOffX, layerOffY), targetRoom, targetSpawn));
+                            transfers.Add(new TransferZone(ToRect(obj, layerOffX, layerOffY), targetRoom, targetSpawn,
+                                GetStringProperty(obj, "arrowDirection")));
                         }
                         break;
 

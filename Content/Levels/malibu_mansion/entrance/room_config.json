@@ -83,7 +83,7 @@
         { "displayText": "8:15 PM", "id": "lockdown_815pm", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.14
     },
     {
       "id": "inspect_guest_registry",
@@ -94,7 +94,7 @@
         { "displayText": "6:30 PM", "id": "guest_registry", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.17
     }
   ],
   "localDeductionSentence": "The [Lockdown] sealed the mansion tight - Chip only fears a [PR Disaster], and the sign-in book logs the [Crew Arrivals] from 6:30 PM on.",

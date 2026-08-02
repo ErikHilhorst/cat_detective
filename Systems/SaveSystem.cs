@@ -12,6 +12,10 @@ namespace CatDetective.Systems
         [JsonPropertyName("version")]             public int    Version { get; set; } = 1;
         [JsonPropertyName("caseId")]              public string CaseId  { get; set; } = "";
         [JsonPropertyName("roomId")]              public string RoomId  { get; set; } = "";
+        /// <summary>Spawn point the player last entered the room through - restoring
+        /// there is always collision-safe (spawns are verified). Older saves lack it;
+        /// restore then falls back to "spawn_default".</summary>
+        [JsonPropertyName("spawnPoint")]          public string SpawnPoint { get; set; } = "";
         [JsonPropertyName("unlockedClueIds")]     public List<string> UnlockedClueIds { get; set; } = new();
         [JsonPropertyName("roomSolvedStates")]    public Dictionary<string, bool>   RoomSolvedStates    { get; set; } = new();
         [JsonPropertyName("roomSolvedSentences")] public Dictionary<string, string> RoomSolvedSentences { get; set; } = new();

@@ -653,6 +653,7 @@ namespace CatDetective
             {
                 CaseId     = _currentCaseId,
                 RoomId     = _currentRoomId,
+                SpawnPoint = _spawnPointName,
                 SavedAtUtc = DateTime.UtcNow.ToString("o"),
             };
             foreach (var clue in _notebook.UnlockedClues)        save.UnlockedClueIds.Add(clue.Id);
@@ -706,8 +707,11 @@ namespace CatDetective
 
             // Re-enter the saved room so a solved room's board shows its recap.
             // (_roomSolvedStates holds a key for every room in the case.)
+            // Resume at the spawn the player originally entered the room through -
+            // never a raw position, so a restore can't land inside collision boxes.
             if (_roomSolvedStates.ContainsKey(save.RoomId) && save.RoomId != _currentRoomId)
-                LoadRoom(save.RoomId, "spawn_default");
+                LoadRoom(save.RoomId, string.IsNullOrEmpty(save.SpawnPoint)
+                    ? "spawn_default" : save.SpawnPoint);
 
             // The replay must not leave queued toasts behind.
             _toastQueue.Clear();
@@ -1699,25 +1703,30 @@ namespace CatDetective
                         transformMatrix: _cameraTransform);
                     float bob = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 2.5) * 4f;
 
-                    const float BUBBLE_DRAW_W = 64f; // on-screen width; keep subtle
+                    const float BUBBLE_DRAW_W = 40f; // on-screen width; keep subtle
                     float bubbleScale  = BUBBLE_DRAW_W / _speechBubbleTex.Width;
-                    var   bubbleOrigin = new Vector2(_speechBubbleTex.Width * 0.5f,
+                    // Origin = bottom-right, where the bubble's tail is - it sits
+                    // top-left of the speaker with the tail pointing at the head.
+                    var   bubbleOrigin = new Vector2(_speechBubbleTex.Width,
                                                      _speechBubbleTex.Height);
                     foreach (var entity in _interactables)
                     {
                         if (!HasUnseenTopics(entity)) continue;
-                        // Anchor above the drawn sprite, not the (floor-level)
-                        // trigger zone - the bubble must float over the head.
+                        // Anchor at the drawn sprite's top-left, not the
+                        // (floor-level) trigger zone.
                         float anchorY = entity.TriggerZone.Y;
                         float anchorX = entity.TriggerZone.Center.X;
                         if (entity.Texture != null)
                         {
-                            float spriteTop = entity.Position.Y
-                                - entity.Texture.Height * (entity.Data?.Scale ?? 1f);
-                            anchorY = Math.Min(anchorY, spriteTop);
-                            anchorX = entity.Position.X;
+                            float scale = entity.Data?.Scale ?? 1f;
+                            float drawnW = entity.Texture.Width  * scale;
+                            anchorY = Math.Min(anchorY,
+                                entity.Position.Y - entity.Texture.Height * scale);
+                            // Character art carries transparent side margins, so
+                            // pull in toward the figure rather than the full edge.
+                            anchorX = entity.Position.X - drawnW * 0.22f;
                         }
-                        var pos = new Vector2(anchorX, anchorY - 6f + bob);
+                        var pos = new Vector2(anchorX, anchorY + 12f + bob);
                         _spriteBatch.Draw(_speechBubbleTex, pos, null, Color.White, 0f,
                             bubbleOrigin, bubbleScale, SpriteEffects.None, 0f);
                     }
@@ -1732,27 +1741,54 @@ namespace CatDetective
                                                     _arrowTex.Height * 0.5f);
                     foreach (var zone in _transferZones)
                     {
+                        // An explicit ArrowDirection on the zone (e.g. the entrance
+                        // stairs: side doorway, but you walk UP) beats the heuristic.
                         float ndx = (zone.TriggerRect.Center.X - SCREEN_WIDTH  * 0.5f) / SCREEN_WIDTH;
                         float ndy = (zone.TriggerRect.Center.Y - SCREEN_HEIGHT * 0.5f) / SCREEN_HEIGHT;
-                        bool horizontal = Math.Abs(ndx) > Math.Abs(ndy);
+                        bool horizontal;
+                        bool pointsNegative; // left (horizontal) or up (vertical)
+                        switch (zone.ArrowDirection.ToLowerInvariant())
+                        {
+                            case "up":    horizontal = false; pointsNegative = true;  break;
+                            case "down":  horizontal = false; pointsNegative = false; break;
+                            case "left":  horizontal = true;  pointsNegative = true;  break;
+                            case "right": horizontal = true;  pointsNegative = false; break;
+                            default:
+                                horizontal     = Math.Abs(ndx) > Math.Abs(ndy);
+                                pointsNegative = horizontal ? ndx < 0 : ndy < 0;
+                                break;
+                        }
                         float rotation = horizontal ? 0f
-                            : (ndy < 0 ? -MathHelper.PiOver2 : MathHelper.PiOver2);
-                        var effects = horizontal && ndx < 0
+                            : (pointsNegative ? -MathHelper.PiOver2 : MathHelper.PiOver2);
+                        var effects = horizontal && pointsNegative
                             ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
                         // Vertical extent above the zone depends on orientation
                         // (rotation happens around the sprite's center).
+                        // Standing in the zone: the arrow goes gold and pulses,
+                        // echoing the SOLVE button's "ready" cue.
+                        bool  isActive  = ReferenceEquals(zone, _activeTransferZone);
+                        float drawScale = arrowScale;
+                        Color tint      = Color.White * 0.9f;
+                        if (isActive)
+                        {
+                            float pulse = 0.5f + 0.5f * (float)Math.Sin(
+                                gameTime.TotalGameTime.TotalSeconds * 6.0);
+                            drawScale = arrowScale * (1.1f + 0.15f * pulse);
+                            tint = Color.Lerp(new Color(255, 215, 120),
+                                              new Color(255, 195, 60), pulse);
+                        }
                         float halfExtentY = (horizontal ? _arrowTex.Height : _arrowTex.Width)
-                                            * arrowScale * 0.5f;
+                                            * drawScale * 0.5f;
                         float halfExtentX = (horizontal ? _arrowTex.Width : _arrowTex.Height)
-                                            * arrowScale * 0.5f;
+                                            * drawScale * 0.5f;
                         var cpos = new Vector2(
                             zone.TriggerRect.Center.X,
                             zone.TriggerRect.Y - 8f - halfExtentY + bob);
                         // Zones can hug the room edge; keep the arrow on-canvas.
                         cpos.X = MathHelper.Clamp(cpos.X, halfExtentX + 6f, SCREEN_WIDTH  - halfExtentX - 6f);
                         cpos.Y = MathHelper.Clamp(cpos.Y, halfExtentY + 6f, SCREEN_HEIGHT - halfExtentY - 6f);
-                        _spriteBatch.Draw(_arrowTex, cpos, null, Color.White * 0.9f, rotation,
-                            arrowOrigin, arrowScale, effects, 0f);
+                        _spriteBatch.Draw(_arrowTex, cpos, null, tint, rotation,
+                            arrowOrigin, drawScale, effects, 0f);
                     }
                     _spriteBatch.End();
                 }

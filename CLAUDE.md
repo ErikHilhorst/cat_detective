@@ -157,8 +157,10 @@ Pass 4b (NonPremultiplied, world-anchored) draws a bobbing `Shared/speech_bubble
 characters that have available, unheard topics — hidden while dialogue is open. The same pass
 draws a permanent `Shared/arrow` paw-print arrow (art points right; left mirrors, up/down
 rotate a quarter turn; direction from the zone's position vs room center) over every transfer
-zone so exits are discoverable without the F1 overlay. Bubble = "someone to talk to",
-arrow = "exit" — keep the two sprites visually distinct and small (both draw at 64 px).
+zone so exits are discoverable without the F1 overlay. While the cat stands in a transfer zone
+its arrow turns gold and pulses (same cue language as the SOLVE button), alongside the
+"[ Enter ] to enter" prompt. Bubble = "someone to talk to", arrow = "exit" — keep the two
+sprites visually distinct and small (bubble 40 px, arrow 64 px).
 UI passes follow the world passes: Pass 6 = dialogue box, Pass 7 = HUD (SOLVE buttons, clue counters,
 toasts), Pass 8 = journal/deduction board. UI layout constants live in reference space **2020×1136**
 and are scaled to the current canvas in `UpdateLayout()` / with `jsx`/`jsy` in Pass 8.
