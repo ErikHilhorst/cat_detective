@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_graduation_scroll.png</SourceFile>
-  <SourceTime>2026-07-18T11:08:36.876108+02:00</SourceTime>
+  <SourceTime>2026-08-02T10:53:40.9634258+02:00</SourceTime>
   <DestFile>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/bin/DesktopGL/Content/Levels/tutorial/lesson_two/Interactables/inspect_graduation_scroll.xnb</DestFile>
-  <DestTime>2026-07-18T11:09:09.4702325+02:00</DestTime>
+  <DestTime>2026-08-02T12:00:20.6556415+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

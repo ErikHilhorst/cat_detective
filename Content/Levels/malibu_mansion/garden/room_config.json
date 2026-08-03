@@ -46,7 +46,7 @@
         { "displayText": "slightly bent", "id": "shears_match_latch", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.15
     },
     {
       "id": "inspect_hidden_cases",
@@ -57,7 +57,7 @@
         { "displayText": "heavy boot prints", "id": "boot_prints_shed", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.22
     },
     {
       "id": "inspect_bird_bath",
@@ -67,7 +67,7 @@
         { "displayText": "this evening", "id": "bird_bath_feathers", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.19
     }
   ],
   "localDeductionSentence": "[Basil the Gardener] won't stop apologizing to the hedge, his [Bent Shears] fit the snapped latch, his [Muddy Glove] has lost its partner - and the [Evening Feathers] say Rudebeak was loose in this garden tonight.",

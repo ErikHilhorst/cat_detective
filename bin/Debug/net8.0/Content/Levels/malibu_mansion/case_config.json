@@ -61,16 +61,16 @@
       "category": "Who",
       "name": "Derek the Husband",
       "context": "Derek bought top-of-the-line noise-canceling headphones the day before the bird vanished - a man pushed to the edge by 5 AM squawks, with a spare audio cable in the box.",
-      "inspectorDescription": "New headphones, a spare cable, an ultimatum from his wife. He solved his bird problem somehow. The question is which way."
+      "inspectorDescription": "New headphones, a spare cable, an ultimatum in his own handwriting. He solved his bird problem somehow. The question is which way."
     },
     {
       "id": "star_note_to_husband",
       "roomId": "bedroom",
       "isMacroClue": true,
       "category": "Why",
-      "name": "Star's Ultimatum",
-      "context": "A handwritten note from Vivienne Vale to her husband: 'Derek - Rudebeak woke me up at 5AM. AGAIN. Do SOMETHING about that bird or I am calling my lawyer.'",
-      "inspectorDescription": "Vivienne wanted the bird 'handled.' Derek's solution arrived in a headphone box. Somebody else's didn't."
+      "name": "Derek's Ultimatum",
+      "context": "A handwritten note from Derek to his wife: 'Viv - Rudebeak woke me up at 5AM. AGAIN. Do SOMETHING about that bird or I will. I am past asking nicely.'",
+      "inspectorDescription": "Derek wanted the bird handled - in writing. His solution arrived in a headphone box. Somebody else's didn't."
     },
     {
       "id": "headphone_box",
