@@ -1,0 +1,105 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <RootNamespace>CatDetectiveWeb</RootNamespace>
+    <AssemblyName>CatDetectiveWeb</AssemblyName>
+    <!-- BLAZORGL: game code switches File IO -> TitleContainer, saves -> localStorage,
+         music -> HTMLAudioElement, and letterboxes the render target into the canvas. -->
+    <DefineConstants>$(DefineConstants);BLAZORGL</DefineConstants>
+    <KniPlatform>BlazorGL</KniPlatform>
+    <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
+    <!-- System.Text.Json deserializes the config classes via reflection; IL trimming
+         strips the property metadata it needs. Bigger download, working game. -->
+    <PublishTrimmed>false</PublishTrimmed>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- ILLink descriptor: preserve all KNI/XNA types (LogicalName is the
+         convention the Blazor linker looks for). -->
+    <EmbeddedResource Include="LinkerConfig.xml">
+      <LogicalName>ILLink.Descriptors.xml</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- KNI: MonoGame-compatible WASM framework via Blazor WebGL. -->
+    <PackageReference Include="nkast.Xna.Framework" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.Content" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.Graphics" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.Audio" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.Media" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.Input" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.Game" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.Devices" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.Storage" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.XR" Version="4.2.9001" />
+    <PackageReference Include="nkast.Kni.Platform.Blazor.GL" Version="4.2.9001.2" />
+    <!-- KNI content pipeline: builds Content.Web.mgcb for BlazorGL during Build. -->
+    <PackageReference Include="nkast.Xna.Framework.Content.Pipeline.Builder" Version="4.2.9001" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.29" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.29" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- All game logic comes from the desktop project's sources; this project
+         only hosts the canvas. Program.cs (desktop entry point) is excluded. -->
+    <Compile Include="..\**\*.cs"
+             Exclude="..\bin\**;..\obj\**;..\Program.cs;..\CatDetectiveWeb\**;..\tools\**;..\debug_output\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <KniContentReference Include="..\Content\Content.Web.mgcb" />
+  </ItemGroup>
+
+  <!-- Runtime-read files (JSON configs + raw music mp3) must live in this project's
+       wwwroot to be served by the DevServer and included in the publish output.
+       wwwroot/Content is a build artefact - keep it out of git. -->
+  <Target Name="CopyGameRuntimeFiles" BeforeTargets="Build">
+    <ItemGroup>
+      <_GameJson Include="..\Content\scenes_config.json" />
+      <_GameJsonLevels Include="..\Content\Levels\**\*.json" />
+      <_GameMusic Include="..\Content\Shared\moonlit_cat_case.mp3" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_GameJson)"
+          DestinationFolder="wwwroot\Content"
+          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(_GameJsonLevels)"
+          DestinationFiles="@(_GameJsonLevels->'wwwroot\Content\Levels\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(_GameMusic)"
+          DestinationFolder="wwwroot\Content\Shared"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+  <!-- itch.io's static host refuses paths starting with an underscore, so the
+       published output is patched: folders renamed, references rewritten,
+       integrity hashes cleared, stale pre-compressed variants deleted. -->
+  <Target Name="ItchIoFix" AfterTargets="Publish">
+    <PropertyGroup>
+      <Wroot>$(PublishDir)wwwroot\</Wroot>
+    </PropertyGroup>
+    <Message Text="Applying itch.io fixes to $(Wroot)..." Importance="high" />
+
+    <!-- 1. Rename the physical folders (_framework -> framework, _content -> content_js).
+         Remove an existing destination first - Rename-Item on Windows throws
+         "Access denied" (not "already exists"), breaking incremental publishes. -->
+    <Exec Command="powershell -Command &quot;if (Test-Path '$(Wroot)framework')   { Remove-Item -Recurse -Force '$(Wroot)framework'   }; if (Test-Path '$(Wroot)_framework') { Rename-Item '$(Wroot)_framework' 'framework'   }&quot;" />
+    <Exec Command="powershell -Command &quot;if (Test-Path '$(Wroot)content_js') { Remove-Item -Recurse -Force '$(Wroot)content_js' }; if (Test-Path '$(Wroot)_content')   { Rename-Item '$(Wroot)_content'   'content_js' }&quot;" />
+
+    <!-- 2. Fix internal path references. [System.IO.File] instead of Get/Set-Content
+         to avoid silent UTF-8 -> UTF-16 corruption on Windows PowerShell. -->
+    <Exec Command="powershell -Command &quot;Get-ChildItem -Path '$(Wroot)' -Recurse -Include *.js,*.json,*.html | ForEach-Object { $c = [System.IO.File]::ReadAllText($_.FullName); $n = $c -replace '_framework', 'framework' -replace '_content', 'content_js'; if ($n -ne $c) { [System.IO.File]::WriteAllText($_.FullName, $n, [System.Text.UTF8Encoding]::new($false)) } }&quot;" />
+
+    <!-- 3. Clear SHA256 integrity hashes from blazor.boot.json - step 2 changed
+         file bytes, so Blazor's integrity checks would fail at runtime. -->
+    <Exec Command="powershell -Command &quot;$b = '$(Wroot)framework\blazor.boot.json'; if (Test-Path $b) { $c = [System.IO.File]::ReadAllText($b); $n = [System.Text.RegularExpressions.Regex]::Replace($c, 'sha256-[A-Za-z0-9+/]+=*', ''); [System.IO.File]::WriteAllText($b, $n, [System.Text.UTF8Encoding]::new($false)); Write-Host 'Cleared integrity hashes from blazor.boot.json' } else { Write-Host 'WARNING: blazor.boot.json not found at' $b }&quot;" />
+
+    <!-- 4. Delete stale pre-compressed variants: itch's CDN would serve the
+         unpatched .br/.gz copies and silently ignore fixes 1-3. -->
+    <Exec Command="powershell -Command &quot;Get-ChildItem -Path '$(Wroot)' -Recurse -Include *.br,*.gz | Remove-Item -Force; Write-Host 'Deleted pre-compressed .br/.gz variants'&quot;" />
+  </Target>
+
+</Project>

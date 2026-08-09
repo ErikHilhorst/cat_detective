@@ -1,3 +1,4 @@
+using CatDetective.Systems;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -47,13 +48,13 @@ namespace CatDetective.Map
         /// </summary>
         public static List<string> GetAvailableScenes(string configPath)
         {
-            if (!File.Exists(configPath))
+            if (!GameFile.Exists(configPath))
                 return new List<string>();
 
             try
             {
                 var data = JsonSerializer.Deserialize<SceneConfigData>(
-                    File.ReadAllText(configPath), _jsonOptions);
+                    GameFile.ReadAllText(configPath), _jsonOptions);
                 return data != null ? new List<string>(data.Scenes.Keys) : new List<string>();
             }
             catch (Exception ex)
@@ -69,7 +70,7 @@ namespace CatDetective.Map
         /// </summary>
         public static Color GetAmbientColor(string configPath, string sceneId)
         {
-            if (!File.Exists(configPath))
+            if (!GameFile.Exists(configPath))
             {
                 Console.WriteLine($"[SceneConfigParser] WARNING: '{configPath}' not found. " +
                                   "Defaulting to Black.");
@@ -79,7 +80,7 @@ namespace CatDetective.Map
             string json;
             try
             {
-                json = File.ReadAllText(configPath);
+                json = GameFile.ReadAllText(configPath);
             }
             catch (Exception ex)
             {

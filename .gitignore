@@ -1,2 +1,7 @@
 .env
 debug_output/
+bin/
+obj/
+CatDetectiveWeb/wwwroot/Content/
+CatDetectiveWeb/publish/
+*.zip

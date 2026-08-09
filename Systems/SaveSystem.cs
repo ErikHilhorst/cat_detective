@@ -40,12 +40,19 @@ namespace CatDetective.Systems
     /// </summary>
     public static class SaveSystem
     {
+#if BLAZORGL
+        // Web build: the browser has no writable filesystem - both slots live in
+        // localStorage (per-origin, survives reloads). See BrowserStorage.
+        private const string SaveKey     = "catdetective.save";
+        private const string SettingsKey = "catdetective.settings";
+#else
         private static string Dir => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "CatDetective");
 
         private static string SavePath     => Path.Combine(Dir, "save.json");
         private static string SettingsPath => Path.Combine(Dir, "settings.json");
+#endif
 
         private static readonly JsonSerializerOptions _jsonOptions = new()
         {
@@ -54,16 +61,27 @@ namespace CatDetective.Systems
 
         public static bool SaveExists()
         {
+#if BLAZORGL
+            try { return BrowserStorage.GetItem(SaveKey) != null; }
+            catch { return false; }
+#else
             try { return File.Exists(SavePath); }
             catch { return false; }
+#endif
         }
 
         public static SaveData? LoadGame()
         {
             try
             {
+#if BLAZORGL
+                string? json = BrowserStorage.GetItem(SaveKey);
+                if (json == null) return null;
+                return JsonSerializer.Deserialize<SaveData>(json);
+#else
                 if (!File.Exists(SavePath)) return null;
                 return JsonSerializer.Deserialize<SaveData>(File.ReadAllText(SavePath));
+#endif
             }
             catch (Exception ex)
             {
@@ -76,8 +94,12 @@ namespace CatDetective.Systems
         {
             try
             {
+#if BLAZORGL
+                BrowserStorage.SetItem(SaveKey, JsonSerializer.Serialize(data, _jsonOptions));
+#else
                 Directory.CreateDirectory(Dir);
                 File.WriteAllText(SavePath, JsonSerializer.Serialize(data, _jsonOptions));
+#endif
                 return true;
             }
             catch (Exception ex)
@@ -91,8 +113,12 @@ namespace CatDetective.Systems
         {
             try
             {
+#if BLAZORGL
+                BrowserStorage.RemoveItem(SaveKey);
+#else
                 if (File.Exists(SavePath))
                     File.Delete(SavePath);
+#endif
             }
             catch (Exception ex)
             {
@@ -104,9 +130,15 @@ namespace CatDetective.Systems
         {
             try
             {
+#if BLAZORGL
+                string? json = BrowserStorage.GetItem(SettingsKey);
+                if (json == null) return new SettingsData();
+                return JsonSerializer.Deserialize<SettingsData>(json) ?? new SettingsData();
+#else
                 if (!File.Exists(SettingsPath)) return new SettingsData();
                 return JsonSerializer.Deserialize<SettingsData>(File.ReadAllText(SettingsPath))
                        ?? new SettingsData();
+#endif
             }
             catch (Exception ex)
             {
@@ -119,8 +151,12 @@ namespace CatDetective.Systems
         {
             try
             {
+#if BLAZORGL
+                BrowserStorage.SetItem(SettingsKey, JsonSerializer.Serialize(settings, _jsonOptions));
+#else
                 Directory.CreateDirectory(Dir);
                 File.WriteAllText(SettingsPath, JsonSerializer.Serialize(settings, _jsonOptions));
+#endif
             }
             catch (Exception ex)
             {

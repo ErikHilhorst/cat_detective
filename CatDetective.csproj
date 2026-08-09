@@ -9,6 +9,9 @@
     <AssemblyName>CatDetective</AssemblyName>
     <RootNamespace>CatDetective</RootNamespace>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <!-- The web host project (CatDetectiveWeb) lives inside this folder and
+         glob-includes THIS project's sources; keep its own out of the desktop build. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);CatDetectiveWeb\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <!--
@@ -24,6 +27,19 @@
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
   </ItemGroup>
+
+  <!-- Content.Web.mgcb is the KNI/BlazorGL variant (built by CatDetectiveWeb);
+       MonoGame's MGCB globs every .mgcb inside its CollectContentReferences
+       target and can't parse the Brotli option, so it must be dropped from the
+       collected items between collection and the mgcb run. -->
+  <Target Name="ExcludeWebContentReference"
+          AfterTargets="CollectContentReferences"
+          BeforeTargets="PrepareContentBuilder">
+    <ItemGroup>
+      <ContentReference Remove="Content\Content.Web.mgcb" />
+      <ContentReference Remove="Content/Content.Web.mgcb" />
+    </ItemGroup>
+  </Target>
 
   <!--
     The Tiled map is read at runtime with System.Text.Json, NOT through the

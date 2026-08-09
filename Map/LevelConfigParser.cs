@@ -207,12 +207,12 @@ namespace CatDetective.Map
 
         private static T Deserialize<T>(string jsonPath)
         {
-            if (!File.Exists(jsonPath))
+            if (!GameFile.Exists(jsonPath))
                 throw new InvalidOperationException(
                     $"[LevelConfigParser] Config not found: '{jsonPath}'");
 
             return JsonSerializer.Deserialize<T>(
-                File.ReadAllText(jsonPath), _jsonOptions)
+                GameFile.ReadAllText(jsonPath), _jsonOptions)
                 ?? throw new InvalidOperationException(
                     $"[LevelConfigParser] Failed to parse: '{jsonPath}'");
         }

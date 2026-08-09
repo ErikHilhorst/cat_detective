@@ -101,6 +101,43 @@ namespace CatDetective.Entities
         // Built once per texture on first highlight, cached for the app lifetime.
         private static readonly Dictionary<Texture2D, Texture2D> _silhouetteCache = new();
 
+#if BLAZORGL
+        // WebGL cannot GetData() from a content texture, so the silhouette is
+        // built on the GPU instead: clear a render target to alpha-0 white, then
+        // copy only the texture's ALPHA channel into it (color write mask).
+        // Game1.LoadRoom prewarms every interactable texture outside the draw
+        // pass, since this rebinds the render target.
+        private static readonly BlendState _alphaOnlyBlend = new()
+        {
+            ColorWriteChannels    = ColorWriteChannels.Alpha,
+            AlphaSourceBlend      = Blend.One,
+            AlphaDestinationBlend = Blend.Zero,
+        };
+
+        public static void PrewarmSilhouette(SpriteBatch spriteBatch, Texture2D texture)
+        {
+            if (_silhouetteCache.ContainsKey(texture))
+                return;
+
+            var gd = spriteBatch.GraphicsDevice;
+            var rt = new RenderTarget2D(gd, texture.Width, texture.Height);
+            gd.SetRenderTarget(rt);
+            gd.Clear(new Color(255, 255, 255, 0));
+            spriteBatch.Begin(SpriteSortMode.Deferred, _alphaOnlyBlend);
+            spriteBatch.Draw(texture, Vector2.Zero, Color.White);
+            spriteBatch.End();
+            gd.SetRenderTarget(null);
+            _silhouetteCache[texture] = rt;
+        }
+
+        private static Texture2D GetWhiteSilhouette(Texture2D texture)
+        {
+            // Fallback: an unprewarmed texture highlights without the white
+            // outline copy rather than crashing on a WebGL readback.
+            return _silhouetteCache.TryGetValue(texture, out var cached)
+                ? cached : texture;
+        }
+#else
         private static Texture2D GetWhiteSilhouette(Texture2D texture)
         {
             if (_silhouetteCache.TryGetValue(texture, out var cached))
@@ -116,6 +153,7 @@ namespace CatDetective.Entities
             _silhouetteCache[texture] = silhouette;
             return silhouette;
         }
+#endif
 
         private static Vector2 CalcOrigin(string align, int w, int h) => align switch
         {

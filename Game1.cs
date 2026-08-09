@@ -55,6 +55,9 @@ namespace CatDetective
         private Song?        _bgMusic;
         private SettingsData _settings = new();
         private CrtOverlay   _crt      = null!;
+#if BLAZORGL
+        private bool         _webMusicStarted;   // set on the first user gesture
+#endif
 
         // ── Entities ───────────────────────────────────────────────────────────
         private Cat        _cat             = null!;
@@ -248,8 +251,13 @@ namespace CatDetective
         private List<string> _availableScenes = new();
 
         // ── Main menu / settings UI ────────────────────────────────────────────
+        // Web build: a browser tab cannot close itself, so QUIT is dropped.
         private static readonly string[] _mainMenuLabels =
+#if BLAZORGL
+            { "CONTINUE", "NEW GAME", "TUTORIAL", "SETTINGS" };
+#else
             { "CONTINUE", "NEW GAME", "TUTORIAL", "SETTINGS", "QUIT" };
+#endif
         private int         _menuIndex           = 1;   // default: NEW GAME
         private Rectangle[] _mainMenuButtonRects = Array.Empty<Rectangle>();
         private Rectangle   _settingsBackRect;
@@ -310,9 +318,15 @@ namespace CatDetective
                 PreferredBackBufferWidth  = (int)(SCREEN_WIDTH  * DISPLAY_SCALE),
                 PreferredBackBufferHeight = (int)(SCREEN_HEIGHT * DISPLAY_SCALE),
             };
+#if BLAZORGL
+            // KNI enforces the Reach 2048px texture cap that desktop MonoGame
+            // never did - the 2100px cat walk sheets need HiDef (4096 max).
+            _graphics.GraphicsProfile = GraphicsProfile.HiDef;
+#endif
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
+#if !BLAZORGL
             // Parse --screenshot <caseId> <roomId>
             string[] cliArgs = System.Environment.GetCommandLineArgs();
             for (int i = 1; i < cliArgs.Length; i++)
@@ -327,6 +341,7 @@ namespace CatDetective
                     break;
                 }
             }
+#endif
         }
 
         // ══════════════════════════════════════════════════════════════════════
@@ -372,6 +387,9 @@ namespace CatDetective
 
             // Music starts with the app (the menu has music too) and loops forever.
             // Skipped in screenshot mode (headless captures).
+            // Web: browsers block audio until the first user gesture, so playback
+            // starts from Update() instead (raw mp3 via HTMLAudioElement).
+#if !BLAZORGL
             if (!_screenshotMode)
             {
                 _bgMusic = Content.Load<Song>("Shared/moonlit_cat_case");
@@ -379,6 +397,7 @@ namespace CatDetective
                 MediaPlayer.Volume      = _settings.MusicVolume;
                 MediaPlayer.Play(_bgMusic);
             }
+#endif
 
             UpdateLayout();
 
@@ -424,7 +443,7 @@ namespace CatDetective
                     {
                         string cfgPath = Path.Combine(Content.RootDirectory,
                             "Levels", _screenshotCase, room, "room_config.json");
-                        if (!File.Exists(cfgPath)) continue;
+                        if (!GameFile.Exists(cfgPath)) continue;
                         var cfg = LevelConfigParser.LoadRoom(cfgPath);
                         if (cfg.LocalDeductionSentence.Length == 0) continue;
                         _roomSolvedStates[room]    = true;
@@ -579,13 +598,15 @@ namespace CatDetective
                 _localDeduction.ValidationMessage = "Case solved!";
             }
 
-            // Hot-reload tracks room_config.json.
+#if !BLAZORGL
+            // Hot-reload tracks room_config.json (dev-only; no source tree on web).
             _levelConfigSourcePath = Path.GetFullPath(Path.Combine(
                 AppDomain.CurrentDomain.BaseDirectory,
                 "..", "..", "..", "Content", "Levels", _currentCaseId, roomId, "room_config.json"));
             _levelConfigLastWrite = File.Exists(_levelConfigSourcePath)
                 ? File.GetLastWriteTime(_levelConfigSourcePath)
                 : DateTime.MinValue;
+#endif
 
             // Room background — drives the virtual canvas size.
             _bgBase = Content.Load<Texture2D>($"{contentBase}/bg_base");
@@ -626,6 +647,16 @@ namespace CatDetective
 
                 _foregroundProps.Add(new Prop(tex, propConfig.SortY, triggerRect));
             }
+
+#if BLAZORGL
+            // WebGL cannot read pixels back from a plain content texture, so the
+            // lazy GetData-based silhouette build in InteractableEntity would
+            // crash mid-gameplay. Pre-render every silhouette now (render-target
+            // route), while no SpriteBatch is open.
+            foreach (var entity in _interactables)
+                if (entity.Texture != null)
+                    InteractableEntity.PrewarmSilhouette(_spriteBatch, entity.Texture);
+#endif
         }
 
         /// <summary>
@@ -642,9 +673,17 @@ namespace CatDetective
             SCREEN_HEIGHT = height;
             _renderTarget?.Dispose();
             _renderTarget = new RenderTarget2D(GraphicsDevice, SCREEN_WIDTH, SCREEN_HEIGHT);
+#if BLAZORGL
+            // The browser owns the canvas size; only the virtual canvas changes.
+            // Draw() letterbox-blits the render target into whatever the real
+            // canvas currently is (see WasmScale).
+            WasmScale.GameW = SCREEN_WIDTH;
+            WasmScale.GameH = SCREEN_HEIGHT;
+#else
             _graphics.PreferredBackBufferWidth  = (int)(SCREEN_WIDTH  * DISPLAY_SCALE);
             _graphics.PreferredBackBufferHeight = (int)(SCREEN_HEIGHT * DISPLAY_SCALE);
             _graphics.ApplyChanges();
+#endif
             GameObject.SetScreenHeight(SCREEN_HEIGHT);
             UpdateLayout();
         }
@@ -701,7 +740,7 @@ namespace CatDetective
         {
             string configPath = Path.Combine(
                 Content.RootDirectory, "Levels", save.CaseId, "case_config.json");
-            if (!File.Exists(configPath))
+            if (!GameFile.Exists(configPath))
             {
                 Console.WriteLine($"[SaveSystem] Saved case '{save.CaseId}' no longer exists - deleting save.");
                 SaveSystem.DeleteSave();
@@ -753,7 +792,7 @@ namespace CatDetective
         {
             string configPath = Path.Combine(
                 Content.RootDirectory, "Levels", caseId, "case_config.json");
-            if (!File.Exists(configPath))
+            if (!GameFile.Exists(configPath))
             {
                 Console.WriteLine($"[Menu] Case '{caseId}' not found - ignoring.");
                 return;
@@ -797,7 +836,7 @@ namespace CatDetective
         {
             string configPath = Path.Combine(
                 Content.RootDirectory, "Levels", caseId, "case_config.json");
-            if (!File.Exists(configPath))
+            if (!GameFile.Exists(configPath))
             {
                 Console.WriteLine($"[Menu] Case '{caseId}' not found - ignoring.");
                 return;
@@ -855,7 +894,9 @@ namespace CatDetective
 
                 case "TUTORIAL": StartCase("tutorial");                 break;
                 case "SETTINGS": _currentState = GameState.Settings;    break;
+#if !BLAZORGL
                 case "QUIT":     Exit();                                break;
+#endif
             }
         }
 
@@ -921,7 +962,7 @@ namespace CatDetective
             {
                 string configPath = Path.Combine(
                     Content.RootDirectory, "Levels", caseId, roomId, "room_config.json");
-                if (!File.Exists(configPath)) continue;
+                if (!GameFile.Exists(configPath)) continue;
 
                 var config = LevelConfigParser.LoadRoom(configPath);
                 foreach (var (entityId, data) in config.Interactables)
@@ -1063,10 +1104,26 @@ namespace CatDetective
             var  mouseState = Mouse.GetState();
             bool clicked    = mouseState.LeftButton  == ButtonState.Pressed &&
                               _prevMouseState.LeftButton == ButtonState.Released;
+#if BLAZORGL
+            // Canvas is window-sized and letterboxed; invert that transform.
+            var vm = WasmScale.ToGame(mouseState.X, mouseState.Y);
+
+            // Browser autoplay policy: the looping music can only start after
+            // the first user gesture (any key or click).
+            if (!_webMusicStarted &&
+                (clicked || kbState.GetPressedKeys().Length > 0))
+            {
+                _webMusicStarted = true;
+                BrowserAudio.Play("music", "Content/Shared/moonlit_cat_case.mp3",
+                    loop: true, volume: _settings.MusicVolume);
+            }
+#else
             var vm = new Point(
                 (int)(mouseState.X / DISPLAY_SCALE),
                 (int)(mouseState.Y / DISPLAY_SCALE));
+#endif
 
+#if !BLAZORGL
             // Screenshot mode: save render target to file then exit. Runs in every
             // state so ui (menu/settings/intro/end) captures work too.
             if (_screenshotMode && !_screenshotSaved)
@@ -1080,14 +1137,17 @@ namespace CatDetective
                     return;
                 }
             }
+#endif
 
             if (_currentState == GameState.MainMenu)
             {
+#if !BLAZORGL
                 if (escPressed)
                 {
                     Exit();
                     return;
                 }
+#endif
                 if (f12Pressed)
                 {
                     _currentState = GameState.DevMenu;
@@ -1148,7 +1208,11 @@ namespace CatDetective
                     if (Math.Abs(vol - _settings.MusicVolume) > 0.001f)
                     {
                         _settings.MusicVolume = vol;
+#if BLAZORGL
+                        BrowserAudio.Volume("music", vol);
+#else
                         MediaPlayer.Volume    = vol;
+#endif
                         SaveSystem.SaveSettings(_settings);
                     }
 
@@ -1612,7 +1676,8 @@ namespace CatDetective
                     prop.Update(gameTime);
                 }
 
-                // Hot-reload: poll level_config.json every 0.5 s.
+#if !BLAZORGL
+                // Hot-reload: poll level_config.json every 0.5 s (dev-only).
                 _hotReloadTimer += dt;
                 if (_hotReloadTimer >= 0.5f)
                 {
@@ -1640,6 +1705,7 @@ namespace CatDetective
                         }
                     }
                 }
+#endif
             }
 
             _prevMouseState = mouseState;
@@ -1649,6 +1715,12 @@ namespace CatDetective
         // ══════════════════════════════════════════════════════════════════════
         protected override void Draw(GameTime gameTime)
         {
+#if BLAZORGL
+            // Snapshot the real canvas size BEFORE binding the render target
+            // (the viewport follows the bound target).
+            WasmScale.WindowWidth  = GraphicsDevice.Viewport.Width;
+            WasmScale.WindowHeight = GraphicsDevice.Viewport.Height;
+#endif
             GraphicsDevice.SetRenderTarget(_renderTarget);
 
             if (_currentState == GameState.DevMenu)
@@ -2511,12 +2583,20 @@ namespace CatDetective
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
 
+#if BLAZORGL
+            // Letterbox into the browser canvas, whatever size it currently is.
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque,
+                SamplerState.LinearClamp);
+            _spriteBatch.Draw(_renderTarget, WasmScale.LetterboxRect(), Color.White);
+            _spriteBatch.End();
+#else
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
             _spriteBatch.Draw(
                 _renderTarget,
                 new Rectangle(0, 0, (int)(SCREEN_WIDTH * DISPLAY_SCALE), (int)(SCREEN_HEIGHT * DISPLAY_SCALE)),
                 Color.White);
             _spriteBatch.End();
+#endif
 
             base.Draw(gameTime);
         }
@@ -2929,6 +3009,7 @@ namespace CatDetective
         }
 
         // ── Screenshot helper ──────────────────────────────────────────────────
+#if !BLAZORGL
         private void SaveScreenshot()
         {
             // Navigate three levels up from the binary folder to the project root.
@@ -2942,6 +3023,7 @@ namespace CatDetective
             _renderTarget.SaveAsPng(stream, _renderTarget.Width, _renderTarget.Height);
             Console.WriteLine($"[Screenshot] Saved → {Path.GetFullPath(path)}");
         }
+#endif
 
         private static readonly Color _inkColor = new Color(40, 30, 20);
 

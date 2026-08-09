@@ -498,14 +498,46 @@ category has no decoy in the room — single-option auto-fill). Run it after any
 
 ---
 
-## Switching to KNI / WASM
+## Web build (KNI / WASM, itch.io)
 
-In `CatDetective.csproj`, replace:
-```xml
-<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
-<PackageReference Include="MonoGame.Content.Builder.Task"  Version="3.8.1.303" />
+`CatDetectiveWeb/` is a Blazor WebAssembly host project (KNI 4.2.9001) that
+glob-includes all game sources; the desktop project is untouched. Game code
+branches on `#if BLAZORGL` (defined only by the web csproj):
+- JSON reads go through `Systems/GameFile.cs` (TitleContainer sync-XHR on web).
+- `SaveSystem` persists to browser localStorage (`Systems/WebShims.cs` -
+  `BrowserStorage`, initialized from `Pages/Index.razor.cs`).
+- Music = raw mp3 via HTMLAudioElement (`BrowserAudio` + JS in
+  `wwwroot/index.html`), started on the first user gesture (autoplay policy).
+- The browser owns the canvas size: `SetCanvas` only resizes the render target,
+  `Draw` letterbox-blits via `WasmScale`, and mouse coords are inverse-mapped.
+- Screenshot mode, hot-reload, QUIT/Exit are compiled out on web.
+- `GraphicsProfile.HiDef` is forced on web: KNI enforces the Reach 2048px
+  texture cap (the 2100px cat walk sheets crash under Reach; desktop MonoGame
+  never enforced it).
+- Interactable highlight silhouettes are pre-rendered into render targets at
+  LoadRoom (`InteractableEntity.PrewarmSilhouette`) - WebGL cannot GetData()
+  from content textures.
+
+Content: `Content/Content.Web.mgcb` is a copy of `Content.mgcb` with
+`/platform:BlazorGL`, `/compress:True` + `/compression:Brotli` (decoded JS-side
+via `wwwroot/js/decode.min.js` - the `window.BrotliDecode` global is required,
+without it every content load throws), and no Song entry. **Keep its asset
+entries in sync with Content.mgcb when adding art.** The desktop csproj
+excludes it from MonoGame's MGCB via the `ExcludeWebContentReference` target.
+
+Build / test / ship:
+```bash
+dotnet publish CatDetectiveWeb/CatDetectiveWeb.csproj -c Release -o CatDetectiveWeb/publish
+python -m http.server 8321 --directory CatDetectiveWeb/publish/wwwroot   # local test
+# zip the CONTENTS of publish/wwwroot (index.html at zip root) -> upload to itch.io
 ```
-with the appropriate KNI platform packages. No C# source changes are needed.
+The `ItchIoFix` publish target renames `_framework`/`_content` (itch.io rejects
+underscore paths), rewrites references, clears integrity hashes, and deletes
+stale `.br`/`.gz` files. itch.io settings: HTML5 game, viewport 1456x816,
+enable the fullscreen button. In `index.html`, the `nkast.Wasm.*.js` script
+versions must match the resolved NuGet versions (8.0.11), and the rAF loop
+schedules the next frame BEFORE invoking `TickDotNet` (the chain dies otherwise;
+rAF also pauses in hidden tabs - the game freezing in background tabs is normal).
 
 ---
 

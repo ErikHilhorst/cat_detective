@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Cat Detective - Playtest</title>
+    <script>
+        // itch.io embeds the game in an iframe where screen.orientation.lock
+        // rejects; patch it to swallow the rejection KNI triggers.
+        if (window.screen && !window.screen.orientation) {
+            window.screen.orientation = {};
+        }
+        if (window.screen && window.screen.orientation) {
+            var originalLock = window.screen.orientation.lock;
+            window.screen.orientation.lock = function (orientation) {
+                if (originalLock) {
+                    var promise = originalLock.call(window.screen.orientation, orientation);
+                    if (promise && promise.catch) {
+                        return promise.catch(function (err) {
+                            console.warn("Ignored screen.orientation.lock error (expected in iframe).", err.message);
+                        });
+                    }
+                    return promise;
+                }
+                return Promise.resolve();
+            };
+        }
+    </script>
+    <base href="./" />
+    <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+
+    <!-- Blazor mounts App.razor here; the game canvas is rendered by Index.razor -->
+    <div id="app">
+        <div id="blazor-loader">
+            <div id="blazor-loader-title">Cat Detective</div>
+            <div id="blazor-loader-label">Downloading... may take a minute</div>
+            <div id="blazor-loader-bar-bg">
+                <div id="blazor-loader-bar-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Brotli decoder for compressed .xnb content: KNI's XHR bridge
+         (nkXHR.DecompressBrotliStream) decompresses on the JS side, straight
+         into the WASM heap. Without this global, every compressed content
+         load throws. -->
+    <script type="module">
+        import { BrotliDecode } from './js/decode.min.js';
+        window.BrotliDecode = BrotliDecode;
+    </script>
+
+    <!--
+        nkast.Wasm JS interop bridges. Version suffix must match the resolved
+        nkast.Wasm.* NuGet versions exactly, and they must load BEFORE
+        blazor.webassembly.js.
+    -->
+    <script src="_content/nkast.Wasm.JSInterop/js/JSObject.8.0.11.js"></script>
+    <script src="_content/nkast.Wasm.Dom/js/Window.8.0.11.js"></script>
+    <script src="_content/nkast.Wasm.Dom/js/Document.8.0.11.js"></script>
+    <script src="_content/nkast.Wasm.Dom/js/Navigator.8.0.11.js"></script>
+    <script src="_content/nkast.Wasm.Dom/js/Gamepad.8.0.11.js"></script>
+    <script src="_content/nkast.Wasm.Dom/js/Media.8.0.11.js"></script>
+    <script src="_content/nkast.Wasm.XHR/js/XHR.8.0.11.js"></script>
+    <script src="_content/nkast.Wasm.Canvas/js/Canvas.8.0.11.js"></script>
+    <script src="_content/nkast.Wasm.Canvas/js/CanvasGLContext.8.0.11.js"></script>
+    <script src="_content/nkast.Wasm.Audio/js/Audio.8.0.11.js"></script>
+    <script src="_content/nkast.Wasm.XR/js/XR.8.0.11.js"></script>
+
+    <script>
+        // Music via HTMLAudioElement - bypasses the XNA Song pipeline entirely.
+        // Called from CatDetective.Systems.BrowserAudio via JS interop.
+        var _gAudio = {};
+        window.gameAudioPlay = function (id, url, loop, volume) {
+            var existing = _gAudio[id];
+            if (existing) { existing.pause(); }
+            var a = new Audio(url);
+            a.loop = loop;
+            a.volume = Math.max(0, Math.min(1, volume));
+            a.play().catch(function (e) { console.warn('[Audio] play failed (' + id + '):', e.message); });
+            _gAudio[id] = a;
+        };
+        window.gameAudioStop = function (id) {
+            var a = _gAudio[id];
+            if (a) { a.pause(); a.currentTime = 0; }
+        };
+        window.gameAudioVolume = function (id, volume) {
+            var a = _gAudio[id];
+            if (a) a.volume = Math.max(0, Math.min(1, volume));
+        };
+    </script>
+
+    <script>
+        // Called once by Blazor (Index.razor.cs OnAfterRender) with a .NET
+        // object reference; starts the requestAnimationFrame-driven game loop.
+        window.initRenderJS = (instance) => {
+            console.log('[CatDetective] initRenderJS called - starting game loop');
+            window.theInstance = instance;
+
+            var canvas = document.getElementById('theCanvas');
+
+            // The canvas always fills the window/iframe; the game letterboxes
+            // its virtual canvas into it (WasmScale).
+            function resizeCanvas() {
+                canvas.width = Math.max(1, window.innerWidth);
+                canvas.height = Math.max(1, window.innerHeight);
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            canvas.addEventListener("contextmenu", e => e.preventDefault());
+
+            // Keep the itch.io page from scrolling on game keys.
+            window.addEventListener("keydown", function (e) {
+                if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " "].indexOf(e.key) > -1)
+                    e.preventDefault();
+            }, false);
+
+            window.requestAnimationFrame(tickJS);
+        };
+
+        var _tickLogged = false;
+        var tickJS = function () {
+            // Schedule the next frame FIRST so the loop survives anything the
+            // tick below does (first-frame load work killed the chain otherwise).
+            window.requestAnimationFrame(tickJS);
+            if (!_tickLogged) {
+                console.log('[CatDetective] game loop started');
+                _tickLogged = true;
+            }
+            try {
+                window.theInstance.invokeMethod('TickDotNet');
+            } catch (err) {
+                console.error('[CatDetective] TickDotNet error:', err);
+            }
+        };
+    </script>
+
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
+    <script>
+        // Manual boot with a byte-counting progress bar.
+        (function () {
+            var totalBytes = 0;
+            var loadedBytes = 0;
+
+            function setProgress(pct) {
+                var fill = document.getElementById('blazor-loader-bar-fill');
+                var label = document.getElementById('blazor-loader-label');
+                if (fill) fill.style.width = Math.min(100, pct).toFixed(1) + '%';
+                if (label) label.textContent = 'Downloading... ' + Math.round(Math.min(100, pct)) + '%';
+            }
+
+            Blazor.start({
+                loadBootResource: function (type, name, defaultUri, integrity) {
+                    if (type === 'dotnetjs') return defaultUri;
+                    return fetch(defaultUri, { cache: 'no-cache' })
+                        .then(function (response) {
+                            if (!response.ok) throw new Error('Fetch failed: ' + response.status + ' ' + defaultUri);
+                            var contentLength = parseInt(response.headers.get('Content-Length') || '0', 10);
+                            if (contentLength > 0) totalBytes += contentLength;
+                            var contentType = response.headers.get('Content-Type') || 'application/octet-stream';
+                            var reader = response.body.getReader();
+                            var chunks = [];
+                            function pump() {
+                                return reader.read().then(function (result) {
+                                    if (result.done) {
+                                        if (totalBytes > 0) setProgress(loadedBytes / totalBytes * 100);
+                                        return new Response(new Blob(chunks, { type: contentType }));
+                                    }
+                                    chunks.push(result.value);
+                                    loadedBytes += result.value.byteLength;
+                                    if (totalBytes > 0) setProgress(loadedBytes / totalBytes * 100);
+                                    return pump();
+                                });
+                            }
+                            return pump();
+                        });
+                }
+            }).then(function () {
+                var loader = document.getElementById('blazor-loader');
+                if (loader) loader.style.display = 'none';
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -1,4 +1,5 @@
 using CatDetective.Entities;
+using CatDetective.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -165,7 +166,7 @@ namespace CatDetective.Map
             transfers       = new List<TransferZone>();
             spawnPoint      = null;
 
-            if (!File.Exists(jsonPath))
+            if (!GameFile.Exists(jsonPath))
             {
                 Console.WriteLine($"[MapParser] WARNING: '{jsonPath}' not found. " +
                                   "No collision or trigger data loaded.");
@@ -175,7 +176,7 @@ namespace CatDetective.Map
             string json;
             try
             {
-                json = File.ReadAllText(jsonPath);
+                json = GameFile.ReadAllText(jsonPath);
             }
             catch (Exception ex)
             {

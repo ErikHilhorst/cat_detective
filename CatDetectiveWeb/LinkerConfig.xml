@@ -1,0 +1,20 @@
+<linker>
+  <!-- KNI assembly names exclude the 'Microsoft.' prefix. PublishTrimmed is
+       already false; this descriptor is belt-and-braces should trimming ever
+       be re-enabled. -->
+  <assembly fullname="Xna.Framework">
+    <type fullname="*" preserve="all" />
+  </assembly>
+
+  <assembly fullname="Xna.Framework.Media">
+    <type fullname="*" preserve="all" />
+  </assembly>
+
+  <assembly fullname="Xna.Framework.Audio">
+    <type fullname="*" preserve="all" />
+  </assembly>
+
+  <assembly fullname="nkast.Wasm.Audio">
+    <type fullname="*" preserve="all" />
+  </assembly>
+</linker>

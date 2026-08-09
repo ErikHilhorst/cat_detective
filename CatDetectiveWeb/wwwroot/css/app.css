@@ -1,0 +1,68 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #000;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+}
+
+/* Game canvas fills the viewport; the game letterboxes internally. */
+canvas#theCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    touch-action: none;
+}
+
+/* MUST be display:block with full size - a display:none shell gives the canvas
+   zero layout size, KNI creates a 0x0 WebGL context, and the screen stays
+   black with no error. */
+#app {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* HTML loading bar shown while the WASM framework downloads. */
+#blazor-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 480px;
+}
+
+#blazor-loader-title {
+    color: #e8b44c;
+    font: bold 28px Georgia, serif;
+    letter-spacing: 4px;
+    margin-bottom: 24px;
+}
+
+#blazor-loader-label {
+    color: #a0a0a0;
+    font: 14px monospace;
+    margin-bottom: 12px;
+}
+
+#blazor-loader-bar-bg {
+    width: 100%;
+    height: 10px;
+    background: #241c14;
+    border: 1px solid #b4883c;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+#blazor-loader-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: #e8b44c;
+    transition: width 0.1s ease-out;
+}
