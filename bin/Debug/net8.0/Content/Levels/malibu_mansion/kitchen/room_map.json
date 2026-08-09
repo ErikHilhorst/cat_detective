@@ -669,7 +669,6 @@
                 {
                  "height":183.096241896731,
                  "id":57,
-                     "spriteAnchor": "TopRight",
                  "name":"inspect_paella_pot",
                  "opacity":1,
                  "rotation":0,
@@ -682,15 +681,14 @@
                 {
                  "height":70,
                  "id":58,
-                 "spriteAnchor": "TopRight",
                  "name":"inspect_treat_jar",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":70,
-                 "x":1245.25590461943,
-                 "y":488.991794732309
+                 "x":256,
+                 "y":480
                 }, 
                 {
                  "height":80,
@@ -701,11 +699,11 @@
                  "type":"",
                  "visible":true,
                  "width":90,
-                 "x":71.7108663130696,
-                 "y":639.603789836348
+                 "x":864,
+                 "y":448
                 }, 
                 {
-                 "height":70,
+                 "height":289.855841153271,
                  "id":60,
                  "name":"inspect_duty_roster",
                  "opacity":1,
@@ -713,8 +711,8 @@
                  "type":"",
                  "visible":true,
                  "width":70,
-                 "x":852.447980416157,
-                 "y":437.781177750578
+                 "x":1184,
+                 "y":288
                 }],
          "opacity":0,
          "type":"objectgroup",

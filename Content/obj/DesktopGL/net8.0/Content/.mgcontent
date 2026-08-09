@@ -15,6 +15,7 @@
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/walk_animation_forward.png</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/walk_animation_upward.png</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/ui_notebook_bg.png</File>
+    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/ui_notebook_score_card.png</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/ui_tab.png</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/who.png</File>
     <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/how.png</File>
@@ -102,6 +103,7 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File>Shared/case_poster.png</File>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

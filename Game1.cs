@@ -138,6 +138,11 @@ namespace CatDetective
         private int          _wordBankPageCount = 0; // last page index, written by Draw, read by Update
         private readonly List<(Rectangle Rect, Clue Clue)> _wordBankClueRects = new();
 
+        // Casebook page 2 — "Case Notes": the investigation score card (room checklist,
+        // case clue total, solved-deduction recaps). Kept OFF the deduction spread so
+        // the board itself stays uncluttered; the player turns the page to review progress.
+        private bool _journalOnNotesPage = false;
+
         // UI layout — all computed by UpdateLayout() so they scale with any background size.
         // Reference design space: 2020×1136. UpdateLayout() maps these to SCREEN_WIDTH×SCREEN_HEIGHT.
         private Rectangle   _solveButtonRect;
@@ -161,6 +166,8 @@ namespace CatDetective
         private Rectangle _journalSubmitRect;
         private Rectangle _journalClearRect;
         private Rectangle _journalCloseRect;
+        private Rectangle _journalTurnPageRect; // board page, bottom-right: forward to Case Notes
+        private Rectangle _journalTurnBackRect; // notes page, bottom-left: back to the board
 
         // Transient HUD toast (progression feedback: room solved, FINAL SOLVE locked, ...)
         // Queued so back-to-back events (room solved + confrontation unlocked) both show.
@@ -181,6 +188,7 @@ namespace CatDetective
         private SpriteFont  _dialogueFont    = null!;
         private Texture2D   _dialogueBoxTex  = null!;
         private Texture2D   _notebookBgTex   = null!;
+        private Texture2D   _notesBgTex      = null!; // casebook page 2 (score card spread)
         private Texture2D   _speechBubbleTex = null!; // Pass 4b: unheard-topics marker
         private Texture2D   _arrowTex        = null!; // Pass 4b: doorway marker (art points right)
         private Dictionary<ClueCategory, Texture2D> _tabTextures = new(); // deduction board bar (Pass 8)
@@ -345,6 +353,7 @@ namespace CatDetective
             _dialogueFont   = Content.Load<SpriteFont>("Shared/dialogue_font");
             _dialogueBoxTex = Content.Load<Texture2D>("Shared/ui_dialogue_box");
             _notebookBgTex  = Content.Load<Texture2D>("Shared/ui_notebook_bg");
+            _notesBgTex     = Content.Load<Texture2D>("Shared/ui_notebook_score_card");
             _speechBubbleTex = Content.Load<Texture2D>("Shared/speech_bubble");
             _arrowTex        = Content.Load<Texture2D>("Shared/arrow");
 
@@ -403,6 +412,24 @@ namespace CatDetective
                     _selectedWordBankClue = _notebook.UnlockedClues.Count > 0
                         ? _notebook.UnlockedClues[0] : null;
                     _activeTab = _selectedWordBankClue?.Category ?? ClueCategory.Who;
+                }
+                // "notes" captures casebook page 2 at its worst case: every room
+                // marked solved, recap = the room's raw local sentence template.
+                else if (_screenshotView == "notes")
+                {
+                    _notebook.UnlockAllCluesForRoom(_currentRoomId);
+                    _isDeductionBoardOpen = true;
+                    _journalOnNotesPage   = true;
+                    foreach (var room in _caseRooms)
+                    {
+                        string cfgPath = Path.Combine(Content.RootDirectory,
+                            "Levels", _screenshotCase, room, "room_config.json");
+                        if (!File.Exists(cfgPath)) continue;
+                        var cfg = LevelConfigParser.LoadRoom(cfgPath);
+                        if (cfg.LocalDeductionSentence.Length == 0) continue;
+                        _roomSolvedStates[room]    = true;
+                        _roomSolvedSentences[room] = cfg.LocalDeductionSentence;
+                    }
                 }
                 // "dialogue" opens the room's longest text segment (intro or topic
                 // response), fully typed, so text-box fit can be verified from a capture.
@@ -1223,10 +1250,18 @@ namespace CatDetective
                     }
                     else if (_isDeductionBoardOpen)
                     {
-                        _isDeductionBoardOpen = false;
-                        _isFinalSolveMode     = false;
-                        _selectedWordBankClue = null;
-                        _insertTargetSlot     = null;
+                        if (_journalOnNotesPage)
+                        {
+                            // One layer at a time: notes page turns back to the board first.
+                            _journalOnNotesPage = false;
+                        }
+                        else
+                        {
+                            _isDeductionBoardOpen = false;
+                            _isFinalSolveMode     = false;
+                            _selectedWordBankClue = null;
+                            _insertTargetSlot     = null;
+                        }
                     }
                     else
                     {
@@ -1245,8 +1280,20 @@ namespace CatDetective
                         {
                             _isDeductionBoardOpen = false;
                             _isFinalSolveMode     = false;
+                            _journalOnNotesPage   = false;
                             _selectedWordBankClue = null;
                             _insertTargetSlot     = null;
+                        }
+                        else if (_journalOnNotesPage)
+                        {
+                            // Case Notes page: every board hotspot is dead; only the
+                            // page-turn back to the deduction spread responds.
+                            if (_journalTurnBackRect.Contains(vm))
+                                _journalOnNotesPage = false;
+                        }
+                        else if (_journalTurnPageRect.Contains(vm))
+                        {
+                            _journalOnNotesPage = true;
                         }
                         else
                         {
@@ -1385,6 +1432,7 @@ namespace CatDetective
                         {
                             _isFinalSolveMode     = false;
                             _isDeductionBoardOpen = true;
+                            _journalOnNotesPage   = false;
                             _selectedWordBankClue = null;
                             _wordBankPage         = 0;
                         }
@@ -1394,6 +1442,7 @@ namespace CatDetective
                             {
                                 _isFinalSolveMode     = true;
                                 _isDeductionBoardOpen = true;
+                                _journalOnNotesPage   = false;
                                 _selectedWordBankClue = null;
                                 _wordBankPage         = 0;
                             }
@@ -2033,7 +2082,7 @@ namespace CatDetective
                 // ════════════════════════════════════════════════════════════════
                 // PASS 8 — DEDUCTION BOARD  (hidden while dialogue is open)
                 // ════════════════════════════════════════════════════════════════
-                if (_isDeductionBoardOpen && !_isDialogueActive)
+                if (_isDeductionBoardOpen && !_isDialogueActive && !_journalOnNotesPage)
                 {
                     _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
@@ -2064,10 +2113,28 @@ namespace CatDetective
                         float spaceW  = _dialogueFont.MeasureString(" ").X * jt;
                         int   maxRight = leftPageArea.Right;
 
-                        //var sentTitleSz = _dialogueFont.MeasureString("What happened?");
-                        //_spriteBatch.DrawString(_dialogueFont, "What happened?",
-                          //  new Vector2(leftPageArea.X, leftPageArea.Y - sentTitleSz.Y - 12),
-                            //_tabColors[(int)_activeTab]);
+                        // ── LEFT PAGE: header — names the room being solved (the
+                        // right page has the tab art; the left page needs its own
+                        // anchor). Ink text only, no baked art.
+                        {
+                            bool headSolved = !_isFinalSolveMode &&
+                                _roomSolvedStates.TryGetValue(_currentRoomId, out var hs) && hs;
+                            string headTitle = _isFinalSolveMode
+                                ? "The Final Solve"
+                                : ToDisplayName(_currentRoomId);
+                            string headSub = _isFinalSolveMode ? "What really happened?"
+                                           : headSolved        ? "Solved!"
+                                           :                     "What happened here?";
+                            float headScale = 1.05f * jsy;
+                            _spriteBatch.DrawString(_dialogueFont, headTitle,
+                                new Vector2(leftPageArea.X, J(160, jsy)), _inkColor,
+                                0f, Vector2.Zero, headScale, SpriteEffects.None, 0f);
+                            _spriteBatch.DrawString(_dialogueFont, headSub,
+                                new Vector2(leftPageArea.X,
+                                    J(160, jsy) + _dialogueFont.LineSpacing * headScale + 6 * jsy),
+                                headSolved ? new Color(30, 130, 50) : _inkColor * 0.75f,
+                                0f, Vector2.Zero, 0.68f * jsy, SpriteEffects.None, 0f);
+                        }
 
                         string[] slotCatLabels = { "WHO", "WHAT", "WHY", "WHERE/WHEN" };
 
@@ -2128,34 +2195,8 @@ namespace CatDetective
                             }
                         }
 
-                        // ── LEFT PAGE: rooms overview — solved state + clue counts.
-                        // Shown on every board so the player can see which room still
-                        // hides clues and which deductions remain.
-                        {
-                            float oy = Math.Max(ly + lineH * 1.6f, J(560, jsy));
-                            _spriteBatch.DrawString(_dialogueFont, "Investigation:",
-                                new Vector2(leftPageArea.X, oy), _inkColor,
-                                0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
-                            oy += lineH;
-                            foreach (var room in _caseRooms)
-                            {
-                                bool solved = _roomSolvedStates.TryGetValue(room, out var s) && s;
-                                var (found, total) = _notebook.GetRoomClueCounts(room);
-                                _spriteBatch.DrawString(_dialogueFont,
-                                    $"{(solved ? "[x]" : "[  ]")} {ToDisplayName(room)}  -  clues {found}/{total}",
-                                    new Vector2(leftPageArea.X, oy),
-                                    solved ? new Color(30, 130, 50)
-                                           : (found == total ? _inkColor : Color.Gray),
-                                    0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
-                                oy += _dialogueFont.LineSpacing * jt + 6;
-                            }
-                        }
-
-                        // Case-wide clue counter — top of the left page.
-                        _spriteBatch.DrawString(_dialogueFont,
-                            $"Case clues: {_notebook.UnlockedClues.Count}/{_notebook.TotalClueCount}",
-                            new Vector2(leftPageArea.X, J(230, jsy)), _inkColor * 0.8f,
-                            0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
+                        // (Investigation checklist + case clue total moved to the
+                        // CASE NOTES page — Pass 8b — to keep this spread clean.)
 
                         // ── RIGHT PAGE: Tab bar (pre-rendered full-bar image) ──
                         // Scaled with the canvas so the art lands exactly on the hotspots.
@@ -2322,9 +2363,138 @@ namespace CatDetective
                                 maxLabelScale: jt);
                         }
 
+                        // ── Page turn (forward to Case Notes) ─────────────────
+                        DrawUiButton(_journalTurnPageRect, new Color(120, 92, 55),
+                            "CASE NOTES >", Color.White, maxLabelScale: jt);
+
                         // ── Close button (X) ──────────────────────────────────
                         DrawUiButton(_journalCloseRect, new Color(100, 40, 40), "X", Color.White);
                     }
+
+                    _spriteBatch.End();
+                }
+
+                // ════════════════════════════════════════════════════════════════
+                // PASS 8b — CASE NOTES (casebook page 2): the investigation score
+                // card. Room checklist, case totals, and solved-deduction recaps
+                // live here so the deduction spread itself stays uncluttered.
+                // ════════════════════════════════════════════════════════════════
+                if (_isDeductionBoardOpen && !_isDialogueActive && _journalOnNotesPage)
+                {
+                    _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
+                    _spriteBatch.Draw(_notesBgTex,
+                        new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
+                        Color.White);
+
+                    float jsx = (float)SCREEN_WIDTH  / 2020f;
+                    float jsy = (float)SCREEN_HEIGHT / 1136f;
+                    int J(float v, float s) => (int)(v * s);
+                    var leftPageArea  = new Rectangle(J(250,  jsx), J(200, jsy), J(650, jsx), J(790, jsy));
+                    var rightPageArea = new Rectangle(J(1060, jsx), J(200, jsy), J(740, jsx), J(790, jsy));
+
+                    float jt        = 0.80f * jsy;   // body text
+                    float jti       = 0.66f * jsy;   // recap sentences (densest content)
+                    float headScale = 1.05f * jsy;
+                    float lineH     = _dialogueFont.LineSpacing * jt + 12 * jsy;
+
+                    // ── LEFT PAGE: the investigation checklist ────────────────
+                    float oy = leftPageArea.Y;
+                    _spriteBatch.DrawString(_dialogueFont, "The Investigation",
+                        new Vector2(leftPageArea.X, oy), _inkColor,
+                        0f, Vector2.Zero, headScale, SpriteEffects.None, 0f);
+                    oy += _dialogueFont.LineSpacing * headScale + 16 * jsy;
+
+                    _spriteBatch.DrawString(_dialogueFont,
+                        $"Case clues: {_notebook.UnlockedClues.Count}/{_notebook.TotalClueCount}",
+                        new Vector2(leftPageArea.X, oy), _inkColor * 0.8f,
+                        0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
+                    oy += lineH;
+
+                    if (_confrontationTopics.Count > 0)
+                    {
+                        _spriteBatch.DrawString(_dialogueFont,
+                            $"Suspects confronted: {HeardConfrontationCount()}/{_confrontationTopics.Count}",
+                            new Vector2(leftPageArea.X, oy), _inkColor * 0.8f,
+                            0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
+                        oy += lineH;
+                    }
+                    oy += lineH * 0.5f;
+
+                    foreach (var room in _caseRooms)
+                    {
+                        bool solved = _roomSolvedStates.TryGetValue(room, out var s) && s;
+                        var (found, total) = _notebook.GetRoomClueCounts(room);
+                        _spriteBatch.DrawString(_dialogueFont,
+                            $"{(solved ? "[x]" : "[  ]")} {ToDisplayName(room)}  -  clues {found}/{total}",
+                            new Vector2(leftPageArea.X, oy),
+                            solved ? new Color(30, 130, 50)
+                                   : (found == total ? _inkColor : Color.Gray),
+                            0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
+                        oy += _dialogueFont.LineSpacing * jt + 10 * jsy;
+                    }
+
+                    // ── RIGHT PAGE: solved-deduction recaps ───────────────────
+                    float ry = rightPageArea.Y;
+                    _spriteBatch.DrawString(_dialogueFont, "Deductions so far",
+                        new Vector2(rightPageArea.X, ry), _inkColor,
+                        0f, Vector2.Zero, headScale, SpriteEffects.None, 0f);
+                    ry += _dialogueFont.LineSpacing * headScale + 16 * jsy;
+
+                    var recaps = new List<(string Room, string Sentence)>();
+                    foreach (var room in _caseRooms)
+                        if (_roomSolvedSentences.TryGetValue(room, out var sentence))
+                            recaps.Add((room, sentence));
+
+                    if (recaps.Count == 0)
+                    {
+                        DrawWrappedString(_spriteBatch, _dialogueFont,
+                            "Nothing pinned down yet. Solve a room's deduction and it lands on this page.",
+                            new Vector2(rightPageArea.X, ry), rightPageArea.Width,
+                            _dialogueFont.LineSpacing * jt + 4, Color.Gray, jt);
+                    }
+                    else
+                    {
+                        // Auto-fit: shrink the recaps until all solved sentences fit
+                        // on the page (7 rooms of prose is the worst case). Room
+                        // headers shrink proportionally so they don't eat the space
+                        // the sentences need.
+                        float availH    = rightPageArea.Bottom - ry;
+                        float fitScale  = jti;
+                        float headScale2 = jt;
+                        for (int tries = 0; tries < 6; tries++)
+                        {
+                            headScale2 = Math.Min(jt, fitScale * 1.25f);
+                            float headerH = _dialogueFont.LineSpacing * headScale2 + 4;
+                            float h = 0f;
+                            foreach (var (_, sentence) in recaps)
+                                h += headerH
+                                   + MeasureWrappedHeight(_dialogueFont, $"\"{sentence}\"",
+                                         rightPageArea.Width,
+                                         _dialogueFont.LineSpacing * fitScale + 4, fitScale)
+                                   + 10 * jsy;
+                            if (h <= availH) break;
+                            fitScale *= 0.88f;
+                        }
+
+                        foreach (var (room, sentence) in recaps)
+                        {
+                            _spriteBatch.DrawString(_dialogueFont, ToDisplayName(room),
+                                new Vector2(rightPageArea.X, ry), new Color(30, 130, 50),
+                                0f, Vector2.Zero, headScale2, SpriteEffects.None, 0f);
+                            ry += _dialogueFont.LineSpacing * headScale2 + 4;
+                            ry  = DrawWrappedString(_spriteBatch, _dialogueFont,
+                                $"\"{sentence}\"",
+                                new Vector2(rightPageArea.X, ry), rightPageArea.Width,
+                                _dialogueFont.LineSpacing * fitScale + 4, _inkColor, fitScale);
+                            ry += 10 * jsy;
+                        }
+                    }
+
+                    // ── Page turn (back to the board) + close ─────────────────
+                    DrawUiButton(_journalTurnBackRect, new Color(120, 92, 55),
+                        "< BOARD", Color.White, maxLabelScale: jt);
+                    DrawUiButton(_journalCloseRect, new Color(100, 40, 40), "X", Color.White);
 
                     _spriteBatch.End();
                 }
@@ -2752,6 +2922,10 @@ namespace CatDetective
             _journalClearRect    = new Rectangle(S(1200 * sx), S(1040 * sy), S(170 * sx), S(70 * sy));
             _journalCloseRect    = new Rectangle(S(1930 * sx), S(30  * sy), S(60  * sx), S(60 * sy));
 
+            // Page-turn buttons live in the book's bottom corners (page-corner metaphor):
+            // forward on the right page, back on the left page.
+            _journalTurnPageRect = new Rectangle(S(1700 * sx), S(1040 * sy), S(180 * sx), S(70 * sy));
+            _journalTurnBackRect = new Rectangle(S(250  * sx), S(1040 * sy), S(180 * sx), S(70 * sy));
         }
 
         // ── Screenshot helper ──────────────────────────────────────────────────

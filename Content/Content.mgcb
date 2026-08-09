@@ -152,6 +152,20 @@
 /processorParam:TextureFormat=Color
 /build:Shared/ui_notebook_bg.png
 
+# Casebook page 2 (Case Notes / investigation score card). Temporary copy of the
+# notebook bg; the final art drops the inspector-panel paper on the right page.
+#begin Shared/ui_notebook_score_card.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Shared/ui_notebook_score_card.png
+
 #begin Shared/ui_tab.png
 /importer:TextureImporter
 /processor:TextureProcessor

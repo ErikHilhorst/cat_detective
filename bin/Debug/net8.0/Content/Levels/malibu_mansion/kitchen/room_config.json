@@ -50,6 +50,7 @@
     },
     {
       "id": "inspect_note_on_fridge",
+                "spriteAnchor": "TopRight",
       "name": "Note on the Fridge",
       "text": "A note pinned to the fridge: 'That bird called my paella [garbage slop]. In front of guests.' Someone drew a [skull] next to it.",
       "keywords": [
@@ -93,6 +94,7 @@
     },
     {
       "id": "inspect_duty_roster",
+       "spriteAnchor": "TopRight",
       "name": "Duty Roster",
       "text": "The kitchen duty roster, pinned by the door:\n- [5:45 - herbs in from the garden - B.]\n- 6:30 - plating\n- [7:00 PM - dinner cart, east wing - R.]\n- 8:30 - clear service\nThe east wing is where the bedrooms are.",
       "keywords": [

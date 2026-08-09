@@ -100,6 +100,7 @@
     },
     {
       "id": "inspect_session_log",
+                "spriteAnchor": "TopRight",
       "text": "A session log wedged behind the podium: 'TAKE 12 - bird. TAKE 23 - bird. TAKE 47 - [RUINED. BIRD. AGAIN.]' The handwriting gets angrier with every page. The last page has torn through.",
       "keywords": [
         { "displayText": "RUINED. BIRD. AGAIN.", "id": "ruined_takes", "color": "crime" }
@@ -109,6 +110,7 @@
     },
     {
       "id": "inspect_shot_list",
+                "spriteAnchor": "TopRight",
       "text": "The Director's shot list for today. Items include: 'Rudebeak reaction shot - [CANCELLED].' Next to it, in red pen: '[BETTER WITHOUT HIM?]'",
       "keywords": [
         { "displayText": "CANCELLED", "id": "directors_shot_list", "color": "misc" },

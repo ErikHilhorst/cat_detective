@@ -219,3 +219,4 @@ C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Sha
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\pool_area\Interactables\inspect_feather.xnb
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\pool_area\shrub.xnb
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\kitchen\console.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Shared\ui_notebook_score_card.xnb

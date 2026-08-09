@@ -165,6 +165,16 @@ sprites visually distinct and small (bubble 40 px, arrow 64 px).
 UI passes follow the world passes: Pass 6 = dialogue box, Pass 7 = HUD (SOLVE buttons, clue counters,
 toasts), Pass 8 = journal/deduction board. UI layout constants live in reference space **2020×1136**
 and are scaled to the current canvas in `UpdateLayout()` / with `jsx`/`jsy` in Pass 8.
+The casebook has two spreads: Pass 8 is the deduction board (`ui_notebook_bg`), Pass 8b is the
+**Case Notes** page (`ui_notebook_score_card`, `_journalOnNotesPage`) holding the investigation
+score card - room checklist + clue counts, case clue total, confronted count, and each solved
+room's recap sentence (`_roomSolvedSentences`). "CASE NOTES >" (bottom-right of the board) turns
+forward, "< BOARD" (bottom-left) turns back; Esc backs out one layer (notes -> board -> close).
+Progress readouts live ONLY on the notes page - keep the deduction spread free of counters.
+Neither bg has baked titles (the board art keeps only the inspector-panel paper); ALL headers
+are in-engine ink text: the board's left page shows the room name over "What happened here?"
+(-> green "Solved!" once solved; final board = "The Final Solve" / "What really happened?"),
+the notes page draws "The Investigation" / "Deductions so far". Keep new titles in-engine.
 
 ### Text & font rules
 - `Shared/dialogue_font.spritefont` covers **ASCII 32–126 only** (`DefaultCharacter` is `?` as a crash
@@ -455,6 +465,8 @@ Saves `debug_output/<case>_<room>[_<view>].png` after 1.5 s and exits.
 - *(no view arg)* — the room with HUD, placeholders, debug rects.
 - `journal` — opens the local deduction board with the room's clues unlocked.
 - `final` — opens the final solve board with all macro clues unlocked.
+- `notes` — opens the Case Notes page at its worst case: every room marked solved, recap =
+  the room's raw local sentence template (layout check for casebook page 2).
 - `dialogue` — opens the room's **longest** text segment (intro or topic response), fully typed
   (text-box fit check).
 - `topics` — opens the room's fullest interrogation menu with all gated topics unlocked
