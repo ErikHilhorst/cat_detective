@@ -16,9 +16,10 @@ The first case, **Malibu Mansion / "The Missing Macaw"**
 interactable dialogue with keyword-unlocked clues, character interrogation menus (intro + selectable
 cat-action topics, some evidence- or solve-gated), per-room deduction boards, and a final solve board.
 All ten character sprites and all object sprites are real art (per-name PNGs under each room's
-`Interactables/`, built via `.mgcb`) - except `inspect_pool_water` (pool_area), which uses
-`Shared/placeholder_object` at `scale: 0.12` until its sprite is generated (see the pool-water
-prompt in `sprite_prompts.txt`). `rudebeak.png` is wired as the end scene's beat-4 reveal.
+`Interactables/`, built via `.mgcb`). The old `inspect_pool_water` placeholder was replaced by
+`inspect_feather` (pool_area) - a bright feather lying on the deck below the pool; the
+`feather_in_filter` clue id was kept for save-compat. `rudebeak.png` is wired as the end
+scene's beat-4 reveal.
 Prompts for the missing object art (two 5x2 sheets): `Levels/malibu_mansion/sprite_prompts.txt`.
 The entrance has two walk-behind foreground props (`prop_console` - hides the guest
 registry until it fades - and `prop_outer_wall`, the windowed exterior wall in the

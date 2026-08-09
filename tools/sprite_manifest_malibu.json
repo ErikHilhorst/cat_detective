@@ -153,11 +153,11 @@
       "prompt": "A printed film production schedule sheet on a clipboard with listed times."
     },
     {
-      "id": "inspect_pool_water",
+      "id": "inspect_feather",
       "room": "pool_area",
-      "size": 102,
+      "size": 94,
       "skip": true,
-      "prompt": "SKIPPED - the glittering pool surface is painted into the room background, not a cutout sprite (see sprite_prompts.txt)."
+      "prompt": "SKIPPED - art supplied by hand (bright macaw feather lying on the pool deck). Replaced the old inspect_pool_water placeholder."
     }
   ]
 }

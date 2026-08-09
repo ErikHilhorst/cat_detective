@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace CatDetective.Entities
 {
@@ -48,16 +49,16 @@ namespace CatDetective.Entities
                 scale   *= 1.03f;
                 drawPos  = new Vector2(drawPos.X, drawPos.Y - 4f);
 
-                var outlineColor = new Color(255, 250, 200);
+                Texture2D silhouette = GetWhiteSilhouette(Texture);
                 float outlineDepth = Math.Max(0f, LayerDepth - 0.0001f);
                 Vector2[] offsets = [new(-2, 0), new(2, 0), new(0, -2), new(0, 2)];
                 foreach (var off in offsets)
                 {
                     spriteBatch.Draw(
-                        Texture,
+                        silhouette,
                         position:        drawPos + off,
                         sourceRectangle: null,
-                        color:           outlineColor,
+                        color:           Color.White,
                         rotation:        0f,
                         origin:          origin,
                         scale:           new Vector2(scale),
@@ -76,6 +77,27 @@ namespace CatDetective.Entities
                 scale:           new Vector2(scale),
                 effects:         SpriteEffects.None,
                 layerDepth:      LayerDepth);
+        }
+
+        // A tint via SpriteBatch's color parameter can only darken the sprite's own
+        // pixels, so a true solid-white outline needs a white copy of the texture.
+        // Built once per texture on first highlight, cached for the app lifetime.
+        private static readonly Dictionary<Texture2D, Texture2D> _silhouetteCache = new();
+
+        private static Texture2D GetWhiteSilhouette(Texture2D texture)
+        {
+            if (_silhouetteCache.TryGetValue(texture, out var cached))
+                return cached;
+
+            var pixels = new Color[texture.Width * texture.Height];
+            texture.GetData(pixels);
+            for (int i = 0; i < pixels.Length; i++)
+                pixels[i] = new Color((byte)255, (byte)255, (byte)255, pixels[i].A);
+
+            var silhouette = new Texture2D(texture.GraphicsDevice, texture.Width, texture.Height);
+            silhouette.SetData(pixels);
+            _silhouetteCache[texture] = silhouette;
+            return silhouette;
         }
 
         private static Vector2 CalcOrigin(string align, int w, int h) => align switch

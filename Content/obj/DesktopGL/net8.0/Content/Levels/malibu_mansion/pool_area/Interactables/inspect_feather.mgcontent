@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/pool_area/Interactables/inspect_production_schedule.png</SourceFile>
-  <SourceTime>2026-08-09T10:12:27.6931907+02:00</SourceTime>
-  <DestFile>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/pool_area/Interactables/inspect_production_schedule.xnb</DestFile>
-  <DestTime>2026-08-09T10:13:19.1146692+02:00</DestTime>
+  <SourceFile>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/pool_area/Interactables/inspect_feather.png</SourceFile>
+  <SourceTime>2026-08-09T10:12:27.6306787+02:00</SourceTime>
+  <DestFile>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/pool_area/Interactables/inspect_feather.xnb</DestFile>
+  <DestTime>2026-08-09T10:13:19.0934141+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

@@ -48,25 +48,27 @@
         { "displayText": "straw hat", "id": "straw_hat_witness", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.07
     },
     {
       "id": "inspect_production_schedule",
-      "text": "A production schedule left poolside. Under '7:00 PM - Crew Assignments:' it reads: '[D. Marsh - Library (audio setup)].'",
+      "name": "Crumpled Schedule",
+      "text": "A ball of paper, crumpled with feeling and thrown at the pool. It missed. You bat it flat. It is the production schedule - under '7:00 PM - Crew Assignments:' it reads: '[D. Marsh - Library (audio setup)].'",
       "keywords": [
         { "displayText": "D. Marsh - Library (audio setup)", "id": "production_schedule", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.09
     },
     {
-      "id": "inspect_pool_water",
-      "text": "An enormous body of water, glittering with menace. You maintain a professional distance of exactly one pounce plus a safety margin. In the filter floats [a single bright feather]. It could have blown in from anywhere. The pool is not a suspect, but you don't trust it either.",
+      "id": "inspect_feather",
+      "name": "Bright Feather",
+      "text": "[A single bright feather], red fading into blue, resting where the breeze left it. You sniff it. Bird. Obviously bird. It could have blown in from anywhere. You resist the overwhelming urge to bap it.",
       "keywords": [
-        { "displayText": "a single bright feather", "id": "feather_in_filter", "color": "misc" }
+        { "displayText": "A single bright feather", "id": "feather_in_filter", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.12
+      "scale": 0.15
     }
   ],
   "localDeductionSentence": "[Coco's Sighting] and the [Timestamped Photo] agree: big dark cases crossed the garden before the [Production Schedule] says setup even began.",

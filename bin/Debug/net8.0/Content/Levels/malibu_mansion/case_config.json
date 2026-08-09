@@ -303,8 +303,8 @@
       "isMacroClue": false,
       "category": "WhereWhen",
       "name": "Production Schedule",
-      "context": "The official crew schedule assigns D. Marsh to Library audio setup at 7:00 PM.",
-      "inspectorDescription": "Crew schedule, 7:00 PM: 'D. Marsh - Library (audio setup).' Schedules only mean something when people follow them."
+      "context": "The official crew schedule, found crumpled into a ball. Smoothed flat, it assigns D. Marsh to Library audio setup at 7:00 PM.",
+      "inspectorDescription": "Crew schedule, 7:00 PM: 'D. Marsh - Library (audio setup).' Somebody balled it up and threw it away. Schedules only mean something when people follow them."
     },
     {
       "id": "north_gate_locked",
@@ -347,9 +347,9 @@
       "roomId": "pool_area",
       "isMacroClue": false,
       "category": "What",
-      "name": "Feather in the Filter",
-      "context": "A single bright feather floats in the pool filter. It could have blown in from anywhere.",
-      "inspectorDescription": "One feather, in the filter. The wind carries feathers everywhere. The pool remains a suspect in my heart, but not in this case."
+      "name": "Bright Feather",
+      "context": "A single bright feather, red fading into blue. It could have blown in from anywhere.",
+      "inspectorDescription": "One bright feather. The wind carries feathers everywhere. I did not bap it. There were no witnesses either way."
     },
     {
       "id": "lamp_returns_720",

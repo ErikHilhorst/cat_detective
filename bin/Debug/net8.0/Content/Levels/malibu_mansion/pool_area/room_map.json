@@ -217,14 +217,14 @@
     {
      "height": 60,
      "id": 58,
-     "name": "inspect_pool_water",
+     "name": "inspect_feather",
      "opacity": 1,
      "rotation": 0,
      "type": "",
      "visible": true,
      "width": 90,
-     "x": 700,
-     "y": 510
+     "x": 645,
+     "y": 545
     }
    ],
    "opacity": 0,
