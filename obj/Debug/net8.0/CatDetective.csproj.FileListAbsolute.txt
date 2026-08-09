@@ -217,3 +217,5 @@ C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Lev
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Shared\arrow.xnb
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Shared\speech_bubble.xnb
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\pool_area\Interactables\inspect_feather.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\pool_area\shrub.xnb
+C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\kitchen\console.xnb

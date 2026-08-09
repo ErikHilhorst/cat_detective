@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/kitchen/Interactables/inspect_note_on_fridge.png</SourceFile>
-  <SourceTime>2026-07-18T10:06:18.4780048+02:00</SourceTime>
+  <SourceTime>2026-08-09T17:46:27.2876128+02:00</SourceTime>
   <DestFile>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/bin/DesktopGL/Content/Levels/malibu_mansion/kitchen/Interactables/inspect_note_on_fridge.xnb</DestFile>
-  <DestTime>2026-07-18T10:36:05.824825+02:00</DestTime>
+  <DestTime>2026-08-09T17:46:48.9033874+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

@@ -86,6 +86,10 @@ namespace CatDetective.Map
         [JsonPropertyName("altTextRequiresSolve")] public string AltTextRequiresSolve { get; set; } = "";
         /// <summary>Optional dialogue-portrait crop override, texture fractions [x, y, w, h].</summary>
         [JsonPropertyName("portraitCrop")]         public float[]? PortraitCrop      { get; set; } = null;
+        /// <summary>Extra reach (px) around the trigger rect for the interaction check only.</summary>
+        [JsonPropertyName("interactPadding")]      public int      InteractPadding   { get; set; } = 0;
+        /// <summary>Which point of the Tiled rect the sprite is pinned to (default "BottomCenter").</summary>
+        [JsonPropertyName("spriteAnchor")]         public string   SpriteAnchor      { get; set; } = "BottomCenter";
     }
 
     internal sealed class TopicConfigData
@@ -239,7 +243,7 @@ namespace CatDetective.Map
                     i.Scale, i.Align, i.OffsetX, i.OffsetY, i.Texture, topics, i.Name,
                     i.RevealName, i.RevealNameOnClue,
                     i.AltText, i.AltTextRequiresClue, i.AltTextRequiresSolve,
-                    i.PortraitCrop);
+                    i.PortraitCrop, i.InteractPadding, i.SpriteAnchor);
             }
             return dict;
         }

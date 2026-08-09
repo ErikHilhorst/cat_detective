@@ -1,5 +1,7 @@
 {
-  "props": [],
+  "props": [
+    { "id": "prop_console", "texture": "console", "sortY": 655, "triggerName": "prop_console_fade" }
+  ],
   "interactables": [
     {
       "id": "inspect_maid",
@@ -55,16 +57,19 @@
         { "displayText": "skull", "id": "insulted_cooking", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.10,
+      "interactPadding": 60
     },
     {
       "id": "inspect_paella_pot",
+          "spriteAnchor": "TopRight",
       "text": "Rosa's paella. You sniff it. It smells extraordinary. Whatever Rudebeak said about this dish, [he was wrong].",
       "keywords": [
         { "displayText": "he was wrong", "id": "paella_pot", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.09,
+      "interactPadding": 60
     },
     {
       "id": "inspect_treat_jar",
@@ -73,7 +78,8 @@
         { "displayText": "FOR THE CAT", "id": "treat_jar_bribe", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.11,
+      "interactPadding": 60
     },
     {
       "id": "inspect_poultry_crate",
@@ -83,7 +89,7 @@
         { "displayText": "Probably", "id": "kitchen_feathers", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.12
     },
     {
       "id": "inspect_duty_roster",
@@ -94,7 +100,8 @@
         { "displayText": "7:00 PM - dinner cart, east wing - R.", "id": "dinner_cart_7pm", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 1.0,
+      "interactPadding": 60
     }
   ],
   "localDeductionSentence": "[Rosa the Maid] wrote the [Insulted Cooking] note, skull and all - and the roster puts her [Dinner Cart] in the bedroom wing.",

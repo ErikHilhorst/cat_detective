@@ -234,6 +234,18 @@ A safe margin of ~15 px beyond the minimum is recommended.
 
 `room_config.json` (per room):
 - `interactables[].texture` — fallback content path (e.g. `Shared/placeholder_person`) used when no per-name sprite exists under `Interactables/`. Combine with `scale` to size it.
+- `interactables[].interactPadding` — extra reach in px added on every side of the Tiled rect
+  for the interaction/highlight check ONLY (`InteractableEntity.InteractZone`). Placement,
+  Y-sort, and drawing still use the raw rect. Use for counter-top objects the cat can't
+  physically stand next to (kitchen counter items use 60). `verify_level.py` honors it.
+- `interactables[].spriteAnchor` — where the sprite sits INSIDE the Tiled rect, CSS
+  background-position style: `TopRight` tucks the sprite flush against the rect's top and
+  right edges. Values: `BottomCenter` (default = classic rect bottom-center), `TopLeft`,
+  `TopCenter`, `TopRight`, `LeftCenter`, `Center`, `RightCenter`, `BottomLeft`,
+  `BottomRight`. The alternative to interactPadding: draw ONE large box (whole box = the
+  interact area) reaching over walkable floor, and anchor the sprite into the corner of the
+  box that covers the unreachable furniture. Y-sort follows the sprite's resulting bottom
+  edge. Fine-tune with `offsetX`/`offsetY` (draw-only, no depth change).
 - `interactables[].revealName` + `revealNameOnClue` — dialogue-label name swap once the reveal
   clue is unlocked (The Sound Guy -> "D. Marsh" after `d_marsh_sound_guy`). Toasts deliberately
   keep the pre-reveal `name` (anti-leak rule).

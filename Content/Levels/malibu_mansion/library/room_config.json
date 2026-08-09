@@ -96,7 +96,7 @@
         { "displayText": "into the wall", "id": "audio_cable", "color": "crime" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.10
     },
     {
       "id": "inspect_session_log",
@@ -105,7 +105,7 @@
         { "displayText": "RUINED. BIRD. AGAIN.", "id": "ruined_takes", "color": "crime" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.07
     },
     {
       "id": "inspect_shot_list",
@@ -115,7 +115,7 @@
         { "displayText": "BETTER WITHOUT HIM?", "id": "directors_shot_list", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 1.0
+      "scale": 0.10
     }
   ],
   "localDeductionSentence": "Wexler smells an Emmy - meanwhile [Sound Guy] left his mixer humming, an [Audio Cable] runs into the wall, and the session log is one long scream about [Ruined Takes].",

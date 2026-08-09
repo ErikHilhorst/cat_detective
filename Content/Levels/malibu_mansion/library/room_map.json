@@ -532,8 +532,8 @@
                  "type":"",
                  "visible":true,
                  "width":100,
-                 "x":250,
-                 "y":480
+                 "x":224,
+                 "y":512
                 }, 
                 {
                  "height":140,
@@ -544,8 +544,8 @@
                  "type":"",
                  "visible":true,
                  "width":100,
-                 "x":700,
-                 "y":480
+                 "x":672,
+                 "y":448
                 }, 
                 {
                  "height":90,
@@ -556,8 +556,8 @@
                  "type":"",
                  "visible":true,
                  "width":110,
-                 "x":790,
-                 "y":540
+                 "x":544,
+                 "y":384
                 }, 
                 {
                  "height":60,
@@ -568,24 +568,24 @@
                  "type":"",
                  "visible":true,
                  "width":70,
-                 "x":880,
-                 "y":640
+                 "x":640,
+                 "y":672
                 }, 
                 {
-                 "height":70,
+                 "height":100.36221043565,
                  "id":60,
                  "name":"inspect_shot_list",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":90,
-                 "x":430,
-                 "y":600
+                 "width":112.441633800263,
+                 "x":384,
+                 "y":608
                 }],
          "opacity":0,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }],

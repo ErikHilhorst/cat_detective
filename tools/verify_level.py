@@ -64,16 +64,19 @@ case = _case_early
 
 # ---- 1. interactable reachability ----
 for room in ROOMS:
-    _, layers, _ = maps[room]
+    _, layers, cfg = maps[room]
     cols = [(c["x"], c["y"], c["width"], c["height"]) for c in layers.get("Collisions", [])]
+    # interactPadding grows the interaction rect (game: InteractableEntity.InteractZone)
+    pads = {i["id"]: int(i.get("interactPadding", 0)) for i in cfg.get("interactables", [])}
     for o in layers.get("Interactables", []):
-        trig = (o["x"], o["y"], o["width"], o["height"])
+        pad = pads.get(o["name"], 0)
+        trig = (o["x"] - pad, o["y"] - pad, o["width"] + 2 * pad, o["height"] + 2 * pad)
         ok = False
-        # sample cat positions on a grid around the trigger
-        y = o["y"] - 4
-        while y <= o["y"] + o["height"] + FEET_H + 4 and not ok:
-            x = o["x"] - FEET_W
-            while x <= o["x"] + o["width"] + FEET_W and not ok:
+        # sample cat positions on a grid around the (padded) trigger
+        y = trig[1] - 4
+        while y <= trig[1] + trig[3] + FEET_H + 4 and not ok:
+            x = trig[0] - FEET_W
+            while x <= trig[0] + trig[2] + FEET_W and not ok:
                 fb = feet_box(x, y)
                 if intersects(fb, trig) and not any(intersects(fb, c) for c in cols):
                     ok = True

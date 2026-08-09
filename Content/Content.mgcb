@@ -596,6 +596,28 @@
 /processorParam:TextureFormat=Color
 /build:Levels/malibu_mansion/garden/Interactables/inspect_gardener.png
 
+#begin Levels/malibu_mansion/kitchen/console.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/kitchen/console.png
+
+#begin Levels/malibu_mansion/pool_area/shrub.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/pool_area/shrub.png
+
 #begin Levels/malibu_mansion/pool_area/Interactables/inspect_socialite.png
 /importer:TextureImporter
 /processor:TextureProcessor

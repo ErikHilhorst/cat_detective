@@ -290,10 +290,22 @@ namespace CatDetective.Map
                                 }
                             }
 
-                            // Position = bottom-center floor contact point of the Tiled rect.
+                            // Position = the sprite's bottom-center floor-contact point.
+                            // spriteAnchor aligns the sprite INSIDE the Tiled rect (like
+                            // CSS background-position): "TopRight" = flush with the rect's
+                            // top and right edges. Default "BottomCenter" reduces to the
+                            // classic bottom-center of the rect for any sprite size. Lets a
+                            // large walk-in trigger box live on the floor while the sprite
+                            // sits in the corner that overlaps unreachable furniture.
+                            var (fx, fy) = AnchorFractions(data?.SpriteAnchor);
+                            float scl  = data?.Scale ?? 1f;
+                            float sw   = (sprite?.Width  ?? 0) * scl;
+                            float sh   = (sprite?.Height ?? 0) * scl;
+                            float left = obj.X + layerOffX;
+                            float top  = obj.Y + layerOffY;
                             var position = new Vector2(
-                                obj.X + layerOffX + obj.Width  * 0.5f,
-                                obj.Y + layerOffY + obj.Height);
+                                left + sw * 0.5f + (obj.Width  - sw) * fx,
+                                top  + sh        + (obj.Height - sh) * fy);
 
                             var entity = new InteractableEntity(obj.Name, ToRect(obj, layerOffX, layerOffY), sprite, position);
                             if (data != null)
@@ -314,6 +326,20 @@ namespace CatDetective.Map
 
         private static Rectangle ToRect(TiledObject obj, int offX = 0, int offY = 0) =>
             new Rectangle((int)obj.X + offX, (int)obj.Y + offY, (int)obj.Width, (int)obj.Height);
+
+        /// <summary>Rect-fraction coordinates of a spriteAnchor name (see InteractionData.SpriteAnchor).</summary>
+        private static (float fx, float fy) AnchorFractions(string? anchor) => anchor switch
+        {
+            "TopLeft"     => (0.0f, 0.0f),
+            "TopCenter"   => (0.5f, 0.0f),
+            "TopRight"    => (1.0f, 0.0f),
+            "LeftCenter"  => (0.0f, 0.5f),
+            "Center"      => (0.5f, 0.5f),
+            "RightCenter" => (1.0f, 0.5f),
+            "BottomLeft"  => (0.0f, 1.0f),
+            "BottomRight" => (1.0f, 1.0f),
+            _             => (0.5f, 1.0f),   // "BottomCenter" (default)
+        };
 
         private static string GetStringProperty(TiledObject obj, string name)
         {

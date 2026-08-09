@@ -350,6 +350,29 @@
         }, 
         {
          "draworder":"topdown",
+         "id":6,
+         "name":"Triggers",
+         "objects":[
+                {
+                 "height":271,
+                 "id":77,
+                 "name":"prop_shrub_fade",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":410,
+                 "x":680,
+                 "y":545
+                }],
+         "opacity":0,
+         "type":"objectgroup",
+         "visible":false,
+         "x":0,
+         "y":0
+        },
+        {
+         "draworder":"topdown",
          "id":4,
          "name":"Spawn",
          "objects":[
@@ -364,7 +387,7 @@
                  "visible":true,
                  "width":0,
                  "x":544,
-                 "y":800
+                 "y":685
                 }, 
                 {
                  "height":0,
@@ -377,7 +400,7 @@
                  "visible":true,
                  "width":0,
                  "x":544,
-                 "y":768
+                 "y":695
                 }],
          "opacity":0,
          "type":"objectgroup",
@@ -444,8 +467,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":6,
- "nextobjectid":77,
+ "nextlayerid":7,
+ "nextobjectid":78,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",

@@ -1523,7 +1523,7 @@ namespace CatDetective
                     _activeInteractable = null;
                     foreach (var entity in _interactables)
                     {
-                        if (_cat.CollisionBox.Intersects(entity.TriggerZone))
+                        if (_cat.CollisionBox.Intersects(entity.InteractZone))
                         {
                             _activeInteractable = entity;
                             break;

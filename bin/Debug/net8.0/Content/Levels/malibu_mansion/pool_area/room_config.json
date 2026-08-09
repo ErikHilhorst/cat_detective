@@ -1,5 +1,7 @@
 {
-  "props": [],
+  "props": [
+    { "id": "prop_shrub", "texture": "shrub", "sortY": 810, "triggerName": "prop_shrub_fade" }
+  ],
   "interactables": [
     {
       "id": "inspect_socialite",

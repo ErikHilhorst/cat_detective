@@ -105,6 +105,26 @@ namespace CatDetective.Entities
         public int    OffsetY { get; }
 
         /// <summary>
+        /// Extra reach (px) added on every side of the trigger rect for the
+        /// interaction/highlight check only - placement, Y-sort, and the drawn
+        /// sprite are unaffected. Lets counter-top objects be inspected from the
+        /// floor in front without stretching their Tiled rect. Default 0.
+        /// </summary>
+        public int InteractPadding { get; }
+
+        /// <summary>
+        /// Where the sprite sits INSIDE the Tiled rect (CSS background-position
+        /// style): "TopRight" tucks it flush with the rect's top and right edges.
+        /// Values: "BottomCenter" (default), "TopLeft", "TopCenter", "TopRight",
+        /// "LeftCenter", "Center", "RightCenter", "BottomLeft", "BottomRight".
+        /// Lets a large walk-in trigger box sit on walkable floor while the
+        /// sprite occupies the part of the box overlapping unreachable furniture.
+        /// Assumes the default "BottomCenter" align; Y-sort follows the sprite's
+        /// resulting bottom edge.
+        /// </summary>
+        public string SpriteAnchor { get; }
+
+        /// <summary>
         /// Fallback content path (e.g. "Shared/placeholder_person") used when no
         /// per-name sprite exists under Interactables/. Empty = no fallback.
         /// </summary>
@@ -124,8 +144,11 @@ namespace CatDetective.Entities
             DialogueTopic[]? topics = null, string displayName = "",
             string revealName = "", string revealNameOnClue = "",
             string altText = "", string altTextRequiresClue = "", string altTextRequiresSolve = "",
-            float[]? portraitCrop = null)
+            float[]? portraitCrop = null, int interactPadding = 0,
+            string spriteAnchor = "BottomCenter")
         {
+            InteractPadding      = interactPadding;
+            SpriteAnchor         = spriteAnchor;
             Text                 = text;
             Keywords             = keywords;
             Scale                = scale;

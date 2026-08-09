@@ -19,6 +19,23 @@ namespace CatDetective.Entities
         /// <summary>Dialogue and keyword data; null if this object has no dialogue entry.</summary>
         public InteractionData? Data { get; set; }
 
+        /// <summary>
+        /// The rect the interaction/highlight check uses: TriggerZone grown by
+        /// Data.InteractPadding on every side. Placement, Y-sort, and drawing
+        /// still use TriggerZone alone.
+        /// </summary>
+        public Rectangle InteractZone
+        {
+            get
+            {
+                int pad = Data?.InteractPadding ?? 0;
+                if (pad <= 0) return TriggerZone;
+                var r = TriggerZone;
+                r.Inflate(pad, pad);
+                return r;
+            }
+        }
+
         public InteractableEntity(string id, Rectangle triggerZone, Texture2D? sprite, Vector2 position)
         {
             Id          = id;
