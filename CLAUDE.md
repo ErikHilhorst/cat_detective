@@ -12,7 +12,7 @@ Current state: the case system is playable end-to-end AND the game has its shell
 end scene, and a two-room tutorial case. The protagonist's name is **Dikkie**.
 
 The first case, **Malibu Mansion / "The Missing Macaw"**
-(7 rooms, 50 clues), is fully wired: free-roam movement, room transfers,
+(7 rooms, 56 clues), is fully wired: free-roam movement, room transfers,
 interactable dialogue with keyword-unlocked clues, character interrogation menus (intro + selectable
 cat-action topics, some evidence- or solve-gated), per-room deduction boards, and a final solve board.
 All ten character sprites and all object sprites are real art (per-name PNGs under each room's
@@ -171,6 +171,11 @@ score card - room checklist + clue counts, case clue total, confronted count, an
 room's recap sentence (`_roomSolvedSentences`). "CASE NOTES >" (bottom-right of the board) turns
 forward, "< BOARD" (bottom-left) turns back; Esc backs out one layer (notes -> board -> close).
 Progress readouts live ONLY on the notes page - keep the deduction spread free of counters.
+The notes page also draws **"The Evening"** under the room checklist: every found clue whose
+name carries a timestamp, in chronological order (`TryParseClueTime` reads "7:00 PM" / "7 PM"
+from clue names, auto-shrinks to fit). The WHERE/WHEN word-bank tab sorts its chips the same
+way (`SortCluesByTime`; untimed chips keep discovery order, after the timed ones) - the
+timeline is meant to be READ off the boards, so keep timestamps in clue names.
 Neither bg has baked titles (the board art keeps only the inspector-panel paper); ALL headers
 are in-engine ink text: the board's left page shows the room name over "What happened here?"
 (-> green "Solved!" once solved; final board = "The Final Solve" / "What really happened?"),
@@ -271,7 +276,7 @@ A safe margin of ~15 px beyond the minimum is recommended.
   Topics with `requiresClue` stay hidden until that clue is found; topics with `requiresSolve`
   stay hidden until that room's local board is solved (both set = AND). Visited topics render
   dimmed; the menu always ends with a fixed "Pad away. (Leave)" entry. Navigation: W/S or arrows + Enter.
-- `localDeductionSentence` + `localDeductionClueIds[]` — same slot/answer scheme as the final board. Answers must be clue ids the room's own keywords can unlock **ungated** (intro, object, or non-gated topic — enforced by `verify_level.py`).
+- `localDeductionSentence` + `localDeductionClueIds[]` — same slot/answer scheme as the final board. Answers must be clue ids the room's own keywords can unlock **ungated** (intro, object, or non-gated topic — a gated answer would be circular; enforced by `verify_level.py`).
 
 Deduction validation is enforced: a wrong submit reports partial progress ("Incorrect logic - 2/3 fit.")
 so a failed solve is a deduction step, not trial-and-error. Solving a room stores its filled sentence
@@ -286,8 +291,21 @@ topics gated on that room (with a queued "X might have some explaining to do..."
 - **Name the cast.** Characters get real names in dialogue and on clue chips ("Rosa the Maid"),
   not bare archetypes.
 - **Timetable clues are the good stuff.** Where a clue carries a time, put it in the clue `name`
-  ("D. Marsh - 7:00 PM", "Dinner Cart - 7:00 PM") so the board itself becomes a timeline. Never
+  ("Manifest Entry - 7:00 PM", "Dinner Cart - 7:00 PM") so the board itself becomes a timeline
+  (the WHERE/WHEN tab and the notes-page "Evening" list literally sort on it). Never
   reuse the same timestamp across two unrelated clues.
+- **One clue = one fact (playtest 4).** A clue name carries time + raw observation, never the
+  interpretation a board asks for: "Heavy Cases - 7:00 PM" pre-answered the bedroom board, so it
+  became "Manifest Entry - 7:00 PM" with the illegible signature split into its own clue
+  (`scrawled_signature`). A fact with two implications gets two clues (the 6:47 selfie vs the
+  straw hat at its edge). A clue name may not answer the question its own room's board poses.
+- **Board sentences pose the tension, never the answer (playtest 4).** A solve sentence must not
+  quote a timestamp, document name, or distinctive noun that appears in an answer chip's name or
+  its discovery text (old entrance board: "sign-in book ... from 6:30 PM on" vs a chip literally
+  named "Crew Arrivals - 6:30 PM" = string match, zero deduction). State the contradiction and
+  let chips resolve it; same-category slots are ordered chronologically by the sentence. Slot
+  `[tags]` never render in-game (empty slots show only "[ WHO ]" etc.), so write tags as short
+  author-facing labels.
 - **Decoys**: `isMacroClue: false` clues sharing a category with real answers pad local word banks
   without ever polluting the final board. Macro decoys (e.g. the 6:30 registry entry vs the 7:00
   manifest) create near-miss answers on the final board. Every flavor object should still yield
@@ -309,10 +327,10 @@ topics gated on that room (with a queued "X might have some explaining to do..."
   with a same-room clue, or cross-room only for bonus depth (Petra's snatch theory needs the
   garden feathers).
 - **Solve-gated confrontations.** Each room's key character has a `requiresSolve` topic that
-  rewards solving that room's board: Vivienne (living_room), Derek (bedroom), Rosa (kitchen),
-  Basil (garden), Marsh (library). The payoff follows the slip rules below - a red herring
-  cracks their alibi or redirects suspicion; the culprit near-confesses. This makes the SOLVE
-  button an active investigative tool, not a checklist (playtest 2 finding).
+  rewards solving that room's board: Reyes (entrance), Vivienne (living_room), Derek (bedroom),
+  Rosa (kitchen), Basil (garden), Marsh (library). The payoff follows the slip rules below - a
+  red herring cracks their alibi or redirects suspicion; the culprit near-confesses. This makes
+  the SOLVE button an active investigative tool, not a checklist (playtest 2 finding).
 - **FINAL SOLVE confrontation lock (playtest 3).** The final board opens only when every room
   is solved AND every `requiresSolve` topic has been heard (`_confrontationTopics`, built in
   `BuildGateIndex`; `AllConfrontationsHeard`). The button shows "M/N confronted" between those
@@ -320,12 +338,19 @@ topics gated on that room (with a queued "X might have some explaining to do..."
   topic automatically adds it to the lock.
 - **HUD progress cues (playtest 3).** The SOLVE button pulses gold once every clue in the room
   is found and turns muted green "SOLVED" after the room's board is solved - players kept
-  leaving rooms without solving them.
-- **Gated topics never carry unique clues.** Every clue in the database must be unlockable via an
-  ungated source (object, intro, or non-gated topic) **in its own room** - gates gate *story*,
-  not completion. The room clue counter must always be able to reach N/N without leaving the
-  room; cross-room gates exist purely as optional confrontation payoffs. Enforced by
-  `verify_level.py`.
+  leaving rooms without solving them. Confrontation clues (only unlockable via gated topics -
+  `_ungatedClueIds` built in `BuildGateIndex`) do NOT hold the pulse back: they unlock after
+  the solve, so the pulse must fire without them.
+- **Confrontation clues (playtest 4 rework).** Gated topics MAY carry unique clues - each
+  confrontation slip is recorded as its own clue id so the notebook keeps the late-game record
+  (`early_signin` from Reyes, `hall_rumble_no_soup` from Derek, `cable_grease` from Rosa,
+  `knew_cases_empty` from Marsh). Rules: (1) local answers still need an ungated same-room
+  source (circular otherwise - verifier ERROR); (2) a final answer may come from a
+  `requiresSolve` topic ONLY - the confrontation lock forces those before the final board opens
+  (`early_signin` relies on this), never from a requiresClue-only gate (nothing forces those);
+  (3) a gated clue's gates should be satisfiable in its own room (requiresClue on an in-room
+  clue, or requiresSolve on the room itself) - a cross-room gate (`knew_cases_empty` needs the
+  garden cases) makes the room counter need a detour, and `verify_level.py` WARNs.
 - **Gated payoffs are slips and near-confessions, never solutions.** Basil admits the latch but
   not the theft; Marsh blurts "the cases are EMPTY, both of them"; the narrator never comments
   on what a slip means.
@@ -394,14 +419,19 @@ Rudebeak is the missing macaw.
 - ~6:00 PM — Rudebeak lets himself out through the broken latch and heads for his evening splash
   in the garden bird bath (missed 6:00 snack, evening feathers).
 - 6:30 PM — the crew column in the entrance registry begins; one crew member signed in half an
-  hour before the rest of his call sheet (Reyes's gated topic - never named).
+  hour before his own call sheet (Reyes's solve-gated confrontation unlocks `early_signin` -
+  never named; the 7:00 call is on the pool area's production schedule, so the half-hour
+  arithmetic is the player's to do).
 - 6:45–6:47 PM — Coco sees (and accidentally photographs) a figure wheeling big black cases
   through the garden; he finds Rudebeak soggy and docile at the bird bath and seizes the moment.
   Basil, still hiding, witnesses it (straw hat at the photo's edge; his gated confession).
-- 7:00 PM — Two equipment cases are signed in at the bedroom wing with an illegible scrawl
-  (delivery manifest) while the production schedule has D. Marsh in the library. Rosa's dinner
-  cart is also in the wing at 7:00 (duty roster, service tray) — Derek heard wheels twice:
-  once with soup smell, once without.
+- 7:00 PM — Two equipment cases are signed in at the bedroom wing ("Manifest Entry - 7:00 PM",
+  the scribbled signature split out as `scrawled_signature`) while the production schedule has
+  D. Marsh in the library. Rosa's dinner cart is also in the wing at 7:00 (duty roster, service
+  tray) and the grips wheel lamp returns through at 7:20 (Wexler mentions it too) — three sets
+  of wheels in one hour. Derek's confrontation slip (`hall_rumble_no_soup`): the hall rattled
+  twice, once with soup smell, once without; Rosa's confrontation slip (`cable_grease`) pins
+  the soupless rumble to equipment, not lamps.
 - Before lockdown — the cases are stashed behind the garden potting shed under a tarp
   (Sound-Proof Cases, found in the garden).
 - 8:00 PM — Fake squawk: tiny speaker taped behind the living room couch (the couch is a
@@ -423,15 +453,20 @@ Rosa (motive note + cart at 7 PM + ambiguous feathers + polish cloth at the cage
 "maybe they are not wrong to look"), Derek (headphones with a spare *audio cable*/ultimatum),
 Chip (PR panic — but he earns commission on the bird), Wexler (thrilled about the drama).
 
-**Final board answers** (parse order): `d_marsh_sound_guy` (WHO), `sound_proof_cases` (WHAT,
-found in the garden), `d_marsh_7pm` "Heavy Cases - 7:00 PM" (WHEN — decoy: `guest_registry`
-"Crew Arrivals - 6:30 PM"), `hidden_speaker` (HOW), `ruined_takes` (WHY).
+**Final board** (playtest 4: a 7-slot chronology - the finale asks the player to SORT the
+evening, not just name the culprit). Answers in parse order: `early_signin` (WHEN-1, Reyes's
+confrontation clue), `selfie_figure_cases` "Photo - 6:47 PM" (WHEN-2), `d_marsh_7pm`
+"Manifest Entry - 7:00 PM" (WHEN-3), `d_marsh_sound_guy` (WHO), `sound_proof_cases` (WHAT),
+`hidden_speaker` (HOW), `ruined_takes` (WHY).
 
-**Final board decoys** (playtest 3 expansion — keep each category at ~4-5 macro options):
-WHO adds `derek_the_husband`; WHY adds `star_note_to_husband` and `basil_free_the_bird`
-("Cages Are Prisons", garden); HOW/WHAT adds `headphone_box` (Derek's rival audio device,
-the near-miss for the speaker slot). All are macro flips or new clues with ungated same-room
-keyword sources.
+**Final board near-misses** (keep each category at ~4-6 macro options): WHEN-1 vs
+`guest_registry` "Crew Arrivals - 6:30 PM" (the innocent reading of the same page); WHEN-2 vs
+`eyewitness_645pm` "Coco's Sighting - 6:45 PM" (testimony vs the photo that freezes it);
+WHEN-3 vs `hall_rumble_no_soup` (the sound of the move vs the record of it); WHO adds
+`derek_the_husband`, `the_maid`, `the_gardener`, `knew_cases_empty` (Marsh's slip as a
+pseudo-suspect chip); WHAT/HOW add `headphone_box`, `broken_latch`, `shears_match_latch`,
+`cable_grease`; WHY adds `star_note_to_husband`, `insulted_cooking`, `basil_free_the_bird`,
+`pr_disaster`.
 
 ---
 
@@ -492,9 +527,11 @@ python tools/verify_level.py tutorial   # any case id under Content/Levels
 Rooms are read from the case's own `rooms` list. Validates without launching the game:
 interactable reachability vs collisions (cat feet box),
 transfer ↔ spawn wiring (14 checks for Malibu), spawn clearance from transfer zones, config
-consistency (keyword ids exist, local/final answers present & discoverable, `requiresSolve`
-rooms exist), final-board slot validity, and solve balance (warns on any local slot whose
-category has no decoy in the room — single-option auto-fill). Run it after any content change.
+consistency (keyword ids exist, local answers ungated-discoverable in-room, every clue
+unlockable in its own room counting gated topics whose gates resolve in-room — cross-room-gated
+confrontation clues WARN, `requiresSolve` rooms exist), final-board slot validity, and solve
+balance (warns on any local slot whose category has no decoy in the room — single-option
+auto-fill). Run it after any content change.
 
 ---
 

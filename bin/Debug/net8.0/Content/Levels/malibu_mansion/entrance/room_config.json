@@ -28,10 +28,10 @@
         },
         {
           "prompt": "Nudge the guest registry toward him",
-          "requiresClue": "guest_registry",
-          "text": "'The book? Everyone signs it. The crew called it old-fashioned. I call it evidence.' He taps the page without reading it. 'More than one of these arrival times smells off to me. People drift in [half an hour before] anyone expects them, sign sloppy, blame traffic.'|He straightens back to his post. 'Somebody's evening in this book does not add up. Whose? That's your department, whiskers.'",
+          "requiresSolve": "entrance",
+          "text": "'Worked the front hall out, did you. Then you have earned the thing that has been bothering me.' He taps the registry without reading it. 'One signature in that crew column landed [half an hour before] its own call sheet. Signed sloppy. Blamed traffic, probably.'|He straightens back to his post. 'Somebody's evening in this book does not add up. Whose? That's your department, whiskers.'",
           "keywords": [
-            { "displayText": "half an hour before", "id": "guest_registry", "color": "misc" }
+            { "displayText": "half an hour before", "id": "early_signin", "color": "plot" }
           ]
         }
       ],
@@ -97,6 +97,6 @@
       "scale": 0.17
     }
   ],
-  "localDeductionSentence": "The [Lockdown] sealed the mansion tight - Chip only fears a [PR Disaster], and the sign-in book logs the [Crew Arrivals] from 6:30 PM on.",
-  "localDeductionClueIds": ["lockdown_815pm", "pr_disaster", "guest_registry"]
+  "localDeductionSentence": "Whoever took Rudebeak never left: the [seal] made sure of that. The suspect pool arrived in the [arrivals] column - and Chip will pay anything to keep it quiet, because all he smells is a [scandal].",
+  "localDeductionClueIds": ["lockdown_815pm", "guest_registry", "pr_disaster"]
 }

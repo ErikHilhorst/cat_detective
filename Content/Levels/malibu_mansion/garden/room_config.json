@@ -70,6 +70,6 @@
       "scale": 0.19
     }
   ],
-  "localDeductionSentence": "[Basil the Gardener] won't stop apologizing to the hedge, his [Bent Shears] fit the snapped latch, his [Muddy Glove] has lost its partner - and the [Evening Feathers] say Rudebeak was loose in this garden tonight.",
+  "localDeductionSentence": "[hider] is confessing to the hedge in installments. The [tool] would fit the damage two rooms away, half of his [pair] never came back from the house - and the [proof] says Rudebeak made it out here alive tonight.",
   "localDeductionClueIds": ["the_gardener", "shears_match_latch", "muddy_gloves", "bird_bath_feathers"]
 }

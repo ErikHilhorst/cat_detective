@@ -41,9 +41,63 @@
       "roomId": "bedroom",
       "isMacroClue": true,
       "category": "WhereWhen",
-      "name": "Heavy Cases - 7:00 PM",
-      "context": "The delivery manifest logs two equipment cases signed in at 7:00 PM. The signature is an illegible scrawl.",
-      "inspectorDescription": "Two cases, 7:00 PM sharp. The signature is a scribble with a tail. I have seen tidier pawprints."
+      "name": "Manifest Entry - 7:00 PM",
+      "context": "The delivery manifest logs two equipment cases into the east wing at 7:00 PM.",
+      "inspectorDescription": "Two cases, 7:00 PM sharp, east wing. The manifest is very sure about the time and very quiet about everything else."
+    },
+    {
+      "id": "scrawled_signature",
+      "roomId": "bedroom",
+      "isMacroClue": false,
+      "category": "Who",
+      "name": "Scrawled Signature",
+      "context": "The 7:00 PM cases were signed in with a hurried scribble. Every other entry on the manifest has a readable name beside it.",
+      "inspectorDescription": "Florist, legible. Housekeeping, legible. Grip department, legible. Two heavy cases: a scribble with a tail. Only one entry did not want to be read."
+    },
+    {
+      "id": "hall_rumble_no_soup",
+      "roomId": "bedroom",
+      "isMacroClue": true,
+      "category": "WhereWhen",
+      "name": "Second Rumble - No Soup",
+      "context": "Derek finally remembered: the hallway rattled twice that night. Once with the smell of soup. Once without.",
+      "inspectorDescription": "Two rumbles. One smelled of dinner. The other smelled of nothing at all - and nobody looked at either."
+    },
+    {
+      "id": "early_signin",
+      "roomId": "entrance",
+      "isMacroClue": true,
+      "category": "WhereWhen",
+      "name": "Early Sign-In",
+      "context": "Officer Reyes noticed it in the registry: somebody in the crew column signed in a full half hour before their own call time.",
+      "inspectorDescription": "Signed in early, signed in sloppy, blamed traffic. Reyes would not say who. His mustache said he has a guess."
+    },
+    {
+      "id": "cable_grease",
+      "roomId": "kitchen",
+      "isMacroClue": true,
+      "category": "What",
+      "name": "Smell of Cable Grease",
+      "context": "Rosa swears the bedroom wing smelled of soup and cable grease that night. The soup was hers.",
+      "inspectorDescription": "Kitchens know their smells. Soup, hers. Cable grease, somebody else's - a workshop smell in a food hallway, and it did not come off her cart."
+    },
+    {
+      "id": "knew_cases_empty",
+      "roomId": "library",
+      "isMacroClue": true,
+      "category": "Who",
+      "name": "'The Cases Are EMPTY'",
+      "context": "Nobody told the Sound Guy what was inside the hidden cases. He said it himself - empty, both of them - before anyone asked.",
+      "inspectorDescription": "I never said a word about what was in them. Neither did anyone else. He counted them for me anyway."
+    },
+    {
+      "id": "settled_feathers",
+      "roomId": "living_room",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "Settled Feathers",
+      "context": "The feathers beneath the cage lie perfectly flat. Whatever happened at this cage happened long before anyone started screaming.",
+      "inspectorDescription": "Feathers take time to settle. These are flat as Tuesday. This cage has been quiet for hours."
     },
     {
       "id": "sound_proof_cases",
@@ -283,8 +337,8 @@
       "id": "eyewitness_645pm",
       "roomId": "pool_area",
       "isMacroClue": true,
-      "category": "Who",
-      "name": "Coco's Sighting",
+      "category": "WhereWhen",
+      "name": "Coco's Sighting - 6:45 PM",
       "context": "Coco the Socialite saw someone hauling large black cases through the garden at about 6:45 PM.",
       "inspectorDescription": "'Some crew person,' she says. She was mostly focused on her drink. The cases, though - those she remembers."
     },
@@ -452,6 +506,6 @@
     }
   ],
   "rooms": ["entrance", "living_room", "bedroom", "library", "kitchen", "garden", "pool_area"],
-  "finalSolveSentence": "[WHO] snatched Rudebeak from the garden and hid him using the [WHAT] - logged on the manifest at [WHEN] - then faked the 8 PM squawk through a [HOW]. It all traces back to the [WHY].",
-  "finalSolveClueIds": ["d_marsh_sound_guy", "sound_proof_cases", "d_marsh_7pm", "hidden_speaker", "ruined_takes"]
+  "finalSolveSentence": "The [WHEN] put the thief inside before he was ever supposed to be there. The snatch is frozen in the [WHEN], and the [WHEN] tracked his cargo right past the bedrooms. [WHO] hid Rudebeak inside the [WHAT], kept the house believing with the [HOW], and it all comes back to the [WHY].",
+  "finalSolveClueIds": ["early_signin", "selfie_figure_cases", "d_marsh_7pm", "d_marsh_sound_guy", "sound_proof_cases", "hidden_speaker", "ruined_takes"]
 }

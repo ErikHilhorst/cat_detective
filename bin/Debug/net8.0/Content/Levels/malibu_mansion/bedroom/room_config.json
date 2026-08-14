@@ -13,7 +13,7 @@
       "topics": [
         {
           "prompt": "Paw at his trailing audio cable",
-          "text": "He lifts one ear cup with two fingers. 'Something heavy rattled down the hall around [seven]. Wheels. Dinner cart, probably - the maid does her run at seven.' He considers the ceiling. 'Didn't look. Wasn't my problem.' The ear cup goes back down.",
+          "text": "He lifts one ear cup with two fingers. 'Something heavy rattled down the hall around [seven]. Maybe later. Wheels, anyway. Dinner cart, probably - the maid does her run at seven.' He considers the ceiling. 'Didn't look. Wasn't my problem.' The ear cup goes back down.",
           "keywords": [
             { "displayText": "seven", "id": "husband_hall_7pm", "color": "misc" }
           ]
@@ -30,7 +30,7 @@
           "requiresSolve": "bedroom",
           "text": "He watches you knead. He does not stop you. 'You know what is funny,' he says slowly, 'now that somebody with whiskers asks. The hall rattled [twice] that night. Once with the soup smell. Once without.' He frowns for the first time all evening. 'Huh.'",
           "keywords": [
-            { "displayText": "twice", "id": "husband_hall_7pm", "color": "misc" }
+            { "displayText": "twice", "id": "hall_rumble_no_soup", "color": "crime" }
           ]
         }
       ],
@@ -41,11 +41,12 @@
       "id": "inspect_delivery_manifest",
                 "spriteAnchor": "TopRight",
       "name": "Delivery Manifest",
-      "text": "A crew manifest on the dresser, entries all evening:\n- Florist, out - 6:10 PM\n- Garden supply run, B. - 6:55 PM\n- [R. - dinner service] - 7:00 PM\n- '[2x equipment cases]', hurried scrawl - [7:00 PM]\n- Linen return, housekeeping - 7:10 PM\n- [Grip dept., lamp returns] - 7:20 PM|Half the house rolled through this wing inside one hour. The scrawl's signature is a scribble with a tail - it could belong to almost anybody.",
+      "text": "A crew manifest on the dresser, entries all evening:\n- Florist, out - 6:10 PM\n- Catering ice run - 6:55 PM\n- [R. - dinner service] - 7:00 PM\n- '[2x equipment cases]', [hurried scrawl] - [7:00 PM]\n- Linen return, housekeeping - 7:10 PM\n- [Grip dept., lamp returns] - 7:20 PM|Half the house rolled through this wing inside one hour. Every entry carries a readable name - except one scribble with a tail. It could belong to almost anybody.",
       "keywords": [
         { "displayText": "R. - dinner service", "id": "dinner_cart_7pm", "color": "misc" },
         { "displayText": "Grip dept., lamp returns", "id": "lamp_returns_720", "color": "misc" },
         { "displayText": "2x equipment cases", "id": "d_marsh_7pm", "color": "misc" },
+        { "displayText": "hurried scrawl", "id": "scrawled_signature", "color": "crime" },
         { "displayText": "7:00 PM", "id": "d_marsh_7pm", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
@@ -84,6 +85,6 @@
       "scale": 0.15
     }
   ],
-  "localDeductionSentence": "Derek shrugged off the [Hallway Rumble] as the dinner service - the [Service Tray] says the cart did come - but the manifest also logged [Heavy Cases] at seven.",
-  "localDeductionClueIds": ["husband_hall_7pm", "service_tray", "d_marsh_7pm"]
+  "localDeductionSentence": "The [heard] passed Derek's door and he never looked up. The paperwork knows why he should have: it logs the [logged] into the wing, backed by nothing but a [name].",
+  "localDeductionClueIds": ["husband_hall_7pm", "d_marsh_7pm", "scrawled_signature"]
 }

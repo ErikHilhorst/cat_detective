@@ -41,7 +41,7 @@
           "requiresSolve": "kitchen",
           "text": "She reads your board the way she reads a delivery invoice: fast, twice, looking for the cheat. Then she sets down the cleaver.|'So. The cart, the note, the skull. You did the arithmetic and it comes out Rosa.' She crouches to your eye level, which nobody does. 'Then do the rest of it, detective. My cart is heavy going out and light coming back - and that night the wing smelled of soup and [cable grease]. Soup was mine. Kitchens know their smells. Find whose the other one was.'",
           "keywords": [
-            { "displayText": "cable grease", "id": "d_marsh_7pm", "color": "crime" }
+            { "displayText": "cable grease", "id": "cable_grease", "color": "crime" }
           ]
         }
       ],
@@ -106,6 +106,6 @@
       "interactPadding": 60
     }
   ],
-  "localDeductionSentence": "[Rosa the Maid] wrote the [Insulted Cooking] note, skull and all - and the roster puts her [Dinner Cart] in the bedroom wing.",
+  "localDeductionSentence": "The house has its favorite suspect: [suspect], with a key to every door. The fridge gives her fury a name - the [motive] - and the duty roster wheeled her straight into the bedroom wing: the [run].",
   "localDeductionClueIds": ["the_maid", "insulted_cooking", "dinner_cart_7pm"]
 }

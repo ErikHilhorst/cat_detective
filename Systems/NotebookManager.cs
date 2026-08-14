@@ -69,6 +69,19 @@ namespace CatDetective.Systems
             UnlockedClues.FindAll(c => c.RoomId == roomId);
 
         /// <summary>
+        /// True when every clue of the room that <paramref name="countsToward"/> accepts
+        /// has been unlocked. Lets the SOLVE-button pulse ignore confrontation clues,
+        /// which only unlock after the room is solved.
+        /// </summary>
+        public bool AreRoomCluesFound(string roomId, System.Func<string, bool> countsToward)
+        {
+            foreach (var clue in _database.Values)
+                if (clue.RoomId == roomId && countsToward(clue.Id) && !IsUnlocked(clue.Id))
+                    return false;
+            return true;
+        }
+
+        /// <summary>
         /// Returns unlocked clues that feed the final case-level deduction
         /// regardless of which room they were found in.
         /// </summary>

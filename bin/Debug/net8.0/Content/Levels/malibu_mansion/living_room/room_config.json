@@ -84,10 +84,11 @@
     },
     {
       "id": "inspect_birdcage",
-      "text": "The [Empty Cage]. The latch is [snapped clean off]. The seed tray is bone dry, and the feathers under the cage have settled flat.",
+      "text": "The [Empty Cage]. The latch is [snapped clean off]. The seed tray is bone dry, and the feathers under the cage have [settled flat].",
       "keywords": [
         { "displayText": "Empty Cage", "id": "broken_latch", "color": "crime" },
-        { "displayText": "snapped clean off", "id": "broken_latch", "color": "crime" }
+        { "displayText": "snapped clean off", "id": "broken_latch", "color": "crime" },
+        { "displayText": "settled flat", "id": "settled_feathers", "color": "plot" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 1.0
@@ -141,6 +142,6 @@
       "scale": 0.27
     }
   ],
-  "localDeductionSentence": "Everyone heard the [8:00 PM Squawk] - but the [Broken Latch] and the [Hidden Speaker] behind the couch tell a very different story.",
-  "localDeductionClueIds": ["squawk_at_8pm", "broken_latch", "hidden_speaker"]
+  "localDeductionSentence": "By the time of the [early sign] the cage already stood empty - no matter what the whole house swears it heard at the [late sign]. The [way out] let the bird leave. The [trick] kept him 'home'.",
+  "localDeductionClueIds": ["missed_snack_6pm", "squawk_at_8pm", "broken_latch", "hidden_speaker"]
 }

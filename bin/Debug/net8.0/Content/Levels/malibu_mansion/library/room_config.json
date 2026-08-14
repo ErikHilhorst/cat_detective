@@ -18,8 +18,9 @@
         },
         {
           "prompt": "Sit on his notebook",
-          "text": "He slides it out from under you with the ease of a man who has worked with talent before. 'The crew? Grips are asleep. Camera department is unionized. And [Marsh] - Marsh is my rock. Used to file a complaint about that bird every single day. Hasn't said a word in two weeks. Personal growth, probably.'",
+          "text": "He slides it out from under you with the ease of a man who has worked with talent before. 'The crew? Grips [hauled the lamps back] after dinner and died - heroes, all of them. Camera department is unionized. And [Marsh] - Marsh is my rock. Used to file a complaint about that bird every single day. Hasn't said a word in two weeks. Personal growth, probably.'",
           "keywords": [
+            { "displayText": "hauled the lamps back", "id": "lamp_returns_720", "color": "misc" },
             { "displayText": "Marsh", "id": "d_marsh_sound_guy", "color": "crime" }
           ]
         },
@@ -73,7 +74,7 @@
           "requiresClue": "sound_proof_cases",
           "text": "You settle in close - close enough that he can smell exactly where you have been: mulch, tarp, cold metal latches. He goes pale. 'They're empty! The cases are [EMPTY], both of them, why would I even-' He hears himself say it. The library gets very, very quiet. 'I have a lot of levels to monitor,' he whispers.",
           "keywords": [
-            { "displayText": "EMPTY", "id": "sound_proof_cases", "color": "crime" }
+            { "displayText": "EMPTY", "id": "knew_cases_empty", "color": "crime" }
           ]
         },
         {
@@ -120,6 +121,6 @@
       "scale": 0.10
     }
   ],
-  "localDeductionSentence": "Wexler smells an Emmy - meanwhile [Sound Guy] left his mixer humming, an [Audio Cable] runs into the wall, and the session log is one long scream about [Ruined Takes].",
+  "localDeductionSentence": "One crew member has an alibi nobody asked for: [alibi man]. Behind his mixer, the [wire] leaves the room inside the wall - and the log by his chair is one long grudge, page after page: the [grievance].",
   "localDeductionClueIds": ["d_marsh_sound_guy", "audio_cable", "ruined_takes"]
 }

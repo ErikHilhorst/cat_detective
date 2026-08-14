@@ -13,7 +13,7 @@
       "topics": [
         {
           "prompt": "Pose beside her chaise, chin up",
-          "text": "'Iconic. ICONIC.' She reaches for her phone, then remembers it is evidence now and pouts. 'Tonight is ruined anyway. SOMEBODY lugged [huge black cases] through the garden at, like, [quarter to seven]. Walked STRAIGHT through my sunset shot. The nerve. The NERVE.'|'And it was not just them, darling. The gardener spent the whole evening [skulking behind that shed] like a garden gnome with secrets. And Rosa marched past with her cart looking absolutely FURIOUS about something. Everyone in this house had somewhere to be. Except me. I was radiant.'",
+          "text": "'Iconic. ICONIC.' She reaches for her phone, then remembers it is evidence now and pouts. 'Tonight is ruined anyway. SOMEBODY lugged [huge black cases] through the garden at, like, [quarter to seven]. Walked STRAIGHT through my sunset shot. The nerve. The NERVE.'|'And it was not just them, darling. The gardener spent the whole evening [skulking behind that shed] like a garden gnome with secrets. And Rosa stormed past the windows with that cart of hers, looking absolutely FURIOUS about something. Everyone in this house had somewhere to be. Except me. I was radiant.'",
           "keywords": [
             { "displayText": "huge black cases", "id": "eyewitness_645pm", "color": "plot" },
             { "displayText": "quarter to seven", "id": "eyewitness_645pm", "color": "plot" },
@@ -73,6 +73,6 @@
       "scale": 0.15
     }
   ],
-  "localDeductionSentence": "[Coco's Sighting] and the [Timestamped Photo] agree: big dark cases crossed the garden before the [Production Schedule] says setup even began.",
-  "localDeductionClueIds": ["eyewitness_645pm", "selfie_figure_cases", "production_schedule"]
+  "localDeductionSentence": "The crew's paperwork - the [alibi] - says where everyone was meant to be at seven. But [testimony] says otherwise, and the [evidence] freezes the proof: those cases crossed the garden while their owner was still on the clock somewhere else.",
+  "localDeductionClueIds": ["production_schedule", "eyewitness_645pm", "selfie_figure_cases"]
 }

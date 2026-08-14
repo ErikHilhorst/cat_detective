@@ -7,13 +7,16 @@ Checks:
    and the spawn's feet box clears every transfer zone AND collision in target.
 3. Configs: local sentence [slot] count == localDeductionClueIds length; every
    local answer id is discoverable via UNGATED keywords in that room (intro or
-   ungated topic); EVERY clue is discoverable ungated in its OWN room (gated
-   topics never carry unique clues - gates gate story, not completion, so the
-   room clue counter always completes without backtracking); final sentence
-   slots == finalSolveClueIds; every requiresClue id exists and is discoverable;
-   every requiresSolve id is a known room (solve-gated confrontation topics);
-   every map Interactable name has a room_config entry and vice versa; all
-   content strings are pure ASCII (sprite font limit).
+   ungated topic - a gated answer would be circular); every clue must be
+   unlockable inside its OWN room, where gated topics count as long as their
+   gates are satisfiable without leaving the room (requiresClue on an in-room
+   clue, requiresSolve on the room itself). Confrontation clues behind a
+   cross-room gate WARN (the room counter needs a detour); clues no keyword
+   ever unlocks are ERRORs. Final sentence slots == finalSolveClueIds; every
+   requiresClue id exists and is discoverable; every requiresSolve id is a
+   known room (solve-gated confrontation topics); every map Interactable name
+   has a room_config entry and vice versa; all content strings are pure ASCII
+   (sprite font limit).
 4. Solve balance (WARN): a local board slot whose category has no decoy in the
    room's own clue pool is a single-option auto-fill, not a deduction.
 """
@@ -127,6 +130,7 @@ check_ascii("case_config", case)
 discoverable = set()          # ungated keywords, all rooms
 ungated_by_room = {}          # room -> set of ungated-unlockable clue ids
 gated = []                    # ([requirements], {kw ids}) pairs, all rooms
+gated_by_room = {}            # room -> same pairs, for the in-room fixpoint
                               # a requirement is a clue id or "solve:<room>"
 for room in ROOMS:
     _, layers, cfg = maps[room]
@@ -167,6 +171,7 @@ for room in ROOMS:
                 reqs.append(f"solve:{req_solve}")
             if reqs:
                 gated.append((reqs, kw_ids))
+                gated_by_room.setdefault(room, []).append((reqs, kw_ids))
             else:
                 room_kw_ungated |= kw_ids
     ungated_by_room[room] = room_kw_ungated
@@ -219,14 +224,37 @@ for cid in db:
     if cid not in discoverable:
         errors.append(f"clue '{cid}' exists in clueDatabase but no keyword unlocks it anywhere")
 
-# Gated topics must never be a clue's only source: every clue needs an ungated
-# unlock in its OWN room, or the room clue counter can't complete without
-# backtracking behind cross-room gates.
+# Every clue must be unlockable inside its own room. Gated topics DO count
+# (confrontation clues carry unique evidence since the timeline rework) as
+# long as their gates are satisfiable without leaving the room: requiresClue
+# on an in-room-obtainable clue, requiresSolve on the room itself. A clue
+# whose only source hides behind a cross-room gate WARNs - the room counter
+# needs a detour to reach N/N.
+in_room_discoverable = {}
+for room in ROOMS:
+    reach = set(ungated_by_room.get(room, set()))
+    caps = set()
+    changed = True
+    while changed:
+        changed = False
+        answers = maps[room][2].get("localDeductionClueIds", [])
+        if answers and all(a in reach for a in answers) and "solve" not in caps:
+            caps.add("solve"); changed = True
+        for reqs, kw_ids in gated_by_room.get(room, []):
+            ok = all((r == f"solve:{room}" and "solve" in caps) or r in reach
+                     for r in reqs)
+            if ok and not kw_ids <= reach:
+                reach |= kw_ids; changed = True
+    in_room_discoverable[room] = reach
+
 for cid, c in db.items():
     home = c.get("roomId", "")
-    if home in ungated_by_room and cid not in ungated_by_room[home]:
-        errors.append(f"clue '{cid}' is not ungated-discoverable in its own room "
-                      f"'{home}' (gated topics must never carry unique clues)")
+    if home not in in_room_discoverable: continue
+    if cid in in_room_discoverable[home]: continue
+    if cid in discoverable:
+        warnings.append(f"clue '{cid}' only unlocks behind a cross-room gate - "
+                        f"room '{home}' counter can't reach N/N without a detour")
+    # else: already reported by the 'no keyword unlocks it anywhere' check
 
 fslots = re.findall(r"\[([^\]]+)\]", case["finalSolveSentence"])
 fans = case.get("finalSolveClueIds", [])

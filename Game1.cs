@@ -101,6 +101,12 @@ namespace CatDetective
         private readonly List<(string RoomId, string EntityId, int TopicIndex, string Name)>
             _confrontationTopics = new();
 
+        // Clue ids with at least one ungated source (intro/object keywords, or a
+        // topic without gates). Clues missing from this set only drop from gated
+        // topics - confrontation evidence - so the SOLVE-button pulse ignores
+        // them: it must be able to fire before the confrontations happen.
+        private readonly HashSet<string> _ungatedClueIds = new();
+
         // ── Notebook / inventory ───────────────────────────────────────────────
         private NotebookManager _notebook = null!;
         private MouseState      _prevMouseState;
@@ -958,6 +964,7 @@ namespace CatDetective
             _firedGateToasts.Clear();
             _solveGateIndex.Clear();
             _confrontationTopics.Clear();
+            _ungatedClueIds.Clear();
             foreach (var roomId in rooms)
             {
                 string configPath = Path.Combine(
@@ -970,9 +977,14 @@ namespace CatDetective
                     string name = data.DisplayName.Length > 0
                         ? data.DisplayName
                         : ToDisplayName(entityId.Replace("inspect_", ""));
+                    foreach (var kw in data.Keywords)
+                        _ungatedClueIds.Add(kw.Id);
                     for (int t = 0; t < data.Topics.Length; t++)
                     {
                         var topic = data.Topics[t];
+                        if (topic.RequiresClue.Length == 0 && topic.RequiresSolve.Length == 0)
+                            foreach (var kw in topic.Keywords)
+                                _ungatedClueIds.Add(kw.Id);
                         if (topic.RequiresClue.Length > 0)
                         {
                             if (!_gateIndex.TryGetValue(topic.RequiresClue, out var list))
@@ -993,6 +1005,38 @@ namespace CatDetective
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Parses the timestamp convention in clue names ("Manifest Entry -
+        /// 7:00 PM", "Hallway Rumble - 7 PM") into minutes since midnight.
+        /// Drives the chronological WHERE/WHEN word bank and the Case Notes
+        /// timeline. False when the name carries no time.
+        /// </summary>
+        private static bool TryParseClueTime(string name, out int minutes)
+        {
+            minutes = 0;
+            var m = System.Text.RegularExpressions.Regex.Match(
+                name, @"(\d{1,2})(?::(\d{2}))?\s*(AM|PM)",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (!m.Success) return false;
+            int h  = int.Parse(m.Groups[1].Value) % 12;
+            int mm = m.Groups[2].Success ? int.Parse(m.Groups[2].Value) : 0;
+            if (m.Groups[3].Value.Equals("PM", StringComparison.OrdinalIgnoreCase)) h += 12;
+            minutes = h * 60 + mm;
+            return true;
+        }
+
+        /// <summary>Stable in-place sort: timed clues chronologically, untimed after in original order.</summary>
+        private static void SortCluesByTime(List<Clue> clues)
+        {
+            var keyed = new List<(int Key, int Index, Clue Clue)>(clues.Count);
+            for (int i = 0; i < clues.Count; i++)
+                keyed.Add((TryParseClueTime(clues[i].Name, out var t) ? t : int.MaxValue, i, clues[i]));
+            keyed.Sort((a, b) => a.Key != b.Key
+                ? a.Key.CompareTo(b.Key)
+                : a.Index.CompareTo(b.Index));
+            for (int i = 0; i < clues.Count; i++) clues[i] = keyed[i].Clue;
         }
 
         /// <summary>
@@ -2060,14 +2104,18 @@ namespace CatDetective
                     {
                         // SOLVE reflects room progress: pulsing glow once every clue
                         // in the room is found (playtest: players left rooms without
-                        // solving), muted once the room's board is done.
+                        // solving), muted once the room's board is done. Confrontation
+                        // clues (gated-topic-only) don't hold the pulse back - they
+                        // unlock after the solve.
                         bool roomSolved = _roomSolvedStates.TryGetValue(_currentRoomId, out var rs) && rs;
                         var (roomFound, roomTotal) = _notebook.GetRoomClueCounts(_currentRoomId);
                         if (roomSolved)
                         {
                             DrawUiButton(_solveButtonRect, new Color(85, 125, 85), "SOLVED", Color.White);
                         }
-                        else if (roomTotal > 0 && roomFound == roomTotal)
+                        else if (roomTotal > 0 && roomFound > 0 &&
+                                 _notebook.AreRoomCluesFound(_currentRoomId,
+                                     id => _ungatedClueIds.Contains(id)))
                         {
                             float pulse = 0.5f + 0.5f *
                                 (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 3.0);
@@ -2290,6 +2338,11 @@ namespace CatDetective
                             ? _notebook.GetMacroClues()
                             : _notebook.GetCluesForRoom(_currentRoomId);
                         var filteredWB = sourceClues.FindAll(c => c.Category == _activeTab);
+                        // The WHERE/WHEN tab is the timeline: sort its chips by the
+                        // timestamp in their names (untimed chips keep discovery
+                        // order, after the timed ones).
+                        if (_activeTab == ClueCategory.WhereWhen)
+                            SortCluesByTime(filteredWB);
 
                         foreach (var cl in filteredWB)
                         {
@@ -2504,6 +2557,40 @@ namespace CatDetective
                                    : (found == total ? _inkColor : Color.Gray),
                             0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
                         oy += _dialogueFont.LineSpacing * jt + 10 * jsy;
+                    }
+
+                    // ── LEFT PAGE: the evening, assembling itself ─────────────
+                    // Every found clue whose name carries a timestamp, in
+                    // chronological order - the payoff for collecting timed
+                    // clues is watching the timeline fill in.
+                    {
+                        var timed = new List<(int Min, Clue Clue)>();
+                        foreach (var cl in _notebook.UnlockedClues)
+                            if (TryParseClueTime(cl.Name, out var tMin))
+                                timed.Add((tMin, cl));
+                        if (timed.Count > 0)
+                        {
+                            timed.Sort((a, b) => a.Min.CompareTo(b.Min));
+                            oy += 6 * jsy;
+                            _spriteBatch.DrawString(_dialogueFont, "The Evening",
+                                new Vector2(leftPageArea.X, oy), _inkColor,
+                                0f, Vector2.Zero, headScale * 0.75f, SpriteEffects.None, 0f);
+                            oy += _dialogueFont.LineSpacing * headScale * 0.75f + 8 * jsy;
+
+                            // Shrink until the whole list fits the remaining page.
+                            float availH = leftPageArea.Bottom - oy;
+                            float ts     = jti;
+                            while (ts > 0.30f &&
+                                   timed.Count * (_dialogueFont.LineSpacing * ts + 4 * jsy) > availH)
+                                ts *= 0.92f;
+                            foreach (var (_, cl) in timed)
+                            {
+                                _spriteBatch.DrawString(_dialogueFont, "* " + cl.Name,
+                                    new Vector2(leftPageArea.X + 14 * jsx, oy), _inkColor * 0.85f,
+                                    0f, Vector2.Zero, ts, SpriteEffects.None, 0f);
+                                oy += _dialogueFont.LineSpacing * ts + 4 * jsy;
+                            }
+                        }
                     }
 
                     // ── RIGHT PAGE: solved-deduction recaps ───────────────────
