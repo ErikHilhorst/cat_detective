@@ -98,6 +98,14 @@ Systems/ (shell)
   SaveSystem.cs           — Single-slot save + settings persistence (%LocalAppData%/CatDetective/)
   CaseScripts.cs          — Intro pages + end-scene beats per case id (all epilogue/intro copy)
   CrtOverlay.cs           — Shader-free CRT (scanline strip + vignette), Pass 9
+  RoomPreloader.cs        — Background asset warmer: queues every room's textures at boot
+                            (saved room first, then cases in scene order) and loads ONE per
+                            frame from Update(), only on frames where a blocking load can't
+                            be felt (non-Playing states, dialogue/board open, or no movement
+                            key held). Exists for the web build, where each Content.Load is
+                            a synchronous XHR + Brotli decode (~10 s per cold room);
+                            LoadRoom itself is unchanged - the shared ContentManager caches
+                            by asset path, so a warmed room loads as pure cache hits.
 
 Map/
   MapParser.cs            — Reads Tiled room_map.json: Collisions, Triggers, Transfers, Spawn, Interactables

@@ -311,6 +311,10 @@ namespace CatDetective
         // ── Deduction — macro (case-level) and local (room-level) ─────────────
         private DeductionManager  _localDeduction = null!;
 
+        // Warms upcoming rooms' textures into the ContentManager during frames
+        // where a blocking load can't be felt (web loads are synchronous XHRs).
+        private RoomPreloader? _preloader;
+
         // ── Shared textures (loaded once, reused across scenes) ───────────────
         private Texture2D _walkForwardTex = null!;
         private Texture2D _walkUpwardTex  = null!;
@@ -390,6 +394,21 @@ namespace CatDetective
             _saveExists = SaveSystem.SaveExists();
             _menuIndex  = _saveExists ? 0 : 1;
             _crt        = new CrtOverlay(GraphicsDevice);
+
+            // Preload queue, in the order the player is likely to need rooms:
+            // the saved room first (CONTINUE lands there), then every case in
+            // scene order (each case queues its rooms in rooms-list order, so
+            // NEW GAME's entry room leads). Pumped one asset per safe frame
+            // from Update(); by the time the menu/intro has been read, the
+            // first room is warm and LoadRoom is near-instant.
+            if (!_screenshotMode)
+            {
+                _preloader = new RoomPreloader(Content);
+                if (_saveExists && SaveSystem.LoadGame() is { } bootSave)
+                    _preloader.QueueRoom(bootSave.CaseId, bootSave.RoomId);
+                foreach (var sceneId in _availableScenes)
+                    _preloader.QueueCase(sceneId);
+            }
 
             // Music starts with the app (the menu has music too) and loops forever.
             // Skipped in screenshot mode (headless captures).
@@ -1750,6 +1769,25 @@ namespace CatDetective
                     }
                 }
 #endif
+            }
+
+            // Asset warm-up: at most one blocking load per frame, and only on
+            // frames where the stall can't be felt - any non-Playing screen
+            // (menus, intro, end scene), or in-game while the player is reading
+            // (dialogue/board open) or simply not holding a movement key. This
+            // frame's input was already processed above, so the stall only
+            // delays the next frame of a screen that isn't animating movement.
+            if (_preloader != null && _preloader.HasWork)
+            {
+                bool moving = kbState.IsKeyDown(Keys.W) || kbState.IsKeyDown(Keys.A) ||
+                              kbState.IsKeyDown(Keys.S) || kbState.IsKeyDown(Keys.D) ||
+                              kbState.IsKeyDown(Keys.Up)   || kbState.IsKeyDown(Keys.Down) ||
+                              kbState.IsKeyDown(Keys.Left) || kbState.IsKeyDown(Keys.Right);
+                if (_currentState != GameState.Playing ||
+                    _isDialogueActive || _isDeductionBoardOpen || !moving)
+                {
+                    _preloader.Pump();
+                }
             }
 
             _prevMouseState = mouseState;
