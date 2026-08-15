@@ -6,23 +6,23 @@
     {
       "id": "inspect_socialite",
       "name": "Coco",
-      "text": "The Socialite, [Coco], lowers her sunglasses exactly one centimeter. 'Oh thank GOD. Someone with cheekbones.' She pats the sun lounger. You do not sit on it. She respects that.",
+      "text": "The Socialite, [Coco], lowers her sunglasses exactly one centimeter.\n'Oh thank GOD. Someone with cheekbones.' She pats the sun lounger. You do not sit on it. She respects that.",
       "keywords": [
         { "displayText": "Coco", "id": "eyewitness_645pm", "color": "plot" }
       ],
       "topics": [
         {
           "prompt": "Pose beside her chaise, chin up",
-          "text": "'Iconic. ICONIC.' She reaches for her phone, then remembers it is evidence now and pouts. 'Tonight is ruined anyway. SOMEBODY lugged [huge black cases] through the garden at, like, [quarter to seven]. Walked STRAIGHT through my sunset shot. The nerve. The NERVE.'|'And it was not just them, darling. The gardener spent the whole evening [skulking behind that shed] like a garden gnome with secrets. And Rosa stormed past the windows with that cart of hers, looking absolutely FURIOUS about something. Everyone in this house had somewhere to be. Except me. I was radiant.'",
+          "text": "'Iconic. ICONIC.' She reaches for her phone, then remembers it is evidence now and pouts.\n'Tonight is ruined anyway. SOMEBODY lugged [huge black cases] through the garden at, like, [quarter to seven]. Walked STRAIGHT through my sunset shot. The nerve. The NERVE.'|'And it was not just them, darling. The gardener spent the whole evening [skulking behind that shed] like a garden gnome with secrets. And Rosa stormed past the windows with that cart of hers, looking absolutely FURIOUS about something. Everyone in this house had somewhere to be. Except me. I was radiant.'",
           "keywords": [
             { "displayText": "huge black cases", "id": "eyewitness_645pm", "color": "plot" },
-            { "displayText": "quarter to seven", "id": "eyewitness_645pm", "color": "plot" },
+            { "displayText": "quarter to seven", "id": "time_645pm", "color": "plot" },
             { "displayText": "skulking behind that shed", "id": "straw_hat_witness", "color": "misc" }
           ]
         },
         {
           "prompt": "Investigate her abandoned spritz",
-          "text": "'It is a spritz, darling, and it is [warm now]. Like everything else about this evening.' She swirls it sadly. 'And the WHEELS. All evening, wheels: [little squeaky wheels] up the garden path, the dinner cart rattling through the house, rrr, rrr, rrr. Who can even tell one squeak from another? Some of us were trying to VIBE.'",
+          "text": "'It is a spritz, darling, and it is [warm now]. Like everything else about this evening.' She swirls it sadly.\n'And the WHEELS. All evening, wheels: [little squeaky wheels] up the garden path, the dinner cart rattling through the house, rrr, rrr, rrr. Who can even tell one squeak from another? Some of us were trying to VIBE.'",
           "keywords": [
             { "displayText": "warm now", "id": "warm_spritz", "color": "misc" },
             { "displayText": "little squeaky wheels", "id": "eyewitness_645pm", "color": "plot" }
@@ -31,7 +31,7 @@
         {
           "prompt": "Sprawl across the production schedule",
           "requiresClue": "production_schedule",
-          "text": "She peers over her sunglasses at the page beneath you. 'Seven o'clock, library, audio setup? Honey.' A long, slow sip. 'At quarter to seven that man was doing CARDIO through the begonias with two giant cases. [I know what I saw]. I was bored enough to be reliable.'",
+          "text": "She peers over her sunglasses at the page beneath you.\n'Seven o'clock, library, audio setup? Honey.' A long, slow sip.\n'At quarter to seven that man was doing CARDIO through the begonias with two giant cases. [I know what I saw]. I was bored enough to be reliable.'",
           "keywords": [
             { "displayText": "I know what I saw", "id": "eyewitness_645pm", "color": "plot" }
           ]
@@ -45,7 +45,7 @@
       "name": "Coco's Phone",
       "text": "Coco's phone has a pool selfie timestamped [6:47 PM]. In the blurry background, a [figure with large dark cases] rolls up the garden path. And at the very edge of the frame, half-hidden behind the potting shed: a [straw hat], peeking.",
       "keywords": [
-        { "displayText": "6:47 PM", "id": "selfie_figure_cases", "color": "plot" },
+        { "displayText": "6:47 PM", "id": "time_647pm", "color": "plot" },
         { "displayText": "figure with large dark cases", "id": "selfie_figure_cases", "color": "plot" },
         { "displayText": "straw hat", "id": "straw_hat_witness", "color": "misc" }
       ],
@@ -55,8 +55,9 @@
     {
       "id": "inspect_production_schedule",
       "name": "Crumpled Schedule",
-      "text": "A ball of paper, crumpled with feeling and thrown at the pool. It missed. You bat it flat. It is the production schedule - under '7:00 PM - Crew Assignments:' it reads: '[D. Marsh - Library (audio setup)].'",
+      "text": "A ball of paper, crumpled with feeling and thrown at the pool. It missed. You bat it flat. It is the production schedule - under '[7:00 PM] - Crew Assignments:' it reads:\n'[D. Marsh - Library (audio setup)].'",
       "keywords": [
+        { "displayText": "7:00 PM", "id": "time_700pm", "color": "plot" },
         { "displayText": "D. Marsh - Library (audio setup)", "id": "production_schedule", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
@@ -73,6 +74,6 @@
       "scale": 0.15
     }
   ],
-  "localDeductionSentence": "The crew's paperwork - the [alibi] - says where everyone was meant to be at seven. But [testimony] says otherwise, and the [evidence] freezes the proof: those cases crossed the garden while their owner was still on the clock somewhere else.",
-  "localDeductionClueIds": ["production_schedule", "eyewitness_645pm", "selfie_figure_cases"]
+  "localDeductionSentence": "The [alibi] promises its owner to the library for seven o'clock sharp. But the cases crossed the garden at [seen time] - and the [evidence] froze them in place at [exact time].",
+  "localDeductionClueIds": ["production_schedule", "time_645pm", "selfie_figure_cases", "time_647pm"]
 }

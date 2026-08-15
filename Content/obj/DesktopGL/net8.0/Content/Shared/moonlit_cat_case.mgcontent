@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/moonlit_cat_case.mp3</SourceFile>
-  <SourceTime>2026-07-18T10:06:18.606093+02:00</SourceTime>
+  <SourceTime>2026-08-15T15:29:14.7240216+02:00</SourceTime>
   <DestFile>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/bin/DesktopGL/Content/Shared/moonlit_cat_case.xnb</DestFile>
-  <DestTime>2026-07-18T10:36:04.4248855+02:00</DestTime>
+  <DestTime>2026-08-15T15:30:11.1798218+02:00</DestTime>
   <Importer>Mp3Importer</Importer>
   <ImporterTime>2025-10-20T16:25:32+02:00</ImporterTime>
   <Processor>SongProcessor</Processor>

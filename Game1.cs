@@ -74,6 +74,13 @@ namespace CatDetective
         private List<TransferZone>  _transferZones       = new();
         private TransferZone?       _activeTransferZone;
 
+        // Rooms entered at least once this case - feeds RequiresVisited transfer
+        // gates (linear-order beats, e.g. bedroom before living room).
+        private readonly HashSet<string> _visitedRooms = new();
+
+        private bool IsTransferUnlocked(TransferZone zone) =>
+            zone.RequiresVisited.Length == 0 || _visitedRooms.Contains(zone.RequiresVisited);
+
         // ── Interaction system ─────────────────────────────────────────────────
         private Dictionary<string, InteractionData> _interactionDatabase = null!;
         private bool             _isDialogueActive;
@@ -87,10 +94,6 @@ namespace CatDetective
         private string    _dialogueEntityId = "";
         private readonly HashSet<string> _visitedTopics = new();      // "room/entity/topicIndex"
         private bool      _menuUpPressed, _menuDownPressed;           // edge-detected each Update
-
-        // Gate-unlock toast: clue id -> characters (name, roomId) with a topic it gates.
-        private readonly Dictionary<string, List<(string Name, string RoomId)>> _gateIndex = new();
-        private readonly HashSet<string> _firedGateToasts = new();
 
         // Solve-gate toast: solved room id -> characters (name, roomId) whose
         // confrontation topic that solve unlocks.
@@ -232,7 +235,7 @@ namespace CatDetective
 
         // ── Debug overlay ──────────────────────────────────────────────────────
         private Texture2D     _debugPixel  = null!;
-        private bool          _showDebug   = true;   // F1 toggles
+        private bool          _showDebug   = false;  // F1 toggles
         private KeyboardState _prevKbState;
 
         // ── Screenshot mode  (--screenshot <caseId> <roomId> [journal|final]) ──
@@ -552,6 +555,7 @@ namespace CatDetective
 
             _currentCaseId = caseId;
             _visitedTopics.Clear();   // heard-topic state must not leak across cases
+            _visitedRooms.Clear();    // linear-order gates reset per case
 
             _sunbeamsMask = Content.Load<Texture2D>("Shared/mask_sunbeams");
 
@@ -564,7 +568,6 @@ namespace CatDetective
             var caseConfig = LevelConfigParser.LoadCase(caseConfigPath);
 
             _notebook  = new NotebookManager(caseConfig.Clues);
-            _notebook.OnClueUnlocked = HandleClueUnlocked;
             BuildGateIndex(caseId, caseConfig.Rooms);
             _deduction = new DeductionManager(
                 caseConfig.DeductionSentence,
@@ -598,6 +601,7 @@ namespace CatDetective
 
             _currentRoomId  = roomId;
             _spawnPointName = spawnPointName;
+            _visitedRooms.Add(roomId);   // feeds RequiresVisited transfer gates
 
             string roomBase = Path.Combine(
                 Content.RootDirectory, "Levels", _currentCaseId, roomId);
@@ -751,7 +755,9 @@ namespace CatDetective
             foreach (var (room, solved) in _roomSolvedStates)    save.RoomSolvedStates[room] = solved;
             foreach (var (room, text) in _roomSolvedSentences)   save.RoomSolvedSentences[room] = text;
             foreach (var topic in _visitedTopics)                save.VisitedTopics.Add(topic);
-            foreach (var toast in _firedGateToasts)              save.FiredGateToasts.Add(toast);
+            foreach (var room in _visitedRooms)                  save.VisitedRooms.Add(room);
+            // FiredGateToasts stays in the save schema for compatibility, but
+            // clue-gate toasts were removed (playtest 5) - nothing to record.
 
             _saveExists = SaveSystem.SaveGame(save);
         }
@@ -791,10 +797,16 @@ namespace CatDetective
             foreach (var topic in save.VisitedTopics)
                 _visitedTopics.Add(topic);
 
-            // After LoadCase: BuildGateIndex cleared the fired set, so this union
-            // must come after the clue replay or old toasts refire on Continue.
-            foreach (var toast in save.FiredGateToasts)
-                _firedGateToasts.Add(toast);
+            // Visited rooms feed the RequiresVisited transfer gates. Older saves
+            // lack the list - seed it with the saved room and every solved room so
+            // a mid-case save can't re-lock doors the player already went through.
+            foreach (var room in save.VisitedRooms)
+                _visitedRooms.Add(room);
+            _visitedRooms.Add(save.RoomId);
+            foreach (var (room, solved) in save.RoomSolvedStates)
+                if (solved) _visitedRooms.Add(room);
+
+            // (save.FiredGateToasts is ignored - clue-gate toasts were removed.)
 
             // Re-enter the saved room so a solved room's board shows its recap.
             // (_roomSolvedStates holds a key for every room in the case.)
@@ -878,7 +890,9 @@ namespace CatDetective
             _introCaseId     = caseId;
             _introPages      = pages;
             _introPageIndex  = 0;
-            _typewriterTimer = 0f;
+            // Negative start = a beat of quiet so the poster lands before the
+            // typewriter begins (playtest: text started too abruptly).
+            _typewriterTimer = -1.2f * TYPEWRITER_SPEED;
             SetCanvas(MENU_CANVAS_W, MENU_CANVAS_H);
             _currentState = GameState.CaseIntro;
         }
@@ -979,8 +993,6 @@ namespace CatDetective
         /// </summary>
         private void BuildGateIndex(string caseId, IReadOnlyList<string> rooms)
         {
-            _gateIndex.Clear();
-            _firedGateToasts.Clear();
             _solveGateIndex.Clear();
             _confrontationTopics.Clear();
             _ungatedClueIds.Clear();
@@ -1004,13 +1016,6 @@ namespace CatDetective
                         if (topic.RequiresClue.Length == 0 && topic.RequiresSolve.Length == 0)
                             foreach (var kw in topic.Keywords)
                                 _ungatedClueIds.Add(kw.Id);
-                        if (topic.RequiresClue.Length > 0)
-                        {
-                            if (!_gateIndex.TryGetValue(topic.RequiresClue, out var list))
-                                _gateIndex[topic.RequiresClue] = list = new();
-                            if (!list.Contains((name, roomId)))
-                                list.Add((name, roomId));
-                        }
                         if (topic.RequiresSolve.Length > 0)
                         {
                             if (!_solveGateIndex.TryGetValue(topic.RequiresSolve, out var list))
@@ -1105,20 +1110,10 @@ namespace CatDetective
             return false;
         }
 
-        /// <summary>
-        /// Fires the one-time gate-unlock toast: a person/story nudge, never a
-        /// checklist pointer (see CLAUDE.md dialogue-topic conventions).
-        /// </summary>
-        private void HandleClueUnlocked(string clueId)
-        {
-            if (_screenshotMode || _isRestoring) return;
-            if (!_gateIndex.TryGetValue(clueId, out var gated)) return;
-            if (!_firedGateToasts.Add(clueId)) return;
-
-            string who = string.Join(" and ",
-                gated.ConvertAll(g => $"{g.Name} ({ToDisplayName(g.RoomId)})"));
-            ShowToast($"{who} might have some explaining to do...");
-        }
+        // NOTE (playtest 5): clue-gate unlock toasts ("X might have some explaining
+        // to do...") were removed - they told the player where to go before they
+        // could choose. Solve-gated confrontation toasts remain (a solve is an
+        // earned reward); everything else is discovered via the speech bubbles.
 
         // ══════════════════════════════════════════════════════════════════════
         /// <summary>
@@ -1302,7 +1297,7 @@ namespace CatDetective
                         else if (_introPageIndex < _introPages.Length - 1)
                         {
                             _introPageIndex++;                     // next page
-                            _typewriterTimer = 0f;
+                            _typewriterTimer = -0.5f * TYPEWRITER_SPEED;
                         }
                         else
                             StartCase(_introCaseId);               // into the case
@@ -1691,9 +1686,18 @@ namespace CatDetective
 
                     if (_activeTransferZone != null && _cat.IsInteractPressed())
                     {
-                        LoadRoom(_activeTransferZone.TargetRoom, _activeTransferZone.TargetSpawn);
-                        AutoSave();
-                        return; // state was rebuilt; skip rest of this Update
+                        if (!IsTransferUnlocked(_activeTransferZone))
+                        {
+                            ShowToast(_activeTransferZone.LockedText.Length > 0
+                                ? _activeTransferZone.LockedText
+                                : "Not yet. Something else needs looking at first.");
+                        }
+                        else
+                        {
+                            LoadRoom(_activeTransferZone.TargetRoom, _activeTransferZone.TargetSpawn);
+                            AutoSave();
+                            return; // state was rebuilt; skip rest of this Update
+                        }
                     }
 
                     _activeInteractable = null;
@@ -1968,11 +1972,14 @@ namespace CatDetective
                         // Vertical extent above the zone depends on orientation
                         // (rotation happens around the sprite's center).
                         // Standing in the zone: the arrow goes gold and pulses,
-                        // echoing the SOLVE button's "ready" cue.
+                        // echoing the SOLVE button's "ready" cue. Gated doorways
+                        // (RequiresVisited unmet) draw dim grey and never pulse.
                         bool  isActive  = ReferenceEquals(zone, _activeTransferZone);
+                        bool  locked    = !IsTransferUnlocked(zone);
                         float drawScale = arrowScale;
-                        Color tint      = Color.White * 0.9f;
-                        if (isActive)
+                        Color tint      = locked ? new Color(110, 110, 115) * 0.65f
+                                                 : Color.White * 0.9f;
+                        if (isActive && !locked)
                         {
                             float pulse = 0.5f + 0.5f * (float)Math.Sin(
                                 gameTime.TotalGameTime.TotalSeconds * 6.0);
@@ -2146,7 +2153,8 @@ namespace CatDetective
                         // clues (gated-topic-only) don't hold the pulse back - they
                         // unlock after the solve.
                         bool roomSolved = _roomSolvedStates.TryGetValue(_currentRoomId, out var rs) && rs;
-                        var (roomFound, roomTotal) = _notebook.GetRoomClueCounts(_currentRoomId);
+                        var (roomFound, roomTotal) = _notebook.GetRoomClueCounts(
+                            _currentRoomId, id => !_ungatedClueIds.Contains(id));
                         if (roomSolved)
                         {
                             DrawUiButton(_solveButtonRect, new Color(85, 125, 85), "SOLVED", Color.White);
@@ -2205,7 +2213,8 @@ namespace CatDetective
                     // journal's Investigation overview.
                     if (!_isDeductionBoardOpen)
                     {
-                        var (roomFound, roomTotal) = _notebook.GetRoomClueCounts(_currentRoomId);
+                        var (roomFound, roomTotal) = _notebook.GetRoomClueCounts(
+                            _currentRoomId, id => !_ungatedClueIds.Contains(id));
 
                         const float hudScale = 0.8f;
                         string hud = $"Clues ({ToDisplayName(_currentRoomId)}): " +
@@ -2374,7 +2383,7 @@ namespace CatDetective
 
                         var sourceClues = _isFinalSolveMode
                             ? _notebook.GetMacroClues()
-                            : _notebook.GetCluesForRoom(_currentRoomId);
+                            : _notebook.GetLocalBankClues(_currentRoomId);
                         var filteredWB = sourceClues.FindAll(c => c.Category == _activeTab);
                         // The WHERE/WHEN tab is the timeline: sort its chips by the
                         // timestamp in their names (untimed chips keep discovery
@@ -2587,7 +2596,8 @@ namespace CatDetective
                     foreach (var room in _caseRooms)
                     {
                         bool solved = _roomSolvedStates.TryGetValue(room, out var s) && s;
-                        var (found, total) = _notebook.GetRoomClueCounts(room);
+                        var (found, total) = _notebook.GetRoomClueCounts(
+                            room, id => !_ungatedClueIds.Contains(id));
                         _spriteBatch.DrawString(_dialogueFont,
                             $"{(solved ? "[x]" : "[  ]")} {ToDisplayName(room)}  -  clues {found}/{total}",
                             new Vector2(leftPageArea.X, oy),
@@ -2889,7 +2899,7 @@ namespace CatDetective
             DrawRichText(_spriteBatch, _dialogueFont,
                 _introPages[_introPageIndex], Array.Empty<Keyword>(),
                 new Vector2(textX, 120f), maxWidth,
-                maxChars: (int)_typewriterTimer, scale: 0.8f,
+                maxChars: Math.Max(0, (int)_typewriterTimer), scale: 0.8f,
                 color: new Color(225, 220, 205));
 
             // Page dots + controls footer.

@@ -125,6 +125,13 @@ namespace CatDetective.Entities
         public string SpriteAnchor { get; }
 
         /// <summary>
+        /// Draws the sprite at LayerDepth 1 - always in front of the cat and every
+        /// prop - instead of Y-sorting. For hero objects that must never be
+        /// occluded (the living room birdcage).
+        /// </summary>
+        public bool AlwaysOnTop { get; }
+
+        /// <summary>
         /// Fallback content path (e.g. "Shared/placeholder_person") used when no
         /// per-name sprite exists under Interactables/. Empty = no fallback.
         /// </summary>
@@ -145,10 +152,11 @@ namespace CatDetective.Entities
             string revealName = "", string revealNameOnClue = "",
             string altText = "", string altTextRequiresClue = "", string altTextRequiresSolve = "",
             float[]? portraitCrop = null, int interactPadding = 0,
-            string spriteAnchor = "BottomCenter")
+            string spriteAnchor = "BottomCenter", bool alwaysOnTop = false)
         {
             InteractPadding      = interactPadding;
             SpriteAnchor         = spriteAnchor;
+            AlwaysOnTop          = alwaysOnTop;
             Text                 = text;
             Keywords             = keywords;
             Scale                = scale;

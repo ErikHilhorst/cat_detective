@@ -6,9 +6,9 @@
     {
       "id": "inspect_maid",
       "name": "Rosa",
-      "altText": "The chopping has stopped. [Rosa] wipes the board clean and watches you pad in, arms crossed, the ring of [house keys] still at her apron. 'So. You did your arithmetic, detective. Then you also know a dinner cart was not the only thing on wheels in that wing. Go on. Finish it.'",
+      "altText": "The chopping has stopped. [Rosa] wipes the board clean and watches you pad in, arms crossed, the ring of [house keys] still at her apron.\n'So. You did your arithmetic, detective. Then you also know a dinner cart was not the only thing on wheels in that wing. Go on. Finish it.'",
       "altTextRequiresSolve": "kitchen",
-      "text": "The Maid, [Rosa], is chopping vegetables with feeling. The cleaver hits the board like a verdict. A ring of [house keys] jingles at her apron with every chop. Without turning around: 'If you are here about the bird, get in line.'",
+      "text": "The Maid, [Rosa], is chopping vegetables with feeling. The cleaver hits the board like a verdict. A ring of [house keys] jingles at her apron with every chop. Without turning around:\n'If you are here about the bird, get in line.'",
       "keywords": [
         { "displayText": "Rosa", "id": "the_maid", "color": "misc" },
         { "displayText": "house keys", "id": "rosa_keys", "color": "misc" }
@@ -16,14 +16,14 @@
       "topics": [
         {
           "prompt": "Meow the word 'bird', approximately",
-          "text": "The cleaver stops mid-air. 'That bird called my paella [garbage slop]. In front of guests. Eleven years I run this kitchen.' Chop. 'Did I dream of roasting him with a nice sofrito? A woman is allowed her dreams.' Chop. 'Now he is gone, and everyone looks at Rosa. Maybe they are not wrong to look.'",
+          "text": "The cleaver stops mid-air.\n'That bird called my paella [garbage slop]. In front of guests. Eleven years I run this kitchen.' Chop.\n'Did I dream of roasting him with a nice sofrito? A woman is allowed her dreams.' Chop.\n'Now he is gone, and everyone looks at Rosa. Maybe they are not wrong to look.'",
           "keywords": [
             { "displayText": "garbage slop", "id": "insulted_cooking", "color": "misc" }
           ]
         },
         {
           "prompt": "Sit hopefully beneath the treat jar",
-          "text": "She sighs like the tide going out, wipes her hands, and shakes exactly three treats into a saucer. '[For the cat],' she says, softer than the room deserves. 'You saw nothing. I have a reputation.' The treats are excellent. Your objectivity is now a memory.",
+          "text": "She sighs like the tide going out, wipes her hands, and shakes exactly three treats into a saucer.\n'[For the cat],' she says, softer than the room deserves.\n'You saw nothing. I have a reputation.' The treats are excellent. Your objectivity is now a memory.",
           "keywords": [
             { "displayText": "For the cat", "id": "treat_jar_bribe", "color": "misc" }
           ]
@@ -31,7 +31,7 @@
         {
           "prompt": "Give her a slow, skeptical blink",
           "requiresClue": "husband_hall_7pm",
-          "text": "'What. WHAT.' She points the cleaver at nothing in particular. 'Seven o'clock I take the [dinner cart] to the east wing, same as every night. Soup, roast, the little breads.' Chop. 'Mister Derek did not even lift his headphones to say thank you. Ask HIM who else was rolling things around up there.'",
+          "text": "'What. WHAT.' She points the cleaver at nothing in particular.\n'Seven o'clock I take the [dinner cart] to the east wing, same as every night. Soup, roast, the little breads.' Chop.\n'Mister Derek did not even lift his headphones to say thank you. Ask HIM who else was rolling things around up there.'",
           "keywords": [
             { "displayText": "dinner cart", "id": "dinner_cart_7pm", "color": "misc" }
           ]
@@ -39,7 +39,7 @@
         {
           "prompt": "Lay your solved case notes at her feet, gently",
           "requiresSolve": "kitchen",
-          "text": "She reads your board the way she reads a delivery invoice: fast, twice, looking for the cheat. Then she sets down the cleaver.|'So. The cart, the note, the skull. You did the arithmetic and it comes out Rosa.' She crouches to your eye level, which nobody does. 'Then do the rest of it, detective. My cart is heavy going out and light coming back - and that night the wing smelled of soup and [cable grease]. Soup was mine. Kitchens know their smells. Find whose the other one was.'",
+          "text": "She reads your board the way she reads a delivery invoice: fast, twice, looking for the cheat. Then she sets down the cleaver.|'So. The cart, the note, the skull. You did the arithmetic and it comes out Rosa.' She crouches to your eye level, which nobody does.\n'Then do the rest of it, detective. My cart is heavy going out and light coming back - and that night the wing smelled of soup and [cable grease]. Soup was mine. Kitchens know their smells. Find whose the other one was.'",
           "keywords": [
             { "displayText": "cable grease", "id": "cable_grease", "color": "crime" }
           ]
@@ -52,7 +52,7 @@
       "id": "inspect_note_on_fridge",
                 "spriteAnchor": "TopRight",
       "name": "Note on the Fridge",
-      "text": "A note pinned to the fridge: 'That bird called my paella [garbage slop]. In front of guests.' Someone drew a [skull] next to it.",
+      "text": "A note pinned to the fridge:\n'That bird called my paella [garbage slop]. In front of guests.' Someone drew a [skull] next to it.",
       "keywords": [
         { "displayText": "garbage slop", "id": "insulted_cooking", "color": "misc" },
         { "displayText": "skull", "id": "insulted_cooking", "color": "misc" }
@@ -96,16 +96,18 @@
       "id": "inspect_duty_roster",
        "spriteAnchor": "TopRight",
       "name": "Duty Roster",
-      "text": "The kitchen duty roster, pinned by the door:\n- [5:45 - herbs in from the garden - B.]\n- 6:30 - plating\n- [7:00 PM - dinner cart, east wing - R.]\n- 8:30 - clear service\nThe east wing is where the bedrooms are.",
+      "text": "The kitchen duty roster, pinned by the door:\n- [5:45 PM] - [herbs in from the garden - B.]\n- 6:15 PM - plating\n- [7:00 PM] - [dinner cart, east wing - R.]\n- 8:30 PM - clear service\nThe east wing is where the bedrooms are.",
       "keywords": [
-        { "displayText": "5:45 - herbs in from the garden - B.", "id": "herb_run_545", "color": "misc" },
-        { "displayText": "7:00 PM - dinner cart, east wing - R.", "id": "dinner_cart_7pm", "color": "misc" }
+        { "displayText": "5:45 PM", "id": "time_545pm", "color": "plot" },
+        { "displayText": "herbs in from the garden - B.", "id": "herb_run_545", "color": "misc" },
+        { "displayText": "7:00 PM", "id": "time_700pm", "color": "plot" },
+        { "displayText": "dinner cart, east wing - R.", "id": "dinner_cart_7pm", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 1.0,
       "interactPadding": 60
     }
   ],
-  "localDeductionSentence": "The house has its favorite suspect: [suspect], with a key to every door. The fridge gives her fury a name - the [motive] - and the duty roster wheeled her straight into the bedroom wing: the [run].",
-  "localDeductionClueIds": ["the_maid", "insulted_cooking", "dinner_cart_7pm"]
+  "localDeductionSentence": "The house has its favorite suspect: [suspect], with a key to every door. The fridge gives her fury a name - the [motive] - and the roster wheels her [run] into the bedroom wing at [time].",
+  "localDeductionClueIds": ["the_maid", "insulted_cooking", "dinner_cart_7pm", "time_700pm"]
 }

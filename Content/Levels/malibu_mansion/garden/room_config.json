@@ -4,14 +4,14 @@
     {
       "id": "inspect_gardener",
       "name": "Basil",
-      "text": "The Gardener, [Basil], is trimming a hedge that has nothing left to give. 'Oh good,' he tells it, not looking up. 'A cat. Cats are natural. Cats belong outside. Like ALL animals.' Snip. Snip.",
+      "text": "The Gardener, [Basil], is trimming a hedge that has nothing left to give.\n'Oh good,' he tells it, not looking up.\n'A cat. Cats are natural. Cats belong outside. Like ALL animals.' Snip. Snip.",
       "keywords": [
         { "displayText": "Basil", "id": "the_gardener", "color": "misc" }
       ],
       "topics": [
         {
           "prompt": "Watch his hands while he trims",
-          "text": "The shears wobble mid-snip. 'Animals belong in [Nature],' he announces - to the hedge, to the fountain, to the concept of justice. '[A cage is a prison] with better catering.' He glances at the mansion. 'Not that I would DO anything about it. That would be wrong. Probably.'",
+          "text": "The shears wobble mid-snip.\n'Animals belong in [Nature],' he announces - to the hedge, to the fountain, to the concept of justice.\n'[A cage is a prison] with better catering.' He glances at the mansion.\n'Not that I would DO anything about it. That would be wrong. Probably.'",
           "keywords": [
             { "displayText": "Nature", "id": "the_gardener", "color": "misc" },
             { "displayText": "A cage is a prison", "id": "basil_free_the_bird", "color": "misc" }
@@ -19,7 +19,7 @@
         },
         {
           "prompt": "Sniff his muddy glove, loudly",
-          "text": "'The mud? BULBS. I was planting bulbs.' He holds up a [mud-caked glove] as evidence, realizes evidence is exactly the problem, and puts it behind his back. 'Daffodils. For spring. Ask the flower bed.' The flower bed, [freshly turned], backs him up. His other hand, you notice, is bare.",
+          "text": "'The mud? BULBS. I was planting bulbs.' He holds up a [mud-caked glove] as evidence, realizes evidence is exactly the problem, and puts it behind his back.\n'Daffodils. For spring. Ask the flower bed.' The flower bed, [freshly turned], backs him up. His other hand, you notice, is bare.",
           "keywords": [
             { "displayText": "mud-caked glove", "id": "muddy_gloves", "color": "misc" },
             { "displayText": "freshly turned", "id": "flower_bed_bulbs", "color": "misc" }

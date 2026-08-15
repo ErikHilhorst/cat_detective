@@ -8,21 +8,22 @@
     {
       "id": "inspect_movie_star",
       "name": "Vivienne Vale",
-      "text": "The Movie Star, [Vivienne Vale], is draped across the chaise in couture far too glamorous for grief - though she is wearing it AS grief. She points at you with a tissue. 'You. You have KIND eyes. Not like the rest of these vultures.'",
+      "text": "The Movie Star, [Vivienne Vale], is draped across the chaise in couture far too glamorous for grief - though she is wearing it AS grief. She points at you with a tissue.\n'You. You have KIND eyes. Not like the rest of these vultures.'",
       "keywords": [
         { "displayText": "Vivienne Vale", "id": "squawk_at_8pm", "color": "plot" }
       ],
       "topics": [
         {
           "prompt": "Purr consolingly against her arm",
-          "text": "'He was HERE, darling. I heard him at [8:00 PM], on the dot - I was mid-affirmation.' She dabs one eye, careful of the mascara. 'I would know that screech anywhere. It said: Vivienne. I am ALIVE. And possibly: garbage slop.'",
+          "text": "'He was HERE, darling. I heard him at [8:00 PM], on the dot - I was mid-affirmation.' She dabs one eye, careful of the mascara.\n'I would know [that screech] anywhere. It said: Vivienne. I am ALIVE. And possibly: garbage slop.'",
           "keywords": [
-            { "displayText": "8:00 PM", "id": "squawk_at_8pm", "color": "plot" }
+            { "displayText": "8:00 PM", "id": "time_800pm", "color": "plot" },
+            { "displayText": "that screech", "id": "squawk_at_8pm", "color": "plot" }
           ]
         },
         {
           "prompt": "Paw gently at the empty cage",
-          "text": "'Do NOT touch the crime scene, darling.' She sweeps you up and holds you like a press photo. 'Rudebeak is family. Rude, loud family with a [vocabulary problem] - which is the maid's doing, by the way. Rosa taught him THAT phrase. I keep a list.'",
+          "text": "'Do NOT touch the crime scene, darling.' She sweeps you up and holds you like a press photo.\n'Rudebeak is family. Rude, loud family with a [vocabulary problem] - which is the maid's doing, by the way. Rosa taught him THAT phrase. I keep a list.'",
           "keywords": [
             { "displayText": "vocabulary problem", "id": "vocab_ledger", "color": "misc" }
           ]
@@ -30,7 +31,7 @@
         {
           "prompt": "Bat the little speaker out where she can see it",
           "requiresSolve": "living_room",
-          "text": "She stares at it for a long moment. Something sharpens behind the movie-star eyes. 'That is not mine. That is not RUDEBEAK'S.' Then, quieter: 'This house is full of other people's equipment, darling. The [film people] wire everything. The staff hold keys to everything. Even Derek has been buying gadgets. There are cables in my walls I have never been introduced to.'",
+          "text": "She stares at it for a long moment. Something sharpens behind the movie-star eyes.\n'That is not mine. That is not RUDEBEAK'S.' Then, quieter:\n'This house is full of other people's equipment, darling. The [film people] wire everything. The staff hold keys to everything. Even Derek has been buying gadgets. There are cables in my walls I have never been introduced to.'",
           "keywords": [
             { "displayText": "film people", "id": "hidden_speaker", "color": "crime" }
           ]
@@ -42,7 +43,7 @@
     {
       "id": "inspect_bird_handler",
       "name": "Petra",
-      "altText": "[Petra] has moved to the window, scanning the garden the way handlers scan a horizon. 'You worked out the cage, didn't you. I can tell - you have that whisker set.' She nods once, professional to professional. 'Keep going. He is out there being inconvenient to somebody.'",
+      "altText": "[Petra] has moved to the window, scanning the garden the way handlers scan a horizon.\n'You worked out the cage, didn't you. I can tell - you have that whisker set.' She nods once, professional to professional.\n'Keep going. He is out there being inconvenient to somebody.'",
       "altTextRequiresSolve": "living_room",
       "text": "The Bird Handler, [Petra], stands perfectly still beside an untouched bowl of seed, the way professionals wait. She gives you a nod, one working animal expert to another.",
       "keywords": [
@@ -51,21 +52,21 @@
       "topics": [
         {
           "prompt": "Sniff the untouched seed bowl",
-          "text": "'His [six o'clock snack]. [He never misses it]. Never.' Her voice is flat and certain, a metronome of worry. 'Whatever happened, by six o'clock he was already somewhere he could not smell this bowl.'",
+          "text": "'His supper. [Six o'clock], every evening, and [he has never missed it]. Never.' Her voice is flat and certain, a metronome of worry.\n'Whatever happened, by the time that bowl went stale he was already somewhere he could not smell it.'",
           "keywords": [
-            { "displayText": "six o'clock snack", "id": "missed_snack_6pm", "color": "plot" },
-            { "displayText": "He never misses it", "id": "broken_latch", "color": "crime" }
+            { "displayText": "Six o'clock", "id": "time_600pm", "color": "plot" },
+            { "displayText": "he has never missed it", "id": "missed_snack_6pm", "color": "plot" }
           ]
         },
         {
           "prompt": "Tilt your head at her, professionally",
-          "text": "'You want the profile? Blue-and-gold macaw, nineteen years old, ego like a rockstar, lungs like a fire alarm.' She almost smiles. 'Vain, too. Never misses his evening splash in the garden bird bath. You could set a clock by that bird's grooming.'",
+          "text": "'You want the profile? Blue-and-gold macaw, nineteen years old, ego like a rockstar, lungs like a fire alarm.' She almost smiles.\n'Vain, too. Never misses his evening splash in the garden bird bath. You could set a clock by that bird's grooming.'",
           "keywords": []
         },
         {
           "prompt": "Report the garden feathers with a slow blink",
           "requiresClue": "bird_bath_feathers",
-          "text": "You aim a long, deliberate blink toward the garden. She reads you perfectly. 'The bird bath. Of course - he loves that thing.' Her jaw sets. 'Understand something, cat. [Wet feathers mean a happy bird]. A happy bird does not fly away from his own bath. Someone picked him up. He only allows that when he is soggy and smug.'",
+          "text": "You aim a long, deliberate blink toward the garden. She reads you perfectly.\n'The bird bath. Of course - he loves that thing.' Her jaw sets.\n'Understand something, cat. [Wet feathers mean a happy bird]. A happy bird does not fly away from his own bath. Someone picked him up. He only allows that when he is soggy and smug.'",
           "keywords": [
             { "displayText": "Wet feathers mean a happy bird", "id": "bird_bath_feathers", "color": "misc" }
           ]
@@ -73,7 +74,7 @@
         {
           "prompt": "Describe the big black cases, tail twitching",
           "requiresClue": "sound_proof_cases",
-          "text": "You sketch the shape of them in the air with your tail. Her face goes very still. 'Acoustic cases. The padded kind.' A long silence. 'Put him somewhere [dark and padded] and he goes quiet as a stone. He would not even cry out. Whoever picked those cases knew birds - or knew sound.'",
+          "text": "You sketch the shape of them in the air with your tail. Her face goes very still.\n'Acoustic cases. The padded kind.' A long silence.\n'Put him somewhere [dark and padded] and he goes quiet as a stone. He would not even cry out. Whoever picked those cases knew birds - or knew sound.'",
           "keywords": [
             { "displayText": "dark and padded", "id": "sound_proof_cases", "color": "crime" }
           ]
@@ -84,6 +85,7 @@
     },
     {
       "id": "inspect_birdcage",
+      "alwaysOnTop": true,
       "text": "The [Empty Cage]. The latch is [snapped clean off]. The seed tray is bone dry, and the feathers under the cage have [settled flat].",
       "keywords": [
         { "displayText": "Empty Cage", "id": "broken_latch", "color": "crime" },
@@ -133,7 +135,7 @@
     },
     {
       "id": "inspect_vocab_ledger",
-      "text": "A booklet: 'Phrases We've Taught Rudebeak.' Entries include: 'Hello gorgeous', 'Oscar worthy', and '[Garbage slop]' - the last one furiously crossed out and labeled: '[Maid's fault]'.",
+      "text": "A booklet:\n'Phrases We've Taught Rudebeak.' Entries include:\n'Hello gorgeous', 'Oscar worthy', and '[Garbage slop]' - the last one furiously crossed out and labeled:\n'[Maid's fault]'.",
       "keywords": [
         { "displayText": "Garbage slop", "id": "vocab_ledger", "color": "misc" },
         { "displayText": "Maid's fault", "id": "vocab_ledger", "color": "misc" }
@@ -142,6 +144,6 @@
       "scale": 0.27
     }
   ],
-  "localDeductionSentence": "By the time of the [early sign] the cage already stood empty - no matter what the whole house swears it heard at the [late sign]. The [way out] let the bird leave. The [trick] kept him 'home'.",
-  "localDeductionClueIds": ["missed_snack_6pm", "squawk_at_8pm", "broken_latch", "hidden_speaker"]
+  "localDeductionSentence": "The cage already stood empty by [empty time] - no matter what the whole house swears it heard at [heard time]. The [way out] let the bird leave. The [trick] kept him 'home'.",
+  "localDeductionClueIds": ["time_600pm", "time_800pm", "broken_latch", "hidden_speaker"]
 }

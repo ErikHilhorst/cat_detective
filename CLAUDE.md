@@ -12,7 +12,7 @@ Current state: the case system is playable end-to-end AND the game has its shell
 end scene, and a two-room tutorial case. The protagonist's name is **Dikkie**.
 
 The first case, **Malibu Mansion / "The Missing Macaw"**
-(7 rooms, 56 clues), is fully wired: free-roam movement, room transfers,
+(7 rooms, 65 clues: 56 room clues + 9 case-global TIME clues), is fully wired: free-roam movement, room transfers,
 interactable dialogue with keyword-unlocked clues, character interrogation menus (intro + selectable
 cat-action topics, some evidence- or solve-gated), per-room deduction boards, and a final solve board.
 All ten character sprites and all object sprites are real art (per-name PNGs under each room's
@@ -54,9 +54,11 @@ final board - built entirely on the normal case systems (no special tutorial cod
   solved/visited state + `LoadRoom(saved room)`. All IO failure-tolerant; swap file bodies for
   the KNI/WASM port.
 - **CaseIntro** (`StartCaseIntro`): poster (`Shared/case_poster`, an .mgcb output-rename of
-  `Shared/case of the mising maccaw.png` - keep the typo'd source filename) + typewriter pages
+  `Shared/case of the mising maccaw.jpg` - keep the typo'd source filename) + typewriter pages
   from `Systems/CaseScripts.cs`. Enter completes/advances, Esc skips into the case. Cases with
-  no authored intro skip straight to `LoadCase`.
+  no authored intro skip straight to `LoadCase`. Keep intros to ONE short page, light on noir
+  (playtest 5); the typewriter starts after a short beat (negative `_typewriterTimer`) so the
+  poster lands first.
 - **EndScene** (`StartEndScene`): beats from `CaseScripts.GetEndScene(caseId)`; a beat can show
   `rudebeak.png` (`ShowRudebeak`) or render as a centered title card (`IsCard`). Replaces the old
   `_isGameWon` win banner entirely. Reached from a valid final-solve submit.
@@ -180,10 +182,11 @@ room's recap sentence (`_roomSolvedSentences`). "CASE NOTES >" (bottom-right of 
 forward, "< BOARD" (bottom-left) turns back; Esc backs out one layer (notes -> board -> close).
 Progress readouts live ONLY on the notes page - keep the deduction spread free of counters.
 The notes page also draws **"The Evening"** under the room checklist: every found clue whose
-name carries a timestamp, in chronological order (`TryParseClueTime` reads "7:00 PM" / "7 PM"
-from clue names, auto-shrinks to fit). The WHERE/WHEN word-bank tab sorts its chips the same
-way (`SortCluesByTime`; untimed chips keep discovery order, after the timed ones) - the
-timeline is meant to be READ off the boards, so keep timestamps in clue names.
+name carries a timestamp - i.e. the TIME clues - in chronological order (`TryParseClueTime`,
+auto-shrinks to fit). The WHERE/WHEN word-bank tab sorts its chips the same way
+(`SortCluesByTime`; untimed event chips keep discovery order, after the times) - so the tab
+reads as the evening's known timeline. Local word banks draw from `GetLocalBankClues`
+(room clues + found case-global clues).
 Neither bg has baked titles (the board art keeps only the inspector-panel paper); ALL headers
 are in-engine ink text: the board's left page shows the room name over "What happened here?"
 (-> green "Solved!" once solved; final board = "The Final Solve" / "What really happened?"),
@@ -195,6 +198,11 @@ the notes page draws "The Investigation" / "Deductions so far". Keep new titles 
   Use ` - ` instead of `—` and straight quotes.
 - Dialogue/topic `text` may contain `\n` — `DrawRichText` treats it as a forced line break
   (bulleted lists, radio transmissions). Keep bullets to `- ` (ASCII).
+- **Quoted speech starts on a new line (playtest 5).** Whenever a character's spoken quote
+  begins mid-text (after sentence punctuation or a colon), put a `\n` before the opening `'`.
+  Prefer more pages over walls of prose. Mid-sentence attributions (`,' she says, 'and...`)
+  stay inline. `tools/`-side one-off: the regex `([.!?:]) '` -> `$1\n'` applied this
+  case-wide; follow the rule by hand for new content.
 - **Auto-pagination**: `PaginateDialogue` splits on author `|` first, then auto-splits any page
   that would overflow the box's text area — at `\n` boundaries, then sentence ends, never inside
   a `[keyword]`. Long texts can no longer overflow the box, but still prefer hand-placed `|`
@@ -233,7 +241,7 @@ Call them in that order from `Game1.Update()`. Do not merge them.
 - Only **object layers** are parsed. Tile layers are ignored.
 - Layer named `Collisions` → feeds `_solidBoundaries` (blocks cat movement).
 - Layer named `Triggers` → fade zones; matched to props by name substring (`"desk"`, `"cabinet"`).
-- Layer named `Transfers` → doorways; each object needs two custom properties: `TargetRoom` (folder name) and `TargetSpawn` (spawn point name in the target room).
+- Layer named `Transfers` → doorways; each object needs two custom properties: `TargetRoom` (folder name) and `TargetSpawn` (spawn point name in the target room). Optional: `ArrowDirection` (overrides the doorway arrow heading), `RequiresVisited` (room id the player must have entered once before this door opens - linear-order gating; its arrow draws dim grey and Enter shows a toast until then) and `LockedText` (that toast's text; keep it short, toasts are one line). `verify_level.py` checks `RequiresVisited` names a real room.
 - Layer named `Spawn` → named point objects. `spawn_default` is used on first entry; return spawns are named `spawn_from_<roomId>`.
 - The JSON file is read at runtime with `File.ReadAllText`. Edit it without rebuilding `.mgcb`.
 - Object rectangles only. Tiled polygons and ellipses are not supported yet.
@@ -251,6 +259,8 @@ A safe margin of ~15 px beyond the minimum is recommended.
 
 `case_config.json` (per case):
 - `clues[]` — master clue database (`id`, `roomId`, `isMacroClue`, `category`, `name`, `context`, `inspectorDescription`).
+  `roomId: ""` = **case-global clue** (the time clues): shows in every room's word bank once
+  found, belongs to no room's counter, counts as a slot option everywhere.
 - `rooms[]` — every room id in the case, in display order. Feeds `AllRoomsSolved` and the journal's solves overview. Keep in sync when adding rooms.
 - `finalSolveSentence` — mad-libs template for the final board; `[bracketed]` tags become slots.
 - `finalSolveClueIds[]` — answer clue ids matched to slots **in parse order**. A slot's category is taken from its answer clue, so tags can be readable text (`[Lockdown]`), not just `[WHO]`.
@@ -261,6 +271,10 @@ A safe margin of ~15 px beyond the minimum is recommended.
   for the interaction/highlight check ONLY (`InteractableEntity.InteractZone`). Placement,
   Y-sort, and drawing still use the raw rect. Use for counter-top objects the cat can't
   physically stand next to (kitchen counter items use 60). `verify_level.py` honors it.
+- `interactables[].alwaysOnTop` — draws the sprite at LayerDepth 1, in front of the cat and
+  every prop, instead of Y-sorting. For hero objects that must never be occluded (the living
+  room birdcage). Use sparingly - it breaks depth illusion for anything the cat should be
+  able to walk in front of.
 - `interactables[].spriteAnchor` — where the sprite sits INSIDE the Tiled rect, CSS
   background-position style: `TopRight` tucks the sprite flush against the rect's top and
   right edges. Values: `BottomCenter` (default = classic rect bottom-center), `TopLeft`,
@@ -298,15 +312,22 @@ topics gated on that room (with a queued "X might have some explaining to do..."
 - **Local solve sentences must not exonerate red herrings.** End on the suspicion, not the acquittal.
 - **Name the cast.** Characters get real names in dialogue and on clue chips ("Rosa the Maid"),
   not bare archetypes.
-- **Timetable clues are the good stuff.** Where a clue carries a time, put it in the clue `name`
-  ("Manifest Entry - 7:00 PM", "Dinner Cart - 7:00 PM") so the board itself becomes a timeline
-  (the WHERE/WHEN tab and the notes-page "Evening" list literally sort on it). Never
-  reuse the same timestamp across two unrelated clues.
-- **One clue = one fact (playtest 4).** A clue name carries time + raw observation, never the
-  interpretation a board asks for: "Heavy Cases - 7:00 PM" pre-answered the bedroom board, so it
-  became "Manifest Entry - 7:00 PM" with the illegible signature split into its own clue
-  (`scrawled_signature`). A fact with two implications gets two clues (the 6:47 selfie vs the
-  straw hat at its edge). A clue name may not answer the question its own room's board poses.
+- **Times are their own clues (playtest 5 - the core timeline mechanic).** Every timestamp is a
+  separate case-global clue: `time_700pm` = name "7:00 PM", `roomId: ""`, category WhereWhen,
+  macro (only `time_545pm` is micro). Event clues carry NO time in their name, context, or
+  inspector text ("Dinner Cart", "Manifest Entry", "Lockdown") - the SOURCE dialogue states the
+  pairing once (`[dinner cart, east wing - R.]` next to `[7:00 PM]`, each bracket its own
+  clue), and the player re-pairs event and time on the boards. That re-pairing IS the timeline
+  deduction; revisiting a source to re-read a time is intended play. Global clues appear in
+  every room's word bank once found (`GetLocalBankClues`), belong to no room's counter, and
+  count as slot options in every room (verify_level.py). Never create two time clues for the
+  same minute, and keep non-clue times out of prop text where they could read as evidence
+  (the registry's per-guest arrival times were cut for this; manifest chaff entries like
+  "Linen return - 7:10 PM" are deliberate noise).
+- **One clue = one fact (playtest 4).** A clue name never carries the interpretation a board
+  asks for: "Heavy Cases" pre-answered the bedroom board, so it became "Manifest Entry" with
+  the illegible signature split into its own clue (`scrawled_signature`). A fact with two
+  implications gets two clues (the selfie vs the straw hat at its edge).
 - **Board sentences pose the tension, never the answer (playtest 4).** A solve sentence must not
   quote a timestamp, document name, or distinctive noun that appears in an answer chip's name or
   its discovery text (old entrance board: "sign-in book ... from 6:30 PM on" vs a chip literally
@@ -347,30 +368,33 @@ topics gated on that room (with a queued "X might have some explaining to do..."
 - **HUD progress cues (playtest 3).** The SOLVE button pulses gold once every clue in the room
   is found and turns muted green "SOLVED" after the room's board is solved - players kept
   leaving rooms without solving them. Confrontation clues (only unlockable via gated topics -
-  `_ungatedClueIds` built in `BuildGateIndex`) do NOT hold the pulse back: they unlock after
-  the solve, so the pulse must fire without them.
+  `_ungatedClueIds` built in `BuildGateIndex`) do NOT hold the pulse back, and the room clue
+  counters (HUD + notes checklist) hide them from the total until found
+  (`GetRoomClueCounts(roomId, hideWhileLocked)`) - so SOLVE never pulses at "6/7"
+  (playtest 5 finding).
 - **Confrontation clues (playtest 4 rework).** Gated topics MAY carry unique clues - each
   confrontation slip is recorded as its own clue id so the notebook keeps the late-game record
-  (`early_signin` from Reyes, `hall_rumble_no_soup` from Derek, `cable_grease` from Rosa,
-  `knew_cases_empty` from Marsh). Rules: (1) local answers still need an ungated same-room
-  source (circular otherwise - verifier ERROR); (2) a final answer may come from a
-  `requiresSolve` topic ONLY - the confrontation lock forces those before the final board opens
-  (`early_signin` relies on this), never from a requiresClue-only gate (nothing forces those);
-  (3) a gated clue's gates should be satisfiable in its own room (requiresClue on an in-room
-  clue, or requiresSolve on the room itself) - a cross-room gate (`knew_cases_empty` needs the
-  garden cases) makes the room counter need a detour, and `verify_level.py` WARNs.
+  (`hall_rumble_no_soup` from Derek, `cable_grease` from Rosa, `knew_cases_empty` from Marsh).
+  Rules: (1) local AND final answers always need an ungated source (local: same room;
+  confrontation clues are evidence and near-miss decoys, never answers); (2) a gated clue's
+  gates should be satisfiable in its own room (requiresClue on an in-room clue, or
+  requiresSolve on the room itself) - a cross-room gate (`knew_cases_empty` needs the garden
+  cases) makes the room counter need a detour, and `verify_level.py` WARNs.
+- **Confrontation payoffs stay neutral (playtest 5).** A confrontation reward never points at
+  the culprit ("one signature landed half an hour before its call sheet" was cut) - it
+  sharpens the question, not the answer: Reyes now says only "somebody's evening in this book
+  does not add up." The pointed arithmetic lives on the final board itself.
 - **Gated payoffs are slips and near-confessions, never solutions.** Basil admits the latch but
   not the theft; Marsh blurts "the cases are EMPTY, both of them"; the narrator never comments
   on what a slip means.
-- **Gate-unlock toast.** Finding a clue that gates a topic fires a one-time toast:
-  "Basil (Garden) might have some explaining to do..." - a *person/story* nudge, never a
-  checklist pointer. Solving a room fires the same style of toast for its `requiresSolve`
-  topics. Character names come from the interactable's optional `name` field
-  (fallback: prettified id); keep D. Marsh's as "The Sound Guy" so a cross-room toast can't
-  leak his name early. Toasts are **queued** (back-to-back events all show) and the timer holds
-  while the dialogue box is open, since gate clues usually unlock mid-dialogue. Wiring:
-  `NotebookManager.OnClueUnlocked` -> `Game1.HandleClueUnlocked` + `BuildGateIndex` /
-  `_solveGateIndex` (scans all room configs at case load).
+- **Toasts: solve-gated only (playtest 5).** Clue-gate unlock toasts ("X might have some
+  explaining to do..." on finding a requiresClue gate clue) were REMOVED - they told the
+  player where to go before they could choose. Only SOLVING a room fires that toast, for the
+  `requiresSolve` topics the solve unlocks - an earned reward pointer (via `_solveGateIndex`,
+  scanned in `BuildGateIndex`). Everything else is discovered through the speech-bubble
+  indicator. Character names come from the interactable's optional `name` field (fallback:
+  prettified id); keep D. Marsh's as "The Sound Guy" so a toast can't leak his name early.
+  Toasts are **queued** and the timer holds while the dialogue box is open.
 - **Unheard-topic indicator.** Characters with at least one available (gate satisfied) topic the
   player has not heard show a bobbing speech bubble above their trigger zone (Pass 4b,
   `HasUnseenTopics`). It disappears when every available topic is visited and reappears when a
@@ -406,7 +430,14 @@ garden ──► living_room     (transfer right-side;    spawn_from_garden)
 pool_area ──► garden       (transfer bottom-center; spawn_from_pool_area)
 ```
 
-All connections are bidirectional. Background dimensions per room:
+All connections are bidirectional. **Forced opening order**: the entrance -> living_room door
+carries `RequiresVisited: bedroom` (Reyes: "Photos in progress. East wing first, whiskers."),
+so the player meets Derek and his 8 PM squawk-through-headphones testimony BEFORE the living
+room - the false "bird alive at 8" anchor is built in the bedroom, then demolished at the
+cage. From the living room on, movement is free. Visited rooms persist in the save
+(`visitedRooms`; older saves seed from the saved room + solved rooms).
+
+Background dimensions per room:
 - `entrance`, `living_room`, `kitchen`: 1370 × 768
 - `bedroom`, `garden`, `library`, `pool_area`: 1456 × 816
 
@@ -426,26 +457,37 @@ Rudebeak is the missing macaw.
   cage door.
 - ~6:00 PM — Rudebeak lets himself out through the broken latch and heads for his evening splash
   in the garden bird bath (missed 6:00 snack, evening feathers).
-- 6:30 PM — the crew column in the entrance registry begins; one crew member signed in half an
-  hour before his own call sheet (Reyes's solve-gated confrontation unlocks `early_signin` -
-  never named; the 7:00 call is on the pool area's production schedule, so the half-hour
-  arithmetic is the player's to do).
+- 6:30 PM — the crew column in the entrance registry begins (`time_630pm` unlocks here); one
+  crew member was inside half an hour before his own 7:00 call, but NOTHING in the game states
+  that arithmetic. Reyes's solve-gated confrontation stays deliberately neutral ("somebody's
+  evening in this book does not add up"); the final board's WHEN-1 clause asks for the time
+  "a full half hour before his own call", and the 7:00 call sits on the pool area's crumpled
+  schedule. The subtraction is the player's to do.
 - 6:45–6:47 PM — Coco sees (and accidentally photographs) a figure wheeling big black cases
   through the garden; he finds Rudebeak soggy and docile at the bird bath and seizes the moment.
   Basil, still hiding, witnesses it (straw hat at the photo's edge; his gated confession).
-- 7:00 PM — Two equipment cases are signed in at the bedroom wing ("Manifest Entry - 7:00 PM",
-  the scribbled signature split out as `scrawled_signature`) while the production schedule has
-  D. Marsh in the library. Rosa's dinner cart is also in the wing at 7:00 (duty roster, service
-  tray) and the grips wheel lamp returns through at 7:20 (Wexler mentions it too) — three sets
-  of wheels in one hour. Derek's confrontation slip (`hall_rumble_no_soup`): the hall rattled
-  twice, once with soup smell, once without; Rosa's confrontation slip (`cable_grease`) pins
-  the soupless rumble to equipment, not lamps.
+- 7:00 PM — Two equipment cases are signed in at the bedroom wing (`d_marsh_7pm` "Manifest
+  Entry" + `time_700pm`, the scribbled signature split out as `scrawled_signature`) while the
+  production schedule has D. Marsh in the library. Rosa's dinner cart is also in the wing at
+  7:00 (duty roster, service tray) and the grips wheel lamp returns through at 7:20
+  (`time_720pm`; Wexler mentions it too) — three sets of wheels in one hour. Derek (second
+  floor) hears the heavy rumbles from DOWNSTAIRS - entrance hall, then living room - never
+  "past his door" (playtest 6 geography fix), and everything happens "this evening", never
+  "that night" (the whole case is tonight). His confrontation slip (`hall_rumble_no_soup`):
+  the rumble came twice, same weight, and the kitchen only ran one cart - but he retreats to
+  the squawk: "the bird was still AROUND at eight... right?" Rosa's slip (`cable_grease`)
+  pins the second rumble to equipment, not lamps.
 - Before lockdown — the cases are stashed behind the garden potting shed under a tarp
   (Sound-Proof Cases, found in the garden).
 - 8:00 PM — Fake squawk: tiny speaker taped behind the living room couch (the couch is a
   walk-behind prop — the speaker interactable sits in the corridor behind it, hidden until
   the couch fades), fed by the audio
   cable from the library mixing board. Motive: 47 takes ruined by the bird (session log).
+  TWO earwitnesses: Vivienne ("mid-affirmation") and Derek - it cut straight through his
+  noise-canceling headphones (`derek_heard_squawk`), which is why he is SURE the bird was
+  fine at eight. The bedroom board ends on that false conclusion; the forced
+  bedroom-before-living-room order means the player carries it into the cage room and
+  watches it break.
 - 8:15 PM — Police lockdown. Only the lockdown clue ("Lockdown - 8:15 PM") carries the 8:15 timestamp.
 
 **Deliberate pacing**: the early rooms (entrance, living room, bedroom) never name D. Marsh.
@@ -461,20 +503,21 @@ Rosa (motive note + cart at 7 PM + ambiguous feathers + polish cloth at the cage
 "maybe they are not wrong to look"), Derek (headphones with a spare *audio cable*/ultimatum),
 Chip (PR panic — but he earns commission on the bird), Wexler (thrilled about the drama).
 
-**Final board** (playtest 4: a 7-slot chronology - the finale asks the player to SORT the
-evening, not just name the culprit). Answers in parse order: `early_signin` (WHEN-1, Reyes's
-confrontation clue), `selfie_figure_cases` "Photo - 6:47 PM" (WHEN-2), `d_marsh_7pm`
-"Manifest Entry - 7:00 PM" (WHEN-3), `d_marsh_sound_guy` (WHO), `sound_proof_cases` (WHAT),
-`hidden_speaker` (HOW), `ruined_takes` (WHY).
+**Final board** (playtest 5: pure timeline reconstruction). "He was inside by [WHEN] - a full
+half hour before his own call. The snatch was caught on camera at [WHEN], and by [WHEN] the
+cargo was rolling right past the bedrooms..." Answers in parse order: `time_630pm`,
+`time_647pm`, `time_700pm`, `d_marsh_sound_guy` (WHO), `sound_proof_cases` (WHAT),
+`hidden_speaker` (HOW), `ruined_takes` (WHY). The WHERE/WHEN bank is exactly the eight macro
+time chips, chronologically sorted - the finale IS sorting the evening. All final answers have
+ungated sources.
 
-**Final board near-misses** (keep each category at ~4-6 macro options): WHEN-1 vs
-`guest_registry` "Crew Arrivals - 6:30 PM" (the innocent reading of the same page); WHEN-2 vs
-`eyewitness_645pm` "Coco's Sighting - 6:45 PM" (testimony vs the photo that freezes it);
-WHEN-3 vs `hall_rumble_no_soup` (the sound of the move vs the record of it); WHO adds
-`derek_the_husband`, `the_maid`, `the_gardener`, `knew_cases_empty` (Marsh's slip as a
-pseudo-suspect chip); WHAT/HOW add `headphone_box`, `broken_latch`, `shears_match_latch`,
-`cable_grease`; WHY adds `star_note_to_husband`, `insulted_cooking`, `basil_free_the_bird`,
-`pr_disaster`.
+**Final board near-misses**: WHEN-1 6:30 requires the half-hour arithmetic against the
+schedule's 7:00 call (6:00 and 6:45 tempt); WHEN-2 6:47 vs 6:45 (the photo's exact timestamp
+vs Coco's rounded sighting); WHEN-3 7:00 vs 7:20 (cases vs lamp returns - broken by the
+manifest's readable names and Rosa's cable grease); WHO adds `derek_the_husband`, `the_maid`,
+`the_gardener`, `knew_cases_empty` (Marsh's slip as a pseudo-suspect chip); WHAT/HOW add
+`headphone_box`, `broken_latch`, `shears_match_latch`, `cable_grease`; WHY adds
+`star_note_to_husband`, `insulted_cooking`, `basil_free_the_bird`, `pr_disaster`.
 
 ---
 

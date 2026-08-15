@@ -1,13 +1,94 @@
 {
   "clues": [
     {
-      "id": "lockdown_815pm",
-      "roomId": "entrance",
+      "id": "time_545pm",
+      "roomId": "",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "5:45 PM",
+      "context": "A quarter to six. The light still long, the kitchen getting loud.",
+      "inspectorDescription": "Late afternoon, by the smell of it. Every kitchen in the world gets busy around now."
+    },
+    {
+      "id": "time_600pm",
+      "roomId": "",
       "isMacroClue": true,
       "category": "WhereWhen",
-      "name": "Lockdown - 8:15 PM",
-      "context": "Officer Reyes sealed the mansion at 8:15 PM. Nobody in or out since.",
-      "inspectorDescription": "Doors sealed at 8:15 PM. Officer Reyes does not negotiate. I checked."
+      "name": "6:00 PM",
+      "context": "Six o'clock sharp. The evening's first appointment.",
+      "inspectorDescription": "Six sharp. Some appointments in this house are never missed. Almost never."
+    },
+    {
+      "id": "time_630pm",
+      "roomId": "",
+      "isMacroClue": true,
+      "category": "WhereWhen",
+      "name": "6:30 PM",
+      "context": "Half past six. The evening starting to fill up.",
+      "inspectorDescription": "Half past six. People begin arriving in bunches around then. Allegedly."
+    },
+    {
+      "id": "time_645pm",
+      "roomId": "",
+      "isMacroClue": true,
+      "category": "WhereWhen",
+      "name": "6:45 PM",
+      "context": "A quarter to seven. Golden light, long shadows.",
+      "inspectorDescription": "A good hour for being seen. Or for hoping nobody is looking."
+    },
+    {
+      "id": "time_647pm",
+      "roomId": "",
+      "isMacroClue": true,
+      "category": "WhereWhen",
+      "name": "6:47 PM",
+      "context": "Two minutes past a quarter to seven. Oddly precise.",
+      "inspectorDescription": "Machines remember what people round off. This one came off a screen."
+    },
+    {
+      "id": "time_700pm",
+      "roomId": "",
+      "isMacroClue": true,
+      "category": "WhereWhen",
+      "name": "7:00 PM",
+      "context": "Seven o'clock. The single busiest minute this house has ever had.",
+      "inspectorDescription": "Everyone swears they were somewhere at seven. That is a lot of somewheres for one minute."
+    },
+    {
+      "id": "time_720pm",
+      "roomId": "",
+      "isMacroClue": true,
+      "category": "WhereWhen",
+      "name": "7:20 PM",
+      "context": "Twenty past seven. The evening still on wheels.",
+      "inspectorDescription": "The late traffic. By then the hallway had heard it all before."
+    },
+    {
+      "id": "time_800pm",
+      "roomId": "",
+      "isMacroClue": true,
+      "category": "WhereWhen",
+      "name": "8:00 PM",
+      "context": "Eight o'clock. Full dark.",
+      "inspectorDescription": "The one moment this whole house agrees on - which is exactly what bothers me about it."
+    },
+    {
+      "id": "time_815pm",
+      "roomId": "",
+      "isMacroClue": true,
+      "category": "WhereWhen",
+      "name": "8:15 PM",
+      "context": "A quarter past eight. After this, nobody goes anywhere.",
+      "inspectorDescription": "The moment the doors stopped opening. Everything that matters happened before it."
+    },
+    {
+      "id": "lockdown_815pm",
+      "roomId": "entrance",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "Lockdown",
+      "context": "Officer Reyes sealed the mansion - full perimeter, his seal on every door. Nobody in or out since.",
+      "inspectorDescription": "Doors sealed. Officer Reyes does not negotiate. I checked."
     },
     {
       "id": "pr_disaster",
@@ -21,29 +102,38 @@
     {
       "id": "guest_registry",
       "roomId": "entrance",
-      "isMacroClue": true,
+      "isMacroClue": false,
       "category": "WhereWhen",
-      "name": "Crew Arrivals - 6:30 PM",
-      "context": "The sign-in book logs the whole household coming and going all afternoon; the film crew's column begins at 6:30 PM.",
-      "inspectorDescription": "Wexler at 4:15. Petra plus one bird at 5:05. Coco at 5:50. Staff all day. And a crew column that starts at 6:30 PM. My eyes glazed twice."
+      "name": "Crew Arrivals",
+      "context": "The sign-in book logs the whole household coming and going all afternoon - and then the film crew's column begins, hurried and overlapping.",
+      "inspectorDescription": "Wexler first. Then the handler plus one bird. Then the socialite. And then a crew column too sloppy to count. My eyes glazed twice."
     },
     {
       "id": "husband_hall_7pm",
       "roomId": "bedroom",
       "isMacroClue": false,
       "category": "WhereWhen",
-      "name": "Hallway Rumble - 7 PM",
-      "context": "Derek heard something heavy rattle past the bedroom around 7:00 PM. He assumed it was the dinner cart.",
-      "inspectorDescription": "Wheels. Rattling. Seven o'clock. He didn't look. Could have been the dinner service. Could have been anything on wheels."
+      "name": "Rumble Downstairs",
+      "context": "Derek heard something heavy rumble through the house below - the entrance hall, then the living room - earlier this evening. He assumed the dinner cart.",
+      "inspectorDescription": "Wheels, somewhere under the floorboards. He didn't look. Could have been the dinner service. Could have been anything on wheels."
+    },
+    {
+      "id": "derek_heard_squawk",
+      "roomId": "bedroom",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "Squawk Through Headphones",
+      "context": "Even through brand-new noise-canceling headphones, Derek heard the bird scream. His takeaway: wherever Rudebeak went, he was still around - loud and alive.",
+      "inspectorDescription": "Three hundred dollars of silence, and one squawk cut straight through it. Derek finds that comforting. I find it interesting."
     },
     {
       "id": "d_marsh_7pm",
       "roomId": "bedroom",
-      "isMacroClue": true,
+      "isMacroClue": false,
       "category": "WhereWhen",
-      "name": "Manifest Entry - 7:00 PM",
-      "context": "The delivery manifest logs two equipment cases into the east wing at 7:00 PM.",
-      "inspectorDescription": "Two cases, 7:00 PM sharp, east wing. The manifest is very sure about the time and very quiet about everything else."
+      "name": "Manifest Entry",
+      "context": "The delivery manifest logs two equipment cases into the east wing.",
+      "inspectorDescription": "Two cases, east wing. The manifest is very sure about the hour and very quiet about everything else."
     },
     {
       "id": "scrawled_signature",
@@ -57,20 +147,11 @@
     {
       "id": "hall_rumble_no_soup",
       "roomId": "bedroom",
-      "isMacroClue": true,
+      "isMacroClue": false,
       "category": "WhereWhen",
-      "name": "Second Rumble - No Soup",
-      "context": "Derek finally remembered: the hallway rattled twice that night. Once with the smell of soup. Once without.",
-      "inspectorDescription": "Two rumbles. One smelled of dinner. The other smelled of nothing at all - and nobody looked at either."
-    },
-    {
-      "id": "early_signin",
-      "roomId": "entrance",
-      "isMacroClue": true,
-      "category": "WhereWhen",
-      "name": "Early Sign-In",
-      "context": "Officer Reyes noticed it in the registry: somebody in the crew column signed in a full half hour before their own call time.",
-      "inspectorDescription": "Signed in early, signed in sloppy, blamed traffic. Reyes would not say who. His mustache said he has a guess."
+      "name": "Second Rumble",
+      "context": "Derek finally counted: the heavy rumble downstairs came twice this evening. Same weight, same wheels - and the kitchen only ran one cart.",
+      "inspectorDescription": "Two identical rumbles, one cart run on the roster. Derek filed both under 'not my problem'."
     },
     {
       "id": "cable_grease",
@@ -147,10 +228,10 @@
     {
       "id": "squawk_at_8pm",
       "roomId": "living_room",
-      "isMacroClue": true,
+      "isMacroClue": false,
       "category": "WhereWhen",
-      "name": "8:00 PM Squawk",
-      "context": "Vivienne Vale is certain she heard Rudebeak squawk at exactly 8:00 PM.",
+      "name": "The Squawk",
+      "context": "Vivienne Vale is certain she heard Rudebeak squawk - late, loud, and unmistakable.",
       "inspectorDescription": "She knows that screech anywhere, she says. Nobody actually SAW the bird after dinner."
     },
     {
@@ -293,9 +374,9 @@
       "roomId": "kitchen",
       "isMacroClue": false,
       "category": "WhereWhen",
-      "name": "Dinner Cart - 7:00 PM",
-      "context": "The kitchen duty roster: 'R. - dinner cart to the east wing, 7:00 PM.' The east wing is where the bedrooms are.",
-      "inspectorDescription": "Rosa. A heavy cart. The bedroom wing. Seven o'clock. The plot thickens like a good bechamel."
+      "name": "Dinner Cart",
+      "context": "The kitchen duty roster: 'R. - dinner cart to the east wing.' The east wing is where the bedrooms are.",
+      "inspectorDescription": "Rosa. A heavy cart. The bedroom wing. The plot thickens like a good bechamel."
     },
     {
       "id": "basil_free_the_bird",
@@ -336,20 +417,20 @@
     {
       "id": "eyewitness_645pm",
       "roomId": "pool_area",
-      "isMacroClue": true,
+      "isMacroClue": false,
       "category": "WhereWhen",
-      "name": "Coco's Sighting - 6:45 PM",
-      "context": "Coco the Socialite saw someone hauling large black cases through the garden at about 6:45 PM.",
+      "name": "Coco's Sighting",
+      "context": "Coco the Socialite saw someone hauling large black cases through the garden while the light was still good.",
       "inspectorDescription": "'Some crew person,' she says. She was mostly focused on her drink. The cases, though - those she remembers."
     },
     {
       "id": "selfie_figure_cases",
       "roomId": "pool_area",
-      "isMacroClue": true,
+      "isMacroClue": false,
       "category": "WhereWhen",
-      "name": "Photo - 6:47 PM",
+      "name": "Pool Selfie",
       "context": "A timestamped pool selfie. In the blurry background, a figure hauls large cases along the garden path - and at the frame's edge, someone peeks out from behind the potting shed.",
-      "inspectorDescription": "Timestamped 6:47 PM. The figure is blurry. The cases are not. And behind the shed: one very worried straw hat."
+      "inspectorDescription": "The timestamp is exact. The figure is blurry. The cases are not. And behind the shed: one very worried straw hat."
     },
     {
       "id": "production_schedule",
@@ -410,9 +491,9 @@
       "roomId": "bedroom",
       "isMacroClue": false,
       "category": "WhereWhen",
-      "name": "Lamp Returns - 7:20 PM",
-      "context": "The manifest logs the grip department wheeling lamp returns through the east wing at 7:20 PM.",
-      "inspectorDescription": "More wheels in the wing at 7:20. This hallway was practically a freeway tonight. No wonder nobody looked twice."
+      "name": "Lamp Returns",
+      "context": "The manifest logs the grip department wheeling lamp returns through the east wing.",
+      "inspectorDescription": "More wheels in the wing, later than the rest. This hallway was practically a freeway tonight. No wonder nobody looked twice."
     },
     {
       "id": "household_roster",
@@ -428,9 +509,9 @@
       "roomId": "living_room",
       "isMacroClue": false,
       "category": "WhereWhen",
-      "name": "Missed Snack - 6:00 PM",
-      "context": "Rudebeak's six o'clock seed bowl sits untouched beside the cage. Petra says he has never once missed it.",
-      "inspectorDescription": "The bowl is full. The bird is punctual. By six o'clock he was already somewhere he could not smell it."
+      "name": "Missed Snack",
+      "context": "Rudebeak's evening seed bowl sits untouched beside the cage. Petra says he has never once missed it.",
+      "inspectorDescription": "The bowl is full. The bird is punctual. He was gone before his own supper."
     },
     {
       "id": "flower_bed_bulbs",
@@ -482,9 +563,9 @@
       "roomId": "kitchen",
       "isMacroClue": false,
       "category": "WhereWhen",
-      "name": "Herb Run - 5:45 PM",
-      "context": "The duty roster logs a 5:45 PM herb run in from the garden, initialed 'B.'",
-      "inspectorDescription": "B. came in from the garden just before six. The roster does not say what else he passed on the way."
+      "name": "Herb Run",
+      "context": "The duty roster logs a herb run in from the garden, initialed 'B.'",
+      "inspectorDescription": "B. came in from the garden with the herbs. The roster does not say what else he passed on the way."
     },
     {
       "id": "straw_hat_witness",
@@ -506,6 +587,6 @@
     }
   ],
   "rooms": ["entrance", "living_room", "bedroom", "library", "kitchen", "garden", "pool_area"],
-  "finalSolveSentence": "The [WHEN] put the thief inside before he was ever supposed to be there. The snatch is frozen in the [WHEN], and the [WHEN] tracked his cargo right past the bedrooms. [WHO] hid Rudebeak inside the [WHAT], kept the house believing with the [HOW], and it all comes back to the [WHY].",
-  "finalSolveClueIds": ["early_signin", "selfie_figure_cases", "d_marsh_7pm", "d_marsh_sound_guy", "sound_proof_cases", "hidden_speaker", "ruined_takes"]
+  "finalSolveSentence": "He was inside by [WHEN] - a full half hour before his own call. The snatch was caught on camera at [WHEN], and by [WHEN] the cargo was rolling right past the bedrooms. [WHO] hid Rudebeak inside the [WHAT], kept the house believing with the [HOW], and it all comes back to the [WHY].",
+  "finalSolveClueIds": ["time_630pm", "time_647pm", "time_700pm", "d_marsh_sound_guy", "sound_proof_cases", "hidden_speaker", "ruined_takes"]
 }

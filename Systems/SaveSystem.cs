@@ -20,6 +20,7 @@ namespace CatDetective.Systems
         [JsonPropertyName("roomSolvedStates")]    public Dictionary<string, bool>   RoomSolvedStates    { get; set; } = new();
         [JsonPropertyName("roomSolvedSentences")] public Dictionary<string, string> RoomSolvedSentences { get; set; } = new();
         [JsonPropertyName("visitedTopics")]       public List<string> VisitedTopics   { get; set; } = new();
+        [JsonPropertyName("visitedRooms")]        public List<string> VisitedRooms    { get; set; } = new();
         [JsonPropertyName("firedGateToasts")]     public List<string> FiredGateToasts { get; set; } = new();
         [JsonPropertyName("savedAtUtc")]          public string SavedAtUtc { get; set; } = "";
     }

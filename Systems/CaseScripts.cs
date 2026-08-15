@@ -23,15 +23,11 @@ namespace CatDetective.Systems
             ["malibu_mansion"] = new[]
             {
                 "MALIBU, CALIFORNIA. TUESDAY. 8:42 PM.\n\n" +
-                "The radio said a macaw was missing from the Vale mansion.\n" +
-                "The radio said the police had it handled.\n\n" +
-                "Dikkie had heard the police say that before.",
-
-                "He finished his sardine, stretched once, and walked out " +
-                "into the evening like a rumor with whiskers.\n\n" +
-                "Somewhere up the coast, a bird named Rudebeak was not " +
-                "where a bird named Rudebeak should be.\n\n" +
-                "The cat took the case. Nobody asked him to. Nobody ever does.",
+                "Dikkie heard the reports: Rudebeak, the famous macaw, " +
+                "missing from the Vale mansion.\n\n" +
+                "Intrigued, he finished his sardine, stretched twice, " +
+                "and padded up the coast.\n\n" +
+                "The cat took the case.",
             },
         };
 

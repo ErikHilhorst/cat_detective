@@ -66,7 +66,7 @@
 
 # Case poster (intro screen). The source file keeps its typo'd name on disk;
 # the ;output rename gives the game a clean load path: Shared/case_poster.
-#begin Shared/case of the mising maccaw.png
+#begin Shared/case of the mising maccaw.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyEnabled=False
@@ -75,7 +75,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Shared/case of the mising maccaw.png;Shared/case_poster.png
+/build:Shared/case of the mising maccaw.jpg;Shared/case_poster.jpg
 
 # ── Tutorial (Whisker Academy) backgrounds ─────────────────────────────────
 

@@ -4,21 +4,21 @@
     {
       "id": "inspect_director",
       "name": "Wexler",
-      "text": "The Director, [Wexler], has three cameras of footage to review and is instead watching the room like it owes him a third act. He frames you between his fingers. 'Cat. Great texture. Stay in the light.'",
+      "text": "The Director, [Wexler], has three cameras of footage to review and is instead watching the room like it owes him a third act. He frames you between his fingers.\n'Cat. Great texture. Stay in the light.'",
       "keywords": [
         { "displayText": "Wexler", "id": "the_director", "color": "misc" }
       ],
       "topics": [
         {
           "prompt": "Walk directly through his shot",
-          "text": "He does not get angry. He gets ideas. 'Missing bird. Weeping star. Locked mansion. A cat crosses the frame.' He writes fast. '[Emmy bait], all of it. You cannot BUY a crisis like this.' He underlines something twice.",
+          "text": "He does not get angry. He gets ideas.\n'Missing bird. Weeping star. Locked mansion. A cat crosses the frame.' He writes fast.\n'[Emmy bait], all of it. You cannot BUY a crisis like this.' He underlines something twice.",
           "keywords": [
             { "displayText": "Emmy bait", "id": "director_notes", "color": "misc" }
           ]
         },
         {
           "prompt": "Sit on his notebook",
-          "text": "He slides it out from under you with the ease of a man who has worked with talent before. 'The crew? Grips [hauled the lamps back] after dinner and died - heroes, all of them. Camera department is unionized. And [Marsh] - Marsh is my rock. Used to file a complaint about that bird every single day. Hasn't said a word in two weeks. Personal growth, probably.'",
+          "text": "He slides it out from under you with the ease of a man who has worked with talent before.\n'The crew? Grips [hauled the lamps back] after dinner and died - heroes, all of them. Camera department is unionized. And [Marsh] - Marsh is my rock. Used to file a complaint about that bird every single day. Hasn't said a word in two weeks. Personal growth, probably.'",
           "keywords": [
             { "displayText": "hauled the lamps back", "id": "lamp_returns_720", "color": "misc" },
             { "displayText": "Marsh", "id": "d_marsh_sound_guy", "color": "crime" }
@@ -27,7 +27,7 @@
         {
           "prompt": "Stare pointedly at the red pen in his pocket",
           "requiresClue": "directors_shot_list",
-          "text": "He follows your gaze down to the pen, then back up. 'The shot list. [BETTER WITHOUT HIM], question mark. Note the question mark, cat - that is editorial instinct, not a confession.' He clicks the pen twice. 'Though if it WERE a confession, the ratings would be extraordinary.'",
+          "text": "He follows your gaze down to the pen, then back up.\n'The shot list. [BETTER WITHOUT HIM], question mark. Note the question mark, cat - that is editorial instinct, not a confession.' He clicks the pen twice.\n'Though if it WERE a confession, the ratings would be extraordinary.'",
           "keywords": [
             { "displayText": "BETTER WITHOUT HIM", "id": "directors_shot_list", "color": "misc" }
           ]
@@ -41,7 +41,7 @@
       "name": "The Sound Guy",
       "revealName": "D. Marsh",
       "revealNameOnClue": "d_marsh_sound_guy",
-      "text": "The [Sound Guy]'s badge reads '[D. Marsh].' He is very busy re-coiling a cable that was already coiled. 'Nice cat,' he says, half an octave too high. The coil slips out of his hands.",
+      "text": "The [Sound Guy]'s badge reads '[D. Marsh].' He is very busy re-coiling a cable that was already coiled.\n'Nice cat,' he says, half an octave too high. The coil slips out of his hands.",
       "keywords": [
         { "displayText": "Sound Guy", "id": "d_marsh_sound_guy", "color": "crime" },
         { "displayText": "D. Marsh", "id": "d_marsh_sound_guy", "color": "crime" }
@@ -49,14 +49,14 @@
       "topics": [
         {
           "prompt": "Stare at him. Do not blink.",
-          "text": "He lasts eleven seconds. 'What. WHAT. It's boom mics, okay? I do boom mics.' He wipes his palms on his sleeves. 'Look, I was HERE at seven. Library. Audio setup. It's [on the schedule]. Check the schedule. Everyone should check the schedule.'",
+          "text": "He lasts eleven seconds.\n'What. WHAT. It's boom mics, okay? I do boom mics.' He wipes his palms on his sleeves.\n'Look, I was HERE at seven. Library. Audio setup. It's [on the schedule]. Check the schedule. Everyone should check the schedule.'",
           "keywords": [
             { "displayText": "on the schedule", "id": "production_schedule", "color": "misc" }
           ]
         },
         {
           "prompt": "Paw at his headphones",
-          "text": "He grabs them protectively. 'I'm monitoring levels.' You look at the jack. He looks at the jack. The cable ends a foot short of the board, plugged into [nothing at all]. 'Wireless monitoring,' he explains, to a cat, with total conviction.",
+          "text": "He grabs them protectively.\n'I'm monitoring levels.' You look at the jack. He looks at the jack. The cable ends a foot short of the board, plugged into [nothing at all].\n'Wireless monitoring,' he explains, to a cat, with total conviction.",
           "keywords": [
             { "displayText": "nothing at all", "id": "marsh_headphones", "color": "crime" }
           ]
@@ -64,7 +64,7 @@
         {
           "prompt": "Follow the wall cable with your eyes, slowly",
           "requiresClue": "audio_cable",
-          "text": "You trace it: board, floor, wainscoting, gone. He watches you do it. 'That's [grounding]. Cables need grounding. Into walls. It's an audio thing, you wouldn't-' He stops himself explaining audio engineering to a cat, sits down at the mixer, and very carefully touches nothing.",
+          "text": "You trace it: board, floor, wainscoting, gone. He watches you do it.\n'That's [grounding]. Cables need grounding. Into walls. It's an audio thing, you wouldn't-' He stops himself explaining audio engineering to a cat, sits down at the mixer, and very carefully touches nothing.",
           "keywords": [
             { "displayText": "grounding", "id": "audio_cable", "color": "crime" }
           ]
@@ -72,7 +72,7 @@
         {
           "prompt": "Sit at his feet, smelling of tarp and potting shed",
           "requiresClue": "sound_proof_cases",
-          "text": "You settle in close - close enough that he can smell exactly where you have been: mulch, tarp, cold metal latches. He goes pale. 'They're empty! The cases are [EMPTY], both of them, why would I even-' He hears himself say it. The library gets very, very quiet. 'I have a lot of levels to monitor,' he whispers.",
+          "text": "You settle in close - close enough that he can smell exactly where you have been: mulch, tarp, cold metal latches. He goes pale.\n'They're empty! The cases are [EMPTY], both of them, why would I even-' He hears himself say it. The library gets very, very quiet.\n'I have a lot of levels to monitor,' he whispers.",
           "keywords": [
             { "displayText": "EMPTY", "id": "knew_cases_empty", "color": "crime" }
           ]
@@ -80,7 +80,7 @@
         {
           "prompt": "Sit on the mixing board and stare into his soul",
           "requiresSolve": "library",
-          "text": "He tries to wait you out. Nobody has ever waited out a cat.|'FINE. You want the truth? That bird ruined [forty-seven takes]. FORTY-SEVEN. Do you know what that does to a person who listens for a living? I hear the squawk when I close my eyes.'|He catches his breath, and something careful comes back into his voice. 'But nobody HURT anybody. Wherever that bird is, I am sure he is... comfortable. Safer than that circus of a living room, probably.' His eyes drift to the window, out toward the garden. He looks away slowly, like the view is an ex.",
+          "text": "He tries to wait you out. Nobody has ever waited out a cat.|'FINE. You want the truth? That bird ruined [forty-seven takes]. FORTY-SEVEN. Do you know what that does to a person who listens for a living? I hear the squawk when I close my eyes.'|He catches his breath, and something careful comes back into his voice.\n'But nobody HURT anybody. Wherever that bird is, I am sure he is... comfortable. Safer than that circus of a living room, probably.' His eyes drift to the window, out toward the garden. He looks away slowly, like the view is an ex.",
           "keywords": [
             { "displayText": "forty-seven takes", "id": "ruined_takes", "color": "crime" }
           ]
@@ -102,7 +102,7 @@
     {
       "id": "inspect_session_log",
                 "spriteAnchor": "TopRight",
-      "text": "A session log wedged behind the podium: 'TAKE 12 - bird. TAKE 23 - bird. TAKE 47 - [RUINED. BIRD. AGAIN.]' The handwriting gets angrier with every page. The last page has torn through.",
+      "text": "A session log wedged behind the podium:\n'TAKE 12 - bird. TAKE 23 - bird. TAKE 47 - [RUINED. BIRD. AGAIN.]' The handwriting gets angrier with every page. The last page has torn through.",
       "keywords": [
         { "displayText": "RUINED. BIRD. AGAIN.", "id": "ruined_takes", "color": "crime" }
       ],
@@ -112,7 +112,7 @@
     {
       "id": "inspect_shot_list",
                 "spriteAnchor": "TopRight",
-      "text": "The Director's shot list for today. Items include: 'Rudebeak reaction shot - [CANCELLED].' Next to it, in red pen: '[BETTER WITHOUT HIM?]'",
+      "text": "The Director's shot list for today. Items include:\n'Rudebeak reaction shot - [CANCELLED].' Next to it, in red pen:\n'[BETTER WITHOUT HIM?]'",
       "keywords": [
         { "displayText": "CANCELLED", "id": "directors_shot_list", "color": "misc" },
         { "displayText": "BETTER WITHOUT HIM?", "id": "directors_shot_list", "color": "misc" }

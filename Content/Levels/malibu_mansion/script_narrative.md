@@ -5,12 +5,35 @@ A prose rendering of the case as it currently exists in `case_config.json` and t
 and macro status are listed in the table at the end of each chapter. Timestamps are called out
 inline because the timeline IS the mystery.
 
-UPDATED after the timeline rework (R1-R5, see `script_timeline_analysis.md`): confrontation
-slips now unlock their own clues, bundled clues were atomized, every solve sentence was
-de-keyed, and the final board is a 7-slot chronology.
+UPDATED after the time-atomization rework (playtest 5): every timestamp is now its own
+CASE-GLOBAL clue, separate from the event that carries it.
+
+## The Time System
+
+Nine time clues exist (`time_545pm` "5:45 PM" ... `time_815pm` "8:15 PM"), with `roomId: ""` -
+once found, a time appears in EVERY room's word bank. Event clues carry no time anywhere (name,
+context, or inspector text): the pairing exists only in the source dialogue, where the two
+brackets sit side by side ("[dinner cart, east wing - R.] - [7:00 PM]"). The boards then ask
+the player to re-pair events with times ("...wheels her [Dinner Cart] into the bedroom wing at
+[7:00 PM]") - reconstructing the timeline IS the deduction, and revisiting a source to re-read
+a time is intended play. The WHERE/WHEN tab sorts chips chronologically, times first, so it
+reads as the evening assembling itself.
 
 Legend for the tables: (M) = macro clue (appears on the final board), (L) = local-only decoy,
-(C) = confrontation clue (unlocks from a gated topic).
+(C) = confrontation clue (unlocks from a gated topic). Time clues are listed once below, not
+per chapter:
+
+| Time clue | Id | Macro? | Unlock sources |
+|---|---|---|---|
+| 5:45 PM | `time_545pm` | no | kitchen duty roster |
+| 6:00 PM | `time_600pm` | yes | Petra's seed-bowl topic |
+| 6:30 PM | `time_630pm` | yes | guest registry |
+| 6:45 PM | `time_645pm` | yes | Coco's "quarter to seven" |
+| 6:47 PM | `time_647pm` | yes | Coco's phone timestamp |
+| 7:00 PM | `time_700pm` | yes | manifest, duty roster, crumpled schedule, Derek |
+| 7:20 PM | `time_720pm` | yes | manifest (lamp returns line) |
+| 8:00 PM | `time_800pm` | yes | Vivienne's "on the dot"; Derek's yowl topic |
+| 8:15 PM | `time_815pm` | yes | Reyes, the radio |
 
 ---
 
@@ -28,7 +51,11 @@ Dikkie cannot talk. Dikkie does not need to. People explain themselves to cats.
 
 ## Chapter 1 - The Entrance: Sealed Doors
 
-The front hall is a crime scene's waiting room. **Officer Reyes** guards the door with the weary
+The front hall is a crime scene's waiting room - and a fork with one tine bent shut: the
+living room doorway is gated (`RequiresVisited: bedroom`, its paw-print arrow dimmed grey)
+until Dikkie has been to the east wing. Try it early and Reyes waves you off: "'Photos in
+progress,' says Reyes. 'East wing first, whiskers.'" Once the player has met Derek, the house
+opens up for good. **Officer Reyes** guards the door with the weary
 dignity of a man who trained for hostage negotiations and got missing poultry instead. Sit at
 attention beside him and he confirms the frame of the whole case: **Lockdown - 8:15 PM**, full
 perimeter, his seal on every door. Meow at the sealed front door and he adds the corollary via
@@ -48,24 +75,23 @@ the 8:15 seal and the locked north gate. The **Guest Registry** is the room's re
 Coco at 5:50, staff since morning - and then a **crew column that begins at 6:30 PM**, the
 signatures hurried, overlapping, hard to count.
 
-The confrontation beat (solve-gated - Reyes is now part of the confrontation lock): solve the
-entrance board, then nudge the registry toward him. He taps the page: one signature in the crew
-column landed **half an hour before** its own call sheet - signed sloppy, blamed traffic. This
-unlocks **Early Sign-In**, a macro clue and the final board's WHEN-1 answer. He never says
-whose; the half-hour arithmetic (6:30 sign-in vs the 7:00 call on the pool area's schedule) is
-the player's to do.
+The confrontation beat (solve-gated - Reyes is part of the confrontation lock) is now
+deliberately NEUTRAL: solve the entrance board, nudge the registry toward him, and he offers
+only his professional opinion - sloppy signatures, hurried arrivals, traffic excuses.
+"Somebody's evening in this book does not add up. Whose? That's your department, whiskers."
+He never points; the half-hour arithmetic (6:30 crew column vs the 7:00 call on the pool
+area's schedule) belongs entirely to the final board.
 
-**Local solve:** "Whoever took Rudebeak never left: the [__] made sure of that. The suspect
-pool arrived in the [__] column - and Chip will pay anything to keep it quiet, because all he
-smells is a [__]." (Answers: Lockdown / Crew Arrivals / PR Disaster. North Gate Locked is a
-live decoy for slot 1 - it also "sealed" something, just not everything.)
+**Local solve:** "The doors have been sealed since the [__] hit at [__]: the thief is still
+inside. Every suspect is inked into the [__] - and Chip only smells a [__]." (Answers:
+Lockdown / 8:15 PM / Crew Arrivals / PR Disaster - the room teaches the event+time pairing
+mechanic on its easiest pair. North Gate Locked decoys the seal; 6:30 PM decoys the time.)
 
-| Clue | Id | Category | Time |
+| Clue | Id | Category | Notes |
 |---|---|---|---|
-| Lockdown - 8:15 PM (M) | `lockdown_815pm` | WhereWhen | 8:15 PM |
+| Lockdown (L) | `lockdown_815pm` | WhereWhen | event; its time is `time_815pm` |
 | PR Disaster (M) | `pr_disaster` | Why | - |
-| Crew Arrivals - 6:30 PM (M) | `guest_registry` | WhereWhen | 6:30 PM |
-| Early Sign-In (M)(C) | `early_signin` | WhereWhen | relative: 30 min early |
+| Crew Arrivals (L) | `guest_registry` | WhereWhen | event; its time is `time_630pm` |
 | North Gate Locked (L) | `north_gate_locked` | WhereWhen | all evening |
 | Chip's Commission (L) | `managers_commission` | Why | - |
 | Household Sign-In (L) | `household_roster` | Who | - |
@@ -74,7 +100,8 @@ live decoy for slot 1 - it also "sealed" something, just not everything.)
 
 ## Chapter 2 - The Living Room: The Scene of the Crime
 
-The heart of the case. **Vivienne Vale** is draped across the chaise in couture worn AS grief.
+The heart of the case - and thanks to the forced order, the player walks in carrying Derek's
+confident claim that the bird was alive at eight. This room exists to break it. **Vivienne Vale** is draped across the chaise in couture worn AS grief.
 Purr against her arm and she gives the case its false anchor: she heard Rudebeak at
 **8:00 PM, on the dot**, mid-affirmation - "I would know that screech anywhere." Paw at the
 empty cage and she deflects toward the staff: the bird's **vocabulary problem** is Rosa's
@@ -116,33 +143,47 @@ beat - "That is not mine. That is not RUDEBEAK'S" - then widens the suspect pool
 she can: the **film people** wire everything, the staff hold keys to everything, even Derek has
 been buying gadgets. There are cables in her walls she has never been introduced to.
 
-**Local solve** (now the room's real thesis - gone by six vs heard at eight): "By the time of
-the [__] the cage already stood empty - no matter what the whole house swears it heard at the
-[__]. The [__] let the bird leave. The [__] kept him 'home'." (Answers: Missed Snack 6:00 /
-8:00 Squawk / Broken Latch / Hidden Speaker. Settled Feathers decoys the first slot, the
-Documentary Camera decoys the What slots.)
+**Local solve** (the room's thesis - gone by six vs heard at eight, asked in TIMES): "The cage
+already stood empty by [__] - no matter what the whole house swears it heard at [__]. The [__]
+let the bird leave. The [__] kept him 'home'." (Answers: 6:00 PM / 8:00 PM / Broken Latch /
+Hidden Speaker. The player must recall which time belongs to the untouched bowl and which to
+the screech; event chips like Missed Snack, The Squawk and Settled Feathers sit in the same
+bank as tempting wrong inserts, and the Documentary Camera decoys the What slots.)
 
-| Clue | Id | Category | Time |
+| Clue | Id | Category | Notes |
 |---|---|---|---|
-| 8:00 PM Squawk (M) | `squawk_at_8pm` | WhereWhen | 8:00 PM |
-| Broken Latch (M) | `broken_latch` | What | ~6:00 PM (implied) |
+| The Squawk (L) | `squawk_at_8pm` | WhereWhen | event; its time is `time_800pm` |
+| Broken Latch (M) | `broken_latch` | What | forced ~6:00, implied |
 | Hidden Speaker (M) | `hidden_speaker` | What | - |
 | Dropped Glove (L) | `glove_by_cage` | Who | - |
 | Lemon Polish Cloth (L) | `polish_cloth` | Who | - |
 | Documentary Camera (L) | `documentary_camera` | What | all day |
 | Vocab Ledger (L) | `vocab_ledger` | Why | - |
-| Missed Snack - 6:00 PM (L) | `missed_snack_6pm` | WhereWhen | 6:00 PM |
+| Missed Snack (L) | `missed_snack_6pm` | WhereWhen | event; its time is `time_600pm` |
 | Settled Feathers (L) | `settled_feathers` | WhereWhen | hours old |
 
 ---
 
 ## Chapter 3 - The Bedroom: Wheels in the Night
 
-The east wing. **Derek**, the husband, radiates the deep peace of a man who has finally solved
-his one problem - brand-new noise-canceling headphones clamped over his ears. Paw at his
-trailing cable and he surfaces long enough to log the room's key timestamp: something heavy
-**rattled down the hall around seven**. Wheels. Dinner cart, probably. He didn't look. Wasn't
-his problem.
+(The player is HERE before the living room - the entrance's living room door is gated on
+visiting the bedroom first: "'Photos in progress,' says Reyes. 'East wing first, whiskers.'"
+The point of the forced order: this room builds the false 8 PM anchor that the living room
+will break.)
+
+The east wing, second floor. **Derek**, the husband, radiates the deep peace of a man who has
+finally solved his one problem - brand-new noise-canceling headphones clamped over his ears.
+Paw at his trailing cable and he surfaces long enough to log what he heard: something heavy
+**rumbled through downstairs** earlier this evening - the entrance hall, then the living room -
+around **seven**, maybe later. Wheels. Dinner cart, probably. He didn't look. Wasn't his
+problem.
+
+Yowl at him at full volume and he does not flinch - three hundred dollars well spent. Exactly
+one thing has ever gotten through these: **that bird, at eight o'clock tonight**, a **squawk
+straight through the noise canceling**. His conclusion, delivered smug as a sealed jar:
+wherever that bird went, he was still around at eight. Loud and alive. Case closed. Goodnight.
+(Derek is now the squawk's second earwitness - and the bedroom's whole thesis is his false
+comfort.)
 
 Stare at the headphones until he explains and Derek self-incriminates in the most Derek way
 possible: the bird screamed at five every morning, he left Viv a note - **do something** about
@@ -168,27 +209,32 @@ cases at 7:00, lamps at 7:20), and Derek's own memory is deliberately vague ("ar
 maybe later"), so his rumble alone cannot be pinned to any of them. Disambiguating the wheels
 takes Rosa's cable-grease slip from the kitchen.
 
-Solve-gated beat: knead the duvet beside him and Derek, prompted by whiskers, remembers the
-detail that breaks the wing wide open: the hall rattled **twice** that night. Once with the
-soup smell. Once without. "Huh." This is now its own clue - **Second Rumble - No Soup** -
-macro, and a near-miss decoy on the final board's WHEN-3 slot.
+Solve-gated beat: knead the duvet beside him and Derek, prompted by whiskers, finally counts:
+that rumble downstairs came **twice** this evening. Same weight, same wheels - and the kitchen
+only ran one cart. He frowns for the first time all evening. "Strange. But the bird squawked
+at eight, straight through my headphones. So he was still AROUND at eight... right?" The frown
+stays. (The slip and the retreat in one breath: he sees the hole and plugs it with the fake
+squawk - dramatic irony the player already owns if they solved the living room.)
 
-**Local solve:** "The [__] passed Derek's door and he never looked up. The paperwork knows why
-he should have: it logs the [__] into the wing, backed by nothing but a [__]." (Answers:
-Hallway Rumble / Manifest Entry / Scrawled Signature. The Lamp Returns decoy the middle slot -
-they are also logged into the wing, but THEIR entry has a department name on it.)
+**Local solve:** "The [__] shook the floorboards and Derek never looked up. The paperwork logs
+the [__] into the wing at [__], under nothing but a [__]. Only one sound ever beat the noise
+canceling: the [__], at [__] - so the bird was still around... right?" (Answers: Rumble
+Downstairs / Manifest Entry / 7:00 PM / Scrawled Signature / Squawk Through Headphones /
+8:00 PM - six slots, the room's board ends on Derek's false conclusion. The Lamp Returns and
+7:20 PM decoy the paperwork pair; the lamps' entry has a department name on it.)
 
-| Clue | Id | Category | Time |
+| Clue | Id | Category | Notes |
 |---|---|---|---|
-| Manifest Entry - 7:00 PM (M) | `d_marsh_7pm` | WhereWhen | 7:00 PM |
-| Second Rumble - No Soup (M)(C) | `hall_rumble_no_soup` | WhereWhen | time unknown - the point |
+| Manifest Entry (L) | `d_marsh_7pm` | WhereWhen | event; its time is `time_700pm` |
+| Second Rumble (C) | `hall_rumble_no_soup` | WhereWhen | two rumbles, one cart run |
+| Squawk Through Headphones (L) | `derek_heard_squawk` | WhereWhen | its time is `time_800pm` |
 | Derek the Husband (M) | `derek_the_husband` | Who | - |
 | Derek's Ultimatum (M) | `star_note_to_husband` | Why | - |
 | Derek's Headphones (M) | `headphone_box` | What | bought yesterday |
 | Scrawled Signature (L) | `scrawled_signature` | Who | - |
-| Hallway Rumble - 7 PM (L) | `husband_hall_7pm` | WhereWhen | ~7:00 PM, vague |
+| Rumble Downstairs (L) | `husband_hall_7pm` | WhereWhen | "around seven, maybe later" |
 | Service Tray (L) | `service_tray` | What | - |
-| Lamp Returns - 7:20 PM (L) | `lamp_returns_720` | WhereWhen | 7:20 PM |
+| Lamp Returns (L) | `lamp_returns_720` | WhereWhen | event; its time is `time_720pm` |
 
 ---
 
@@ -297,22 +343,22 @@ lamps. (The reward for accusing the red herring: she hands the player the thread
 cases.)
 
 **Local solve:** "The house has its favorite suspect: [__], with a key to every door. The
-fridge gives her fury a name - the [__] - and the duty roster wheeled her straight into the
-bedroom wing: the [__]." (Answers: Rosa / Insulted Cooking / Dinner Cart. Rosa's Paella is a
-live motive decoy; the Ring of House Keys tempts the suspect slot; the Herb Run decoys the
-roster slot but runs the wrong direction.)
+fridge gives her fury a name - the [__] - and the roster wheels her [__] into the bedroom wing
+at [__]." (Answers: Rosa / Insulted Cooking / Dinner Cart / 7:00 PM. Rosa's Paella is a live
+motive decoy; the Ring of House Keys tempts the suspect slot; the Herb Run and 5:45 PM decoy
+the roster pair but run the wrong direction.)
 
-| Clue | Id | Category | Time |
+| Clue | Id | Category | Notes |
 |---|---|---|---|
 | Rosa the Maid (M) | `the_maid` | Who | - |
 | Insulted Cooking (M) | `insulted_cooking` | Why | - |
 | Smell of Cable Grease (M)(C) | `cable_grease` | What | - |
-| Dinner Cart - 7:00 PM (L) | `dinner_cart_7pm` | WhereWhen | 7:00 PM |
+| Dinner Cart (L) | `dinner_cart_7pm` | WhereWhen | event; its time is `time_700pm` |
 | Rosa's Paella (L) | `paella_pot` | Why | - |
 | Feathers in the Bin (L) | `kitchen_feathers` | What | - |
 | Suspected Bribery (L) | `treat_jar_bribe` | Why | - |
 | Ring of House Keys (L) | `rosa_keys` | Who | - |
-| Herb Run - 5:45 PM (L) | `herb_run_545` | WhereWhen | 5:45 PM |
+| Herb Run (L) | `herb_run_545` | WhereWhen | event; its time is `time_545pm` |
 
 ---
 
@@ -406,19 +452,18 @@ Gated beat (on the schedule): sprawl across it and Coco reads over her sunglasse
 o'clock, library, audio setup? Honey. At quarter to seven that man was doing CARDIO through
 the begonias with two giant cases. **I know what I saw**."
 
-**Local solve:** "The crew's paperwork - the [__] - says where everyone was meant to be at
-seven. But [__] says otherwise, and the [__] freezes the proof: those cases crossed the garden
-while their owner was still on the clock somewhere else." (Answers: Production Schedule /
-Coco's Sighting 6:45 / Photo 6:47 - three WHERE/WHEN slots, chronological, with the Abandoned
-Spritz as the live decoy. Coco's Sighting is now a WhereWhen clue, "Coco's Sighting -
-6:45 PM", so the final WHO bank holds only plausible suspects.)
+**Local solve:** "The [__] promises its owner to the library for seven o'clock sharp. But the
+cases crossed the garden at [__] - and the [__] froze them in place at [__]." (Answers:
+Production Schedule / 6:45 PM / Pool Selfie / 6:47 PM. The room's whole point is the 6:45/6:47
+near-pair: testimony rounds, machines don't. The Abandoned Spritz and Coco's Sighting are the
+event decoys.)
 
-| Clue | Id | Category | Time |
+| Clue | Id | Category | Notes |
 |---|---|---|---|
-| Coco's Sighting - 6:45 PM (M) | `eyewitness_645pm` | WhereWhen | 6:45 PM |
-| Photo - 6:47 PM (M) | `selfie_figure_cases` | WhereWhen | 6:47 PM |
-| Production Schedule (L) | `production_schedule` | WhereWhen | 7:00 PM (assignment) |
-| Straw Hat in Frame (L) | `straw_hat_witness` | Who | 6:47 PM |
+| Coco's Sighting (L) | `eyewitness_645pm` | WhereWhen | event; its time is `time_645pm` |
+| Pool Selfie (L) | `selfie_figure_cases` | WhereWhen | event; its time is `time_647pm` |
+| Production Schedule (L) | `production_schedule` | WhereWhen | the 7:00 alibi document |
+| Straw Hat in Frame (L) | `straw_hat_witness` | Who | in the selfie's corner |
 | Abandoned Spritz (L) | `warm_spritz` | WhereWhen | before sunset |
 | Bright Feather (L) | `feather_in_filter` | What | - |
 
@@ -437,14 +482,14 @@ What actually happened, assembled from the clues that carry each timestamp:
 | 5:50 PM | Coco signs in, heads for the pool | `guest_registry`, `warm_spritz` |
 | just before 6:00 | Basil forces the cage latch with the shears, drops one glove, panics at the front door, bolts to hide behind the shed | `shears_match_latch`, `glove_by_cage`, Basil's confession |
 | 6:00 PM | Rudebeak lets himself out; his snack goes untouched; evening splash at the bird bath | `missed_snack_6pm`, `bird_bath_feathers` |
-| 6:30 PM | The crew column in the registry begins - one arrival is half an hour ahead of its own call sheet | `guest_registry`, `early_signin` (Reyes's confrontation) |
+| 6:30 PM | The crew column in the registry begins - one arrival is half an hour ahead of its own call sheet, though nothing in the game says so | `guest_registry`, `time_630pm` |
 | 6:45-6:47 PM | A figure wheels two big cases through the garden; finds Rudebeak soggy and docile; Coco sees it, her selfie catches it - and catches Basil's straw hat watching from behind the shed | `eyewitness_645pm`, `selfie_figure_cases`, `straw_hat_witness` |
 | 6:55 PM | Manifest: catering ice run | manifest (`inspect_delivery_manifest`) |
 | 7:00 PM | Two equipment cases signed into the east wing under a scribble - while the schedule has D. Marsh in the library. Rosa's dinner cart is in the wing the same hour. Derek hears wheels - twice: once with soup smell, once without; the soupless one smelled of cable grease | `d_marsh_7pm`, `scrawled_signature`, `production_schedule`, `dinner_cart_7pm`, `husband_hall_7pm`, `hall_rumble_no_soup`, `cable_grease` |
 | 7:10 PM | Linen return, housekeeping | manifest |
 | 7:20 PM | Grip department wheels lamp returns through the wing | `lamp_returns_720` |
 | before lockdown | The cases end up stashed behind the potting shed under a tarp, boot prints deep at the toe | `sound_proof_cases`, `boot_prints_shed` |
-| 8:00 PM | The fake squawk: speaker under the couch, fed by the cable from the library mixing board | `squawk_at_8pm`, `hidden_speaker`, `audio_cable` |
+| 8:00 PM | The fake squawk: speaker under the couch, fed by the cable from the library mixing board. Two earwitnesses: Vivienne, and Derek - straight through his noise canceling | `squawk_at_8pm`, `derek_heard_squawk`, `time_800pm`, `hidden_speaker`, `audio_cable` |
 | 8:15 PM | Reyes seals the mansion; north gate confirmed locked all evening | `lockdown_815pm`, `north_gate_locked` |
 
 The design of the deceit: three sets of wheels share the 7:00 hour (cart, cases, lamps), so
@@ -454,28 +499,28 @@ the truth - only the untouched 6:00 snack bowl says otherwise.
 
 ## The Final Solve
 
-Now a seven-slot chronology - the finale asks the player to SORT the evening:
+Pure timeline reconstruction - the finale asks the player to place three TIMES into the
+theft's story:
 
-"The [WHEN-1] put the thief inside before he was ever supposed to be there. The snatch is
-frozen in the [WHEN-2], and the [WHEN-3] tracked his cargo right past the bedrooms. [WHO] hid
+"He was inside by [WHEN-1] - a full half hour before his own call. The snatch was caught on
+camera at [WHEN-2], and by [WHEN-3] the cargo was rolling right past the bedrooms. [WHO] hid
 Rudebeak inside the [WHAT], kept the house believing with the [HOW], and it all comes back to
 the [WHY]."
 
-| Slot | Answer | The near-miss it must beat |
+| Slot | Answer | The reasoning it demands |
 |---|---|---|
-| WHEN-1 | Early Sign-In | Crew Arrivals - 6:30 PM (the innocent reading of the same page) |
-| WHEN-2 | Photo - 6:47 PM | Coco's Sighting - 6:45 PM (testimony vs the photo that freezes it) |
-| WHEN-3 | Manifest Entry - 7:00 PM | Second Rumble - No Soup (the sound of the move vs the record of it) |
-| WHO | Sound Guy: D. Marsh | Derek (ultimatum in writing), Rosa (skull + keys), Basil (broke the latch), 'The Cases Are EMPTY' (the slip as pseudo-suspect) |
-| WHAT | Sound-Proof Cases | Derek's Headphones, Broken Latch, Bent Shears, Smell of Cable Grease |
-| HOW | Hidden Speaker | Derek's Headphones (the rival audio device), same What pool |
-| WHY | Ruined Takes | Derek's Ultimatum, Insulted Cooking, Cages Are Prisons, PR Disaster |
+| WHEN-1 | 6:30 PM | "half an hour before his own call" - the call (7:00) is on the crumpled schedule; the crew column start (6:30) is in the registry. The player does the subtraction. |
+| WHEN-2 | 6:47 PM | "caught on camera" - the phone's exact timestamp beats Coco's rounded 6:45. |
+| WHEN-3 | 7:00 PM | the manifest hour, against 7:20 (the lamps) - broken by readable names on the manifest and Rosa's cable grease. |
+| WHO | Sound Guy: D. Marsh | vs Derek (ultimatum in writing), Rosa (skull + keys), Basil (broke the latch), 'The Cases Are EMPTY' (the slip as pseudo-suspect chip) |
+| WHAT | Sound-Proof Cases | vs Derek's Headphones, Broken Latch, Bent Shears, Smell of Cable Grease |
+| HOW | Hidden Speaker | vs Derek's Headphones (the rival audio device), same What pool |
+| WHY | Ruined Takes | vs Derek's Ultimatum, Insulted Cooking, Cages Are Prisons, PR Disaster |
 
-The WHERE/WHEN bank holds eight macro chips for three slots - and the word bank now sorts them
-chronologically, so the timeline is read, not remembered. The board only opens once every room
-is solved AND every confrontation has been heard - Reyes, Vivienne, Derek, Rosa, Basil, and
-Marsh each owe the player their slip before the accusation, which also guarantees the
-confrontation clues (including the WHEN-1 answer) are in the notebook.
+The WHERE/WHEN bank is exactly the eight macro time chips, chronologically sorted - the
+evening laid out end to end, with the player choosing which three minutes are the crime. All
+final answers come from ungated sources. The board still opens only once every room is solved
+AND every confrontation heard (Reyes, Vivienne, Derek, Rosa, Basil, Marsh).
 
 ## The Red-Herring Web
 
@@ -506,7 +551,9 @@ Status after the timeline rework:
    whereabouts is Marsh's look toward the garden. A beat worth landing in the end scene.
 3. **RESOLVED - Coco seeing Rosa's cart** now reads "stormed past the windows with that cart
    of hers".
-4. **OPEN - the squawk heard by whom?** Only Vivienne attests to the 8:00 squawk in dialogue.
-   A second earwitness (Chip? Coco through a window?) would strengthen the speaker gag - or
-   keep it Vivienne-only as characterization. (The living room solve sentence now says "what
-   the whole house swears it heard", which leans on the premise either way.)
+4. **RESOLVED - the squawk now has a second earwitness.** Derek heard it cut straight through
+   his noise-canceling headphones (`derek_heard_squawk`) and treats it as proof the bird was
+   fine at eight. The bedroom board ends on that false conclusion, and the forced
+   bedroom-before-living-room order (the entrance's living room door is gated on visiting the
+   bedroom) means every player carries the false anchor into the cage room and watches the
+   latch and the speaker break it.

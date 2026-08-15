@@ -199,6 +199,16 @@
                          "value":"up"
                         },
                         {
+                         "name":"RequiresVisited",
+                         "type":"string",
+                         "value":"bedroom"
+                        },
+                        {
+                         "name":"LockedText",
+                         "type":"string",
+                         "value":"'Photos in progress,' says Reyes. 'East wing first, whiskers.'"
+                        },
+                        {
                          "name":"TargetRoom",
                          "type":"string",
                          "value":"living_room"

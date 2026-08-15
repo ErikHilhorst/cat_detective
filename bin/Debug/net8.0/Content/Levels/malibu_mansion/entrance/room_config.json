@@ -7,21 +7,22 @@
     {
       "id": "inspect_police_officer",
       "name": "Officer Reyes",
-      "text": "[Officer Reyes] guards the door with the weary dignity of a man who trained for hostage negotiations and got missing poultry instead. He clocks you immediately. 'Don't start, cat.'",
+      "text": "[Officer Reyes] guards the door with the weary dignity of a man who trained for hostage negotiations and got missing poultry instead. He clocks you immediately.\n'Don't start, cat.'",
       "keywords": [
         { "displayText": "Officer Reyes", "id": "lockdown_815pm", "color": "misc" }
       ],
       "topics": [
         {
           "prompt": "Sit at attention beside him",
-          "text": "He looks down. You sit straighter. Something in him approves. 'Lockdown since [8:15 PM]. Full perimeter, my seal on every door. Nobody in, nobody out.' A pause. 'You were already inside. Don't make it weird.'",
+          "text": "He looks down. You sit straighter. Something in him approves.\n'[Lockdown] since [8:15 PM]. Full perimeter, my seal on every door. Nobody in, nobody out.' A pause.\n'You were already inside. Don't make it weird.'",
           "keywords": [
-            { "displayText": "8:15 PM", "id": "lockdown_815pm", "color": "misc" }
+            { "displayText": "Lockdown", "id": "lockdown_815pm", "color": "misc" },
+            { "displayText": "8:15 PM", "id": "time_815pm", "color": "plot" }
           ]
         },
         {
           "prompt": "Meow at the sealed front door",
-          "text": "'Door stays shut.' He crouches, scratches your ear once, and stands back up like it never happened. 'Think it through, whiskers. [Gate locked, doors sealed]. If that bird left the property, it left before my lockdown - or it never left at all.'",
+          "text": "'Door stays shut.' He crouches, scratches your ear once, and stands back up like it never happened.\n'Think it through, whiskers. [Gate locked, doors sealed]. If that bird left the property, it left before my lockdown - or it never left at all.'",
           "keywords": [
             { "displayText": "Gate locked, doors sealed", "id": "north_gate_locked", "color": "misc" }
           ]
@@ -29,9 +30,9 @@
         {
           "prompt": "Nudge the guest registry toward him",
           "requiresSolve": "entrance",
-          "text": "'Worked the front hall out, did you. Then you have earned the thing that has been bothering me.' He taps the registry without reading it. 'One signature in that crew column landed [half an hour before] its own call sheet. Signed sloppy. Blamed traffic, probably.'|He straightens back to his post. 'Somebody's evening in this book does not add up. Whose? That's your department, whiskers.'",
+          "text": "'Worked the front hall out, did you. Then you get my professional opinion.' He taps the crew column without reading it.\n'Sloppy signatures. Hurried arrivals. [Traffic excuses].'|He straightens back to his post.\n'Somebody's evening in this book does not add up. Whose? That's your department, whiskers.'",
           "keywords": [
-            { "displayText": "half an hour before", "id": "early_signin", "color": "plot" }
+            { "displayText": "Traffic excuses", "id": "guest_registry", "color": "misc" }
           ]
         }
       ],
@@ -41,23 +42,23 @@
     {
       "id": "inspect_manager",
       "name": "Chip Sterling",
-      "altText": "[Chip Sterling] has stopped pacing. The phone hangs dark at his side while he watches you work the room. 'Still on the case? Good. Whatever you are doing, do it faster - find that bird before the morning shows do.'",
+      "altText": "[Chip Sterling] has stopped pacing. The phone hangs dark at his side while he watches you work the room.\n'Still on the case? Good. Whatever you are doing, do it faster - find that bird before the morning shows do.'",
       "altTextRequiresClue": "pr_disaster",
-      "text": "The Manager, [Chip Sterling], paces a groove into the rug, phone welded to his ear. 'No comment. NO comment. Fine, one comment: my client LOVES animals.' He hangs up and stares at nothing. You memorize his face.|He points the dead phone at you. 'One rule, cat. Nobody repeats what that bird says. Rudebeak has opinions about everyone in this house, and none of them are printable.'",
+      "text": "The Manager, [Chip Sterling], paces a groove into the rug, phone welded to his ear.\n'No comment. NO comment. Fine, one comment: my client LOVES animals.' He hangs up and stares at nothing. You memorize his face.|He points the dead phone at you.\n'One rule, cat. Nobody repeats what that bird says. Rudebeak has opinions about everyone in this house, and none of them are printable.'",
       "keywords": [
         { "displayText": "Chip Sterling", "id": "pr_disaster", "color": "misc" }
       ],
       "topics": [
         {
           "prompt": "Rub against his very expensive trousers",
-          "text": "'Off. OFF. This suit costs more than-' He stops. Deflates like a man remembering his week. 'A missing parrot. Front page news. Do you know what this does to her brand? It's a [PR Disaster]. I have three interviews to cancel and a bird to un-lose.'",
+          "text": "'Off. OFF. This suit costs more than-' He stops. Deflates like a man remembering his week.\n'A missing parrot. Front page news. Do you know what this does to her brand? It's a [PR Disaster]. I have three interviews to cancel and a bird to un-lose.'",
           "keywords": [
             { "displayText": "PR Disaster", "id": "pr_disaster", "color": "misc" }
           ]
         },
         {
           "prompt": "Swat the phone out of his hand mid-pace",
-          "text": "He catches it one-handed without looking. A man with practice. 'That bird is not just a bird. Rudebeak has a documentary deal, and I take [fifteen percent] of everything my clients earn. Feathers included.'|'Is he charming? No. He heckled a talk show host until the man cried. But rude SELLS, cat.' He hears himself. 'Which is exactly why I would never LOSE him.'",
+          "text": "He catches it one-handed without looking. A man with practice.\n'That bird is not just a bird. Rudebeak has a documentary deal, and I take [fifteen percent] of everything my clients earn. Feathers included.'|'Is he charming? No. He heckled a talk show host until the man cried. But rude SELLS, cat.' He hears himself.\n'Which is exactly why I would never LOSE him.'",
           "keywords": [
             { "displayText": "fifteen percent", "id": "managers_commission", "color": "misc" }
           ]
@@ -77,10 +78,10 @@
     {
       "id": "inspect_walkie_talkie",
       "name": "The Officer's Radio",
-      "text": "The Officer's radio crackles on the sideboard. You put one ear toward it, professionally.\nDispatch: 'All units, confirm north gate status.'\nReyes: 'North gate locked [all evening]. Over.'\nDispatch: 'Copy that. Perimeter sealed since [8:15 PM]. Nothing in or out through the garden. Hold your post, Reyes.'",
+      "text": "The Officer's radio crackles on the sideboard. You put one ear toward it, professionally.\nDispatch:\n'All units, confirm north gate status.'\nReyes:\n'North gate locked [all evening]. Over.'\nDispatch:\n'Copy that. Perimeter sealed since [8:15 PM]. Nothing in or out through the garden. Hold your post, Reyes.'",
       "keywords": [
         { "displayText": "all evening", "id": "north_gate_locked", "color": "misc" },
-        { "displayText": "8:15 PM", "id": "lockdown_815pm", "color": "misc" }
+        { "displayText": "8:15 PM", "id": "time_815pm", "color": "plot" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 0.14
@@ -88,15 +89,16 @@
     {
       "id": "inspect_guest_registry",
       "name": "Guest Registry",
-      "text": "A formal sign-in book by the entrance. [The whole household] parades through it:\n- Wexler, director - 4:15 PM\n- Petra, bird handler (plus one macaw) - 5:05 PM\n- Coco, socialite - 5:50 PM\n- Staff, signed in since morning|The film crew's column begins at [6:30 PM]. The signatures blur together - hurried, overlapping, hard to count.",
+      "text": "A formal sign-in book by the entrance. [The whole household] parades through it:\n- Wexler, director\n- Petra, bird handler (plus one macaw)\n- Coco, socialite\n- Staff, signed in since morning|The [film crew's column] begins at [6:30 PM]. The signatures blur together - hurried, overlapping, hard to count.",
       "keywords": [
         { "displayText": "The whole household", "id": "household_roster", "color": "misc" },
-        { "displayText": "6:30 PM", "id": "guest_registry", "color": "misc" }
+        { "displayText": "film crew's column", "id": "guest_registry", "color": "misc" },
+        { "displayText": "6:30 PM", "id": "time_630pm", "color": "plot" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 0.17
     }
   ],
-  "localDeductionSentence": "Whoever took Rudebeak never left: the [seal] made sure of that. The suspect pool arrived in the [arrivals] column - and Chip will pay anything to keep it quiet, because all he smells is a [scandal].",
-  "localDeductionClueIds": ["lockdown_815pm", "guest_registry", "pr_disaster"]
+  "localDeductionSentence": "The doors have been sealed since the [seal] hit at [time]: the thief is still inside. Every suspect is inked into the [column] - and Chip only smells a [scandal].",
+  "localDeductionClueIds": ["lockdown_815pm", "time_815pm", "guest_registry", "pr_disaster"]
 }

@@ -45,6 +45,12 @@ namespace CatDetective.Entities
             LayerDepth  = CalculateLayerDepth();
         }
 
+        /// <summary>
+        /// Pins the sprite in front of everything in Pass 3 (data.AlwaysOnTop):
+        /// hero objects the cat must never occlude, e.g. the living room birdcage.
+        /// </summary>
+        public void ForceForeground() => LayerDepth = 1f;
+
         // ── GameObject override (non-highlighted) ──────────────────────────────
         public override void Draw(SpriteBatch spriteBatch)
             => Draw(spriteBatch, isHighlighted: false, totalSeconds: 0.0);

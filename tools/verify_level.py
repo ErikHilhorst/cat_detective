@@ -96,6 +96,10 @@ for room in ROOMS:
         transfer_count += 1
         props = {p["name"]: p["value"] for p in t.get("properties", [])}
         tgt, spawn = props.get("TargetRoom"), props.get("TargetSpawn")
+        req_visited = props.get("RequiresVisited", "")
+        if req_visited and req_visited not in ROOMS:
+            errors.append(f"{room}: transfer '{t['name']}' RequiresVisited "
+                          f"unknown room '{req_visited}'")
         if tgt not in maps:
             errors.append(f"{room}: transfer '{t['name']}' → unknown room '{tgt}'"); continue
         _, tlayers, _ = maps[tgt]
@@ -197,9 +201,11 @@ for room in ROOMS:
     for a in answers:
         if a in db:
             slot_cats[db[a]["category"]] = slot_cats.get(db[a]["category"], 0) + 1
+    # Case-global clues (roomId "", e.g. the times of the evening) are part of
+    # every local word bank, so they count as options everywhere.
     for cat, n_slots in slot_cats.items():
         options = sum(1 for c in db.values()
-                      if c.get("roomId") == room and c.get("category") == cat)
+                      if c.get("roomId") in (room, "") and c.get("category") == cat)
         if options <= n_slots:
             warnings.append(f"{room}: {cat} slot(s) x{n_slots} but only {options} {cat} "
                             f"clue(s) in the room - single-option auto-fill, add a decoy")

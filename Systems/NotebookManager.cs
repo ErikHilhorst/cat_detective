@@ -69,6 +69,34 @@ namespace CatDetective.Systems
             UnlockedClues.FindAll(c => c.RoomId == roomId);
 
         /// <summary>
+        /// Local word-bank source: the room's own unlocked clues PLUS case-global
+        /// clues (roomId == "" - the times of the evening). A time belongs to the
+        /// whole case, so once found it is available on every board.
+        /// </summary>
+        public List<Clue> GetLocalBankClues(string roomId) =>
+            UnlockedClues.FindAll(c => c.RoomId == roomId || c.RoomId.Length == 0);
+
+        /// <summary>
+        /// Room clue counts where locked clues matching <paramref name="hideWhileLocked"/>
+        /// are left out of the total until found - keeps the HUD counter honest about
+        /// confrontation clues that cannot exist yet (playtest: "SOLVE pulses at 6/7").
+        /// </summary>
+        public (int Found, int Total) GetRoomClueCounts(
+            string roomId, System.Func<string, bool> hideWhileLocked)
+        {
+            int total = 0, found = 0;
+            foreach (var clue in _database.Values)
+            {
+                if (clue.RoomId != roomId) continue;
+                bool unlocked = IsUnlocked(clue.Id);
+                if (!unlocked && hideWhileLocked(clue.Id)) continue;
+                total++;
+                if (unlocked) found++;
+            }
+            return (found, total);
+        }
+
+        /// <summary>
         /// True when every clue of the room that <paramref name="countsToward"/> accepts
         /// has been unlocked. Lets the SOLVE-button pulse ignore confrontation clues,
         /// which only unlock after the room is solved.
@@ -96,7 +124,8 @@ namespace CatDetective.Systems
         {
             foreach (var clue in _database.Values)
             {
-                if (clue.RoomId == roomId)
+                // Case-global clues (roomId "") belong to every board.
+                if (clue.RoomId == roomId || clue.RoomId.Length == 0)
                     UnlockClue(clue.Id);
             }
         }

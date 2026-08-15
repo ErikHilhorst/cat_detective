@@ -90,6 +90,8 @@ namespace CatDetective.Map
         [JsonPropertyName("interactPadding")]      public int      InteractPadding   { get; set; } = 0;
         /// <summary>Which point of the Tiled rect the sprite is pinned to (default "BottomCenter").</summary>
         [JsonPropertyName("spriteAnchor")]         public string   SpriteAnchor      { get; set; } = "BottomCenter";
+        /// <summary>Draws the sprite in front of everything (LayerDepth 1) instead of Y-sorting.</summary>
+        [JsonPropertyName("alwaysOnTop")]          public bool     AlwaysOnTop       { get; set; } = false;
     }
 
     internal sealed class TopicConfigData
@@ -252,7 +254,7 @@ namespace CatDetective.Map
                     i.Scale, i.Align, i.OffsetX, i.OffsetY, i.Texture, topics, i.Name,
                     i.RevealName, i.RevealNameOnClue,
                     i.AltText, i.AltTextRequiresClue, i.AltTextRequiresSolve,
-                    i.PortraitCrop, i.InteractPadding, i.SpriteAnchor);
+                    i.PortraitCrop, i.InteractPadding, i.SpriteAnchor, i.AlwaysOnTop);
             }
             return dict;
         }

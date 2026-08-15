@@ -102,13 +102,26 @@ namespace CatDetective.Map
         /// </summary>
         public string    ArrowDirection { get; }
 
+        /// <summary>
+        /// Optional "RequiresVisited" property: room id the player must have entered
+        /// at least once before this doorway opens (linear-order gating, e.g. the
+        /// entrance -> living_room door waits for the bedroom). Empty = always open.
+        /// </summary>
+        public string    RequiresVisited { get; }
+
+        /// <summary>Optional "LockedText" property: toast shown when the gated doorway is used early.</summary>
+        public string    LockedText { get; }
+
         public TransferZone(Rectangle triggerRect, string targetRoom, string targetSpawn,
-                            string arrowDirection = "")
+                            string arrowDirection = "", string requiresVisited = "",
+                            string lockedText = "")
         {
-            TriggerRect    = triggerRect;
-            TargetRoom     = targetRoom;
-            TargetSpawn    = targetSpawn;
-            ArrowDirection = arrowDirection;
+            TriggerRect     = triggerRect;
+            TargetRoom      = targetRoom;
+            TargetSpawn     = targetSpawn;
+            ArrowDirection  = arrowDirection;
+            RequiresVisited = requiresVisited;
+            LockedText      = lockedText;
         }
     }
 
@@ -248,7 +261,9 @@ namespace CatDetective.Map
                                 continue;
                             }
                             transfers.Add(new TransferZone(ToRect(obj, layerOffX, layerOffY), targetRoom, targetSpawn,
-                                GetStringProperty(obj, "arrowDirection")));
+                                GetStringProperty(obj, "arrowDirection"),
+                                GetStringProperty(obj, "requiresVisited"),
+                                GetStringProperty(obj, "lockedText")));
                         }
                         break;
 
@@ -310,7 +325,11 @@ namespace CatDetective.Map
 
                             var entity = new InteractableEntity(obj.Name, ToRect(obj, layerOffX, layerOffY), sprite, position);
                             if (data != null)
+                            {
                                 entity.Data = data;
+                                if (data.AlwaysOnTop)
+                                    entity.ForceForeground();
+                            }
 
                             interactables.Add(entity);
                         }
