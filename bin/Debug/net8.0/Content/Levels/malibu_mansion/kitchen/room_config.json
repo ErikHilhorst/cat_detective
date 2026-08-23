@@ -108,6 +108,6 @@
       "interactPadding": 60
     }
   ],
-  "localDeductionSentence": "The house has its favorite suspect: [suspect], with a key to every door. The fridge gives her fury a name - the [motive] - and the roster wheels her [run] into the bedroom wing at [time].",
-  "localDeductionClueIds": ["the_maid", "insulted_cooking", "dinner_cart_7pm", "time_700pm"]
+  "localDeductionSentence": "The duty roster keeps this kitchen's clock: an [herb run] in from the garden at [quarter to six], and [the maid] wheeling her [evening round] to the east wing at [seven]. One run in, one cart out - and a ring of keys on her apron that opens every room in this house.",
+  "localDeductionClueIds": ["herb_run_545", "time_545pm", "the_maid", "dinner_cart_7pm", "time_700pm"]
 }

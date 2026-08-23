@@ -584,6 +584,87 @@
       "name": "Abandoned Spritz",
       "context": "Coco's spritz sits abandoned on the chaise, warm through - poured for sunset, forgotten the moment the cases rolled past.",
       "inspectorDescription": "Warm all the way through. She was out here well before the light went. Bored, and therefore reliable."
+    },
+    {
+      "id": "rudebeak_the_macaw",
+      "roomId": "entrance",
+      "isMacroClue": false,
+      "category": "Who",
+      "name": "Rudebeak the Macaw",
+      "context": "The missing macaw himself: blue-and-gold, world-famous, with a documentary deal and opinions about everyone in this house.",
+      "inspectorDescription": "Famous, rude, and missing. Birds this loud do not usually vanish this quietly. That is the whole case, really."
+    },
+    {
+      "id": "still_inside",
+      "roomId": "entrance",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "Still Inside",
+      "context": "Officer Reyes's professional read: nothing has left the property since his seal went on. Whoever took the bird is still on the grounds.",
+      "inspectorDescription": "Sealed doors, locked gate. Everything I am looking for is somewhere under this roof. Convenient. Also ominous."
+    },
+    {
+      "id": "officer_reyes",
+      "roomId": "entrance",
+      "isMacroClue": false,
+      "category": "Who",
+      "name": "Officer Reyes",
+      "context": "The officer holding the front door: unbribable, unhurried, and quietly taking the cat seriously.",
+      "inspectorDescription": "He scratched my ear exactly once and pretended it never happened. We are partners now. He will figure it out eventually."
+    },
+    {
+      "id": "registry_doesnt_add_up",
+      "roomId": "entrance",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "Does Not Add Up",
+      "context": "Reyes's verdict on the sign-in book: hurried arrivals, sloppy signatures - somebody's evening in that book does not add up.",
+      "inspectorDescription": "He would not say whose. 'Your department,' he said. I have a department now."
+    },
+    {
+      "id": "chip_sterling",
+      "roomId": "entrance",
+      "isMacroClue": false,
+      "category": "Who",
+      "name": "Chip Sterling",
+      "context": "The Manager: a phone welded to his ear, fifteen percent of everything, and a client brand to protect at all costs.",
+      "inspectorDescription": "He practices his concerned face in the hall mirror. It still needs work. The worry underneath it looks real, though."
+    },
+    {
+      "id": "unanimous_at_eight",
+      "roomId": "entrance",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "Suspiciously Unanimous",
+      "context": "Reyes's canvass came back unanimous: every person in this house heard the same squawk at the same minute. Nobody saw the bird.",
+      "inspectorDescription": "Fifteen years on the job, he says, and honest witnesses never agree that neatly. I am inclined to trust the man on this."
+    },
+    {
+      "id": "vivienne_vale",
+      "roomId": "living_room",
+      "isMacroClue": false,
+      "category": "Who",
+      "name": "Vivienne Vale",
+      "context": "The Movie Star: grieving in couture, certain of what she heard, and never far from a camera.",
+      "inspectorDescription": "She held me up like a press photo and called my eyes kind. The grief is real. The angles are better."
+    },
+    {
+      "id": "petra_the_handler",
+      "roomId": "living_room",
+      "isMacroClue": false,
+      "category": "Who",
+      "name": "Petra the Handler",
+      "context": "The Bird Handler: precise, professional, and worried sick behind the procedure. She knows Rudebeak's routine to the minute.",
+      "inspectorDescription": "She reads animals for a living and nodded at me like a colleague. Correct on both counts."
+    },
+    {
+      "id": "failed_earplugs",
+      "roomId": "bedroom",
+      "isMacroClue": false,
+      "category": "What",
+      "name": "Spent Earplugs",
+      "context": "A nightstand drawer rattling with used foam earplugs - months of failed defenses against 5 AM wake-up squawks.",
+      "inspectorDescription": "He tried the cheap way first, many times over. The three hundred dollar escalation was thoroughly earned."
     }
   ],
   "rooms": ["entrance", "living_room", "bedroom", "library", "kitchen", "garden", "pool_area"],

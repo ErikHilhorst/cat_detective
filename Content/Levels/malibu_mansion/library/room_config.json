@@ -121,6 +121,6 @@
       "scale": 0.10
     }
   ],
-  "localDeductionSentence": "One crew member has an alibi nobody asked for: [alibi man]. Behind his mixer, the [wire] leaves the room inside the wall - and the log by his chair is one long grudge, page after page: the [grievance].",
-  "localDeductionClueIds": ["d_marsh_sound_guy", "audio_cable", "ruined_takes"]
+  "localDeductionSentence": "One crew member has an alibi nobody asked for: [alibi man] - here since seven, he insists. But his [monitoring gear] connects to nothing at all, and the log by his chair is one long grudge, page after page: the [grievance]. If he was not listening tonight, what was he doing?",
+  "localDeductionClueIds": ["d_marsh_sound_guy", "marsh_headphones", "ruined_takes"]
 }

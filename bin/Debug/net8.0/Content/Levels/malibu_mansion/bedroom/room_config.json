@@ -21,8 +21,9 @@
         },
         {
           "prompt": "Stare at the headphones until he explains",
-          "text": "'What? Everyone copes differently.' He taps the box on the nightstand.\n'That bird screamed at five every morning. I left Viv a note - [do something] about that bird, I wrote. She did not. So I did something myself. Legal. Non-violent. Three hundred dollars.' He looks briefly, profoundly at peace.",
+          "text": "'What? Everyone copes differently.' He taps the box on the nightstand.\n'That bird screamed at five every morning. I went through a whole drawer of [foam earplugs] first. Useless. So I left Viv a note - [do something] about that bird, I wrote. She did not. So I did something myself. Legal. Non-violent. Three hundred dollars.' He looks briefly, profoundly at peace.",
           "keywords": [
+            { "displayText": "foam earplugs", "id": "failed_earplugs", "color": "misc" },
             { "displayText": "do something", "id": "star_note_to_husband", "color": "misc" }
           ]
         },
@@ -95,6 +96,6 @@
       "scale": 0.15
     }
   ],
-  "localDeductionSentence": "The [heard] shook the floorboards and Derek never looked up. The paperwork logs the [logged] into the wing at [time], under nothing but a [name]. Only one sound ever beat the noise canceling: the [scream], at [late] - so the bird was still around... right?",
-  "localDeductionClueIds": ["husband_hall_7pm", "d_marsh_7pm", "time_700pm", "scrawled_signature", "derek_heard_squawk", "time_800pm"]
+  "localDeductionSentence": "[Derek] heard a [rumble] downstairs - it lines up with the [dinner service] due at [seven], but also with the [two mystery cases] the paperwork wheels into the wing. Only one sound has ever beaten his [headphones]: the [squawk], at [eight]. So the bird was still around at that time... right?",
+  "localDeductionClueIds": ["derek_the_husband", "husband_hall_7pm", "service_tray", "time_700pm", "d_marsh_7pm", "headphone_box", "derek_heard_squawk", "time_800pm"]
 }

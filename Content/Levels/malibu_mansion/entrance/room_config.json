@@ -9,7 +9,7 @@
       "name": "Officer Reyes",
       "text": "[Officer Reyes] guards the door with the weary dignity of a man who trained for hostage negotiations and got missing poultry instead. He clocks you immediately.\n'Don't start, cat.'",
       "keywords": [
-        { "displayText": "Officer Reyes", "id": "lockdown_815pm", "color": "misc" }
+        { "displayText": "Officer Reyes", "id": "officer_reyes", "color": "misc" }
       ],
       "topics": [
         {
@@ -22,17 +22,26 @@
         },
         {
           "prompt": "Meow at the sealed front door",
-          "text": "'Door stays shut.' He crouches, scratches your ear once, and stands back up like it never happened.\n'Think it through, whiskers. [Gate locked, doors sealed]. If that bird left the property, it left before my lockdown - or it never left at all.'",
+          "text": "'Door stays shut.' He crouches, scratches your ear once, and stands back up like it never happened.\n'Think it through, whiskers. [Gate locked, doors sealed]. If that bird left the property, it left before my lockdown - or [it never left at all].'",
           "keywords": [
-            { "displayText": "Gate locked, doors sealed", "id": "north_gate_locked", "color": "misc" }
+            { "displayText": "Gate locked, doors sealed", "id": "north_gate_locked", "color": "misc" },
+            { "displayText": "it never left at all", "id": "still_inside", "color": "misc" }
           ]
         },
         {
           "prompt": "Nudge the guest registry toward him",
-          "requiresSolve": "entrance",
-          "text": "'Worked the front hall out, did you. Then you get my professional opinion.' He taps the crew column without reading it.\n'Sloppy signatures. Hurried arrivals. [Traffic excuses].'|He straightens back to his post.\n'Somebody's evening in this book does not add up. Whose? That's your department, whiskers.'",
+          "text": "'Detective work, is it. Fine. My professional opinion, free of charge.' He taps the crew column without reading it.\n'Sloppy signatures. Hurried arrivals. [Traffic excuses].'|He straightens back to his post.\n'[Somebody's evening in this book does not add up]. Whose? That's your department, whiskers.'",
           "keywords": [
-            { "displayText": "Traffic excuses", "id": "guest_registry", "color": "misc" }
+            { "displayText": "Traffic excuses", "id": "guest_registry", "color": "misc" },
+            { "displayText": "Somebody's evening in this book does not add up", "id": "registry_doesnt_add_up", "color": "plot" }
+          ]
+        },
+        {
+          "prompt": "Place one paw on his boot, and wait",
+          "requiresSolve": "entrance",
+          "text": "He looks down at the paw. He does not move it.\n'Worked the front hall out, did you. Then you get what my canvass got me: every soul in this house [heard the same bird at the same minute]. All of them. Word for word.'|'Fifteen years on the job, whiskers. Honest witnesses never agree that neatly.' He resumes staring at the door, but he leaves room beside his boot.",
+          "keywords": [
+            { "displayText": "heard the same bird at the same minute", "id": "unanimous_at_eight", "color": "crime" }
           ]
         }
       ],
@@ -44,9 +53,10 @@
       "name": "Chip Sterling",
       "altText": "[Chip Sterling] has stopped pacing. The phone hangs dark at his side while he watches you work the room.\n'Still on the case? Good. Whatever you are doing, do it faster - find that bird before the morning shows do.'",
       "altTextRequiresClue": "pr_disaster",
-      "text": "The Manager, [Chip Sterling], paces a groove into the rug, phone welded to his ear.\n'No comment. NO comment. Fine, one comment: my client LOVES animals.' He hangs up and stares at nothing. You memorize his face.|He points the dead phone at you.\n'One rule, cat. Nobody repeats what that bird says. Rudebeak has opinions about everyone in this house, and none of them are printable.'",
+      "text": "The Manager, [Chip Sterling], paces a groove into the rug, phone welded to his ear.\n'No comment. NO comment. Fine, one comment: my client LOVES animals.' He hangs up and stares at nothing. You memorize his face.|He points the dead phone at you.\n'One rule, cat. Nobody repeats what that bird says. [Rudebeak] has opinions about everyone in this house, and none of them are printable.'",
       "keywords": [
-        { "displayText": "Chip Sterling", "id": "pr_disaster", "color": "misc" }
+        { "displayText": "Chip Sterling", "id": "chip_sterling", "color": "misc" },
+        { "displayText": "Rudebeak", "id": "rudebeak_the_macaw", "color": "misc" }
       ],
       "topics": [
         {
@@ -99,6 +109,6 @@
       "scale": 0.17
     }
   ],
-  "localDeductionSentence": "The doors have been sealed since the [seal] hit at [time]: the thief is still inside. Every suspect is inked into the [column] - and Chip only smells a [scandal].",
-  "localDeductionClueIds": ["lockdown_815pm", "time_815pm", "guest_registry", "pr_disaster"]
+  "localDeductionSentence": "The doors have been sealed since the [lockdown] hit at [quarter past eight] - whoever stole [Rudebeak] is [still inside] these walls. The registry logs everyone, right down to the [crew column]; [Officer Reyes] says somebody's night in that book [does not add up]. And [Chip Sterling]? He only worries about the [headlines].",
+  "localDeductionClueIds": ["lockdown_815pm", "time_815pm", "rudebeak_the_macaw", "still_inside", "guest_registry", "officer_reyes", "registry_doesnt_add_up", "chip_sterling", "pr_disaster"]
 }

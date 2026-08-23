@@ -12,7 +12,7 @@ Current state: the case system is playable end-to-end AND the game has its shell
 end scene, and a two-room tutorial case. The protagonist's name is **Dikkie**.
 
 The first case, **Malibu Mansion / "The Missing Macaw"**
-(7 rooms, 65 clues: 56 room clues + 9 case-global TIME clues), is fully wired: free-roam movement, room transfers,
+(7 rooms, 74 clues: 65 room clues + 9 case-global TIME clues), is fully wired: free-roam movement, room transfers,
 interactable dialogue with keyword-unlocked clues, character interrogation menus (intro + selectable
 cat-action topics, some evidence- or solve-gated), per-room deduction boards, and a final solve board.
 All ten character sprites and all object sprites are real art (per-name PNGs under each room's
@@ -382,8 +382,11 @@ topics gated on that room (with a queued "X might have some explaining to do..."
   cases) makes the room counter need a detour, and `verify_level.py` WARNs.
 - **Confrontation payoffs stay neutral (playtest 5).** A confrontation reward never points at
   the culprit ("one signature landed half an hour before its call sheet" was cut) - it
-  sharpens the question, not the answer: Reyes now says only "somebody's evening in this book
-  does not add up." The pointed arithmetic lives on the final board itself.
+  sharpens the question, not the answer: Reyes's registry hunch ("somebody's evening in this
+  book does not add up" = `registry_doesnt_add_up`) is UNGATED (it is an entrance board answer);
+  his solve-gated payoff is the canvass slip `unanimous_at_eight` - everyone heard the same
+  squawk at the same minute, and "honest witnesses never agree that neatly." The pointed
+  arithmetic lives on the final board itself.
 - **Gated payoffs are slips and near-confessions, never solutions.** Basil admits the latch but
   not the theft; Marsh blurts "the cases are EMPTY, both of them"; the narrator never comments
   on what a slip means.
@@ -459,8 +462,10 @@ Rudebeak is the missing macaw.
   in the garden bird bath (missed 6:00 snack, evening feathers).
 - 6:30 PM — the crew column in the entrance registry begins (`time_630pm` unlocks here); one
   crew member was inside half an hour before his own 7:00 call, but NOTHING in the game states
-  that arithmetic. Reyes's solve-gated confrontation stays deliberately neutral ("somebody's
-  evening in this book does not add up"); the final board's WHEN-1 clause asks for the time
+  that arithmetic. Reyes states his registry hunch ungated ("somebody's evening in this book
+  does not add up", `registry_doesnt_add_up`, an entrance board answer); his solve-gated
+  confrontation instead reports the too-unanimous 8 PM canvass (`unanimous_at_eight`, still
+  neutral); the final board's WHEN-1 clause asks for the time
   "a full half hour before his own call", and the 7:00 call sits on the pool area's crumpled
   schedule. The subtraction is the player's to do.
 - 6:45–6:47 PM — Coco sees (and accidentally photographs) a figure wheeling big black cases

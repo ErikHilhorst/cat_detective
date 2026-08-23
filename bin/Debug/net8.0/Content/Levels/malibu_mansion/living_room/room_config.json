@@ -10,7 +10,7 @@
       "name": "Vivienne Vale",
       "text": "The Movie Star, [Vivienne Vale], is draped across the chaise in couture far too glamorous for grief - though she is wearing it AS grief. She points at you with a tissue.\n'You. You have KIND eyes. Not like the rest of these vultures.'",
       "keywords": [
-        { "displayText": "Vivienne Vale", "id": "squawk_at_8pm", "color": "plot" }
+        { "displayText": "Vivienne Vale", "id": "vivienne_vale", "color": "misc" }
       ],
       "topics": [
         {
@@ -47,7 +47,7 @@
       "altTextRequiresSolve": "living_room",
       "text": "The Bird Handler, [Petra], stands perfectly still beside an untouched bowl of seed, the way professionals wait. She gives you a nod, one working animal expert to another.",
       "keywords": [
-        { "displayText": "Petra", "id": "broken_latch", "color": "crime" }
+        { "displayText": "Petra", "id": "petra_the_handler", "color": "misc" }
       ],
       "topics": [
         {
@@ -144,6 +144,6 @@
       "scale": 0.27
     }
   ],
-  "localDeductionSentence": "The cage already stood empty by [empty time] - no matter what the whole house swears it heard at [heard time]. The [way out] let the bird leave. The [trick] kept him 'home'.",
-  "localDeductionClueIds": ["time_600pm", "time_800pm", "broken_latch", "hidden_speaker"]
+  "localDeductionSentence": "[Vivienne] swears she heard the [squawk] at [eight o'clock]. But [Petra] points at the [untouched supper]: Rudebeak was already gone before [six]. And the cage's [wrenched latch] says somebody forced it open. Who? When? Why?",
+  "localDeductionClueIds": ["vivienne_vale", "squawk_at_8pm", "time_800pm", "petra_the_handler", "missed_snack_6pm", "time_600pm", "broken_latch"]
 }

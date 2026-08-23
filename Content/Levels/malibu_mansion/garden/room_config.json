@@ -70,6 +70,6 @@
       "scale": 0.19
     }
   ],
-  "localDeductionSentence": "[hider] is confessing to the hedge in installments. The [tool] would fit the damage two rooms away, half of his [pair] never came back from the house - and the [proof] says Rudebeak made it out here alive tonight.",
-  "localDeductionClueIds": ["the_gardener", "shears_match_latch", "muddy_gloves", "bird_bath_feathers"]
+  "localDeductionSentence": "[Basil] swears he spent the whole evening out here, and the [freshly planted bed] backs him up. But his [bent shears] would fit a wrenched cage latch, and the [crisp feathers] in the bird bath say Rudebeak made it to the garden alive. The potting shed has the best view of it all - and someone stood behind it, holding something heavy.",
+  "localDeductionClueIds": ["the_gardener", "flower_bed_bulbs", "shears_match_latch", "bird_bath_feathers"]
 }

@@ -74,6 +74,6 @@
       "scale": 0.15
     }
   ],
-  "localDeductionSentence": "The [alibi] promises its owner to the library for seven o'clock sharp. But the cases crossed the garden at [seen time] - and the [evidence] froze them in place at [exact time].",
-  "localDeductionClueIds": ["production_schedule", "time_645pm", "selfie_figure_cases", "time_647pm"]
+  "localDeductionSentence": "Coco the socialite watched [somebody haul cases] through the garden at [quarter to seven] - and her [poolside photo] pins them in place at exactly [6:47]. But the crumpled [call sheet] promised that somebody to the library at seven sharp. The minutes have stopped adding up.",
+  "localDeductionClueIds": ["eyewitness_645pm", "time_645pm", "selfie_figure_cases", "time_647pm", "production_schedule"]
 }
