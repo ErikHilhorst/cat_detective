@@ -39,6 +39,24 @@ namespace CatDetective.Systems
             OnClueUnlocked?.Invoke(clueId);
         }
 
+        /// <summary>
+        /// Hot-reload: swaps in fresh clue definitions (edited names, texts, categories,
+        /// new clues) while keeping unlock state. Found clues whose id no longer exists drop out.
+        /// </summary>
+        public void ReplaceDefinitions(Dictionary<string, Clue> fresh)
+        {
+            _database.Clear();
+            foreach (var pair in fresh)
+                _database[pair.Key] = pair.Value;
+            for (int i = UnlockedClues.Count - 1; i >= 0; i--)
+            {
+                if (_database.TryGetValue(UnlockedClues[i].Id, out var clue))
+                    UnlockedClues[i] = clue;
+                else
+                    UnlockedClues.RemoveAt(i);
+            }
+        }
+
         /// <summary>True if the clue has already been found (gates dialogue topics).</summary>
         public bool IsUnlocked(string clueId) =>
             UnlockedClues.Exists(c => c.Id == clueId);

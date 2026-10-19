@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Case Editor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header id="top">
+    <select id="case-select" title="Case"></select>
+    <nav id="tabs"></nav>
+    <input id="search" type="search" placeholder="Search text and clues...">
+    <span id="save-status"></span>
+  </header>
+  <div id="banner" hidden></div>
+  <main id="view"></main>
+  <aside id="drawer" hidden></aside>
+  <datalist id="clue-ids"></datalist>
+  <script src="model.js"></script>
+  <script src="ui.js"></script>
+  <script src="views.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

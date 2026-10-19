@@ -5,3 +5,4 @@ obj/
 CatDetectiveWeb/wwwroot/Content/
 CatDetectiveWeb/publish/
 *.zip
+__pycache__/

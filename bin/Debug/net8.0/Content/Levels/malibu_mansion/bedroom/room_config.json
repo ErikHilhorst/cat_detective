@@ -45,11 +45,11 @@
         }
       ],
       "texture": "Shared/placeholder_person",
-      "scale": 0.20
+      "scale": 0.2
     },
     {
       "id": "inspect_delivery_manifest",
-                "spriteAnchor": "TopRight",
+      "spriteAnchor": "TopRight",
       "name": "Delivery Manifest",
       "text": "A crew manifest on the dresser, entries all evening:\n- Florist, out - 6:10 PM\n- Catering ice run - 6:55 PM\n- [R. - dinner service] - [7:00 PM]\n- '[2x equipment cases]', hurried scrawl - 7:00 PM\n- Linen return, housekeeping - 7:10 PM\n- [Grip dept., lamp returns] - [7:20 PM]|Half the house rolled through this wing inside one hour. Every entry carries a readable name - except one [scribble with a tail]. It could belong to almost anybody.",
       "keywords": [
@@ -74,7 +74,7 @@
     },
     {
       "id": "inspect_star_note",
-                "spriteAnchor": "TopRight",
+      "spriteAnchor": "TopRight",
       "name": "Derek's Note",
       "text": "A handwritten note on the nightstand:\n'Viv - Rudebeak woke me up at 5AM. AGAIN. Do [SOMETHING] about that bird or I will. I am [past asking] nicely.' - D.",
       "keywords": [

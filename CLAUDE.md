@@ -122,6 +122,7 @@ tools/
   verify_level.py         — Static level checker (run from repo root, no game launch needed)
   generate_object_sprites.py — Gemini sprite generator (see generate-object-sprites skill)
   layer_room_props.py     — Walk-behind prop layer generator (see layer-room-props skill)
+  case_editor/            — Browser editor for case/room configs (see "Case editor" below)
 
 Content/
   Content.mgcb            — Asset pipeline config (ALL sprites: PremultiplyAlpha=False)
@@ -544,7 +545,33 @@ dotnet build   # MonoGame.Content.Builder.Task runs mgcb automatically
 ```
 
 `room_config.json` / `case_config.json` / `room_map.json` are read at runtime — edit and re-run,
-no `dotnet build` needed (the running game also hot-reloads room config).
+no `dotnet build` needed. The running game hot-reloads `room_config.json` (dialogue + the local
+board, unless the journal is open) and `case_config.json` (clue definitions + the final board;
+found clues stay found). New interactables still need a room re-entry.
+
+### Case editor (tools/case_editor)
+
+```bash
+python tools/case_editor/server.py      # opens http://127.0.0.1:8765/
+```
+
+Stdlib Python server + vanilla JS page for editing `case_config.json` / `room_config.json`
+with an overview of how everything connects. Views: Overview (room cards), Rooms (map
+thumbnail + per-interactable dialogue editor with live rich-text preview, keyword tables,
+topic gates), Clues (table + drawer: where each clue is unlocked, what it gates, which boards
+use it; rename-everywhere), Boards (slots, answers, same-category word-bank options),
+Timeline (time clues with their paired events), Flow (per-room source -> clue -> board/gate
+wires), and search. Edits autosave (debounced) so the game hot-reloads them.
+- Saves go through `jsonfmt.py`, the canonical formatter (2-space, primitive arrays and
+  short primitive objects inline). Configs are already in that style, so editor diffs only
+  touch edited lines. When hand-editing or generating configs, keep that style or run
+  `python tools/case_editor/jsonfmt.py` afterwards.
+- Writes are hash-guarded: a file changed on disk since the page loaded it (Claude, skills,
+  a text editor) is never silently overwritten - the page reloads, or asks if it holds
+  unsaved edits. `room_map.json` is read-only to the editor (Tiled owns it).
+- Unknown fields are preserved (edits mutate the parsed JSON in place). New interactable
+  fields: add them to `INTER_FIELDS` in `views.js` to get a proper input; otherwise they
+  show as raw JSON inputs.
 
 ### Screenshot mode (headless-ish visual verification)
 

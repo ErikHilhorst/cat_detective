@@ -34,7 +34,7 @@
         }
       ],
       "texture": "Shared/placeholder_person",
-      "scale": 0.20
+      "scale": 0.2
     },
     {
       "id": "inspect_sound_guy",
@@ -87,7 +87,7 @@
         }
       ],
       "texture": "Shared/placeholder_person",
-      "scale": 0.20
+      "scale": 0.2
     },
     {
       "id": "inspect_mixing_board",
@@ -97,11 +97,11 @@
         { "displayText": "into the wall", "id": "audio_cable", "color": "crime" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.10
+      "scale": 0.1
     },
     {
       "id": "inspect_session_log",
-                "spriteAnchor": "TopRight",
+      "spriteAnchor": "TopRight",
       "text": "A session log wedged behind the podium:\n'TAKE 12 - bird. TAKE 23 - bird. TAKE 47 - [RUINED. BIRD. AGAIN.]' The handwriting gets angrier with every page. The last page has torn through.",
       "keywords": [
         { "displayText": "RUINED. BIRD. AGAIN.", "id": "ruined_takes", "color": "crime" }
@@ -111,14 +111,14 @@
     },
     {
       "id": "inspect_shot_list",
-                "spriteAnchor": "TopRight",
+      "spriteAnchor": "TopRight",
       "text": "The Director's shot list for today. Items include:\n'Rudebeak reaction shot - [CANCELLED].' Next to it, in red pen:\n'[BETTER WITHOUT HIM?]'",
       "keywords": [
         { "displayText": "CANCELLED", "id": "directors_shot_list", "color": "misc" },
         { "displayText": "BETTER WITHOUT HIM?", "id": "directors_shot_list", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.10
+      "scale": 0.1
     }
   ],
   "localDeductionSentence": "One crew member has an alibi nobody asked for: [alibi man] - here since seven, he insists. But his [monitoring gear] connects to nothing at all, and the log by his chair is one long grudge, page after page: the [grievance]. If he was not listening tonight, what was he doing?",

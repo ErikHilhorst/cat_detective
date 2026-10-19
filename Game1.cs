@@ -250,6 +250,8 @@ namespace CatDetective
         // ── Hot-reload (level_config.json) ─────────────────────────────────────
         private string   _levelConfigSourcePath = "";
         private DateTime _levelConfigLastWrite;
+        private string   _caseConfigSourcePath  = "";
+        private DateTime _caseConfigLastWrite;
         private float    _hotReloadTimer;
 
         // ── Game state / scene selection ───────────────────────────────────────
@@ -569,10 +571,17 @@ namespace CatDetective
 
             _notebook  = new NotebookManager(caseConfig.Clues);
             BuildGateIndex(caseId, caseConfig.Rooms);
-            _deduction = new DeductionManager(
-                caseConfig.DeductionSentence,
-                caseConfig.FinalSolveClueIds,
-                id => _notebook.GetClue(id)?.Category);
+            BuildFinalDeduction(caseConfig);
+
+#if !BLAZORGL
+            // Hot-reload also tracks case_config.json (clue texts, final board).
+            _caseConfigSourcePath = Path.GetFullPath(Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "..", "..", "..", "Content", "Levels", caseId, "case_config.json"));
+            _caseConfigLastWrite = File.Exists(_caseConfigSourcePath)
+                ? File.GetLastWriteTime(_caseConfigSourcePath)
+                : DateTime.MinValue;
+#endif
 
             // Pre-populate so AllRoomsSolved requires every room, not just the first solved one.
             _caseRooms        = caseConfig.Rooms;
@@ -585,6 +594,34 @@ namespace CatDetective
                      spawnPointName: "spawn_default");
 
             _currentState = GameState.Playing;
+        }
+
+        /// <summary>Local board for the current room (LoadRoom + hot-reload).</summary>
+        private void BuildLocalDeduction(RoomConfig roomConfig)
+        {
+            _localDeduction = new DeductionManager(
+                roomConfig.LocalDeductionSentence,
+                roomConfig.LocalDeductionClueIds,
+                id => _notebook.GetClue(id)?.Category);
+            _insertTargetSlot = null;
+
+            // Re-entering a solved room: show its board as a completed recap.
+            if (_roomSolvedStates.TryGetValue(_currentRoomId, out var wasSolved) && wasSolved)
+            {
+                foreach (var slot in _localDeduction.Slots)
+                    if (slot.CorrectClueId != "")
+                        slot.SelectedClueId = slot.CorrectClueId;
+                _localDeduction.ValidationMessage = "Case solved!";
+            }
+        }
+
+        /// <summary>Final board from case config (LoadCase + hot-reload).</summary>
+        private void BuildFinalDeduction(CaseConfig caseConfig)
+        {
+            _deduction = new DeductionManager(
+                caseConfig.DeductionSentence,
+                caseConfig.FinalSolveClueIds,
+                id => _notebook.GetClue(id)?.Category);
         }
 
         // ══════════════════════════════════════════════════════════════════════
@@ -612,20 +649,7 @@ namespace CatDetective
             var roomConfig = LevelConfigParser.LoadRoom(roomConfigPath);
 
             _interactionDatabase = roomConfig.Interactables;
-            _localDeduction = new DeductionManager(
-                roomConfig.LocalDeductionSentence,
-                roomConfig.LocalDeductionClueIds,
-                id => _notebook.GetClue(id)?.Category);
-            _insertTargetSlot = null;
-
-            // Re-entering a solved room: show its board as a completed recap.
-            if (_roomSolvedStates.TryGetValue(roomId, out var wasSolved) && wasSolved)
-            {
-                foreach (var slot in _localDeduction.Slots)
-                    if (slot.CorrectClueId != "")
-                        slot.SelectedClueId = slot.CorrectClueId;
-                _localDeduction.ValidationMessage = "Case solved!";
-            }
+            BuildLocalDeduction(roomConfig);
 
 #if !BLAZORGL
             // Hot-reload tracks room_config.json (dev-only; no source tree on web).
@@ -1763,7 +1787,30 @@ namespace CatDetective
                                     if (fresh.Interactables.TryGetValue(entity.Id, out var data))
                                         entity.Data = data;
                                 }
+                                // Don't swap the board out from under an open journal.
+                                if (!_isDeductionBoardOpen)
+                                    BuildLocalDeduction(fresh);
                                 Console.WriteLine("[HotReload] room_config.json reloaded.");
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"[HotReload] Skipped (file locked?): {ex.Message}");
+                            }
+                        }
+                    }
+                    if (File.Exists(_caseConfigSourcePath))
+                    {
+                        var writeTime = File.GetLastWriteTime(_caseConfigSourcePath);
+                        if (writeTime > _caseConfigLastWrite)
+                        {
+                            _caseConfigLastWrite = writeTime;
+                            try
+                            {
+                                var fresh = LevelConfigParser.LoadCase(_caseConfigSourcePath);
+                                _notebook.ReplaceDefinitions(fresh.Clues);
+                                if (!_isDeductionBoardOpen)
+                                    BuildFinalDeduction(fresh);
+                                Console.WriteLine("[HotReload] case_config.json reloaded.");
                             }
                             catch (Exception ex)
                             {

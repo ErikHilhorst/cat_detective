@@ -4,98 +4,98 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/ui_dialogue_box.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/mask_sunbeams.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/moonlit_cat_case.mp3</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/shadow_blob.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/case of the mising maccaw.jpg</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/tutorial/lesson_one/bg_base.jpg</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/tutorial/lesson_two/bg_base.jpg</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/rudebeak.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/walk_animation_forward.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/walk_animation_upward.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/ui_notebook_bg.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/ui_notebook_score_card.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/ui_tab.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/who.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/how.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/where.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/why.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/placeholder_person.jpg</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/placeholder_object.jpg</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/dialogue_font.spritefont</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/bg_base.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/prop_desk.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/prop_cabinet.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/Interactables/inspect_answering_machine.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/Interactables/inspect_calendar.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/Interactables/inspect_newspaper.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/Interactables/inspect_takeout_bag.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/detective_office/Interactables/inspect_trash_can.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/entrance/bg_base.jpg</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/entrance/prop_outer_wall.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/entrance/prop_console.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/bedroom/bg_base.jpg</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/bg_base.jpg</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/prop_table.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/prop_north_couch.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/prop_south_couch.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/prop_sofa_chair.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/library/bg_base.jpg</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/kitchen/bg_base.jpg</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/garden/bg_base.jpg</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/pool_area/bg_base.jpg</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/entrance/Interactables/inspect_police_officer.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/entrance/Interactables/inspect_manager.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_bird_handler.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_movie_star.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/bedroom/Interactables/inspect_husband.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/library/Interactables/inspect_director.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/library/Interactables/inspect_sound_guy.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/kitchen/Interactables/inspect_maid.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/garden/Interactables/inspect_gardener.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/kitchen/console.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/pool_area/shrub.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/pool_area/Interactables/inspect_socialite.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/entrance/Interactables/inspect_walkie_talkie.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/entrance/Interactables/inspect_guest_registry.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_birdcage.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_hidden_speaker.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_dropped_glove.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_polish_cloth.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_documentary_camera.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_vocab_ledger.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/bedroom/Interactables/inspect_delivery_manifest.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/bedroom/Interactables/inspect_service_tray.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/bedroom/Interactables/inspect_star_note.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/bedroom/Interactables/inspect_headphone_box.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/library/Interactables/inspect_mixing_board.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/library/Interactables/inspect_session_log.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/library/Interactables/inspect_shot_list.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/kitchen/Interactables/inspect_note_on_fridge.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/kitchen/Interactables/inspect_paella_pot.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/kitchen/Interactables/inspect_treat_jar.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/kitchen/Interactables/inspect_poultry_crate.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/kitchen/Interactables/inspect_duty_roster.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/garden/Interactables/inspect_pruning_shears.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/garden/Interactables/inspect_hidden_cases.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/garden/Interactables/inspect_bird_bath.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/pool_area/Interactables/inspect_pool_selfie.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/pool_area/Interactables/inspect_feather.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/malibu_mansion/pool_area/Interactables/inspect_production_schedule.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_welcome_placard.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_saucer.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_kitten.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_old_dog.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_water_bowl.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_board_placard.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_doorway_placard.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_window.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_latch.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_mailman_cutout.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_graduation_scroll.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/speech_bubble.png</File>
-    <File>C:/Users/Erik/Desktop/Python projects/cat_detective/Content/Shared/arrow.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/ui_dialogue_box.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/mask_sunbeams.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/moonlit_cat_case.mp3</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/shadow_blob.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/case of the mising maccaw.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_one/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_two/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/rudebeak.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/walk_animation_forward.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/walk_animation_upward.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/ui_notebook_bg.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/ui_notebook_score_card.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/ui_tab.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/who.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/how.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/where.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/why.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/placeholder_person.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/placeholder_object.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/dialogue_font.spritefont</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/bg_base.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/prop_desk.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/prop_cabinet.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_answering_machine.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_calendar.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_newspaper.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_takeout_bag.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/detective_office/Interactables/inspect_trash_can.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/prop_outer_wall.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/prop_console.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/prop_table.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/prop_north_couch.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/prop_south_couch.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/prop_sofa_chair.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/Interactables/inspect_police_officer.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/Interactables/inspect_manager.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_bird_handler.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_movie_star.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/Interactables/inspect_husband.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/Interactables/inspect_director.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/Interactables/inspect_sound_guy.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/Interactables/inspect_maid.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/Interactables/inspect_gardener.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/console.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/shrub.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/Interactables/inspect_socialite.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/Interactables/inspect_walkie_talkie.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/entrance/Interactables/inspect_guest_registry.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_birdcage.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_hidden_speaker.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_dropped_glove.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_polish_cloth.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_documentary_camera.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/Interactables/inspect_vocab_ledger.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/Interactables/inspect_delivery_manifest.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/Interactables/inspect_service_tray.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/Interactables/inspect_star_note.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/Interactables/inspect_headphone_box.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/Interactables/inspect_mixing_board.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/Interactables/inspect_session_log.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/library/Interactables/inspect_shot_list.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/Interactables/inspect_note_on_fridge.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/Interactables/inspect_paella_pot.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/Interactables/inspect_treat_jar.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/Interactables/inspect_poultry_crate.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/kitchen/Interactables/inspect_duty_roster.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/Interactables/inspect_pruning_shears.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/Interactables/inspect_hidden_cases.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/garden/Interactables/inspect_bird_bath.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/Interactables/inspect_pool_selfie.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/Interactables/inspect_feather.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/Interactables/inspect_production_schedule.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_welcome_placard.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_saucer.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_kitten.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_old_dog.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_water_bowl.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_board_placard.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_doorway_placard.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_window.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_latch.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_mailman_cutout.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_graduation_scroll.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/speech_bubble.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/arrow.png</File>
   </SourceFiles>
   <DestFiles>
     <File xsi:nil="true" />

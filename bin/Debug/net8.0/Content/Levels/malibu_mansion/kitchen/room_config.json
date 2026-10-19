@@ -46,11 +46,11 @@
         }
       ],
       "texture": "Shared/placeholder_person",
-      "scale": 0.20
+      "scale": 0.2
     },
     {
       "id": "inspect_note_on_fridge",
-                "spriteAnchor": "TopRight",
+      "spriteAnchor": "TopRight",
       "name": "Note on the Fridge",
       "text": "A note pinned to the fridge:\n'That bird called my paella [garbage slop]. In front of guests.' Someone drew a [skull] next to it.",
       "keywords": [
@@ -58,12 +58,12 @@
         { "displayText": "skull", "id": "insulted_cooking", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
-      "scale": 0.10,
+      "scale": 0.1,
       "interactPadding": 60
     },
     {
       "id": "inspect_paella_pot",
-          "spriteAnchor": "TopRight",
+      "spriteAnchor": "TopRight",
       "text": "Rosa's paella. You sniff it. It smells extraordinary. Whatever Rudebeak said about this dish, [he was wrong].",
       "keywords": [
         { "displayText": "he was wrong", "id": "paella_pot", "color": "misc" }
@@ -94,7 +94,7 @@
     },
     {
       "id": "inspect_duty_roster",
-       "spriteAnchor": "TopRight",
+      "spriteAnchor": "TopRight",
       "name": "Duty Roster",
       "text": "The kitchen duty roster, pinned by the door:\n- [5:45 PM] - [herbs in from the garden - B.]\n- 6:15 PM - plating\n- [7:00 PM] - [dinner cart, east wing - R.]\n- 8:30 PM - clear service\nThe east wing is where the bedrooms are.",
       "keywords": [
