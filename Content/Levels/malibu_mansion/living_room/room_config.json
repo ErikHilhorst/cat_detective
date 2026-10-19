@@ -2,7 +2,7 @@
   "props": [
     { "id": "prop_north_couch", "texture": "prop_north_couch", "sortY": 585, "triggerName": "prop_north_couch_fade" },
     { "id": "prop_south_couch", "texture": "prop_south_couch", "sortY": 750, "triggerName": "prop_south_couch_fade" },
-    { "id": "prop_sofa_chair",  "texture": "prop_sofa_chair",  "sortY": 738, "triggerName": "prop_sofa_chair_fade" }
+    { "id": "prop_sofa_chair", "texture": "prop_sofa_chair", "sortY": 738, "triggerName": "prop_sofa_chair_fade" }
   ],
   "interactables": [
     {
@@ -38,7 +38,7 @@
         }
       ],
       "texture": "Shared/placeholder_person",
-      "scale": 0.20
+      "scale": 0.2
     },
     {
       "id": "inspect_bird_handler",
@@ -81,7 +81,7 @@
         }
       ],
       "texture": "Shared/placeholder_person",
-      "scale": 0.20
+      "scale": 0.2
     },
     {
       "id": "inspect_birdcage",

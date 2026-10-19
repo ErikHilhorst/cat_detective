@@ -51,5 +51,5 @@
     }
   ],
   "localDeductionSentence": "[The wind] pushed open [the window].",
-  "localDeductionClueIds": [ "the_wind", "open_window" ]
+  "localDeductionClueIds": ["the_wind", "open_window"]
 }

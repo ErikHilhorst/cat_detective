@@ -109,7 +109,7 @@
       "inspectorDescription": "Somebody pinned a note blaming the wind. Blaming the wind is an old trick. The oldest."
     }
   ],
-  "rooms": [ "lesson_one", "lesson_two" ],
+  "rooms": ["lesson_one", "lesson_two"],
   "finalSolveSentence": "The graduate concludes: [The Kitten] tipped over [The Saucer] because of [The Zoomies].",
-  "finalSolveClueIds": [ "the_kitten", "tipped_saucer", "the_zoomies" ]
+  "finalSolveClueIds": ["the_kitten", "tipped_saucer", "the_zoomies"]
 }

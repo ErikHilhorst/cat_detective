@@ -57,7 +57,7 @@
       "name": "The Old Dog",
       "texture": "Shared/placeholder_person",
       "scale": 1.0,
-      "portraitCrop": [0.28, 0.10, 0.44, 0.75],
+      "portraitCrop": [0.28, 0.1, 0.44, 0.75],
       "text": "[The old dog] is asleep on the only rug in the void. His placard reads: 'Every mystery needs more than one suspect. Otherwise it is just an accusation.'",
       "keywords": [
         { "displayText": "The old dog", "id": "the_old_dog", "color": "plot" }
@@ -92,5 +92,5 @@
     }
   ],
   "localDeductionSentence": "[The kitten] tipped over [the saucer] because of [the zoomies].",
-  "localDeductionClueIds": [ "the_kitten", "tipped_saucer", "the_zoomies" ]
+  "localDeductionClueIds": ["the_kitten", "tipped_saucer", "the_zoomies"]
 }

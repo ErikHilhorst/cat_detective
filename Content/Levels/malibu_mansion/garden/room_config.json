@@ -36,7 +36,7 @@
         }
       ],
       "texture": "Shared/placeholder_person",
-      "scale": 0.20
+      "scale": 0.2
     },
     {
       "id": "inspect_pruning_shears",

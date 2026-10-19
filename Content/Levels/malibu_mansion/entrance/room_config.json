@@ -1,6 +1,6 @@
 {
   "props": [
-    { "id": "prop_console",    "texture": "prop_console",    "sortY": 764, "triggerName": "prop_console_fade" },
+    { "id": "prop_console", "texture": "prop_console", "sortY": 764, "triggerName": "prop_console_fade" },
     { "id": "prop_outer_wall", "texture": "prop_outer_wall", "sortY": 764, "triggerName": "prop_outer_wall_fade" }
   ],
   "interactables": [
@@ -46,7 +46,7 @@
         }
       ],
       "texture": "Shared/placeholder_person",
-      "scale": 0.20
+      "scale": 0.2
     },
     {
       "id": "inspect_manager",
@@ -83,7 +83,7 @@
         }
       ],
       "texture": "Shared/placeholder_person",
-      "scale": 0.20
+      "scale": 0.2
     },
     {
       "id": "inspect_walkie_talkie",
