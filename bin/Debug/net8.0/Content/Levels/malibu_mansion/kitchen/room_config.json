@@ -39,7 +39,7 @@
         {
           "prompt": "Lay your solved case notes at her feet, gently",
           "requiresSolve": "kitchen",
-          "text": "She reads your board the way she reads a delivery invoice: fast, twice, looking for the cheat. Then she sets down the cleaver.|'So. The cart, the note, the skull. You did the arithmetic and it comes out Rosa.' She crouches to your eye level, which nobody does.\n'Then do the rest of it, detective. My cart is heavy going out and light coming back - and that night the wing smelled of soup and [cable grease]. Soup was mine. Kitchens know their smells. Find whose the other one was.'",
+          "text": "She reads your board the way she reads a delivery invoice: fast, twice, looking for the cheat. Then she sets down the cleaver.|'So. The cart, the note, the skull. You did the arithmetic and it comes out Rosa.' She crouches to your eye level, which nobody does.\n'Then do the rest of it, detective. My cart is heavy going out and light coming back - and this evening the wing smelled of soup and [cable grease]. Soup was mine. Kitchens know their smells. Find whose the other one was.'",
           "keywords": [
             { "displayText": "cable grease", "id": "cable_grease", "color": "crime" }
           ]
@@ -96,7 +96,7 @@
       "id": "inspect_duty_roster",
       "spriteAnchor": "TopRight",
       "name": "Duty Roster",
-      "text": "The kitchen duty roster, pinned by the door:\n- [5:45 PM] - [herbs in from the garden - B.]\n- 6:15 PM - plating\n- [7:00 PM] - [dinner cart, east wing - R.]\n- 8:30 PM - clear service\nThe east wing is where the bedrooms are.",
+      "text": "The kitchen duty roster, pinned by the door:\n- [5:45 PM] - [herbs in from the garden - B.]\n- 6:15 PM - plating\n- [7:00 PM] - [dinner cart, east wing - R.] (one cart)\n- 8:30 PM - clear service\nThe east wing is where the bedrooms are.",
       "keywords": [
         { "displayText": "5:45 PM", "id": "time_545pm", "color": "plot" },
         { "displayText": "herbs in from the garden - B.", "id": "herb_run_545", "color": "misc" },
@@ -108,6 +108,6 @@
       "interactPadding": 60
     }
   ],
-  "localDeductionSentence": "The duty roster keeps this kitchen's clock: an [herb run] in from the garden at [quarter to six], and [the maid] wheeling her [evening round] to the east wing at [seven]. One run in, one cart out - and a ring of keys on her apron that opens every room in this house.",
-  "localDeductionClueIds": ["herb_run_545", "time_545pm", "the_maid", "dinner_cart_7pm", "time_700pm"]
+  "localDeductionSentence": "The roster logs an [errand] in from the garden at [5:45], initialed B. - minutes before the bird's supper went untouched. At [7:00] exactly [one cart] went up to the bedroom wing: Rosa's. With Rosa's [keys] on her apron, and Rosa's [grudge] pinned to the fridge.",
+  "localDeductionClueIds": ["herb_run_545", "time_545pm", "time_700pm", "dinner_cart_7pm", "rosa_keys", "insulted_cooking"]
 }

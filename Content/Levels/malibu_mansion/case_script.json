@@ -1,0 +1,419 @@
+{
+  "cast": {
+    "reyes": {
+      "name": "Officer Reyes",
+      "sprite": "Levels/malibu_mansion/entrance/Interactables/inspect_police_officer"
+    },
+    "chip": {
+      "name": "Chip Sterling",
+      "sprite": "Levels/malibu_mansion/entrance/Interactables/inspect_manager"
+    },
+    "vivienne": {
+      "name": "Vivienne Vale",
+      "sprite": "Levels/malibu_mansion/living_room/Interactables/inspect_movie_star"
+    },
+    "petra": {
+      "name": "Petra",
+      "sprite": "Levels/malibu_mansion/living_room/Interactables/inspect_bird_handler"
+    },
+    "derek": {
+      "name": "Derek",
+      "sprite": "Levels/malibu_mansion/bedroom/Interactables/inspect_husband"
+    },
+    "rosa": {
+      "name": "Rosa",
+      "sprite": "Levels/malibu_mansion/kitchen/Interactables/inspect_maid"
+    },
+    "basil": {
+      "name": "Basil",
+      "sprite": "Levels/malibu_mansion/garden/Interactables/inspect_gardener"
+    },
+    "wexler": {
+      "name": "Wexler",
+      "sprite": "Levels/malibu_mansion/library/Interactables/inspect_director"
+    },
+    "marsh": {
+      "name": "The Sound Guy",
+      "sprite": "Levels/malibu_mansion/library/Interactables/inspect_sound_guy"
+    },
+    "coco": {
+      "name": "Coco",
+      "sprite": "Levels/malibu_mansion/pool_area/Interactables/inspect_socialite"
+    },
+    "rudebeak": {
+      "name": "Rudebeak",
+      "sprite": "Levels/malibu_mansion/rudebeak"
+    }
+  },
+  "backgrounds": {
+    "gate": {
+      "layers": ["Levels/malibu_mansion/front_gate"],
+      "fallback": "night"
+    },
+    "living_room": {
+      "layers": ["Levels/malibu_mansion/living_room/bg_base", "Levels/malibu_mansion/living_room/prop_north_couch", "Levels/malibu_mansion/living_room/prop_south_couch", "Levels/malibu_mansion/living_room/prop_sofa_chair"]
+    },
+    "garden": {
+      "layers": ["Levels/malibu_mansion/garden/bg_base"]
+    },
+    "poster": {
+      "layers": ["Shared/case_poster"],
+      "fit": "contain"
+    },
+    "black": {
+      "layers": []
+    }
+  },
+  "intro": [
+    { "bg": "black", "card": true, "text": "MALIBU, CALIFORNIA\n\nTuesday evening\n8:00 PM" },
+    {
+      "bg": "living_room",
+      "stamp": "BRAWK!!",
+      "fx": ["shake"],
+      "text": "A squawk like a fire alarm tears through the Vale mansion. Every head in the house turns toward the birdcage."
+    },
+    { "who": "vivienne", "text": "Rudebeak, darling, PLEASE. Mommy is mid-affirmation." },
+    { "bg": "black", "card": true, "text": "8:15 PM" },
+    { "bg": "living_room", "who": "petra", "text": "Evening treats, my handsome boy. Who wants a- \nRudebeak?" },
+    {
+      "stamp": "EMPTY!",
+      "fx": ["flash", "shake"],
+      "text": "The cage door hangs open. The latch is wrenched clean off. The perch is bare."
+    },
+    {
+      "who": "reyes",
+      "fx": ["shake"],
+      "text": "Nobody leaves. NOBODY. As of right now, this house is locked down."
+    },
+    { "bg": "black", "card": true, "text": "8:42 PM\n\nOutside the gates" },
+    {
+      "bg": "gate",
+      "chyron": "MALIBU  -  THE VALE ESTATE",
+      "speaker": "Gloria Gale, KMAL News",
+      "text": "Good evening. I'm Gloria Gale, live outside the Vale estate, where Hollywood's rudest bird has vanished from inside a locked house."
+    },
+    {
+      "chyron": "BREAKING: STAR MACAW MISSING",
+      "speaker": "Gloria Gale, KMAL News",
+      "text": "Rudebeak the macaw: star of three films, one documentary, and a talk-show incident we still cannot air. Witnesses say he was last heard squawking at eight o'clock sharp."
+    },
+    {
+      "chyron": "LOCKDOWN UNTIL SUNRISE",
+      "speaker": "Gloria Gale, KMAL News",
+      "text": "Police have sealed the house until sunrise. At dawn the gates reopen and the film trucks roll out - and whatever is hidden in that house could roll out with them."
+    },
+    {
+      "chyron": "WHO IS INSIDE?",
+      "speaker": "Gloria Gale, KMAL News",
+      "lineup": ["vivienne", "derek", "chip", "petra", "rosa", "basil", "wexler", "marsh", "coco", "reyes"],
+      "text": "So who is locked inside tonight? Let's take a look."
+    },
+    {
+      "who": "vivienne",
+      "speaker": "Gloria Gale, KMAL News",
+      "chyron": "VIVIENNE VALE - MOVIE STAR",
+      "lineup": ["vivienne", "derek", "chip", "petra", "rosa", "basil", "wexler", "marsh", "coco", "reyes"],
+      "text": "The lady of the house. Rudebeak was her co-star - and lately, sources say, the one stealing her scenes."
+    },
+    {
+      "who": "derek",
+      "speaker": "Gloria Gale, KMAL News",
+      "chyron": "DEREK - HER HUSBAND",
+      "lineup": ["vivienne", "derek", "chip", "petra", "rosa", "basil", "wexler", "marsh", "coco", "reyes"],
+      "text": "Her husband, Derek, who has not been seen downstairs all evening. He is not, we are told, a bird person."
+    },
+    {
+      "who": "chip",
+      "speaker": "Gloria Gale, KMAL News",
+      "chyron": "CHIP STERLING - MANAGER",
+      "lineup": ["vivienne", "derek", "chip", "petra", "rosa", "basil", "wexler", "marsh", "coco", "reyes"],
+      "text": "Her manager, Chip Sterling, who has called this station four times tonight to say 'no comment.'"
+    },
+    {
+      "who": "petra",
+      "speaker": "Gloria Gale, KMAL News",
+      "chyron": "PETRA - BIRD HANDLER",
+      "lineup": ["vivienne", "derek", "chip", "petra", "rosa", "basil", "wexler", "marsh", "coco", "reyes"],
+      "text": "Petra, the bird handler. She sets out Rudebeak's supper at the same time every single evening."
+    },
+    {
+      "who": "rosa",
+      "speaker": "Gloria Gale, KMAL News",
+      "chyron": "ROSA - HOUSEKEEPER",
+      "lineup": ["vivienne", "derek", "chip", "petra", "rosa", "basil", "wexler", "marsh", "coco", "reyes"],
+      "text": "Rosa, who runs the kitchen - and carries a key to every door in the house."
+    },
+    {
+      "who": "basil",
+      "speaker": "Gloria Gale, KMAL News",
+      "chyron": "BASIL - GARDENER",
+      "lineup": ["vivienne", "derek", "chip", "petra", "rosa", "basil", "wexler", "marsh", "coco", "reyes"],
+      "text": "Basil, the gardener. Gentle, quiet, and famously opinionated about cages."
+    },
+    {
+      "who": "wexler",
+      "speaker": "Gloria Gale, KMAL News",
+      "chyron": "WEXLER - DIRECTOR",
+      "lineup": ["vivienne", "derek", "chip", "petra", "rosa", "basil", "wexler", "marsh", "coco", "reyes"],
+      "text": "Director Wexler, in town shooting a documentary about the star. His whole crew is stuck in there too - grips, camera, lights and sound - with more carts and road cases than a moving company."
+    },
+    {
+      "who": "coco",
+      "speaker": "Gloria Gale, KMAL News",
+      "chyron": "COCO - SOCIALITE",
+      "lineup": ["vivienne", "derek", "chip", "petra", "rosa", "basil", "wexler", "marsh", "coco", "reyes"],
+      "text": "And Coco, a dinner guest who has not put her phone down since she arrived."
+    },
+    {
+      "who": "reyes",
+      "speaker": "Gloria Gale, KMAL News",
+      "chyron": "OFFICER REYES - LAPD",
+      "lineup": ["vivienne", "derek", "chip", "petra", "rosa", "basil", "wexler", "marsh", "coco", "reyes"],
+      "text": "Keeping order: Officer Reyes, overheard calling this case 'a poultry matter.'"
+    },
+    {
+      "chyron": "LOCKDOWN UNTIL SUNRISE",
+      "speaker": "Gloria Gale, KMAL News",
+      "text": "Somewhere in that house is a frightened bird - and somebody who knows exactly where he is. Back to you in the studio."
+    },
+    {
+      "text": "Under the news van, something with whiskers has been listening.\nDikkie finishes his sardine, stretches twice, and slips through the bars of the gate."
+    },
+    {
+      "who": "reyes",
+      "stamp": "A CAT?!",
+      "fx": ["shake"],
+      "text": "Oh, come ON. Who let a cat in? This is a crime scene, whiskers."
+    },
+    { "who": "reyes", "text": "...Fine. You want in? Bird's gone, the doors are sealed, and somebody in there is lying to me." },
+    { "who": "reyes", "text": "Find out who took him, how he got out of a locked cage, and where he is now.\nBefore sunrise." },
+    { "bg": "poster", "card": true, "dim": 0.55, "text": "THE MISSING MACAW\n\nThe cat took the case." }
+  ],
+  "gathering": {
+    "intro": [
+      { "bg": "black", "card": true, "text": "11:48 PM\n\nThe living room" },
+      {
+        "bg": "living_room",
+        "stamp": "BONG!",
+        "fx": ["shake"],
+        "text": "The dinner gong in the hall rings. And rings. And rings. Something small and furry is hanging off the mallet."
+      },
+      { "who": "reyes", "text": "OKAY. OKAY! The cat wants everybody in the living room. Don't ask me why I am taking orders from a cat." },
+      {
+        "lineup": ["vivienne", "derek", "chip", "petra", "rosa", "basil", "wexler", "marsh", "coco", "reyes"],
+        "text": "One by one they file in: the star, the husband, the manager, the staff, the crew. Dikkie climbs into the empty cage, sits down, and waits for silence."
+      },
+      { "who": "reyes", "text": "Fine. Cat. You have been sniffing around all night. Show me what you've got." },
+      {
+        "who": "chip",
+        "fx": ["shake"],
+        "text": "Don't look at ME. I am the victim here! Do you know what tonight is doing to her brand?"
+      },
+      { "who": "reyes", "pos": "left", "text": "He has been panicking about headlines all night. So, cat - is panic a motive?" },
+      {
+        "stamp": "POUNCE!",
+        "fx": ["shake"],
+        "text": "Dikkie swats Chip's phone off the side table. The screen lights up: a contract, fifteen percent, and a bird-shaped signature."
+      },
+      { "who": "chip", "text": "Fifteen percent. Of a BIRD. Who I would never, ever lose. Thank you, cat." },
+      { "who": "reyes", "text": "Manager's clean. Greedy, but clean. Next." }
+    ],
+    "steps": [
+      {
+        "id": "derek",
+        "title": "The Squawk at Eight",
+        "intro": [
+          { "who": "derek", "text": "Don't bother. I heard that bird at eight o'clock. Through noise-canceling headphones. He was ALIVE at eight." },
+          { "who": "vivienne", "pos": "right", "text": "Mid-affirmation, darling. I will never forget it. Neither will my therapist." },
+          { "who": "reyes", "pos": "left", "text": "Two witnesses, same squawk, same minute. Whatever happened, it happened after eight. Right, cat?" }
+        ],
+        "sentence": "Everyone heard the squawk at eight. But Rudebeak's [supper] had sat untouched since [six], and the squawk came from a speaker behind the couch - fed by the [line] from the sound desk next door, not by anything in Derek's [spare kit].",
+        "answers": ["missed_snack_6pm", "time_600pm", "audio_cable", "headphone_box"],
+        "bank": ["missed_snack_6pm", "squawk_at_8pm", "derek_heard_squawk", "settled_feathers", "time_545pm", "time_600pm", "time_630pm", "time_800pm", "hidden_speaker", "couch_cable", "audio_cable", "headphone_box", "marsh_headphones", "documentary_camera", "broken_latch"],
+        "wrongLine": "Derek: 'I KNOW what I heard.'",
+        "success": [
+          {
+            "stamp": "POUNCE!",
+            "fx": ["shake"],
+            "text": "Dikkie bats the little speaker out from behind the couch. It skids across the floor and stops at Derek's feet with a plastic clack."
+          },
+          {
+            "who": "derek",
+            "stamp": "A SPEAKER?!",
+            "fx": ["shake"],
+            "text": "I bought eight-hundred-dollar headphones because of that bird. And I got fooled by a SPEAKER?"
+          },
+          {
+            "who": "reyes",
+            "text": "So the bird was gone before six, and everything after that was a recording. Which makes every eight o'clock alibi in this room worth exactly nothing."
+          },
+          { "who": "vivienne", "pos": "right", "text": "Derek. Darling. You did write 'him or me.' On my good stationery." },
+          {
+            "who": "derek",
+            "pos": "left",
+            "text": "I wanted him moved to the guest house, Viv. Not STOLEN. I am a lot of things. I am not organized enough to be a thief."
+          }
+        ]
+      },
+      {
+        "id": "rosa",
+        "title": "The Dinner Cart",
+        "intro": [
+          { "who": "reyes", "text": "Which brings us to the maid. Keys to every room, a cart in the bedroom wing at seven, and feathers in her kitchen bin." },
+          {
+            "who": "rosa",
+            "fx": ["shake"],
+            "text": "CHICKEN feathers. From the CHICKEN. I am a cook, officer, not a kidnapper."
+          }
+        ],
+        "sentence": "Rosa's cart went to the bedroom wing at [seven]. But Derek counted a [second rumble] - and that wing smelled of [cable grease], not soup.",
+        "answers": ["time_700pm", "hall_rumble_no_soup", "cable_grease"],
+        "bank": ["time_645pm", "time_700pm", "time_720pm", "husband_hall_7pm", "hall_rumble_no_soup", "dinner_cart_7pm", "lamp_returns_720", "cable_grease", "service_tray", "kitchen_feathers", "polish_cloth", "rosa_keys"],
+        "wrongLine": "Rosa: 'Read it twice, detective.'",
+        "success": [
+          {
+            "stamp": "POUNCE!",
+            "fx": ["shake"],
+            "text": "Dikkie walks a slow circle around Rosa's ankles, sniffs, and sneezes. Soup. Only soup."
+          },
+          { "who": "rosa", "text": "One cart out, one cart back. Whatever else rolled through that hallway, it did not smell like my cooking." },
+          { "who": "reyes", "text": "Maid's clear. Somebody else had wheels tonight. Heavy ones." },
+          { "who": "vivienne", "pos": "right", "text": "Rosa... I may have blamed the bird's vocabulary on you." },
+          { "who": "rosa", "pos": "left", "text": "You may have, senora. We will discuss it over paella. Which you will finally eat." }
+        ]
+      },
+      {
+        "id": "basil",
+        "title": "The Broken Latch",
+        "intro": [
+          { "who": "reyes", "text": "Then it's the gardener. Bent shears, a glove under the cage, and a whole speech about cages being prisons." },
+          {
+            "who": "basil",
+            "stamp": "I DID IT!",
+            "fx": ["flash", "shake"],
+            "text": "Alright! YES! I broke the latch. Me, with my shears, just before six. I wanted him free!"
+          },
+          { "who": "reyes", "text": "Well. That's a confession. Case closed, everybody. Let's all go home and-" },
+          { "text": "Dikkie does not move from the cage. His tail flicks once, twice. The tail says: not yet." }
+        ],
+        "sentence": "Basil forced the [latch] - but the [straw hat] at the edge of Coco's photo puts him behind the potting shed at [6:47], watching somebody else roll past.",
+        "answers": ["broken_latch", "straw_hat_witness", "time_647pm"],
+        "bank": ["broken_latch", "shears_match_latch", "muddy_gloves", "sound_proof_cases", "straw_hat_witness", "the_gardener", "boot_prints_shed", "glove_by_cage", "time_600pm", "time_630pm", "time_645pm", "time_647pm", "time_700pm"],
+        "wrongLine": "Basil: 'I already SAID it was me...'",
+        "success": [
+          {
+            "stamp": "POUNCE!",
+            "fx": ["shake"],
+            "text": "Dikkie hops onto the side table and plants a paw on Coco's phone. The 6:47 photo glows up at the room. At the very edge: a straw hat."
+          },
+          { "who": "coco", "text": "That's my photo! Oh my gosh. I'm a witness. I am SO a witness." },
+          {
+            "who": "basil",
+            "text": "Rudebeak let himself out. He went straight to his bird bath. Then one of the crew came wheeling big black boxes up the path, and I hid behind the shed and said nothing."
+          },
+          { "who": "basil", "text": "I am a coward, cat. But I am not a thief." },
+          { "who": "reyes", "text": "Then who was pushing the boxes?" }
+        ]
+      },
+      {
+        "id": "timeline",
+        "title": "The Long Evening",
+        "intro": [
+          {
+            "lineup": ["vivienne", "derek", "chip", "petra", "rosa", "basil", "wexler", "marsh", "coco", "reyes"],
+            "text": "Every head in the room turns toward the crew. In the corner, the Sound Guy is coiling a cable that is already coiled."
+          },
+          {
+            "who": "marsh",
+            "fx": ["shake"],
+            "text": "Don't look at me. I was in the LIBRARY at seven. Audio setup. It's on the schedule! Everybody check the schedule!"
+          },
+          { "who": "wexler", "pos": "right", "text": "Marsh? Marsh is my rock. He hasn't complained about that bird in two weeks." }
+        ],
+        "sentence": "In the book by the front door, [signature] opens the crew column at [WHEN], though the crew wasn't called until seven. At [WHEN] Coco's photo caught him rolling cases through the garden - and at [WHEN] those same cases went past the bedrooms on the wing's delivery list, signed with [scrawl].",
+        "answers": ["early_scrawl", "time_630pm", "time_647pm", "time_700pm", "scrawled_signature"],
+        "bank": ["early_scrawl", "scrawled_signature", "log_initials", "household_roster", "straw_hat_witness", "the_director", "time_545pm", "time_600pm", "time_630pm", "time_645pm", "time_647pm", "time_700pm", "time_720pm", "time_800pm", "time_815pm"],
+        "wrongLine": "The Sound Guy: 'See? It doesn't add up!'",
+        "success": [
+          {
+            "stamp": "POUNCE!",
+            "fx": ["shake"],
+            "text": "Dikkie drags three papers into a row on the rug: the guest registry, the delivery manifest, the sound desk's session log. Three signatures. Three long looping tails."
+          },
+          {
+            "who": "marsh",
+            "fx": ["shake"],
+            "text": "Those are just NUMBERS! Lots of people have cases! It's a film shoot, there are cases EVERYWHERE!"
+          },
+          { "who": "reyes", "text": "He's sweating, cat. Finish it." }
+        ]
+      },
+      {
+        "id": "marsh",
+        "title": "The Sound Guy",
+        "intro": [
+          { "who": "marsh", "text": "You can't prove anything. You're a CAT. I don't even know why I'm still talking." }
+        ],
+        "sentence": "One hand wrote all three - the same tail as the [initials] on the sound desk's log. [WHO] had the grudge, the [WHY], and Rudebeak never left the property: he spent the evening in the dark, padded silence of the [WHAT].",
+        "answers": ["log_initials", "d_marsh_sound_guy", "ruined_takes", "sound_proof_cases"],
+        "bank": ["log_initials", "early_scrawl", "scrawled_signature", "d_marsh_sound_guy", "the_director", "derek_the_husband", "the_maid", "the_gardener", "knew_cases_empty", "sound_proof_cases", "headphone_box", "marsh_headphones", "audio_cable", "documentary_camera", "ruined_takes", "director_notes", "insulted_cooking", "basil_free_the_bird", "star_note_to_husband", "pr_disaster", "couch_cable"],
+        "wrongLine": "The Sound Guy: 'Ha! Wrong! ...I mean, obviously wrong.'",
+        "success": [
+          {
+            "stamp": "GOTCHA!",
+            "fx": ["flash", "shake"],
+            "text": "Dikkie leaps out of the cage, lands squarely in the Sound Guy's lap, and stares into his soul. Nobody has ever out-waited a cat."
+          },
+          {
+            "who": "marsh",
+            "fx": ["shake"],
+            "text": "They're EMPTY! The cases are empty, I already told you, both of them, why does nobody ever LISTEN to the sound guy-"
+          },
+          { "text": "But Dikkie is already gone: out the patio door, across the wet lawn, to the tarp behind the potting shed. The whole house follows." },
+          { "bg": "garden", "who": "reyes", "text": "Alright, cat. Let's see your empty case." },
+          { "text": "The heavy latches snap. The foam-lined lid creaks open." },
+          {
+            "who": "rudebeak",
+            "speaker": "",
+            "stamp": "BRAWK!!",
+            "fx": ["flash", "shake"],
+            "text": "Curled in the foam: Rudebeak. Perfectly dry, perfectly furious, and perfectly fine."
+          },
+          { "who": "rudebeak", "text": "FORTY-SEVEN TAKES! BRAWK! FORTY-SEVEN!" },
+          { "who": "petra", "text": "Oh, you awful, wonderful bird. Somewhere dark and padded - of course he went quiet as a stone." },
+          { "who": "marsh", "text": "Forty-seven takes. You ever listen to forty-seven takes of one word while a bird screams through every single one?" },
+          {
+            "who": "marsh",
+            "text": "In there, he was quiet. For the first time all shoot, it was QUIET. I was going to roll him out with the trucks at sunrise. Let him go somewhere nice. Somewhere far."
+          },
+          { "who": "reyes", "text": "D. Marsh, you're coming with me. Bring your headphones. The plugged-in kind." }
+        ]
+      }
+    ]
+  },
+  "ending": [
+    { "bg": "gate", "card": true, "text": "6:02 AM\n\nSunrise" },
+    {
+      "bg": "gate",
+      "chyron": "MACAW FOUND SAFE",
+      "speaker": "Gloria Gale, KMAL News",
+      "text": "Breaking news at sunrise: Rudebeak the macaw is home, safe, and - we are told - extremely rude about it."
+    },
+    {
+      "who": "reyes",
+      "chyron": "OFFICER REYES - LAPD",
+      "text": "Solid police work, plain and simple. We followed the evidence - the registry, the photo, the speaker, the cases. Textbook. No further questions."
+    },
+    { "text": "On the way to the squad car, Reyes stops by the garden wall. Looks left. Looks right. Then looks down." },
+    { "who": "reyes", "text": "You're all right, cat. You're all right." },
+    { "text": "Dikkie blinks, slowly. From a cat, that is a medal." },
+    {
+      "bg": "garden",
+      "who": "basil",
+      "speaker": "",
+      "text": "Basil installed a brand-new latch on the cage that morning. He made it the nicest latch in Malibu - and he left it unlocked on Sundays, for the bird bath."
+    },
+    { "bg": "living_room", "who": "rudebeak", "speaker": "", "text": "Rudebeak has opinions about everything that happened. He shares them hourly." },
+    { "bg": "poster", "card": true, "dim": 0.6, "text": "CASE CLOSED\n\nThe Missing Macaw\n\nDikkie will return." }
+  ]
+}

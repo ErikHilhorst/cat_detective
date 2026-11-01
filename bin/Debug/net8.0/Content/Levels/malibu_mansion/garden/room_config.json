@@ -31,7 +31,7 @@
           "text": "The snipping stops. The fountain burbles. Somewhere, a gull. His bare hand curls closed. You wait the way only a cat can wait.|'ALRIGHT. FINE. It is my glove. By the cage. [I broke the latch] - me, with the shears, just before six. Then the front door went, and I panicked, and I ran for the garden.' It falls out of him like loose soil.|'I hid behind the shed. Rudebeak let HIMSELF out - went straight to his bird bath, happy as spring. Then one of those television people came wheeling [big black boxes] through, and I stayed hidden. I am a coward, cat. But I am not a thief.'",
           "keywords": [
             { "displayText": "I broke the latch", "id": "shears_match_latch", "color": "misc" },
-            { "displayText": "big black boxes", "id": "eyewitness_645pm", "color": "plot" }
+            { "displayText": "big black boxes", "id": "sound_proof_cases", "color": "plot" }
           ]
         }
       ],
@@ -50,7 +50,7 @@
     },
     {
       "id": "inspect_hidden_cases",
-      "text": "Behind the potting shed, under a tarp thrown in a hurry: two big black road cases stenciled 'STUDIO 4 - THIS SIDE UP - FRAGILE.' Heavy latches, thick [foam-lined] walls. You press an ear to one. [Silence]. The deep, upholstered kind. The grass around them is pressed flat by [heavy boot prints].",
+      "text": "Behind the potting shed, under a tarp thrown in a hurry: two big black road cases stenciled 'STUDIO 4 - THIS SIDE UP - FRAGILE.' Heavy latches, thick [foam-lined] walls. You press an ear to one. [Silence]. The deep, upholstered kind. One caster gives a thin little squeak when you nudge it. The grass around them is pressed flat by [heavy boot prints].",
       "keywords": [
         { "displayText": "foam-lined", "id": "sound_proof_cases", "color": "crime" },
         { "displayText": "Silence", "id": "sound_proof_cases", "color": "crime" },
@@ -70,6 +70,6 @@
       "scale": 0.19
     }
   ],
-  "localDeductionSentence": "[Basil] swears he spent the whole evening out here, and the [freshly planted bed] backs him up. But his [bent shears] would fit a wrenched cage latch, and the [crisp feathers] in the bird bath say Rudebeak made it to the garden alive. The potting shed has the best view of it all - and someone stood behind it, holding something heavy.",
-  "localDeductionClueIds": ["the_gardener", "flower_bed_bulbs", "shears_match_latch", "bird_bath_feathers"]
+  "localDeductionSentence": "Basil's [bent shears] fit the wrenched latch, and the [crisp feathers] in the bird bath say Rudebeak made it out here alive. Behind the shed, [heavy boot prints] stop at two [foam-lined cases]. And Basil swears he never left the garden all evening - which puts him right here when it happened.",
+  "localDeductionClueIds": ["shears_match_latch", "bird_bath_feathers", "boot_prints_shed", "sound_proof_cases"]
 }

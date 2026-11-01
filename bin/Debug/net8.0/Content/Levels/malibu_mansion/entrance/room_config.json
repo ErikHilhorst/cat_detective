@@ -99,16 +99,17 @@
     {
       "id": "inspect_guest_registry",
       "name": "Guest Registry",
-      "text": "A formal sign-in book by the entrance. [The whole household] parades through it:\n- Wexler, director\n- Petra, bird handler (plus one macaw)\n- Coco, socialite\n- Staff, signed in since morning|The [film crew's column] begins at [6:30 PM]. The signatures blur together - hurried, overlapping, hard to count.",
+      "text": "A formal sign-in book by the entrance. [The whole household] parades through it:\n- Wexler, director\n- Petra, bird handler (plus one macaw)\n- Coco, socialite\n- Staff, signed in since morning|Then the [film crew's column]. It opens at [6:30 PM] with one lonely signature: [a scribble with a long looping tail]. After that, nothing - until the rest of the crew piles in together, a crowd of names squeezed in just before seven.",
       "keywords": [
         { "displayText": "The whole household", "id": "household_roster", "color": "misc" },
         { "displayText": "film crew's column", "id": "guest_registry", "color": "misc" },
-        { "displayText": "6:30 PM", "id": "time_630pm", "color": "plot" }
+        { "displayText": "6:30 PM", "id": "time_630pm", "color": "plot" },
+        { "displayText": "a scribble with a long looping tail", "id": "early_scrawl", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 0.17
     }
   ],
-  "localDeductionSentence": "The doors have been sealed since the [lockdown] hit at [quarter past eight] - whoever stole [Rudebeak] is [still inside] these walls. The registry logs everyone, right down to the [crew column]; [Officer Reyes] says somebody's night in that book [does not add up]. And [Chip Sterling]? He only worries about the [headlines].",
-  "localDeductionClueIds": ["lockdown_815pm", "time_815pm", "rudebeak_the_macaw", "still_inside", "guest_registry", "officer_reyes", "registry_doesnt_add_up", "chip_sterling", "pr_disaster"]
+  "localDeductionSentence": "Nobody has left since the [lockdown] at [8:15], so whoever took Rudebeak is [still inside]. But the crew's column opens at [6:30] with one lonely [signature], long before the rest of the crew piles in.",
+  "localDeductionClueIds": ["lockdown_815pm", "time_815pm", "still_inside", "time_630pm", "early_scrawl"]
 }

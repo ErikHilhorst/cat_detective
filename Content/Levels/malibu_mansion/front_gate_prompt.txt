@@ -1,0 +1,24 @@
+FRONT GATE background (cutscene bg "gate" in case_script.json)
+=================================================================
+
+Target file: Content/Levels/malibu_mansion/front_gate.jpg  (1456 x 816, no characters)
+Until it exists, the cutscene player draws a code-drawn night fallback.
+
+Prompt (match the style of the room backgrounds - feed living_room/bg_base.jpg
+or entrance/full scene.jpg as a style reference):
+
+  Pre-rendered 2.5D isometric illustration in a cozy Studio Ghibli watercolor
+  style, warm hand-inked linework, matching the attached reference. Night exterior
+  of a Spanish-style Malibu mansion seen from the street: a tall wrought-iron front
+  gate between stucco pillars with lanterns, a curved driveway behind it leading to
+  the lit front door, palm trees and bougainvillea against a deep blue-violet night
+  sky with a hint of ocean on the horizon. On the street in the foreground: a TV
+  news van with a satellite dish and a soft spotlight, and a police car with its
+  light bar glowing faint red and blue. Keep the lower third calm and fairly
+  uncluttered (a dialogue box covers it). No people, no text, no logos.
+
+After generating:
+1. Save as Content/Levels/malibu_mansion/front_gate.jpg (1456x816).
+2. Add a /build entry to BOTH Content/Content.mgcb and Content/Content.Web.mgcb
+   (copy the living_room/bg_base.jpg block, PremultiplyAlpha=False).
+3. `dotnet build`, then check: dotnet run --no-build -- --screenshot ui script intro:12

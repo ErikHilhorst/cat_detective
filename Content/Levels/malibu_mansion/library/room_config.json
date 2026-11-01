@@ -102,8 +102,9 @@
     {
       "id": "inspect_session_log",
       "spriteAnchor": "TopRight",
-      "text": "A session log wedged behind the podium:\n'TAKE 12 - bird. TAKE 23 - bird. TAKE 47 - [RUINED. BIRD. AGAIN.]' The handwriting gets angrier with every page. The last page has torn through.",
+      "text": "A session log wedged behind the podium, every page initialed with [a scribble with a long looping tail]:\n'TAKE 12 - bird. TAKE 23 - bird. TAKE 47 - [RUINED. BIRD. AGAIN.]' The handwriting gets angrier with every page. The last page has torn through.",
       "keywords": [
+        { "displayText": "a scribble with a long looping tail", "id": "log_initials", "color": "misc" },
         { "displayText": "RUINED. BIRD. AGAIN.", "id": "ruined_takes", "color": "crime" }
       ],
       "texture": "Shared/placeholder_object",
@@ -121,6 +122,6 @@
       "scale": 0.1
     }
   ],
-  "localDeductionSentence": "One crew member has an alibi nobody asked for: [alibi man] - here since seven, he insists. But his [monitoring gear] connects to nothing at all, and the log by his chair is one long grudge, page after page: the [grievance]. If he was not listening tonight, what was he doing?",
-  "localDeductionClueIds": ["d_marsh_sound_guy", "marsh_headphones", "ruined_takes"]
+  "localDeductionSentence": "The [initials] on the sound desk's session log belong to whoever runs that desk: [the Sound Guy]. He sat out the evening in [monitoring gear] connected to nothing at all, while the desk's own line runs off into the wall - and the log is one long grudge: the [ruined takes]. Wexler wanted the bird off his shot list - somebody wanted him gone for good.",
+  "localDeductionClueIds": ["log_initials", "d_marsh_sound_guy", "marsh_headphones", "ruined_takes"]
 }

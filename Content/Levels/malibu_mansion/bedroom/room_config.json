@@ -51,12 +51,11 @@
       "id": "inspect_delivery_manifest",
       "spriteAnchor": "TopRight",
       "name": "Delivery Manifest",
-      "text": "A crew manifest on the dresser, entries all evening:\n- Florist, out - 6:10 PM\n- Catering ice run - 6:55 PM\n- [R. - dinner service] - [7:00 PM]\n- '[2x equipment cases]', hurried scrawl - 7:00 PM\n- Linen return, housekeeping - 7:10 PM\n- [Grip dept., lamp returns] - [7:20 PM]|Half the house rolled through this wing inside one hour. Every entry carries a readable name - except one [scribble with a tail]. It could belong to almost anybody.",
+      "text": "A crew manifest on the dresser, entries all evening:\n- Florist, out - 6:10 PM\n- Catering ice run - 6:55 PM\n- R. - dinner service - [7:00 PM]\n- '[2x equipment cases]' - 7:00 PM\n- Linen return, housekeeping - 7:10 PM\n- [Grip dept., lamp returns] - [7:20 PM]|Half the house rolled through this wing inside one hour. Every entry carries a readable name - except the cases, signed with [a scribble with a long looping tail]. It could belong to almost anybody.",
       "keywords": [
-        { "displayText": "R. - dinner service", "id": "dinner_cart_7pm", "color": "misc" },
         { "displayText": "Grip dept., lamp returns", "id": "lamp_returns_720", "color": "misc" },
         { "displayText": "2x equipment cases", "id": "d_marsh_7pm", "color": "misc" },
-        { "displayText": "scribble with a tail", "id": "scrawled_signature", "color": "misc" },
+        { "displayText": "a scribble with a long looping tail", "id": "scrawled_signature", "color": "misc" },
         { "displayText": "7:00 PM", "id": "time_700pm", "color": "plot" },
         { "displayText": "7:20 PM", "id": "time_720pm", "color": "plot" }
       ],
@@ -96,6 +95,6 @@
       "scale": 0.15
     }
   ],
-  "localDeductionSentence": "[Derek] heard a [rumble] downstairs - it lines up with the [dinner service] due at [seven], but also with the [two mystery cases] the paperwork wheels into the wing. Only one sound has ever beaten his [headphones]: the [squawk], at [eight]. So the bird was still around at that time... right?",
-  "localDeductionClueIds": ["derek_the_husband", "husband_hall_7pm", "service_tray", "time_700pm", "d_marsh_7pm", "headphone_box", "derek_heard_squawk", "time_800pm"]
+  "localDeductionSentence": "Derek heard a [rumble] downstairs. It lines up with the [dinner service] due at [seven] - but the paperwork logs a second delivery that same minute: [two equipment cases], signed by [a nameless scrawl]. Only one sound has ever beaten his [headphones]: the [squawk], at [eight]. So the bird was still around at that time... right?",
+  "localDeductionClueIds": ["husband_hall_7pm", "service_tray", "time_700pm", "d_marsh_7pm", "scrawled_signature", "headphone_box", "derek_heard_squawk", "time_800pm"]
 }

@@ -60,7 +60,7 @@
         },
         {
           "prompt": "Tilt your head at her, professionally",
-          "text": "'You want the profile? Blue-and-gold macaw, nineteen years old, ego like a rockstar, lungs like a fire alarm.' She almost smiles.\n'Vain, too. Never misses his evening splash in the garden bird bath. You could set a clock by that bird's grooming.'",
+          "text": "'You want the profile? Scarlet macaw, nineteen years old, ego like a rockstar, lungs like a fire alarm.' She almost smiles.\n'Vain, too. Never misses his evening splash in the garden bird bath. You could set a clock by that bird's grooming.'",
           "keywords": []
         },
         {
@@ -99,7 +99,7 @@
       "id": "inspect_hidden_speaker",
       "text": "A thin [cable] slips out from behind the couch and vanishes into the wainscoting. You wedge into the shadow beneath the cushions: a [tiny speaker], taped to the couch frame where only somebody at whisker height would ever look.",
       "keywords": [
-        { "displayText": "cable", "id": "hidden_speaker", "color": "crime" },
+        { "displayText": "cable", "id": "couch_cable", "color": "crime" },
         { "displayText": "tiny speaker", "id": "hidden_speaker", "color": "crime" }
       ],
       "texture": "Shared/placeholder_object",
@@ -144,6 +144,6 @@
       "scale": 0.27
     }
   ],
-  "localDeductionSentence": "[Vivienne] swears she heard the [squawk] at [eight o'clock]. But [Petra] points at the [untouched supper]: Rudebeak was already gone before [six]. And the cage's [wrenched latch] says somebody forced it open. Who? When? Why?",
-  "localDeductionClueIds": ["vivienne_vale", "squawk_at_8pm", "time_800pm", "petra_the_handler", "missed_snack_6pm", "time_600pm", "broken_latch"]
+  "localDeductionSentence": "Everyone swears by the [squawk] at [8:00]. But Rudebeak's [supper] has sat untouched since [6:00], and the scream came from a [speaker] taped behind the couch. And the cage's [wrenched latch]? Somebody forced it long before anyone heard a thing.",
+  "localDeductionClueIds": ["squawk_at_8pm", "time_800pm", "missed_snack_6pm", "time_600pm", "hidden_speaker", "broken_latch"]
 }

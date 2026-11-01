@@ -423,6 +423,16 @@
                  "opacity":1,
                  "properties":[
                         {
+                         "name":"LockedText",
+                         "type":"string",
+                         "value":"'CLOSED SET!' Wexler bellows through the door. 'Come back later!'"
+                        }, 
+                        {
+                         "name":"RequiresVisited",
+                         "type":"string",
+                         "value":"pool_area"
+                        }, 
+                        {
                          "name":"TargetRoom",
                          "type":"string",
                          "value":"library"

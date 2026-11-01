@@ -12,7 +12,7 @@ Current state: the case system is playable end-to-end AND the game has its shell
 end scene, and a two-room tutorial case. The protagonist's name is **Dikkie**.
 
 The first case, **Malibu Mansion / "The Missing Macaw"**
-(7 rooms, 74 clues: 65 room clues + 9 case-global TIME clues), is fully wired: free-roam movement, room transfers,
+(7 rooms, 78 clues: 69 room clues + 9 case-global TIME clues), is fully wired: free-roam movement, room transfers,
 interactable dialogue with keyword-unlocked clues, character interrogation menus (intro + selectable
 cat-action topics, some evidence- or solve-gated), per-room deduction boards, and a final solve board.
 All ten character sprites and all object sprites are real art (per-name PNGs under each room's
@@ -39,7 +39,7 @@ final board - built entirely on the normal case systems (no special tutorial cod
 
 ### Game states & shell
 
-`Game1.GameState`: `MainMenu, Settings, CaseIntro, Playing, EndScene, DevMenu`. Boot = MainMenu.
+`Game1.GameState`: `MainMenu, Settings, CaseIntro, Playing, EndScene, DevMenu, Cutscene`. Boot = MainMenu.
 
 - **MainMenu**: W/S + Enter or mouse. CONTINUE only enabled while a save exists; NEW GAME over an
   existing save asks for a second Enter ("overwrite" confirm); TUTORIAL starts the tutorial case;
@@ -59,7 +59,29 @@ final board - built entirely on the normal case systems (no special tutorial cod
   no authored intro skip straight to `LoadCase`. Keep intros to ONE short page, light on noir
   (playtest 5); the typewriter starts after a short beat (negative `_typewriterTimer`) so the
   poster lands first.
-- **EndScene** (`StartEndScene`): beats from `CaseScripts.GetEndScene(caseId)`; a beat can show
+- **Cutscene** (`Game1.Cutscene.cs`, data in `Levels/<case>/case_script.json`, model in
+  `Systems/CaseScript.cs`): Ace Attorney-style comic panels with no new art - a background
+  (`backgrounds`: content-path layers, cover/contain, code-drawn `night` fallback), the speaker's
+  in-world sprite as a big stand-in (`cast`), the paw-print dialogue box, and code-drawn
+  punctuation: `stamp` (slam-in word, shown alone for 0.75 s), `fx` shake/flash, `chyron` (news
+  lower-third), `lineup` (row of cast faces, `who` highlighted), `card` (title card). `bg`
+  carries over between beats; `who` does not; `speaker: ""` silences the auto name label on
+  narration beats. Esc: intro -> straight into the case; gathering -> skip to the board;
+  ending -> last card. When a case has a script, it REPLACES the CaseIntro typewriter and the
+  one-shot final board/EndScene:
+  - `intro` - played by `StartCaseIntro` (Malibu: 8:00 squawk cold open that PLANTS the
+    "alive at 8" lie, 8:15 empty cage, news-van roll call introducing all ten suspects with
+    one hook each - the Sound Guy is present in the lineup but never featured - the sunrise
+    stakes, and Reyes stating the three case questions: who / how out of a locked cage /
+    where is he now).
+  - `gathering` - the FINAL SOLVE button (same lock) starts it: intro beats, then per step
+    `intro` beats -> a small board (`sentence` + `answers`, curated `bank`, `wrongLine`
+    prefixed to "N/M fit") -> `success` beats -> next step. Boards reuse the journal UI in
+    final-solve mode (`_gatheringActive`; header "The Gathering" / step title). Every step's
+    answers + bank are unlocked when it starts (nothing can dead-end the finale). Closing a
+    board aborts back to the room; FINAL SOLVE resumes at the same step (not saved).
+  - `ending` - appended after the last step's success; the save is deleted (`FinishCase`).
+- **EndScene** (`StartEndScene`, cases without a script, e.g. the tutorial): beats from `CaseScripts.GetEndScene(caseId)`; a beat can show
   `rudebeak.png` (`ShowRudebeak`) or render as a centered title card (`IsCard`). Replaces the old
   `_isGameWon` win banner entirely. Reached from a valid final-solve submit.
 - **Settings**: music volume (10 cells, applies to `MediaPlayer.Volume` live) + CRT toggle;
@@ -87,6 +109,7 @@ final board - built entirely on the normal case systems (no special tutorial cod
 CatDetective.csproj       — Project file; swap package for KNI to target WASM
 Program.cs                — Entry point ([STAThread])
 Game1.cs                  — Main loop; render passes, dialogue UI, journal/deduction UI, HUD, screenshot mode
+Game1.Cutscene.cs         — Scripted scene player + gathering flow (partial class of Game1)
 
 Entities/
   GameObject.cs           — Abstract base: Position (bottom-center), LayerDepth, CollisionBox
@@ -98,7 +121,8 @@ Entities/
 
 Systems/ (shell)
   SaveSystem.cs           — Single-slot save + settings persistence (%LocalAppData%/CatDetective/)
-  CaseScripts.cs          — Intro pages + end-scene beats per case id (all epilogue/intro copy)
+  CaseScripts.cs          — Fallback intro pages + end-scene beats (cases without case_script.json)
+  CaseScript.cs           — case_script.json model + parser (intro / gathering / ending beats)
   CrtOverlay.cs           — Shader-free CRT (scanline strip + vignette), Pass 9
   RoomPreloader.cs        — Background asset warmer: queues every room's textures at boot
                             (saved room first, then cases in scene order) and loads ONE per
@@ -120,6 +144,7 @@ Systems/
 
 tools/
   verify_level.py         — Static level checker (run from repo root, no game launch needed)
+  story_sim/sim.py        — Headless text playthrough + story audit (see "Story simulator")
   generate_object_sprites.py — Gemini sprite generator (see generate-object-sprites skill)
   layer_room_props.py     — Walk-behind prop layer generator (see layer-room-props skill)
   case_editor/            — Browser editor for case/room configs (see "Case editor" below)
@@ -301,7 +326,8 @@ A safe margin of ~15 px beyond the minimum is recommended.
   dimmed; the menu always ends with a fixed "Pad away. (Leave)" entry. Navigation: W/S or arrows + Enter.
 - `localDeductionSentence` + `localDeductionClueIds[]` — same slot/answer scheme as the final board. Answers must be clue ids the room's own keywords can unlock **ungated** (intro, object, or non-gated topic — a gated answer would be circular; enforced by `verify_level.py`).
 
-Deduction validation is enforced: a wrong submit reports partial progress ("Incorrect logic - 2/3 fit.")
+Deduction validation is enforced: a wrong submit reports partial progress ("Incorrect logic - 2/3 fit.";
+local boards append " - a piece is still out there." while any answer clue is unfound)
 so a failed solve is a deduction step, not trial-and-error. Solving a room stores its filled sentence
 for the journal recap, unlocks the room's macro clues, and unlocks any `requiresSolve` confrontation
 topics gated on that room (with a queued "X might have some explaining to do..." toast).
@@ -358,7 +384,8 @@ topics gated on that room (with a queued "X might have some explaining to do..."
   garden feathers).
 - **Solve-gated confrontations.** Each room's key character has a `requiresSolve` topic that
   rewards solving that room's board: Reyes (entrance), Vivienne (living_room), Derek (bedroom),
-  Rosa (kitchen), Basil (garden), Marsh (library). The payoff follows the slip rules below - a
+  Rosa (kitchen), Basil (garden), Marsh (library), Coco (pool_area: `cases_came_back` - the
+  cases rolled back to the shed before lockdown and something inside rustled). The payoff follows the slip rules below - a
   red herring cracks their alibi or redirects suspicion; the culprit near-confesses. This makes
   the SOLVE button an active investigative tool, not a checklist (playtest 2 finding).
 - **FINAL SOLVE confrontation lock (playtest 3).** The final board opens only when every room
@@ -384,7 +411,7 @@ topics gated on that room (with a queued "X might have some explaining to do..."
 - **Confrontation payoffs stay neutral (playtest 5).** A confrontation reward never points at
   the culprit ("one signature landed half an hour before its call sheet" was cut) - it
   sharpens the question, not the answer: Reyes's registry hunch ("somebody's evening in this
-  book does not add up" = `registry_doesnt_add_up`) is UNGATED (it is an entrance board answer);
+  book does not add up" = `registry_doesnt_add_up`) is UNGATED (a What flavor chip, no longer a board answer);
   his solve-gated payoff is the canvass slip `unanimous_at_eight` - everyone heard the same
   squawk at the same minute, and "honest witnesses never agree that neatly." The pointed
   arithmetic lives on the final board itself.
@@ -438,7 +465,9 @@ All connections are bidirectional. **Forced opening order**: the entrance -> liv
 carries `RequiresVisited: bedroom` (Reyes: "Photos in progress. East wing first, whiskers."),
 so the player meets Derek and his 8 PM squawk-through-headphones testimony BEFORE the living
 room - the false "bird alive at 8" anchor is built in the bedroom, then demolished at the
-cage. From the living room on, movement is free. Visited rooms persist in the save
+cage. The living_room -> library door carries `RequiresVisited: pool_area` (Wexler: "CLOSED
+SET!") so the identification room comes after garden + pool (playtest r2: a 4th-room library
+turned the rest into a confirmation lap). Everything else is free. Visited rooms persist in the save
 (`visitedRooms`; older saves seed from the saved room + solved rooms).
 
 Background dimensions per room:
@@ -464,7 +493,7 @@ Rudebeak is the missing macaw.
 - 6:30 PM — the crew column in the entrance registry begins (`time_630pm` unlocks here); one
   crew member was inside half an hour before his own 7:00 call, but NOTHING in the game states
   that arithmetic. Reyes states his registry hunch ungated ("somebody's evening in this book
-  does not add up", `registry_doesnt_add_up`, an entrance board answer); his solve-gated
+  does not add up", `registry_doesnt_add_up`, a What flavor chip); his solve-gated
   confrontation instead reports the too-unanimous 8 PM canvass (`unanimous_at_eight`, still
   neutral); the final board's WHEN-1 clause asks for the time
   "a full half hour before his own call", and the 7:00 call sits on the pool area's crumpled
@@ -484,7 +513,8 @@ Rudebeak is the missing macaw.
   the squawk: "the bird was still AROUND at eight... right?" Rosa's slip (`cable_grease`)
   pins the second rumble to equipment, not lamps.
 - Before lockdown — the cases are stashed behind the garden potting shed under a tarp
-  (Sound-Proof Cases, found in the garden).
+  (chip "Foam-Lined Cases", id `sound_proof_cases` - renamed so the chip does not name the
+  culprit's trade; Petra's gated topic makes the "knew sound" inference as a slip).
 - 8:00 PM — Fake squawk: tiny speaker taped behind the living room couch (the couch is a
   walk-behind prop — the speaker interactable sits in the corridor behind it, hidden until
   the couch fades), fed by the audio
@@ -495,6 +525,21 @@ Rudebeak is the missing macaw.
   bedroom-before-living-room order means the player carries it into the cage room and
   watches it break.
 - 8:15 PM — Police lockdown. Only the lockdown clue ("Lockdown - 8:15 PM") carries the 8:15 timestamp.
+- All night — **Rudebeak is IN one of the sound-proof cases** behind the shed: dark and padded,
+  so he goes "quiet as a stone" (Petra). The plan was to roll him out with the crew trucks at
+  sunrise (the intro's stakes). Marsh's slip "the cases are EMPTY" is a LIE that gives him
+  away - never write a line that confirms the cases are empty. The gathering ends with the
+  cat leading everyone to the shed and the lid opening on a dry, furious, fine Rudebeak.
+
+**The red thread: the tailed scrawl (room contracts, 2026-11).** One handwriting detail, worded
+IDENTICALLY in three rooms and never called "the same" - the match is the player's deduction:
+entrance registry (the crew column opens at 6:30 with one lonely signature, "a scribble with a
+long looping tail", the rest of the crew piles in just before seven -> `early_scrawl`), the
+bedroom manifest's 7:00 cases line (`scrawled_signature`), and the library session log's
+initials (`log_initials`). It gives Marsh's 6:30 opportunity a source of its own. The pool
+call sheet is a 4-name crew list (grips, camera, lights, D. Marsh) and Coco cannot tell the
+crew apart ("they all wear black") - no room before the library singles Marsh out. Each room's
+question and finale output are in `research/room_contracts.md`; keep new content inside them.
 
 **Deliberate pacing**: the early rooms (entrance, living room, bedroom) never name D. Marsh.
 The registry lists the whole household; the manifest signature is a scrawl; the cage-side
@@ -509,7 +554,21 @@ Rosa (motive note + cart at 7 PM + ambiguous feathers + polish cloth at the cage
 "maybe they are not wrong to look"), Derek (headphones with a spare *audio cable*/ultimatum),
 Chip (PR panic — but he earns commission on the bird), Wexler (thrilled about the drama).
 
-**Final board** (playtest 5: pure timeline reconstruction). "He was inside by [WHEN] - a full
+**The gathering (replaces the final board in play).** Chip is cleared in the gathering
+intro as cutscene only (his board repeated the entrance - playtest r2), then five small boards,
+Poirot order - suspicion on everyone, then the culprit: (2) Derek - `missed_snack_6pm` +
+`time_600pm` + `audio_cable` (the speaker's line from the sound desk) + `headphone_box` (not
+Derek's spare cable) - the Big Lie demolished in public; (3) Rosa - `time_700pm` +
+`hall_rumble_no_soup` + `cable_grease` (resolves the vocab-ledger blame); (4) Basil - false
+confession beat ("I DID IT!", Reyes nearly closes the case = the 75% low), then
+`broken_latch` + `straw_hat_witness` + `time_647pm` turns him into the witness; (5) the
+timeline - `early_scrawl` + `time_630pm` / `time_647pm` / `time_700pm` + `scrawled_signature`
+(each tail tied to its document: front-door book vs the wing's delivery list); (6) the Sound
+Guy - `log_initials` + `d_marsh_sound_guy` + `ruined_takes` + `sound_proof_cases`, then the shed reveal. Each herring step pays off that
+herring's room confrontation. `finalSolveSentence` below stays in case_config.json as the
+non-script fallback and for verify_level.py.
+
+**Final board** (playtest 5: pure timeline reconstruction; fallback only). "He was inside by [WHEN] - a full
 half hour before his own call. The snatch was caught on camera at [WHEN], and by [WHEN] the
 cargo was rolling right past the bedrooms..." Answers in parse order: `time_630pm`,
 `time_647pm`, `time_700pm`, `d_marsh_sound_guy` (WHO), `sound_proof_cases` (WHAT),
@@ -599,6 +658,30 @@ dotnet run --no-build -- --screenshot ui intro [page] # malibu poster intro, ful
 dotnet run --no-build -- --screenshot ui end [beat]   # malibu end scene (beat 3 = rudebeak)
 dotnet run --no-build -- --screenshot ui continue     # loads save.json exactly like CONTINUE
 ```
+
+### Story simulator + playtests (tools/story_sim)
+
+```bash
+python tools/story_sim/sim.py audit                       # prove the case is completable
+python tools/story_sim/sim.py --dump research/playtests/malibu_script_dump.md audit
+python tools/story_sim/sim.py --state run.json new        # interactive text play
+python tools/story_sim/sim.py --state run.json help       # look/inspect/topic/go/board/solve/final/gather
+dotnet run --no-build -- --screenshot ui scriptcheck      # every beat vs the cutscene text box
+dotnet run --no-build -- --screenshot ui script intro:12  # one beat (intro|gathering|ending)[:N[:stamp]]
+dotnet run --no-build -- --screenshot malibu_mansion living_room gather:1   # a gathering board
+```
+
+`sim.py` mirrors the game rules from the same JSON (doors + RequiresVisited from the Tiled
+Transfers layer, only map-placed interactables, keyword unlocks, requiresClue/requiresSolve
+gates, altText, local banks, macro unlock on solve, the confrontation lock, the gathering).
+`audit` exhausts every interaction, solves every board in the game's own order, and reports
+ERRORs (unreachable room, unsolvable board, non-ASCII) and WARNs (single-option slots,
+unlockable-never clues, gathering answers not guaranteed found before the finale). Keep the
+simulator in sync when game rules change. **Blind LLM playtests**: spawn a (smaller) model
+that may ONLY run `sim.py` commands (no reading Content/, tools/, research/) and writes a
+structured report to `research/playtests/<date>_<model>_playtest.md` - see the existing
+reports for the prompt shape. Run audit after every content change; playtest after
+structural changes.
 
 ### Static level checker
 

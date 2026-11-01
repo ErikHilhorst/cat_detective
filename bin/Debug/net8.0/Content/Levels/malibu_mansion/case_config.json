@@ -105,8 +105,8 @@
       "isMacroClue": false,
       "category": "WhereWhen",
       "name": "Crew Arrivals",
-      "context": "The sign-in book logs the whole household coming and going all afternoon - and then the film crew's column begins, hurried and overlapping.",
-      "inspectorDescription": "Wexler first. Then the handler plus one bird. Then the socialite. And then a crew column too sloppy to count. My eyes glazed twice."
+      "context": "The sign-in book logs the whole household all afternoon - then the film crew's column, where nearly the whole crew signed in together in one crowded rush.",
+      "inspectorDescription": "Wexler first. Then the handler plus one bird. Then the socialite. Then the crew, all at once, like a bus pulled up."
     },
     {
       "id": "husband_hall_7pm",
@@ -141,8 +141,8 @@
       "isMacroClue": false,
       "category": "Who",
       "name": "Scrawled Signature",
-      "context": "The 7:00 PM cases were signed in with a hurried scribble. Every other entry on the manifest has a readable name beside it.",
-      "inspectorDescription": "Florist, legible. Housekeeping, legible. Grip department, legible. Two heavy cases: a scribble with a tail. Only one entry did not want to be read."
+      "context": "The 7:00 PM cases were signed in with a scribble with a long looping tail. Every other entry on the manifest has a readable name beside it.",
+      "inspectorDescription": "Florist, legible. Housekeeping, legible. Grip department, legible. Two heavy cases: a long looping tail and nothing else."
     },
     {
       "id": "hall_rumble_no_soup",
@@ -156,16 +156,16 @@
     {
       "id": "cable_grease",
       "roomId": "kitchen",
-      "isMacroClue": true,
+      "isMacroClue": false,
       "category": "What",
       "name": "Smell of Cable Grease",
-      "context": "Rosa swears the bedroom wing smelled of soup and cable grease that night. The soup was hers.",
+      "context": "Rosa swears the bedroom wing smelled of soup and cable grease this evening. The soup was hers.",
       "inspectorDescription": "Kitchens know their smells. Soup, hers. Cable grease, somebody else's - a workshop smell in a food hallway, and it did not come off her cart."
     },
     {
       "id": "knew_cases_empty",
       "roomId": "library",
-      "isMacroClue": true,
+      "isMacroClue": false,
       "category": "Who",
       "name": "'The Cases Are EMPTY'",
       "context": "Nobody told the Sound Guy what was inside the hidden cases. He said it himself - empty, both of them - before anyone asked.",
@@ -185,7 +185,7 @@
       "roomId": "garden",
       "isMacroClue": true,
       "category": "What",
-      "name": "Sound-Proof Cases",
+      "name": "Foam-Lined Cases",
       "context": "Two big black road cases, stashed behind the garden shed under a hastily thrown tarp. Heavy latches, thick foam lining.",
       "inspectorDescription": "Foam-lined and heavy-latched. I pressed an ear against one for science. Nothing. Which proves nothing. Which is the point."
     },
@@ -296,6 +296,15 @@
       "name": "Ruined Takes",
       "context": "A session log by the mixer: 'TAKE 47 - RUINED. BIRD. AGAIN.' Pages and pages of them.",
       "inspectorDescription": "Forty-seven ruined takes. The handwriting gets angrier with every page."
+    },
+    {
+      "id": "log_initials",
+      "roomId": "library",
+      "isMacroClue": false,
+      "category": "Who",
+      "name": "Initials on the Log",
+      "context": "Every page of the sound desk's session log is initialed with a scribble with a long looping tail.",
+      "inspectorDescription": "Same pen, same pressure, page after page. The tail gets longer as the takes get angrier."
     },
     {
       "id": "director_notes",
@@ -437,9 +446,9 @@
       "roomId": "pool_area",
       "isMacroClue": false,
       "category": "WhereWhen",
-      "name": "Production Schedule",
-      "context": "The official crew schedule, found crumpled into a ball. Smoothed flat, it assigns D. Marsh to Library audio setup at 7:00 PM.",
-      "inspectorDescription": "Crew schedule, 7:00 PM: 'D. Marsh - Library (audio setup).' Somebody balled it up and threw it away. Schedules only mean something when people follow them."
+      "name": "Crew Call Sheet",
+      "context": "The crew's call sheet, crumpled and thrown away. Smoothed flat, it calls the whole crew to their posts at once: grips, camera, lights - and D. Marsh, library, audio setup.",
+      "inspectorDescription": "Everyone called for the same minute. Somebody balled it up and threw it at the pool. Schedules only mean something when people follow them."
     },
     {
       "id": "north_gate_locked",
@@ -483,8 +492,8 @@
       "isMacroClue": false,
       "category": "What",
       "name": "Bright Feather",
-      "context": "A single bright feather, red fading into blue. It could have blown in from anywhere.",
-      "inspectorDescription": "One bright feather. The wind carries feathers everywhere. I did not bap it. There were no witnesses either way."
+      "context": "A single bright feather, red fading into blue, snagged in the hedge at knee height beside two thin wheel ruts in the lawn.",
+      "inspectorDescription": "Snagged at knee height, right where something on wheels would brush the hedge. I did not bap it. There were no witnesses either way."
     },
     {
       "id": "lamp_returns_720",
@@ -616,10 +625,19 @@
       "id": "registry_doesnt_add_up",
       "roomId": "entrance",
       "isMacroClue": false,
-      "category": "WhereWhen",
+      "category": "What",
       "name": "Does Not Add Up",
       "context": "Reyes's verdict on the sign-in book: hurried arrivals, sloppy signatures - somebody's evening in that book does not add up.",
       "inspectorDescription": "He would not say whose. 'Your department,' he said. I have a department now."
+    },
+    {
+      "id": "early_scrawl",
+      "roomId": "entrance",
+      "isMacroClue": false,
+      "category": "Who",
+      "name": "Early Signature",
+      "context": "The film crew's column opens with one lone signature - a scribble with a long looping tail - well ahead of the rest of the crew.",
+      "inspectorDescription": "No name I can read. Just a long looping tail, like the pen was in a hurry to be somewhere else. Nobody else on the crew signed in anywhere near it."
     },
     {
       "id": "chip_sterling",
@@ -665,6 +683,24 @@
       "name": "Spent Earplugs",
       "context": "A nightstand drawer rattling with used foam earplugs - months of failed defenses against 5 AM wake-up squawks.",
       "inspectorDescription": "He tried the cheap way first, many times over. The three hundred dollar escalation was thoroughly earned."
+    },
+    {
+      "id": "couch_cable",
+      "roomId": "living_room",
+      "isMacroClue": false,
+      "category": "What",
+      "name": "Cable in the Wainscoting",
+      "context": "A thin cable slips out from behind the couch and vanishes into the wainscoting, heading west.",
+      "inspectorDescription": "Thin, black, and tucked away with care. Somebody did not want it tripped over."
+    },
+    {
+      "id": "cases_came_back",
+      "roomId": "pool_area",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "The Second Trip",
+      "context": "Coco, sunglasses gone: before the lockdown the same cases came back down the garden path toward the shed, squeaky wheel and all - and something inside one of them rustled.",
+      "inspectorDescription": "'Foam settles, darling,' she said. She seemed very sure about foam."
     }
   ],
   "rooms": ["entrance", "living_room", "bedroom", "library", "kitchen", "garden", "pool_area"],

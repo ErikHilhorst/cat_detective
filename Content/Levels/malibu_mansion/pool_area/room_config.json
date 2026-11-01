@@ -6,10 +6,8 @@
     {
       "id": "inspect_socialite",
       "name": "Coco",
-      "text": "The Socialite, [Coco], lowers her sunglasses exactly one centimeter.\n'Oh thank GOD. Someone with cheekbones.' She pats the sun lounger. You do not sit on it. She respects that.",
-      "keywords": [
-        { "displayText": "Coco", "id": "eyewitness_645pm", "color": "plot" }
-      ],
+      "text": "The Socialite, Coco, lowers her sunglasses exactly one centimeter.\n'Oh thank GOD. Someone with cheekbones.' She pats the sun lounger. You do not sit on it. She respects that.",
+      "keywords": [],
       "topics": [
         {
           "prompt": "Pose beside her chaise, chin up",
@@ -29,12 +27,20 @@
           ]
         },
         {
-          "prompt": "Sprawl across the production schedule",
+          "prompt": "Sprawl across the crew call sheet",
           "requiresClue": "production_schedule",
-          "text": "She peers over her sunglasses at the page beneath you.\n'Seven o'clock, library, audio setup? Honey.' A long, slow sip.\n'At quarter to seven that man was doing CARDIO through the begonias with two giant cases. [I know what I saw]. I was bored enough to be reliable.'",
+          "text": "She peers over her sunglasses at the page beneath you.\n'Crew call at seven? Honey.' A long, slow sip.\n'At quarter to seven one of those crew boys was doing CARDIO through the begonias with two giant cases. Which one? They all wear black, darling. It is a whole aesthetic.'|'But [I know what I saw]. I was bored enough to be reliable.'",
           "keywords": [
             { "displayText": "I know what I saw", "id": "eyewitness_645pm", "color": "plot" }
           ]
+        },
+        {
+          "prompt": "Bat her sunglasses off the lounger",
+          "text": "They clatter onto the deck. She stares at you over nothing at all, deeply wounded.\n'FINE. You want the rest? Later on - before the police came - [those same cases came back], down the path toward the shed. Squeaky wheel and everything.'|'And from inside one of them, a sort of furious little rustle.' She retrieves her sunglasses.\n'Foam settling, probably. Foam settles, darling. Everything settles.'",
+          "keywords": [
+            { "displayText": "those same cases came back", "id": "cases_came_back", "color": "misc" }
+          ],
+          "requiresSolve": "pool_area"
         }
       ],
       "texture": "Shared/placeholder_person",
@@ -55,10 +61,10 @@
     {
       "id": "inspect_production_schedule",
       "name": "Crumpled Schedule",
-      "text": "A ball of paper, crumpled with feeling and thrown at the pool. It missed. You bat it flat. It is the production schedule - under '[7:00 PM] - Crew Assignments:' it reads:\n'[D. Marsh - Library (audio setup)].'",
+      "text": "A ball of paper, crumpled with feeling and thrown at the pool. It missed. You bat it flat. It is the crew call sheet - under '[7:00 PM] - [Crew call]:' it reads:\n- Grips - west terrace (lamps)\n- Camera - living room\n- Lights - front hall\n- D. Marsh - library (audio setup)",
       "keywords": [
         { "displayText": "7:00 PM", "id": "time_700pm", "color": "plot" },
-        { "displayText": "D. Marsh - Library (audio setup)", "id": "production_schedule", "color": "misc" }
+        { "displayText": "Crew call", "id": "production_schedule", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 0.09
@@ -66,7 +72,7 @@
     {
       "id": "inspect_feather",
       "name": "Bright Feather",
-      "text": "[A single bright feather], red fading into blue, resting where the breeze left it. You sniff it. Bird. Obviously bird. It could have blown in from anywhere. You resist the overwhelming urge to bap it.",
+      "text": "[A single bright feather], red fading into blue, snagged in the hedge at about knee height - right beside two thin wheel ruts pressed into the lawn. You sniff it. Bird. Definitely bird. You resist the overwhelming urge to bap it.",
       "keywords": [
         { "displayText": "A single bright feather", "id": "feather_in_filter", "color": "misc" }
       ],
@@ -74,6 +80,6 @@
       "scale": 0.15
     }
   ],
-  "localDeductionSentence": "Coco the socialite watched [somebody haul cases] through the garden at [quarter to seven] - and her [poolside photo] pins them in place at exactly [6:47]. But the crumpled [call sheet] promised that somebody to the library at seven sharp. The minutes have stopped adding up.",
+  "localDeductionSentence": "Coco the socialite watched [somebody haul cases] through the garden at [quarter to seven] - and her [poolside photo] pins them in place at exactly [6:47]. But the crumpled [call sheet] didn't call the crew until seven sharp. So who was out here early - and why?",
   "localDeductionClueIds": ["eyewitness_645pm", "time_645pm", "selfie_figure_cases", "time_647pm", "production_schedule"]
 }

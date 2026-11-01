@@ -31,7 +31,7 @@ namespace CatDetective
     ///   Pass 8 — Deduction board
     ///   Pass 9 — CRT overlay (optional, all states; drawn into the render target)
     /// </summary>
-    public class Game1 : Game
+    public partial class Game1 : Game
     {
         // ── Internal resolution ────────────────────────────────────────────────
         // Set per-room to match the background image exactly (no centering, no dead zone).
@@ -257,7 +257,7 @@ namespace CatDetective
         // ── Game state / scene selection ───────────────────────────────────────
         // MainMenu is the boot state; DevMenu (the scene picker) stays reachable
         // from it via F12 as a dev tool.
-        private enum GameState { MainMenu, Settings, CaseIntro, Playing, EndScene, DevMenu }
+        private enum GameState { MainMenu, Settings, CaseIntro, Playing, EndScene, DevMenu, Cutscene }
         private GameState    _currentState    = GameState.MainMenu;
         private List<string> _availableScenes = new();
 
@@ -462,6 +462,17 @@ namespace CatDetective
                         ? _notebook.UnlockedClues[0] : null;
                     _activeTab = _selectedWordBankClue?.Category ?? ClueCategory.Who;
                 }
+                // "gather[:N]" opens gathering step N's board (all bank chips found).
+                else if (_screenshotView.StartsWith("gather") && HasGathering)
+                {
+                    var parts = _screenshotView.Split(':');
+                    _gatheringStep = parts.Length > 1 && int.TryParse(parts[1], out int gs) ? gs : 0;
+                    foreach (var id in _caseScript!.GatheringClueIds())
+                        _notebook.UnlockClue(id);
+                    _gatheringActive = true;
+                    OpenGatheringBoard();
+                    _selectedWordBankClue = _notebook.GetClue(CurrentGatheringStep!.Answers[0]);
+                }
                 // "notes" captures casebook page 2 at its worst case: every room
                 // marked solved, recap = the room's raw local sentence template.
                 else if (_screenshotView == "notes")
@@ -556,6 +567,10 @@ namespace CatDetective
             _hotReloadTimer       = 0f;
 
             _currentCaseId = caseId;
+            _gatheringActive    = false;
+            _gatheringStep      = 0;
+            _gatheringIntroSeen = false;
+            LoadCaseScript(caseId);
             _visitedTopics.Clear();   // heard-topic state must not leak across cases
             _visitedRooms.Clear();    // linear-order gates reset per case
 
@@ -903,6 +918,9 @@ namespace CatDetective
                 return;
             }
 
+            if (TryStartScriptIntro(caseId))
+                return;
+
             var pages = CaseScripts.GetIntro(caseId);
             if (pages.Length == 0)
             {
@@ -996,8 +1014,54 @@ namespace CatDetective
                         Console.WriteLine("[Screenshot] No save to continue - staying on the menu.");
                     break;
 
+                // Scripted scenes: `ui script <section> [beat]`, section =
+                // intro | gathering | ending (gathering = every gathering beat
+                // in play order). Beat shown fully typed, fx settled.
+                case "script":
+                {
+                    LoadCaseScript("malibu_mansion");
+                    var parts = _screenshotView.Split(':');
+                    var beats = ScriptSection(parts[0]);
+                    int idx   = parts.Length > 1 && int.TryParse(parts[1], out int bi) ? bi : 0;
+                    StartCutscene(beats, () => _currentState = GameState.MainMenu);
+                    _cutIndex = Math.Clamp(idx, 0, Math.Max(0, beats.Count - 1));
+                    _cutBg = null;
+                    for (int i = 0; i <= _cutIndex && i < beats.Count; i++)
+                        if (beats[i].Bg != null) _cutBg = beats[i].Bg;
+                    // ":stamp" freezes mid-stamp (fx visible) instead of fully typed.
+                    _cutTime = parts.Length > 2 && parts[2] == "stamp" ? 0.45f : 999f;
+                    break;
+                }
+
+                // Layout check: measures every beat against the cutscene box.
+                case "scriptcheck":
+                    RunScriptCheck(string.IsNullOrEmpty(_screenshotView) ? "malibu_mansion" : _screenshotView);
+                    _currentState = GameState.MainMenu;
+                    break;
+
                 default: _currentState = GameState.MainMenu; break;
             }
+        }
+
+        /// <summary>Screenshot helper: a script section flattened into play order.</summary>
+        private List<ScriptBeat> ScriptSection(string section)
+        {
+            var list = new List<ScriptBeat>();
+            if (_caseScript == null) return list;
+            switch (section)
+            {
+                case "intro":  list.AddRange(_caseScript.Intro); break;
+                case "ending": list.AddRange(_caseScript.Ending); break;
+                case "gathering" when _caseScript.Gathering != null:
+                    list.AddRange(_caseScript.Gathering.Intro);
+                    foreach (var st in _caseScript.Gathering.Steps)
+                    {
+                        list.AddRange(st.Intro);
+                        list.AddRange(st.Success);
+                    }
+                    break;
+            }
+            return list;
         }
 
         // ── Dev menu button layout ─────────────────────────────────────────────
@@ -1365,6 +1429,11 @@ namespace CatDetective
                         (float)gameTime.ElapsedGameTime.TotalSeconds * TYPEWRITER_SPEED;
                 }
             }
+            else if (_currentState == GameState.Cutscene)
+            {
+                UpdateCutscene((float)gameTime.ElapsedGameTime.TotalSeconds,
+                    confirmPressed || clicked, escPressed);
+            }
             else if (_currentState == GameState.DevMenu)
             {
                 if (escPressed)
@@ -1407,6 +1476,7 @@ namespace CatDetective
                             _isFinalSolveMode     = false;
                             _selectedWordBankClue = null;
                             _insertTargetSlot     = null;
+                            if (_gatheringActive) AbortGathering();
                         }
                     }
                     else
@@ -1429,6 +1499,7 @@ namespace CatDetective
                             _journalOnNotesPage   = false;
                             _selectedWordBankClue = null;
                             _insertTargetSlot     = null;
+                            if (_gatheringActive) AbortGathering();
                         }
                         else if (_journalOnNotesPage)
                         {
@@ -1509,7 +1580,14 @@ namespace CatDetective
                             // Submit
                             if (!boardLocked && _journalSubmitRect.Contains(vm))
                             {
-                                if (_isFinalSolveMode)
+                                if (_isFinalSolveMode && _gatheringActive)
+                                {
+                                    if (_deduction.ValidateCase())
+                                        OnGatheringStepSolved();
+                                    else
+                                        ApplyGatheringWrongLine();
+                                }
+                                else if (_isFinalSolveMode)
                                 {
                                     if (_deduction.ValidateCase())
                                         StartEndScene(_currentCaseId);
@@ -1549,6 +1627,17 @@ namespace CatDetective
 
                                         AutoSave();
                                     }
+                                    else if (_localDeduction.Slots.Exists(sl =>
+                                                 !string.IsNullOrEmpty(sl.CorrectClueId) &&
+                                                 !_notebook.IsUnlocked(sl.CorrectClueId)) &&
+                                             _localDeduction.ValidationMessage.StartsWith("Incorrect"))
+                                    {
+                                        // Playtest r2: a board whose answer chip was never
+                                        // found gave "N/M fit" with no way to tell.
+                                        _localDeduction.ValidationMessage =
+                                            _localDeduction.ValidationMessage.TrimEnd('.') +
+                                            " - a piece is still out there.";
+                                    }
                                 }
                             }
 
@@ -1584,7 +1673,13 @@ namespace CatDetective
                         }
                         else if (_finalSolveButtonRect.Contains(vm))
                         {
-                            if (AllRoomsSolved && AllConfrontationsHeard)
+                            if (AllRoomsSolved && AllConfrontationsHeard && HasGathering)
+                            {
+                                StartGathering();
+                                _prevMouseState = mouseState;
+                                return;
+                            }
+                            else if (AllRoomsSolved && AllConfrontationsHeard)
                             {
                                 _isFinalSolveMode     = true;
                                 _isDeductionBoardOpen = true;
@@ -1808,7 +1903,7 @@ namespace CatDetective
                             {
                                 var fresh = LevelConfigParser.LoadCase(_caseConfigSourcePath);
                                 _notebook.ReplaceDefinitions(fresh.Clues);
-                                if (!_isDeductionBoardOpen)
+                                if (!_isDeductionBoardOpen && !_gatheringActive)
                                     BuildFinalDeduction(fresh);
                                 Console.WriteLine("[HotReload] case_config.json reloaded.");
                             }
@@ -1900,6 +1995,10 @@ namespace CatDetective
             else if (_currentState == GameState.EndScene)
             {
                 DrawEndScene();
+            }
+            else if (_currentState == GameState.Cutscene)
+            {
+                DrawCutscene();
             }
             else if (_currentState == GameState.Playing)
             {
@@ -2334,9 +2433,11 @@ namespace CatDetective
                             bool headSolved = !_isFinalSolveMode &&
                                 _roomSolvedStates.TryGetValue(_currentRoomId, out var hs) && hs;
                             string headTitle = _isFinalSolveMode
-                                ? "The Final Solve"
+                                ? (_gatheringActive ? "The Gathering" : "The Final Solve")
                                 : ToDisplayName(_currentRoomId);
-                            string headSub = _isFinalSolveMode ? "What really happened?"
+                            string headSub = _isFinalSolveMode
+                                               ? (_gatheringActive && CurrentGatheringStep is { } hs2
+                                                   ? hs2.Title : "What really happened?")
                                            : headSolved        ? "Solved!"
                                            :                     "What happened here?";
                             float headScale = 1.05f * jsy;
@@ -2429,7 +2530,9 @@ namespace CatDetective
                         _wordBankClueRects.Clear();
 
                         var sourceClues = _isFinalSolveMode
-                            ? _notebook.GetMacroClues()
+                            ? (_gatheringActive && CurrentGatheringStep is { Bank.Count: > 0 } gStep
+                                ? _notebook.UnlockedClues.FindAll(c => gStep.Bank.Contains(c.Id))
+                                : _notebook.GetMacroClues())
                             : _notebook.GetLocalBankClues(_currentRoomId);
                         var filteredWB = sourceClues.FindAll(c => c.Category == _activeTab);
                         // The WHERE/WHEN tab is the timeline: sort its chips by the
@@ -3199,10 +3302,18 @@ namespace CatDetective
                 AppDomain.CurrentDomain.BaseDirectory,
                 "..", "..", "..", "debug_output"));
             Directory.CreateDirectory(dir);
-            string suffix = _screenshotView.Length > 0 ? $"_{_screenshotView}" : "";
+            string suffix = _screenshotView.Length > 0 ? $"_{_screenshotView.Replace(':', '_')}" : "";
             string path = Path.Combine(dir, $"{_screenshotCase}_{_screenshotRoom}{suffix}.png");
-            using var stream = File.OpenWrite(path);
-            _renderTarget.SaveAsPng(stream, _renderTarget.Width, _renderTarget.Height);
+            // The game blits the render target with BlendState.Opaque, so its alpha
+            // channel never shows on screen - but translucent overlays lower it,
+            // and a raw PNG would show those areas see-through (grey). Flatten.
+            var pixels = new Color[_renderTarget.Width * _renderTarget.Height];
+            _renderTarget.GetData(pixels);
+            for (int i = 0; i < pixels.Length; i++) pixels[i].A = 255;
+            using var flat = new Texture2D(GraphicsDevice, _renderTarget.Width, _renderTarget.Height);
+            flat.SetData(pixels);
+            using var stream = File.Create(path);
+            flat.SaveAsPng(stream, flat.Width, flat.Height);
             Console.WriteLine($"[Screenshot] Saved → {Path.GetFullPath(path)}");
         }
 #endif
