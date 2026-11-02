@@ -50,11 +50,12 @@
     },
     {
       "id": "inspect_hidden_cases",
-      "text": "Behind the potting shed, under a tarp thrown in a hurry: two big black road cases stenciled 'STUDIO 4 - THIS SIDE UP - FRAGILE.' Heavy latches, thick [foam-lined] walls. You press an ear to one. [Silence]. The deep, upholstered kind. One caster gives a thin little squeak when you nudge it. The grass around them is pressed flat by [heavy boot prints].",
+      "text": "Behind the potting shed, under a tarp thrown in a hurry: two big black road cases stenciled 'STUDIO 4 - THIS SIDE UP - FRAGILE.' Heavy latches, far too stiff for paws, and thick [foam-lined] walls. A crew tag dangles from one latch, printed in block capitals: '[SPARE FOAM - RETURN TO TRUCK]'. You press an ear to the case anyway. [Silence]. One caster gives a thin little squeak when you nudge it. The grass around them is pressed flat by [heavy boot prints].",
       "keywords": [
         { "displayText": "foam-lined", "id": "sound_proof_cases", "color": "crime" },
         { "displayText": "Silence", "id": "sound_proof_cases", "color": "crime" },
-        { "displayText": "heavy boot prints", "id": "boot_prints_shed", "color": "misc" }
+        { "displayText": "heavy boot prints", "id": "boot_prints_shed", "color": "misc" },
+        { "displayText": "SPARE FOAM - RETURN TO TRUCK", "id": "cases_tagged_empty", "color": "misc" }
       ],
       "texture": "Shared/placeholder_object",
       "scale": 0.22
@@ -70,6 +71,6 @@
       "scale": 0.19
     }
   ],
-  "localDeductionSentence": "Basil's [bent shears] fit the wrenched latch, and the [crisp feathers] in the bird bath say Rudebeak made it out here alive. Behind the shed, [heavy boot prints] stop at two [foam-lined cases]. And Basil swears he never left the garden all evening - which puts him right here when it happened.",
+  "localDeductionSentence": "Basil's [bent shears] fit the wrenched latch, and the [crisp feathers] in the bird bath say Rudebeak made it out here alive. Out back, [heavy prints] lead to two [cases] under a tarp. And Basil swears he never left the garden all evening - which puts him right here when it happened.",
   "localDeductionClueIds": ["shears_match_latch", "bird_bath_feathers", "boot_prints_shed", "sound_proof_cases"]
 }

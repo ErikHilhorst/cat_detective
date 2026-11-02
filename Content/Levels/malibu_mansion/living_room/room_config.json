@@ -144,6 +144,6 @@
       "scale": 0.27
     }
   ],
-  "localDeductionSentence": "Everyone swears by the [squawk] at [8:00]. But Rudebeak's [supper] has sat untouched since [6:00], and the scream came from a [speaker] taped behind the couch. And the cage's [wrenched latch]? Somebody forced it long before anyone heard a thing.",
+  "localDeductionSentence": "Everyone swears by the [squawk] at [8:00]. But Rudebeak's [evidence] says he was gone before [6:00], and the scream came from a [device] taped behind the couch. And the cage itself? [The real damage] - done long before anyone heard a thing.",
   "localDeductionClueIds": ["squawk_at_8pm", "time_800pm", "missed_snack_6pm", "time_600pm", "hidden_speaker", "broken_latch"]
 }

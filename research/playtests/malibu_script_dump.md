@@ -285,7 +285,7 @@ A stone bird bath near the hedgerow. A few *bright feathers* float on the surfac
 
 ### Garden - Hidden Cases
 
-Behind the potting shed, under a tarp thrown in a hurry: two big black road cases stenciled 'STUDIO 4 - THIS SIDE UP - FRAGILE.' Heavy latches, thick *foam-lined* walls. You press an ear to one. *Silence*. The deep, upholstered kind. One caster gives a thin little squeak when you nudge it. The grass around them is pressed flat by *heavy boot prints*.
+Behind the potting shed, under a tarp thrown in a hurry: two big black road cases stenciled 'STUDIO 4 - THIS SIDE UP - FRAGILE.' Heavy latches, far too stiff for paws, and thick *foam-lined* walls. A crew tag dangles from one latch, printed in block capitals: '*SPARE FOAM - RETURN TO TRUCK*'. You press an ear to the case anyway. *Silence*. One caster gives a thin little squeak when you nudge it. The grass around them is pressed flat by *heavy boot prints*.
 
 ### Pool Area - Coco
 
@@ -405,19 +405,19 @@ He follows your gaze down to the pen, then back up.
 You trace it: board, floor, wainscoting, gone. He watches you do it.
 'That's *grounding*. Cables need grounding. Into walls. It's an audio thing, you wouldn't-' He stops himself explaining audio engineering to a cat, sits down at the mixer, and very carefully touches nothing.
 
-**[Entrance board]** Nobody has left since the [lockdown] at [8:15], so whoever took Rudebeak is [still inside]. But the crew's column opens at [6:30] with one lonely [signature], long before the rest of the crew piles in.
+**[Entrance board]** At [8:15] Reyes called the [lockdown], and nothing has left the property since - so whoever took Rudebeak is [verdict]. Yet the crew's column opens at [6:30] with one lonely [signature], long before the rest of the crew piles in.
 
-**[Living Room board]** Everyone swears by the [squawk] at [8:00]. But Rudebeak's [supper] has sat untouched since [6:00], and the scream came from a [speaker] taped behind the couch. And the cage's [wrenched latch]? Somebody forced it long before anyone heard a thing.
+**[Living Room board]** Everyone swears by the [squawk] at [8:00]. But Rudebeak's [evidence] says he was gone before [6:00], and the scream came from a [device] taped behind the couch. And the cage itself? [The real damage] - done long before anyone heard a thing.
 
-**[Bedroom board]** Derek heard a [rumble] downstairs. It lines up with the [dinner service] due at [seven] - but the paperwork logs a second delivery that same minute: [two equipment cases], signed by [a nameless scrawl]. Only one sound has ever beaten his [headphones]: the [squawk], at [eight]. So the bird was still around at that time... right?
+**[Bedroom board]** Derek heard [a rumble] through the floor. It lines up with the [dinner service] due at [seven] - but the paperwork logs a second delivery that same minute: [two equipment cases], signed by [a nameless scrawl]. Only one sound has ever beaten his [headphones]: the [squawk], at [eight]. So the bird was still around at that time... right?
 
-**[Library board]** The [initials] on the sound desk's session log belong to whoever runs that desk: [the Sound Guy]. He sat out the evening in [monitoring gear] connected to nothing at all, while the desk's own line runs off into the wall - and the log is one long grudge: the [ruined takes]. Wexler wanted the bird off his shot list - somebody wanted him gone for good.
+**[Library board]** Every page at the mixing desk carries the same [mark], and it belongs to whoever runs that desk: [WHO]. He sat out the evening in [monitoring gear] connected to nothing at all, while the desk's own line runs off into the wall - and the log is one long grudge: the [ruined takes]. Wexler wanted the bird off his shot list - somebody wanted him gone for good.
 
-**[Kitchen board]** The roster logs an [errand] in from the garden at [5:45], initialed B. - minutes before the bird's supper went untouched. At [7:00] exactly [one cart] went up to the bedroom wing: Rosa's. With Rosa's [keys] on her apron, and Rosa's [grudge] pinned to the fridge.
+**[Kitchen board]** Two trips through this kitchen matter: an [errand] from the garden at [5:45], just before the bird's supper went untouched, and a [wing trip] at [7:00] - only one of them on wheels. And the cook? She can open any door she likes thanks to her [access], and she nurses a [grudge] that would make anyone look twice.
 
-**[Garden board]** Basil's [bent shears] fit the wrenched latch, and the [crisp feathers] in the bird bath say Rudebeak made it out here alive. Behind the shed, [heavy boot prints] stop at two [foam-lined cases]. And Basil swears he never left the garden all evening - which puts him right here when it happened.
+**[Garden board]** Basil's [bent shears] fit the wrenched latch, and the [crisp feathers] in the bird bath say Rudebeak made it out here alive. Out back, [heavy prints] lead to two [cases] under a tarp. And Basil swears he never left the garden all evening - which puts him right here when it happened.
 
-**[Pool Area board]** Coco the socialite watched [somebody haul cases] through the garden at [quarter to seven] - and her [poolside photo] pins them in place at exactly [6:47]. But the crumpled [call sheet] didn't call the crew until seven sharp. So who was out here early - and why?
+**[Pool Area board]** Two accounts put cases in the garden: [one] at [6:45], and [another] at exactly [6:47]. But the crumpled [paper] had nobody due until seven sharp. So who was out here early - and why?
 
 **Officer Reyes - Place one paw on his boot, and wait** _(gate: solve:entrance)_
 
@@ -478,8 +478,8 @@ The snipping stops. The fountain burbles. Somewhere, a gull. His bare hand curls
 They clatter onto the deck. She stares at you over nothing at all, deeply wounded.
 'FINE. You want the rest? Later on - before the police came - *those same cases came back*, down the path toward the shed. Squeaky wheel and everything.'
 
-'And from inside one of them, a sort of furious little rustle.' She retrieves her sunglasses.
-'Foam settling, probably. Foam settles, darling. Everything settles.'
+She retrieves her sunglasses and polishes them with great dignity.
+'Some people simply cannot decide where their luggage lives, darling.'
 
 ## The Gathering
 
@@ -493,25 +493,28 @@ Officer Reyes: He has been panicking about headlines all night. So, cat - is pan
 [POUNCE!] Dikkie swats Chip's phone off the side table. The screen lights up: a contract, fifteen percent, and a bird-shaped signature.
 Chip Sterling: Fifteen percent. Of a BIRD. Who I would never, ever lose. Thank you, cat.
 Officer Reyes: Manager's clean. Greedy, but clean. Next.
+Wexler: And before ANYONE asks: 'BETTER WITHOUT HIM' was about the reaction SHOT. Not the bird. Never the bird. Probably never the bird.
+Officer Reyes: The director wanted drama and got it. Tasteless, but clean. Next.
 
 Derek: Don't bother. I heard that bird at eight o'clock. Through noise-canceling headphones. He was ALIVE at eight.
 Vivienne Vale: Mid-affirmation, darling. I will never forget it. Neither will my therapist.
 Officer Reyes: Two witnesses, same squawk, same minute. Whatever happened, it happened after eight. Right, cat?
 
-**[Gathering board - The Squawk at Eight]** Everyone heard the squawk at eight. But Rudebeak's [supper] had sat untouched since [six], and the squawk came from a speaker behind the couch - fed by the [line] from the sound desk next door, not by anything in Derek's [spare kit].  
-_answers: Missed Snack, 6:00 PM, Audio Cable, Derek's Headphones_
+**[Gathering board - The Squawk at Eight]** Derek heard the squawk at eight through the [headphones] he bought because of that bird. But Rudebeak's [supper] sat untouched since [six], and the squawk came from a speaker fed by the [line] from the sound desk - the same desk where somebody's [monitoring gear] was plugged into nothing.  
+_answers: Derek's Headphones, Missed Snack, 6:00 PM, Audio Cable, Unplugged Headphones_
 
 [POUNCE!] Dikkie bats the little speaker out from behind the couch. It skids across the floor and stops at Derek's feet with a plastic clack.
 [A SPEAKER?!] Derek: I bought eight-hundred-dollar headphones because of that bird. And I got fooled by a SPEAKER?
 Officer Reyes: So the bird was gone before six, and everything after that was a recording. Which makes every eight o'clock alibi in this room worth exactly nothing.
 Vivienne Vale: Derek. Darling. You did write 'him or me.' On my good stationery.
 Derek: I wanted him moved to the guest house, Viv. Not STOLEN. I am a lot of things. I am not organized enough to be a thief.
+Vivienne Vale: And the documentary camera, darling? Pointed at my chaise all day. The cage was just out of frame. Of course it was.
 
 Officer Reyes: Which brings us to the maid. Keys to every room, a cart in the bedroom wing at seven, and feathers in her kitchen bin.
 Rosa: CHICKEN feathers. From the CHICKEN. I am a cook, officer, not a kidnapper.
 
-**[Gathering board - The Dinner Cart]** Rosa's cart went to the bedroom wing at [seven]. But Derek counted a [second rumble] - and that wing smelled of [cable grease], not soup.  
-_answers: 7:00 PM, Second Rumble, Smell of Cable Grease_
+**[Gathering board - The Dinner Cart]** Derek counted two rumbles downstairs. One was [the first] at [seven] - the kitchen only ran one. The other was [the second] on the wing's delivery list that same minute, and Rosa's nose caught [something] in that wing that was not soup.  
+_answers: Dinner Cart, 7:00 PM, Manifest Entry, Smell of Cable Grease_
 
 [POUNCE!] Dikkie walks a slow circle around Rosa's ankles, sniffs, and sneezes. Soup. Only soup.
 Rosa: One cart out, one cart back. Whatever else rolled through that hallway, it did not smell like my cooking.
@@ -519,13 +522,13 @@ Officer Reyes: Maid's clear. Somebody else had wheels tonight. Heavy ones.
 Vivienne Vale: Rosa... I may have blamed the bird's vocabulary on you.
 Rosa: You may have, senora. We will discuss it over paella. Which you will finally eat.
 
-Officer Reyes: Then it's the gardener. Bent shears, a glove under the cage, and a whole speech about cages being prisons.
+Officer Reyes: Then it's the gardener. In from the garden just before six, bent shears, a glove under the cage, and a whole speech about cages being prisons.
 [I DID IT!] Basil: Alright! YES! I broke the latch. Me, with my shears, just before six. I wanted him free!
 Officer Reyes: Well. That's a confession. Case closed, everybody. Let's all go home and-
 Dikkie does not move from the cage. His tail flicks once, twice. The tail says: not yet.
 
-**[Gathering board - The Broken Latch]** Basil forced the [latch] - but the [straw hat] at the edge of Coco's photo puts him behind the potting shed at [6:47], watching somebody else roll past.  
-_answers: Broken Latch, Straw Hat in Frame, 6:47 PM_
+**[Gathering board - The Broken Latch]** The kitchen logged [an errand] in from the garden, timed at [WHEN] - just before the bird's supper went untouched. The gardener's [tool] fits the wrenched latch. And at [WHEN] Coco's photo catches [a detail] at its very edge, behind the shed, watching somebody else roll past.  
+_answers: Herb Run, 5:45 PM, Bent Shears, 6:47 PM, Straw Hat in Frame_
 
 [POUNCE!] Dikkie hops onto the side table and plants a paw on Coco's phone. The 6:47 photo glows up at the room. At the very edge: a straw hat.
 Coco: That's my photo! Oh my gosh. I'm a witness. I am SO a witness.
@@ -546,13 +549,14 @@ Officer Reyes: He's sweating, cat. Finish it.
 
 The Sound Guy: You can't prove anything. You're a CAT. I don't even know why I'm still talking.
 
-**[Gathering board - The Sound Guy]** One hand wrote all three - the same tail as the [initials] on the sound desk's log. [WHO] had the grudge, the [WHY], and Rudebeak never left the property: he spent the evening in the dark, padded silence of the [WHAT].  
-_answers: Initials on the Log, Sound Guy: D. Marsh, Ruined Takes, Foam-Lined Cases_
+**[Gathering board - The Sound Guy]** The [initials] on the mixing desk's log carry the same tail: [WHO], with a grudge called the [WHY]. Before the lockdown Coco watched the cases make a [return trip] to the shed, tagged for the truck - and Rudebeak spent the evening in the dark, padded silence of the [WHAT].  
+_answers: Initials on the Log, Sound Guy: D. Marsh, Ruined Takes, The Second Trip, Foam-Lined Cases_
 
 [GOTCHA!] Dikkie leaps out of the cage, lands squarely in the Sound Guy's lap, and stares into his soul. Nobody has ever out-waited a cat.
 The Sound Guy: They're EMPTY! The cases are empty, I already told you, both of them, why does nobody ever LISTEN to the sound guy-
-But Dikkie is already gone: out the patio door, across the wet lawn, to the tarp behind the potting shed. The whole house follows.
+But Dikkie is already gone: out the patio door, across the wet lawn, to the tarp behind the potting shed - the same two cases he pressed an ear to hours ago. This time he has brought people with thumbs.
 Officer Reyes: Alright, cat. Let's see your empty case.
+The crew tag still dangles from the latch: SPARE FOAM - RETURN TO TRUCK. Reyes reads it twice, and pops the latches anyway.
 The heavy latches snap. The foam-lined lid creaks open.
 [BRAWK!!] Curled in the foam: Rudebeak. Perfectly dry, perfectly furious, and perfectly fine.
 Rudebeak: FORTY-SEVEN TAKES! BRAWK! FORTY-SEVEN!
@@ -565,7 +569,7 @@ Officer Reyes: D. Marsh, you're coming with me. Bring your headphones. The plugg
 
 === 6:02 AM - Sunrise ===
 (news banner: MACAW FOUND SAFE) Gloria Gale, KMAL News: Breaking news at sunrise: Rudebeak the macaw is home, safe, and - we are told - extremely rude about it.
-(news banner: OFFICER REYES - LAPD) Officer Reyes: Solid police work, plain and simple. We followed the evidence - the registry, the photo, the speaker, the cases. Textbook. No further questions.
+(news banner: OFFICER REYES - LAPD) Officer Reyes: Solid police work, plain and simple. We followed the evidence - the registry, the photo, the speaker, the feather in the hedge, the cases. Textbook. No further questions.
 On the way to the squad car, Reyes stops by the garden wall. Looks left. Looks right. Then looks down.
 Officer Reyes: You're all right, cat. You're all right.
 Dikkie blinks, slowly. From a cat, that is a medal.

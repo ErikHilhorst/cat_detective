@@ -699,8 +699,17 @@
       "isMacroClue": false,
       "category": "WhereWhen",
       "name": "The Second Trip",
-      "context": "Coco, sunglasses gone: before the lockdown the same cases came back down the garden path toward the shed, squeaky wheel and all - and something inside one of them rustled.",
-      "inspectorDescription": "'Foam settles, darling,' she said. She seemed very sure about foam."
+      "context": "Coco, sunglasses gone: before the lockdown the same cases came back down the garden path toward the shed, squeaky wheel and all.",
+      "inspectorDescription": "'Some people cannot decide where their luggage lives,' she said."
+    },
+    {
+      "id": "cases_tagged_empty",
+      "roomId": "garden",
+      "isMacroClue": false,
+      "category": "WhereWhen",
+      "name": "Tagged for the Truck",
+      "context": "A crew tag on one of the cases behind the shed reads 'SPARE FOAM - RETURN TO TRUCK', in block capitals.",
+      "inspectorDescription": "Packing, apparently. Somebody wanted these loaded up and gone with the rest of the gear."
     }
   ],
   "rooms": ["entrance", "living_room", "bedroom", "library", "kitchen", "garden", "pool_area"],

@@ -108,6 +108,6 @@
       "interactPadding": 60
     }
   ],
-  "localDeductionSentence": "The roster logs an [errand] in from the garden at [5:45], initialed B. - minutes before the bird's supper went untouched. At [7:00] exactly [one cart] went up to the bedroom wing: Rosa's. With Rosa's [keys] on her apron, and Rosa's [grudge] pinned to the fridge.",
-  "localDeductionClueIds": ["herb_run_545", "time_545pm", "time_700pm", "dinner_cart_7pm", "rosa_keys", "insulted_cooking"]
+  "localDeductionSentence": "Two trips through this kitchen matter: an [errand] from the garden at [5:45], just before the bird's supper went untouched, and a [wing trip] at [7:00] - only one of them on wheels. And the cook? She can open any door she likes thanks to her [access], and she nurses a [grudge] that would make anyone look twice.",
+  "localDeductionClueIds": ["herb_run_545", "time_545pm", "dinner_cart_7pm", "time_700pm", "rosa_keys", "insulted_cooking"]
 }

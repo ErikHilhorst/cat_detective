@@ -425,7 +425,7 @@
                         {
                          "name":"LockedText",
                          "type":"string",
-                         "value":"'CLOSED SET!' Wexler bellows through the door. 'Come back later!'"
+                         "value":"'CLOSED SET!' Wexler bellows. 'Go bug the pool crowd first, kitty!'"
                         }, 
                         {
                          "name":"RequiresVisited",

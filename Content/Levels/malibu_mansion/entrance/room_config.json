@@ -110,6 +110,6 @@
       "scale": 0.17
     }
   ],
-  "localDeductionSentence": "Nobody has left since the [lockdown] at [8:15], so whoever took Rudebeak is [still inside]. But the crew's column opens at [6:30] with one lonely [signature], long before the rest of the crew piles in.",
-  "localDeductionClueIds": ["lockdown_815pm", "time_815pm", "still_inside", "time_630pm", "early_scrawl"]
+  "localDeductionSentence": "At [8:15] Reyes called the [lockdown], and nothing has left the property since - so whoever took Rudebeak is [verdict]. Yet the crew's column opens at [6:30] with one lonely [signature], long before the rest of the crew piles in.",
+  "localDeductionClueIds": ["time_815pm", "lockdown_815pm", "still_inside", "time_630pm", "early_scrawl"]
 }

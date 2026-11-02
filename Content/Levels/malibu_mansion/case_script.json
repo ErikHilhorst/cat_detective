@@ -216,7 +216,13 @@
         "text": "Dikkie swats Chip's phone off the side table. The screen lights up: a contract, fifteen percent, and a bird-shaped signature."
       },
       { "who": "chip", "text": "Fifteen percent. Of a BIRD. Who I would never, ever lose. Thank you, cat." },
-      { "who": "reyes", "text": "Manager's clean. Greedy, but clean. Next." }
+      { "who": "reyes", "text": "Manager's clean. Greedy, but clean. Next." },
+      {
+        "who": "wexler",
+        "fx": ["shake"],
+        "text": "And before ANYONE asks: 'BETTER WITHOUT HIM' was about the reaction SHOT. Not the bird. Never the bird. Probably never the bird."
+      },
+      { "who": "reyes", "pos": "left", "text": "The director wanted drama and got it. Tasteless, but clean. Next." }
     ],
     "steps": [
       {
@@ -227,9 +233,9 @@
           { "who": "vivienne", "pos": "right", "text": "Mid-affirmation, darling. I will never forget it. Neither will my therapist." },
           { "who": "reyes", "pos": "left", "text": "Two witnesses, same squawk, same minute. Whatever happened, it happened after eight. Right, cat?" }
         ],
-        "sentence": "Everyone heard the squawk at eight. But Rudebeak's [supper] had sat untouched since [six], and the squawk came from a speaker behind the couch - fed by the [line] from the sound desk next door, not by anything in Derek's [spare kit].",
-        "answers": ["missed_snack_6pm", "time_600pm", "audio_cable", "headphone_box"],
-        "bank": ["missed_snack_6pm", "squawk_at_8pm", "derek_heard_squawk", "settled_feathers", "time_545pm", "time_600pm", "time_630pm", "time_800pm", "hidden_speaker", "couch_cable", "audio_cable", "headphone_box", "marsh_headphones", "documentary_camera", "broken_latch"],
+        "sentence": "Derek heard the squawk at eight through the [headphones] he bought because of that bird. But Rudebeak's [supper] sat untouched since [six], and the squawk came from a speaker fed by the [line] from the sound desk - the same desk where somebody's [monitoring gear] was plugged into nothing.",
+        "answers": ["headphone_box", "missed_snack_6pm", "time_600pm", "audio_cable", "marsh_headphones"],
+        "bank": ["headphone_box", "missed_snack_6pm", "time_600pm", "audio_cable", "marsh_headphones", "squawk_at_8pm", "derek_heard_squawk", "settled_feathers", "time_545pm", "time_630pm", "time_800pm", "hidden_speaker", "couch_cable", "documentary_camera", "broken_latch"],
         "wrongLine": "Derek: 'I KNOW what I heard.'",
         "success": [
           {
@@ -252,6 +258,11 @@
             "who": "derek",
             "pos": "left",
             "text": "I wanted him moved to the guest house, Viv. Not STOLEN. I am a lot of things. I am not organized enough to be a thief."
+          },
+          {
+            "who": "vivienne",
+            "pos": "right",
+            "text": "And the documentary camera, darling? Pointed at my chaise all day. The cage was just out of frame. Of course it was."
           }
         ]
       },
@@ -266,9 +277,9 @@
             "text": "CHICKEN feathers. From the CHICKEN. I am a cook, officer, not a kidnapper."
           }
         ],
-        "sentence": "Rosa's cart went to the bedroom wing at [seven]. But Derek counted a [second rumble] - and that wing smelled of [cable grease], not soup.",
-        "answers": ["time_700pm", "hall_rumble_no_soup", "cable_grease"],
-        "bank": ["time_645pm", "time_700pm", "time_720pm", "husband_hall_7pm", "hall_rumble_no_soup", "dinner_cart_7pm", "lamp_returns_720", "cable_grease", "service_tray", "kitchen_feathers", "polish_cloth", "rosa_keys"],
+        "sentence": "Derek counted two rumbles downstairs. One was [the first] at [seven] - the kitchen only ran one. The other was [the second] on the wing's delivery list that same minute, and Rosa's nose caught [something] in that wing that was not soup.",
+        "answers": ["dinner_cart_7pm", "time_700pm", "d_marsh_7pm", "cable_grease"],
+        "bank": ["dinner_cart_7pm", "time_700pm", "d_marsh_7pm", "cable_grease", "husband_hall_7pm", "hall_rumble_no_soup", "lamp_returns_720", "time_645pm", "time_720pm", "time_800pm", "service_tray", "kitchen_feathers", "polish_cloth", "rosa_keys", "sound_proof_cases"],
         "wrongLine": "Rosa: 'Read it twice, detective.'",
         "success": [
           {
@@ -286,7 +297,10 @@
         "id": "basil",
         "title": "The Broken Latch",
         "intro": [
-          { "who": "reyes", "text": "Then it's the gardener. Bent shears, a glove under the cage, and a whole speech about cages being prisons." },
+          {
+            "who": "reyes",
+            "text": "Then it's the gardener. In from the garden just before six, bent shears, a glove under the cage, and a whole speech about cages being prisons."
+          },
           {
             "who": "basil",
             "stamp": "I DID IT!",
@@ -296,9 +310,9 @@
           { "who": "reyes", "text": "Well. That's a confession. Case closed, everybody. Let's all go home and-" },
           { "text": "Dikkie does not move from the cage. His tail flicks once, twice. The tail says: not yet." }
         ],
-        "sentence": "Basil forced the [latch] - but the [straw hat] at the edge of Coco's photo puts him behind the potting shed at [6:47], watching somebody else roll past.",
-        "answers": ["broken_latch", "straw_hat_witness", "time_647pm"],
-        "bank": ["broken_latch", "shears_match_latch", "muddy_gloves", "sound_proof_cases", "straw_hat_witness", "the_gardener", "boot_prints_shed", "glove_by_cage", "time_600pm", "time_630pm", "time_645pm", "time_647pm", "time_700pm"],
+        "sentence": "The kitchen logged [an errand] in from the garden, timed at [WHEN] - just before the bird's supper went untouched. The gardener's [tool] fits the wrenched latch. And at [WHEN] Coco's photo catches [a detail] at its very edge, behind the shed, watching somebody else roll past.",
+        "answers": ["herb_run_545", "time_545pm", "shears_match_latch", "time_647pm", "straw_hat_witness"],
+        "bank": ["time_545pm", "herb_run_545", "shears_match_latch", "time_647pm", "straw_hat_witness", "dinner_cart_7pm", "eyewitness_645pm", "bird_bath_feathers", "broken_latch", "muddy_gloves", "feather_in_filter", "boot_prints_shed", "glove_by_cage", "time_600pm", "time_630pm", "time_645pm", "time_700pm"],
         "wrongLine": "Basil: 'I already SAID it was me...'",
         "success": [
           {
@@ -354,9 +368,9 @@
         "intro": [
           { "who": "marsh", "text": "You can't prove anything. You're a CAT. I don't even know why I'm still talking." }
         ],
-        "sentence": "One hand wrote all three - the same tail as the [initials] on the sound desk's log. [WHO] had the grudge, the [WHY], and Rudebeak never left the property: he spent the evening in the dark, padded silence of the [WHAT].",
-        "answers": ["log_initials", "d_marsh_sound_guy", "ruined_takes", "sound_proof_cases"],
-        "bank": ["log_initials", "early_scrawl", "scrawled_signature", "d_marsh_sound_guy", "the_director", "derek_the_husband", "the_maid", "the_gardener", "knew_cases_empty", "sound_proof_cases", "headphone_box", "marsh_headphones", "audio_cable", "documentary_camera", "ruined_takes", "director_notes", "insulted_cooking", "basil_free_the_bird", "star_note_to_husband", "pr_disaster", "couch_cable"],
+        "sentence": "The [initials] on the mixing desk's log carry the same tail: [WHO], with a grudge called the [WHY]. Before the lockdown Coco watched the cases make a [return trip] to the shed, tagged for the truck - and Rudebeak spent the evening in the dark, padded silence of the [WHAT].",
+        "answers": ["log_initials", "d_marsh_sound_guy", "ruined_takes", "cases_came_back", "sound_proof_cases"],
+        "bank": ["log_initials", "d_marsh_sound_guy", "ruined_takes", "cases_came_back", "sound_proof_cases", "early_scrawl", "scrawled_signature", "the_director", "derek_the_husband", "the_maid", "the_gardener", "knew_cases_empty", "cases_tagged_empty", "lamp_returns_720", "eyewitness_645pm", "headphone_box", "marsh_headphones", "audio_cable", "couch_cable", "documentary_camera", "director_notes", "directors_shot_list", "insulted_cooking", "basil_free_the_bird", "star_note_to_husband", "pr_disaster"],
         "wrongLine": "The Sound Guy: 'Ha! Wrong! ...I mean, obviously wrong.'",
         "success": [
           {
@@ -369,8 +383,11 @@
             "fx": ["shake"],
             "text": "They're EMPTY! The cases are empty, I already told you, both of them, why does nobody ever LISTEN to the sound guy-"
           },
-          { "text": "But Dikkie is already gone: out the patio door, across the wet lawn, to the tarp behind the potting shed. The whole house follows." },
+          {
+            "text": "But Dikkie is already gone: out the patio door, across the wet lawn, to the tarp behind the potting shed - the same two cases he pressed an ear to hours ago. This time he has brought people with thumbs."
+          },
           { "bg": "garden", "who": "reyes", "text": "Alright, cat. Let's see your empty case." },
+          { "text": "The crew tag still dangles from the latch: SPARE FOAM - RETURN TO TRUCK. Reyes reads it twice, and pops the latches anyway." },
           { "text": "The heavy latches snap. The foam-lined lid creaks open." },
           {
             "who": "rudebeak",
@@ -402,7 +419,7 @@
     {
       "who": "reyes",
       "chyron": "OFFICER REYES - LAPD",
-      "text": "Solid police work, plain and simple. We followed the evidence - the registry, the photo, the speaker, the cases. Textbook. No further questions."
+      "text": "Solid police work, plain and simple. We followed the evidence - the registry, the photo, the speaker, the feather in the hedge, the cases. Textbook. No further questions."
     },
     { "text": "On the way to the squad car, Reyes stops by the garden wall. Looks left. Looks right. Then looks down." },
     { "who": "reyes", "text": "You're all right, cat. You're all right." },

@@ -36,7 +36,7 @@
         },
         {
           "prompt": "Bat her sunglasses off the lounger",
-          "text": "They clatter onto the deck. She stares at you over nothing at all, deeply wounded.\n'FINE. You want the rest? Later on - before the police came - [those same cases came back], down the path toward the shed. Squeaky wheel and everything.'|'And from inside one of them, a sort of furious little rustle.' She retrieves her sunglasses.\n'Foam settling, probably. Foam settles, darling. Everything settles.'",
+          "text": "They clatter onto the deck. She stares at you over nothing at all, deeply wounded.\n'FINE. You want the rest? Later on - before the police came - [those same cases came back], down the path toward the shed. Squeaky wheel and everything.'|She retrieves her sunglasses and polishes them with great dignity.\n'Some people simply cannot decide where their luggage lives, darling.'",
           "keywords": [
             { "displayText": "those same cases came back", "id": "cases_came_back", "color": "misc" }
           ],
@@ -80,6 +80,6 @@
       "scale": 0.15
     }
   ],
-  "localDeductionSentence": "Coco the socialite watched [somebody haul cases] through the garden at [quarter to seven] - and her [poolside photo] pins them in place at exactly [6:47]. But the crumpled [call sheet] didn't call the crew until seven sharp. So who was out here early - and why?",
+  "localDeductionSentence": "Two accounts put cases in the garden: [one] at [6:45], and [another] at exactly [6:47]. But the crumpled [paper] had nobody due until seven sharp. So who was out here early - and why?",
   "localDeductionClueIds": ["eyewitness_645pm", "time_645pm", "selfie_figure_cases", "time_647pm", "production_schedule"]
 }

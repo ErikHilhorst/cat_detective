@@ -12,7 +12,7 @@ Current state: the case system is playable end-to-end AND the game has its shell
 end scene, and a two-room tutorial case. The protagonist's name is **Dikkie**.
 
 The first case, **Malibu Mansion / "The Missing Macaw"**
-(7 rooms, 78 clues: 69 room clues + 9 case-global TIME clues), is fully wired: free-roam movement, room transfers,
+(7 rooms, 79 clues: 70 room clues + 9 case-global TIME clues), is fully wired: free-roam movement, room transfers,
 interactable dialogue with keyword-unlocked clues, character interrogation menus (intro + selectable
 cat-action topics, some evidence- or solve-gated), per-room deduction boards, and a final solve board.
 All ten character sprites and all object sprites are real art (per-name PNGs under each room's
@@ -466,7 +466,7 @@ carries `RequiresVisited: bedroom` (Reyes: "Photos in progress. East wing first,
 so the player meets Derek and his 8 PM squawk-through-headphones testimony BEFORE the living
 room - the false "bird alive at 8" anchor is built in the bedroom, then demolished at the
 cage. The living_room -> library door carries `RequiresVisited: pool_area` (Wexler: "CLOSED
-SET!") so the identification room comes after garden + pool (playtest r2: a 4th-room library
+SET! Go bug the pool crowd first") so the identification room comes after garden + pool (playtest r2: a 4th-room library
 turned the rest into a confirmation lap). Everything else is free. Visited rooms persist in the save
 (`visitedRooms`; older saves seed from the saved room + solved rooms).
 
@@ -554,19 +554,28 @@ Rosa (motive note + cart at 7 PM + ambiguous feathers + polish cloth at the cage
 "maybe they are not wrong to look"), Derek (headphones with a spare *audio cable*/ultimatum),
 Chip (PR panic — but he earns commission on the bird), Wexler (thrilled about the drama).
 
-**The gathering (replaces the final board in play).** Chip is cleared in the gathering
-intro as cutscene only (his board repeated the entrance - playtest r2), then five small boards,
-Poirot order - suspicion on everyone, then the culprit: (2) Derek - `missed_snack_6pm` +
-`time_600pm` + `audio_cable` (the speaker's line from the sound desk) + `headphone_box` (not
-Derek's spare cable) - the Big Lie demolished in public; (3) Rosa - `time_700pm` +
-`hall_rumble_no_soup` + `cable_grease` (resolves the vocab-ledger blame); (4) Basil - false
-confession beat ("I DID IT!", Reyes nearly closes the case = the 75% low), then
-`broken_latch` + `straw_hat_witness` + `time_647pm` turns him into the witness; (5) the
-timeline - `early_scrawl` + `time_630pm` / `time_647pm` / `time_700pm` + `scrawled_signature`
-(each tail tied to its document: front-door book vs the wing's delivery list); (6) the Sound
-Guy - `log_initials` + `d_marsh_sound_guy` + `ruined_takes` + `sound_proof_cases`, then the shed reveal. Each herring step pays off that
-herring's room confrontation. `finalSolveSentence` below stays in case_config.json as the
-non-script fallback and for verify_level.py.
+**The gathering (replaces the final board in play).** Chip and Wexler (the shot list's 'BETTER WITHOUT HIM?' was
+about the shot) are cleared in the gathering intro as cutscene only (his board repeated the entrance - playtest r2), then five small boards,
+Poirot order - suspicion on everyone, then the culprit. **Every step combines rooms
+(playtest r4: steps that re-asked one room's board read as a recap):** (2) Derek - bedroom
+`headphone_box` + living room `missed_snack_6pm` / `time_600pm` + library `audio_cable` /
+`marsh_headphones` (his headphones vs the unplugged ones = in-board near-miss) - the Big Lie
+demolished in public; (3) Rosa - kitchen `dinner_cart_7pm` + `time_700pm` + bedroom
+`d_marsh_7pm` + `cable_grease` (two rumbles, one cart); (4) Basil - false confession beat ("I
+DID IT!", Reyes nearly closes the case = the 75% low), then kitchen `herb_run_545` +
+`time_545pm` (the roster's "B." errand) + garden `shears_match_latch` + pool
+`straw_hat_witness` + `time_647pm` turns him into the witness; (5) the timeline -
+`early_scrawl` + `time_630pm` / `time_647pm` / `time_700pm` + `scrawled_signature` (each tail
+tied to its document); (6) the Sound Guy - `log_initials` + `d_marsh_sound_guy` +
+`ruined_takes` + pool `cases_came_back` + `sound_proof_cases`, then the shed reveal. Each
+herring step pays off that herring's room confrontation. `finalSolveSentence` below stays in
+case_config.json as the non-script fallback and for verify_level.py.
+
+**Misdirection on the cases (r4/r5).** The garden cases carry a crew tag "SPARE FOAM -
+RETURN TO TRUCK" (`cases_tagged_empty`) - an in-world lie, never narrator-confirmed, so the
+silence reads as packing. It must NOT say "empty": Marsh's "the cases are EMPTY" has to stay his
+own words, or the slip stops betraying him (r5). At the shed Reyes reads the tag and opens the
+latches anyway.
 
 **Final board** (playtest 5: pure timeline reconstruction; fallback only). "He was inside by [WHEN] - a full
 half hour before his own call. The snatch was caught on camera at [WHEN], and by [WHEN] the
@@ -676,7 +685,9 @@ Transfers layer, only map-placed interactables, keyword unlocks, requiresClue/re
 gates, altText, local banks, macro unlock on solve, the confrontation lock, the gathering).
 `audit` exhausts every interaction, solves every board in the game's own order, and reports
 ERRORs (unreachable room, unsolvable board, non-ASCII) and WARNs (single-option slots,
-unlockable-never clues, gathering answers not guaranteed found before the finale). Keep the
+unlockable-never clues, gathering answers not guaranteed found before the finale,
+**echo**: a slot whose surrounding visible text repeats a word of its answer chip's name -
+playtest r5 found boards solved by string match; keep audit echo-free). Keep the
 simulator in sync when game rules change. **Blind LLM playtests**: spawn a (smaller) model
 that may ONLY run `sim.py` commands (no reading Content/, tools/, research/) and writes a
 structured report to `research/playtests/<date>_<model>_playtest.md` - see the existing

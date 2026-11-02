@@ -332,23 +332,25 @@ class Game:
         if not topics:
             return
         self.p("", "What does Dikkie do? (use: topic <who> <n>)")
-        for i, tp in topics:
+        # Number visible topics 1..n (gated ones are hidden; raw indices left gaps that
+        # playtesters kept reporting as a bug).
+        for n, (i, tp) in enumerate(topics, 1):
             heard = " (already done)" if f"{self.s.room}/{t['id']}/{i}" in self.s.heard else ""
-            self.p(f"  {i}. {tp['prompt']}{heard}")
+            self.p(f"  {n}. {tp['prompt']}{heard}")
         self.p("  -. Pad away. (Leave)")
 
     def cmd_topic(self, query: str, n: str):
         t = self.find_thing(query)
         if not t:
             return self.p(f"Nobody called '{query}' here.")
-        avail = dict(available_topics(self.s, t))
+        avail = list(available_topics(self.s, t))
         try:
-            i = int(n)
+            k = int(n)
         except ValueError:
             return self.p("Topic number must be a number.")
-        if i not in avail:
+        if not 1 <= k <= len(avail):
             return self.p("That option is not available.")
-        tp = avail[i]
+        i, tp = avail[k - 1]
         key = f"{self.s.room}/{t['id']}/{i}"
         if key not in self.s.heard:
             self.s.heard.append(key)
@@ -695,6 +697,38 @@ def audit(case_id: str, dump: Path | None) -> int:
         missing = [a for a in c.final_answers if a not in st.found]
         if missing:
             errors.append(f"final board answers never found: {missing}")
+
+    # Echo check (playtest r5): a slot whose surrounding sentence text repeats a word of
+    # its answer chip's name is solved by string match, not deduction. Slot [tags] never
+    # render, so only the visible text around the slot counts.
+    STOP = {"with", "from", "that", "this", "them", "they", "were", "what", "when", "where",
+            "into", "only", "than", "then", "just", "been", "have", "before", "after", "still",
+            "somebody", "whoever", "every", "nobody", "anyone", "while", "same", "long"}
+    def stems(text):
+        out = set()
+        for w in re.findall(r"[A-Za-z][A-Za-z'-]*", text):
+            for part in w.lower().replace("'s", "").split("-"):
+                if len(part) >= 4 and part not in STOP:
+                    out.add(part[:5])
+        return out
+    def echo_check(where, sentence, answers):
+        parts, slots = c.sentence_slots(sentence, answers)
+        k = 0
+        for i, seg in enumerate(parts):
+            if seg is not None:
+                continue
+            a = slots[k]["answer"]; k += 1
+            before = " ".join(" ".join(x for x in parts[:i] if x).split()[-7:])
+            after = " ".join(" ".join(x for x in parts[i + 1:] if x).split()[:7])
+            hit = stems(before + " " + after) & stems(c.clue_name(a))
+            if hit:
+                warns.append(f"echo: {where} slot {k} -> '{c.clue_name(a)}' shares {sorted(hit)} with its sentence")
+    for r in c.rooms:
+        rc = c.room_cfg[r]
+        if rc.get("localDeductionSentence"):
+            echo_check(r, rc["localDeductionSentence"], rc.get("localDeductionClueIds", []))
+    for s_ in (gscript or {}).get("steps", []):
+        echo_check(f"gathering '{s_['id']}'", s_["sentence"], s_["answers"])
 
     # Non-ASCII guard on every text the player can read.
     def ascii_check(where, text):

@@ -95,6 +95,6 @@
       "scale": 0.15
     }
   ],
-  "localDeductionSentence": "Derek heard a [rumble] downstairs. It lines up with the [dinner service] due at [seven] - but the paperwork logs a second delivery that same minute: [two equipment cases], signed by [a nameless scrawl]. Only one sound has ever beaten his [headphones]: the [squawk], at [eight]. So the bird was still around at that time... right?",
+  "localDeductionSentence": "Derek heard [a rumble] through the floor. It lines up with the [dinner service] due at [seven] - but the paperwork logs a second delivery that same minute: [two equipment cases], signed by [a nameless scrawl]. Only one sound has ever beaten his [headphones]: the [squawk], at [eight]. So the bird was still around at that time... right?",
   "localDeductionClueIds": ["husband_hall_7pm", "service_tray", "time_700pm", "d_marsh_7pm", "scrawled_signature", "headphone_box", "derek_heard_squawk", "time_800pm"]
 }

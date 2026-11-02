@@ -122,6 +122,6 @@
       "scale": 0.1
     }
   ],
-  "localDeductionSentence": "The [initials] on the sound desk's session log belong to whoever runs that desk: [the Sound Guy]. He sat out the evening in [monitoring gear] connected to nothing at all, while the desk's own line runs off into the wall - and the log is one long grudge: the [ruined takes]. Wexler wanted the bird off his shot list - somebody wanted him gone for good.",
+  "localDeductionSentence": "Every page at the mixing desk carries the same [mark], and it belongs to whoever runs that desk: [WHO]. He sat out the evening in [monitoring gear] connected to nothing at all, while the desk's own line runs off into the wall - and the log is one long grudge: the [ruined takes]. Wexler wanted the bird off his shot list - somebody wanted him gone for good.",
   "localDeductionClueIds": ["log_initials", "d_marsh_sound_guy", "marsh_headphones", "ruined_takes"]
 }
