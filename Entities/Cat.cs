@@ -112,9 +112,36 @@ namespace CatDetective.Entities
         /// </summary>
         public override void Update(GameTime gameTime)
         {
-            HandleInput();
-            AdvanceAnimation((float)gameTime.ElapsedGameTime.TotalSeconds);
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            HandleInput(dt);
+            AdvanceAnimation(dt);
         }
+
+        // ── Tap-to-walk steering ───────────────────────────────────────────────
+
+        /// <summary>
+        /// Waypoint the cat walks toward when no movement key is held (set each
+        /// frame by Game1's tap-to-walk follower; null = stand still). Movement
+        /// keys always win, and <see cref="KeyboardMoving"/> tells the follower
+        /// to drop its path.
+        /// </summary>
+        public Vector2? SteerTarget { get; set; }
+
+        /// <summary>True when movement keys drove the cat this frame.</summary>
+        public bool KeyboardMoving { get; private set; }
+
+        /// <summary>Feet box height in px (same for every facing).</summary>
+        public int BoxHeight => FEET_BOX_HEIGHT;
+
+        /// <summary>Half the WIDEST feet box (any facing) + 1 px: the nav grid's clearance.</summary>
+        public int NavHalfWidth => (int)System.MathF.Ceiling(System.Math.Max(
+            _walkDownTexture.Width / _columns * SPRITE_SCALE_DOWN,
+            _walkUpTexture.Width   / _columns * SPRITE_SCALE_UP) * 0.25f) + 1;
+
+        /// <summary>Half the NARROWEST feet box: probe for "does the cat reach this zone".</summary>
+        public int ProbeHalfWidth => (int)(System.Math.Min(
+            _walkDownTexture.Width / _columns * SPRITE_SCALE_DOWN,
+            _walkUpTexture.Width   / _columns * SPRITE_SCALE_UP) * 0.25f);
 
         /// <summary>
         /// Phase 2 of the per-frame update: apply <see cref="_velocity"/> to
@@ -243,7 +270,7 @@ namespace CatDetective.Entities
 
         // ── Private helpers ────────────────────────────────────────────────────
 
-        private void HandleInput()
+        private void HandleInput(float dt)
         {
             var kb = Keyboard.GetState();
 
@@ -257,6 +284,31 @@ namespace CatDetective.Entities
             if (right) _velocity.X += X_SPEED;
             if (up)    _velocity.Y -= Y_SPEED;
             if (down)  _velocity.Y += Y_SPEED;
+            KeyboardMoving = _velocity != Vector2.Zero;
+
+            if (!KeyboardMoving && SteerTarget.HasValue && dt > 0f)
+            {
+                // Speed along the heading follows the isometric ellipse: full
+                // X_SPEED sideways, Y_SPEED straight up/down. Never overshoot the
+                // waypoint (the follower pops it once the cat lands on it).
+                Vector2 delta = SteerTarget.Value - Position;
+                float   dist  = delta.Length();
+                if (dist > 0.05f)
+                {
+                    Vector2 dir   = delta / dist;
+                    float   speed = 1f / System.MathF.Sqrt(
+                        (dir.X / X_SPEED) * (dir.X / X_SPEED) +
+                        (dir.Y / Y_SPEED) * (dir.Y / Y_SPEED));
+                    _velocity = dir * System.Math.Min(speed, dist / dt);
+
+                    // Facing as if the matching keys were held; small components
+                    // are ignored so a near-horizontal leg doesn't flip sheets.
+                    up    = dir.Y < -0.25f;
+                    down  = dir.Y >  0.25f;
+                    left  = dir.X < -0.2f;
+                    right = dir.X >  0.2f;
+                }
+            }
 
             _isMoving = _velocity != Vector2.Zero;
 

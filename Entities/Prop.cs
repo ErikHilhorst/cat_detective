@@ -41,6 +41,60 @@ namespace CatDetective.Entities
         /// </summary>
         public Rectangle FadeTriggerZone { get; set; }
 
+        /// <summary>Depth the prop sorts at while opaque (LayerDepth jumps to 1 while fading).</summary>
+        public float SortDepth => CalculateLayerDepth(_sortY);
+
+        /// <summary>True while the prop is (fading) see-through because the cat is behind it.</summary>
+        public bool IsFaded => TargetAlpha < 1.0f || CurrentAlpha < 0.99f;
+
+        // ── Opacity mask (tap hit-testing) ─────────────────────────────────────
+        // Quarter-resolution "is this pixel opaque" map of the prop art, built on
+        // the GPU (draw into a render target, read the RT back) because WebGL
+        // cannot GetData() a content texture. Null = build failed: the prop then
+        // never blocks a tap (degrades to "everything tappable").
+        private const int MASK_FACTOR = 4;
+        private bool[]? _opaque;
+        private int     _maskW, _maskH;
+
+        public void BuildOpacityMask(SpriteBatch spriteBatch)
+        {
+            if (Texture == null || _opaque != null) return;
+            var gd = spriteBatch.GraphicsDevice;
+            try
+            {
+                _maskW = System.Math.Max(1, Texture.Width  / MASK_FACTOR);
+                _maskH = System.Math.Max(1, Texture.Height / MASK_FACTOR);
+                using var rt = new RenderTarget2D(gd, _maskW, _maskH);
+                gd.SetRenderTarget(rt);
+                gd.Clear(Color.Transparent);
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.LinearClamp);
+                spriteBatch.Draw(Texture, new Rectangle(0, 0, _maskW, _maskH), Color.White);
+                spriteBatch.End();
+                gd.SetRenderTarget(null);
+
+                var px = new Color[_maskW * _maskH];
+                rt.GetData(px);
+                _opaque = new bool[px.Length];
+                for (int i = 0; i < px.Length; i++)
+                    _opaque[i] = px[i].A >= 128;
+            }
+            catch (System.Exception ex)
+            {
+                gd.SetRenderTarget(null);
+                _opaque = null;
+                System.Console.WriteLine($"[Prop] opacity mask unavailable: {ex.Message}");
+            }
+        }
+
+        /// <summary>True when the (opaque, un-faded) prop art covers this screen point.</summary>
+        public bool CoversPoint(Vector2 p)
+        {
+            if (_opaque == null || IsFaded) return false;
+            int x = (int)(p.X / MASK_FACTOR), y = (int)(p.Y / MASK_FACTOR);   // drawn at (0,0), scale 1
+            if (x < 0 || y < 0 || x >= _maskW || y >= _maskH) return false;
+            return _opaque[y * _maskW + x];
+        }
+
         // ── Constructor ────────────────────────────────────────────────────────
         /// <param name="texture">Full-room overlay texture (same size as bg_base).</param>
         /// <param name="sortY">

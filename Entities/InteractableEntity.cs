@@ -51,14 +51,41 @@ namespace CatDetective.Entities
         /// </summary>
         public void ForceForeground() => LayerDepth = 1f;
 
+        /// <summary>
+        /// Screen rect the sprite covers (same placement math as Draw, without
+        /// the highlight lift) - the tap target. Falls back to the trigger zone
+        /// for sprite-less entries.
+        /// </summary>
+        public Rectangle SpriteBounds
+        {
+            get
+            {
+                if (Texture == null) return TriggerZone;
+                float   scale  = Data?.Scale ?? 1.0f;
+                Vector2 origin = Data == null ? new Vector2(Texture.Width * 0.5f, Texture.Height)
+                                              : CalcOrigin(Data.Align, Texture.Width, Texture.Height);
+                Vector2 pos    = Position;
+                if (Data != null) pos += new Vector2(Data.OffsetX, Data.OffsetY);
+                Vector2 topLeft = pos - origin * scale;
+                return new Rectangle((int)topLeft.X, (int)topLeft.Y,
+                    (int)(Texture.Width * scale), (int)(Texture.Height * scale));
+            }
+        }
+
         // ── GameObject override (non-highlighted) ──────────────────────────────
         public override void Draw(SpriteBatch spriteBatch)
             => Draw(spriteBatch, isHighlighted: false, totalSeconds: 0.0);
 
         /// <param name="isHighlighted">True when the cat overlaps this entity's TriggerZone.</param>
-        public void Draw(SpriteBatch spriteBatch, bool isHighlighted, double totalSeconds)
+        /// <param name="isSelected">
+        /// Tap-selected (first tap of tap-to-act): the outline turns gold and
+        /// pulses, so it is obvious a second tap will act on it.
+        /// </param>
+        public void Draw(SpriteBatch spriteBatch, bool isHighlighted, double totalSeconds,
+                         bool isSelected = false)
         {
             if (Texture == null) return;
+            isHighlighted |= isSelected;
 
             float   scale   = Data?.Scale ?? 1.0f;
             Vector2 origin  = Data == null ? new Vector2(Texture.Width * 0.5f, Texture.Height)
@@ -74,14 +101,27 @@ namespace CatDetective.Entities
 
                 Texture2D silhouette = GetWhiteSilhouette(Texture);
                 float outlineDepth = Math.Max(0f, LayerDepth - 0.0001f);
-                Vector2[] offsets = [new(-2, 0), new(2, 0), new(0, -2), new(0, 2)];
+                // White silhouette * tint: gold pulse when tap-selected (same cue
+                // language as the SOLVE button / active doorway arrow).
+                Color outline = Color.White;
+                int   w       = 2;
+                if (isSelected)
+                {
+                    float pulse = 0.5f + 0.5f * (float)Math.Sin(totalSeconds * 6.0);
+                    outline = Color.Lerp(new Color(255, 215, 120), new Color(255, 180, 40), pulse);
+                    w       = 3;
+                }
+                Vector2[] offsets = isSelected
+                    ? [new(-w, 0), new(w, 0), new(0, -w), new(0, w),
+                       new(-w, -w), new(w, -w), new(-w, w), new(w, w)]
+                    : [new(-w, 0), new(w, 0), new(0, -w), new(0, w)];
                 foreach (var off in offsets)
                 {
                     spriteBatch.Draw(
                         silhouette,
                         position:        drawPos + off,
                         sourceRectangle: null,
-                        color:           Color.White,
+                        color:           outline,
                         rotation:        0f,
                         origin:          origin,
                         scale:           new Vector2(scale),

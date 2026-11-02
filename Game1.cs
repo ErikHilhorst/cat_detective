@@ -552,6 +552,18 @@ namespace CatDetective
                         OpenTopicMenu();
                     }
                 }
+                // "tap" tap-selects the room's first character (gold outline +
+                // "Tap again" prompt) and plans the walk (path in the F1 overlay).
+                else if (_screenshotView == "tap")
+                {
+                    var who = _interactables.Find(e => e.Data != null && e.Data.Topics.Length > 0)
+                              ?? _interactables.Find(e => e.Data != null);
+                    if (who != null)
+                    {
+                        HandleWorldTap(who.SpriteBounds.Center);
+                        _showDebug = true;
+                    }
+                }
             }
         }
 
@@ -698,6 +710,11 @@ namespace CatDetective
                 ShadowTexture = _shadowTex
             };
 
+            // Tap-to-walk: fresh walk grid for this room's collisions.
+            _navGrid = new NavGrid(_solidBoundaries, SCREEN_WIDTH, SCREEN_HEIGHT,
+                                   _cat.NavHalfWidth, _cat.BoxHeight);
+            ClearTapState();
+
             // Build foreground props.
             foreach (var propConfig in roomConfig.Props)
             {
@@ -725,6 +742,11 @@ namespace CatDetective
                 if (entity.Texture != null)
                     InteractableEntity.PrewarmSilhouette(_spriteBatch, entity.Texture);
 #endif
+
+            // Tap hit-testing: where each walk-behind prop is opaque, so a tap on
+            // the couch never selects the speaker hidden behind it.
+            foreach (var prop in _foregroundProps)
+                prop.BuildOpacityMask(_spriteBatch);
         }
 
         /// <summary>
@@ -1033,6 +1055,14 @@ namespace CatDetective
                     break;
                 }
 
+                // Tap-to-walk check: walks the real cat to every target (Game1.TapControls.cs).
+#if !BLAZORGL
+                case "navtest":
+                    RunNavTest(string.IsNullOrEmpty(_screenshotView) ? "malibu_mansion" : _screenshotView);
+                    Exit();
+                    return;
+#endif
+
                 // Layout check: measures every beat against the cutscene box.
                 case "scriptcheck":
                     RunScriptCheck(string.IsNullOrEmpty(_screenshotView) ? "malibu_mansion" : _screenshotView);
@@ -1169,6 +1199,35 @@ namespace CatDetective
         /// "D. Marsh") once its clue is found. Toasts deliberately do NOT use this
         /// (BuildGateIndex captures the pre-reveal name - the anti-leak rule).
         /// </summary>
+        /// <summary>Opens an interactable's dialogue (Enter, or the second tap).</summary>
+        private void OpenInteraction(InteractableEntity entity)
+        {
+            if (entity.Data == null) return;
+            _currentInteraction  = entity.Data;
+            _currentKeywords     = _currentInteraction.Keywords;
+            _dialogueEntityId    = entity.Id;
+            SetDialoguePortrait(entity);
+
+            // Alt intro: characters acknowledge investigation progress.
+            // The regular keywords still unlock and highlight either way.
+            string introText =
+                _currentInteraction.AltText.Length > 0 &&
+                GateSatisfied(_currentInteraction.AltTextRequiresClue,
+                              _currentInteraction.AltTextRequiresSolve)
+                    ? _currentInteraction.AltText
+                    : _currentInteraction.Text;
+
+            _dialoguePages       = PaginateDialogue(introText, _dialoguePortrait != null);
+            _currentDialoguePage = 0;
+            _typewriterTimer     = 0f;
+            _isDialogueActive    = true;
+            _isTopicMenuOpen     = false;
+            _cat.SteerTarget     = null;
+            _navPath.Clear();
+            foreach (var kw in entity.Data.Keywords)
+                _notebook.UnlockClue(kw.Id);
+        }
+
         private string ResolveDisplayName(InteractionData data, string entityId)
         {
             if (data.RevealName.Length > 0 && data.RevealNameOnClue.Length > 0 &&
@@ -1248,16 +1307,19 @@ namespace CatDetective
             _prevKbState = kbState;
 
             var  mouseState = Mouse.GetState();
-            bool clicked    = mouseState.LeftButton  == ButtonState.Pressed &&
-                              _prevMouseState.LeftButton == ButtonState.Released;
+            // Mouse and touch share one pointer (Systems/PointerInput.cs): every
+            // click-driven screen works with a finger, too.
+            _pointer.Update(mouseState, kbState, (float)gameTime.ElapsedGameTime.TotalSeconds);
+            bool clicked    = _pointer.Pressed;
 #if BLAZORGL
             // Canvas is window-sized and letterboxed; invert that transform.
-            var vm = WasmScale.ToGame(mouseState.X, mouseState.Y);
+            var vm = WasmScale.ToGame(_pointer.RawPosition.X, _pointer.RawPosition.Y);
 
             // Browser autoplay policy: the looping music can only start after
-            // the first user gesture (any key or click).
+            // the first user gesture. Touch counts on RELEASE (touchend is a
+            // user activation, touchstart is not).
             if (!_webMusicStarted &&
-                (clicked || kbState.GetPressedKeys().Length > 0))
+                (clicked || _pointer.Released || kbState.GetPressedKeys().Length > 0))
             {
                 _webMusicStarted = true;
                 BrowserAudio.Play("music", "Content/Shared/moonlit_cat_case.mp3",
@@ -1265,9 +1327,10 @@ namespace CatDetective
             }
 #else
             var vm = new Point(
-                (int)(mouseState.X / DISPLAY_SCALE),
-                (int)(mouseState.Y / DISPLAY_SCALE));
+                (int)(_pointer.RawPosition.X / DISPLAY_SCALE),
+                (int)(_pointer.RawPosition.Y / DISPLAY_SCALE));
 #endif
+            _pointerGamePos = vm;
 
 #if !BLAZORGL
             // Screenshot mode: save render target to file then exit. Runs in every
@@ -1661,9 +1724,23 @@ namespace CatDetective
                             }
                         }
                     }
+                    else if (_isDialogueActive)
+                    {
+                        // Tap anywhere = Enter; the corner X = Escape; topic rows
+                        // are tapped directly (Game1.TapControls.cs).
+                        HandleDialogueTap(vm);
+                    }
                     else
                     {
-                        if (_solveButtonRect.Contains(vm))
+                        if (_menuButtonRect.Contains(vm))
+                        {
+                            // Touch has no Escape key: same as Esc from the room.
+                            AutoSave();
+                            ReturnToMainMenu();
+                            _prevMouseState = mouseState;
+                            return;
+                        }
+                        else if (_solveButtonRect.Contains(vm))
                         {
                             _isFinalSolveMode     = false;
                             _isDeductionBoardOpen = true;
@@ -1707,6 +1784,11 @@ namespace CatDetective
                                           $"({SolvedRoomCount()}/{_caseRooms.Count} solved).");
                             }
                         }
+                        else
+                        {
+                            // Not on a HUD button: tap-to-walk / tap-to-select.
+                            HandleWorldTap(vm);
+                        }
                     }
                 }
 
@@ -1735,7 +1817,11 @@ namespace CatDetective
                         if (_menuDownPressed)
                             _selectedTopicIndex = (_selectedTopicIndex + 1) % optionCount;
 
-                        if (_cat.IsInteractPressed())
+                        bool tapAct = _tapTopicIndex >= 0 && _tapTopicIndex < optionCount;
+                        if (tapAct) _selectedTopicIndex = _tapTopicIndex;
+                        _tapTopicIndex = -1;
+
+                        if (_cat.IsInteractPressed() || tapAct)
                         {
                             if (_selectedTopicIndex >= _menuTopics.Count)
                             {
@@ -1761,7 +1847,9 @@ namespace CatDetective
                         int totalChars = _dialoguePages[_currentDialoguePage]
                             .Replace("[", "").Replace("]", "").Length;
 
-                        if (_cat.IsInteractPressed())
+                        bool tapAdvance = _dialogueTapAdvance;
+                        _dialogueTapAdvance = false;
+                        if (_cat.IsInteractPressed() || tapAdvance)
                         {
                             if (_typewriterTimer < totalChars)
                             {
@@ -1789,8 +1877,17 @@ namespace CatDetective
                 }
                 else
                 {
+                    // Tap-to-walk feeds the cat a waypoint; movement keys override
+                    // it (and cancel the tap path) inside Cat.Update.
+                    FollowTapPath();
                     _cat.Update(gameTime);
+                    if (_cat.KeyboardMoving) ClearTapState();
                     _cat.MoveWithCollision(dt, _solidBoundaries);
+                    UpdateTapStuck(dt);
+
+                    // One Enter read per frame: a doorway the cat stands in takes it
+                    // first, exactly like the old two-call order.
+                    bool enterPressed = _cat.IsInteractPressed();
 
                     // Transfer zones: check first; a doorway takes priority over props.
                     _activeTransferZone = null;
@@ -1803,17 +1900,31 @@ namespace CatDetective
                         }
                     }
 
-                    if (_activeTransferZone != null && _cat.IsInteractPressed())
+                    // Second tap on a selected door (now or on arrival) = Enter.
+                    TransferZone? doorToUse = null;
+                    if (_activeTransferZone != null && enterPressed)
                     {
-                        if (!IsTransferUnlocked(_activeTransferZone))
+                        doorToUse    = _activeTransferZone;
+                        enterPressed = false;
+                    }
+                    else if (_tapActOnArrival && _tapDoor != null &&
+                             _cat.CollisionBox.Intersects(_tapDoor.TriggerRect))
+                    {
+                        doorToUse        = _tapDoor;
+                        _tapActOnArrival = false;
+                    }
+
+                    if (doorToUse != null)
+                    {
+                        if (!IsTransferUnlocked(doorToUse))
                         {
-                            ShowToast(_activeTransferZone.LockedText.Length > 0
-                                ? _activeTransferZone.LockedText
+                            ShowToast(doorToUse.LockedText.Length > 0
+                                ? doorToUse.LockedText
                                 : "Not yet. Something else needs looking at first.");
                         }
                         else
                         {
-                            LoadRoom(_activeTransferZone.TargetRoom, _activeTransferZone.TargetSpawn);
+                            LoadRoom(doorToUse.TargetRoom, doorToUse.TargetSpawn);
                             AutoSave();
                             return; // state was rebuilt; skip rest of this Update
                         }
@@ -1829,31 +1940,22 @@ namespace CatDetective
                         }
                     }
 
-                    if (_activeInteractable != null && _cat.IsInteractPressed()
-                        && _activeInteractable.Data != null)
+                    // The tap-selected entity wins over whatever else is in range.
+                    if (_tapEntity != null && _cat.CollisionBox.Intersects(_tapEntity.InteractZone))
+                        _activeInteractable = _tapEntity;
+
+                    InteractableEntity? toOpen = null;
+                    if (_activeInteractable != null && enterPressed)
+                        toOpen = _activeInteractable;
+                    else if (_tapActOnArrival && _tapEntity != null &&
+                             _cat.CollisionBox.Intersects(_tapEntity.InteractZone))
                     {
-                        _currentInteraction  = _activeInteractable.Data;
-                        _currentKeywords     = _currentInteraction.Keywords;
-                        _dialogueEntityId    = _activeInteractable.Id;
-                        SetDialoguePortrait(_activeInteractable);
-
-                        // Alt intro: characters acknowledge investigation progress.
-                        // The regular keywords still unlock and highlight either way.
-                        string introText =
-                            _currentInteraction.AltText.Length > 0 &&
-                            GateSatisfied(_currentInteraction.AltTextRequiresClue,
-                                          _currentInteraction.AltTextRequiresSolve)
-                                ? _currentInteraction.AltText
-                                : _currentInteraction.Text;
-
-                        _dialoguePages       = PaginateDialogue(introText, _dialoguePortrait != null);
-                        _currentDialoguePage = 0;
-                        _typewriterTimer     = 0f;
-                        _isDialogueActive    = true;
-                        _isTopicMenuOpen     = false;
-                        foreach (var kw in _activeInteractable.Data.Keywords)
-                            _notebook.UnlockClue(kw.Id);
+                        toOpen           = _tapEntity;
+                        _tapActOnArrival = false;
                     }
+
+                    if (toOpen != null && toOpen.Data != null)
+                        OpenInteraction(toOpen);
                 }
 
                 foreach (var prop in _foregroundProps)
@@ -2033,7 +2135,8 @@ namespace CatDetective
                 foreach (var entity in _interactables)
                     entity.Draw(_spriteBatch,
                         isHighlighted: entity == _activeInteractable,
-                        totalSeconds:  gameTime.TotalGameTime.TotalSeconds);
+                        totalSeconds:  gameTime.TotalGameTime.TotalSeconds,
+                        isSelected:    ReferenceEquals(entity, _tapEntity));
                 _spriteBatch.End();
 
                 // ════════════════════════════════════════════════════════════════
@@ -2094,23 +2197,7 @@ namespace CatDetective
                                                     _arrowTex.Height * 0.5f);
                     foreach (var zone in _transferZones)
                     {
-                        // An explicit ArrowDirection on the zone (e.g. the entrance
-                        // stairs: side doorway, but you walk UP) beats the heuristic.
-                        float ndx = (zone.TriggerRect.Center.X - SCREEN_WIDTH  * 0.5f) / SCREEN_WIDTH;
-                        float ndy = (zone.TriggerRect.Center.Y - SCREEN_HEIGHT * 0.5f) / SCREEN_HEIGHT;
-                        bool horizontal;
-                        bool pointsNegative; // left (horizontal) or up (vertical)
-                        switch (zone.ArrowDirection.ToLowerInvariant())
-                        {
-                            case "up":    horizontal = false; pointsNegative = true;  break;
-                            case "down":  horizontal = false; pointsNegative = false; break;
-                            case "left":  horizontal = true;  pointsNegative = true;  break;
-                            case "right": horizontal = true;  pointsNegative = false; break;
-                            default:
-                                horizontal     = Math.Abs(ndx) > Math.Abs(ndy);
-                                pointsNegative = horizontal ? ndx < 0 : ndy < 0;
-                                break;
-                        }
+                        ArrowHeading(zone, out bool horizontal, out bool pointsNegative);
                         float rotation = horizontal ? 0f
                             : (pointsNegative ? -MathHelper.PiOver2 : MathHelper.PiOver2);
                         var effects = horizontal && pointsNegative
@@ -2120,11 +2207,19 @@ namespace CatDetective
                         // Standing in the zone: the arrow goes gold and pulses,
                         // echoing the SOLVE button's "ready" cue. Gated doorways
                         // (RequiresVisited unmet) draw dim grey and never pulse.
-                        bool  isActive  = ReferenceEquals(zone, _activeTransferZone);
+                        // Tap-selected doors pulse gold too (first tap of tap-to-act).
+                        bool  isActive  = ReferenceEquals(zone, _activeTransferZone) ||
+                                          ReferenceEquals(zone, _tapDoor);
                         bool  locked    = !IsTransferUnlocked(zone);
                         float drawScale = arrowScale;
                         Color tint      = locked ? new Color(110, 110, 115) * 0.65f
                                                  : Color.White * 0.9f;
+                        if (isActive && locked && ReferenceEquals(zone, _tapDoor))
+                        {
+                            float pulse = 0.5f + 0.5f * (float)Math.Sin(
+                                gameTime.TotalGameTime.TotalSeconds * 6.0);
+                            drawScale = arrowScale * (1.1f + 0.15f * pulse);
+                        }
                         if (isActive && !locked)
                         {
                             float pulse = 0.5f + 0.5f * (float)Math.Sin(
@@ -2163,6 +2258,10 @@ namespace CatDetective
                     foreach (var entity in _interactables)
                         DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, entity.TriggerZone, Color.Yellow);
                     DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, _cat.CollisionBox, Color.Cyan);
+                    // Tap-to-walk path: magenta waypoint boxes.
+                    foreach (var wp in _navPath)
+                        DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel,
+                            new Rectangle((int)wp.X - 4, (int)wp.Y - 4, 8, 8), Color.Magenta);
                     _spriteBatch.End();
                 }
 
@@ -2217,10 +2316,13 @@ namespace CatDetective
                             SpriteEffects.None, 0f);
                     }
 
+                    // Corner X: the touch stand-in for Escape (closes the conversation).
+                    DrawUiButton(DialogueCloseRect, new Color(120, 90, 60), "X", Color.White);
+
                     if (_isTopicMenuOpen)
                     {
-                        const float menuScale = 0.66f;
-                        float lineH = _dialogueFont.LineSpacing * menuScale + 2f;
+                        const float menuScale = TOPIC_MENU_SCALE;
+                        float lineH = TopicLineHeight;
                         var   pos   = new Vector2(textX, boxRect.Y + PAD_Y - 20);
 
                         _spriteBatch.DrawString(_dialogueFont, "The detective considers his next move...",
@@ -2244,7 +2346,9 @@ namespace CatDetective
                             pos.Y += lineH;
                         }
 
-                        string menuHint   = "[ W/S ] choose   [ Enter ] act";
+                        string menuHint   = _pointer.LastWasTouch
+                            ? "Tap a choice"
+                            : "[ W/S ] choose   [ Enter ] act";
                         var    menuHintSz = _dialogueFont.MeasureString(menuHint) * dialogueScale;
                         _spriteBatch.DrawString(_dialogueFont, menuHint,
                             new Vector2(boxRect.Right  - PAD_X - menuHintSz.X,
@@ -2269,9 +2373,13 @@ namespace CatDetective
 
                         bool isLastPage  = _currentDialoguePage >= _dialoguePages.Length - 1;
                         bool opensMenu   = isLastPage && _currentInteraction.Topics.Length > 0;
-                        string hint      = typingDone
-                            ? (opensMenu ? "[ Enter ] ..." : isLastPage ? "[ Enter ] to dismiss" : "[ Enter ] to continue")
-                            : "[ Enter ] to skip";
+                        string hint      = _pointer.LastWasTouch
+                            ? (typingDone
+                                ? (opensMenu ? "Tap ..." : isLastPage ? "Tap to dismiss" : "Tap to continue")
+                                : "Tap to skip")
+                            : (typingDone
+                                ? (opensMenu ? "[ Enter ] ..." : isLastPage ? "[ Enter ] to dismiss" : "[ Enter ] to continue")
+                                : "[ Enter ] to skip");
                         var    hintSize = _dialogueFont.MeasureString(hint) * dialogueScale;
                         _spriteBatch.DrawString(
                             _dialogueFont,
@@ -2341,17 +2449,28 @@ namespace CatDetective
                         }
                     }
 
-                    // Transfer-zone prompt: centred at the bottom of the play area.
-                    if (_activeTransferZone != null)
+                    // MENU: touch stand-in for Escape from the room (autosave + menu).
+                    if (!_isDeductionBoardOpen)
+                        DrawUiButton(_menuButtonRect, new Color(70, 70, 78), "MENU", Color.White,
+                                     maxLabelScale: 0.6f);
+
+                    // Bottom-center prompt: a tap selection explains the second tap;
+                    // otherwise the doorway prompt for the zone the cat stands in.
+                    string? bottomHint = _isDeductionBoardOpen ? null : TapSelectionHint();
+                    if (bottomHint == null && _activeTransferZone != null)
+                        bottomHint = _pointer.LastWasTouch ? "Tap the door to go through"
+                                                           : "[ Enter ] to enter";
+                    if (bottomHint != null)
                     {
-                        const string enterHint   = "[ Enter ] to enter";
+                        string       enterHint   = bottomHint;
                         var          enterHintSz = _dialogueFont.MeasureString(enterHint);
-                        _spriteBatch.DrawString(
-                            _dialogueFont, enterHint,
-                            new Vector2(
-                                (SCREEN_WIDTH  - enterHintSz.X) * 0.5f,
-                                SCREEN_HEIGHT  - enterHintSz.Y - 60),
-                            Color.White);
+                        var          hintPos     = new Vector2(
+                            (SCREEN_WIDTH  - enterHintSz.X) * 0.5f,
+                            SCREEN_HEIGHT  - enterHintSz.Y - 60);
+                        // Drop shadow: the prompt sits over bright floors.
+                        _spriteBatch.DrawString(_dialogueFont, enterHint,
+                            hintPos + new Vector2(2, 2), Color.Black * 0.7f);
+                        _spriteBatch.DrawString(_dialogueFont, enterHint, hintPos, Color.White);
                     }
 
                     // Clue counters: current room progress + case-wide total.
@@ -3245,6 +3364,42 @@ namespace CatDetective
         // ── Layout ────────────────────────────────────────────────────────────
         // Recomputes all UI rectangles for the current SCREEN_WIDTH × SCREEN_HEIGHT.
         // All source coordinates are in the original 2020×1136 design space.
+        /// <summary>
+        /// Doorway arrow heading. An explicit ArrowDirection on the zone (e.g. the
+        /// entrance stairs: side doorway, but you walk UP) beats the heuristic
+        /// (direction from the zone's position vs the room center).
+        /// </summary>
+        private void ArrowHeading(TransferZone zone, out bool horizontal, out bool pointsNegative)
+        {
+            float ndx = (zone.TriggerRect.Center.X - SCREEN_WIDTH  * 0.5f) / SCREEN_WIDTH;
+            float ndy = (zone.TriggerRect.Center.Y - SCREEN_HEIGHT * 0.5f) / SCREEN_HEIGHT;
+            switch (zone.ArrowDirection.ToLowerInvariant())
+            {
+                case "up":    horizontal = false; pointsNegative = true;  break;
+                case "down":  horizontal = false; pointsNegative = false; break;
+                case "left":  horizontal = true;  pointsNegative = true;  break;
+                case "right": horizontal = true;  pointsNegative = false; break;
+                default:
+                    horizontal     = Math.Abs(ndx) > Math.Abs(ndy);
+                    pointsNegative = horizontal ? ndx < 0 : ndy < 0;
+                    break;
+            }
+        }
+
+        /// <summary>Resting (un-pulsed, un-bobbed) screen rect of a doorway arrow - the tap target.</summary>
+        private Rectangle DoorArrowRect(TransferZone zone)
+        {
+            const float ARROW_DRAW_W = 64f;   // keep in sync with Pass 4b
+            float scale = ARROW_DRAW_W / _arrowTex.Width;
+            ArrowHeading(zone, out bool horizontal, out _);
+            float halfY = (horizontal ? _arrowTex.Height : _arrowTex.Width)  * scale * 0.5f;
+            float halfX = (horizontal ? _arrowTex.Width  : _arrowTex.Height) * scale * 0.5f;
+            var c = new Vector2(zone.TriggerRect.Center.X, zone.TriggerRect.Y - 8f - halfY);
+            c.X = MathHelper.Clamp(c.X, halfX + 6f, SCREEN_WIDTH  - halfX - 6f);
+            c.Y = MathHelper.Clamp(c.Y, halfY + 6f, SCREEN_HEIGHT - halfY - 6f);
+            return new Rectangle((int)(c.X - halfX), (int)(c.Y - halfY), (int)(halfX * 2), (int)(halfY * 2));
+        }
+
         private void UpdateLayout()
         {
             float sx = (float)SCREEN_WIDTH  / 2020f;
@@ -3253,6 +3408,7 @@ namespace CatDetective
 
             _solveButtonRect      = new Rectangle(S((2020 - 160) * sx), S((1136 - 160) * sy), S(120 * sx), S(120 * sy));
             _finalSolveButtonRect = new Rectangle(S((2020 - 160) * sx), S((1136 - 290) * sy), S(120 * sx), S(110 * sy));
+            _menuButtonRect       = new Rectangle(S((2020 - 170) * sx), S(24 * sy), S(140 * sx), S(70 * sy));
 
             // Tab bar image is 800×150 (four 200px humps), drawn scaled at _tabImagePos —
             // hotspots mirror those humps exactly in the same reference space.

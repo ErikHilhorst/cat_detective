@@ -110,6 +110,7 @@ CatDetective.csproj       — Project file; swap package for KNI to target WASM
 Program.cs                — Entry point ([STAThread])
 Game1.cs                  — Main loop; render passes, dialogue UI, journal/deduction UI, HUD, screenshot mode
 Game1.Cutscene.cs         — Scripted scene player + gathering flow (partial class of Game1)
+Game1.TapControls.cs      — Tap/click controls: tap-to-walk, tap-to-select/act, dialogue taps, navtest
 
 Entities/
   GameObject.cs           — Abstract base: Position (bottom-center), LayerDepth, CollisionBox
@@ -124,6 +125,12 @@ Systems/ (shell)
   CaseScripts.cs          — Fallback intro pages + end-scene beats (cases without case_script.json)
   CaseScript.cs           — case_script.json model + parser (intro / gathering / ending beats)
   CrtOverlay.cs           — Shader-free CRT (scanline strip + vignette), Pass 9
+  PointerInput.cs         — One pointer for mouse + touch (TouchPanel); every click-driven
+                            screen reads it. Taps fire on press; a mouse press within 0.6 s
+                            of a touch is ignored (no double-tap = select+act in one touch).
+  NavGrid.cs              — Tap-to-walk grid (8 px cells, cat's widest feet box + 1 px),
+                            time-weighted A* (vertical steps cost 2x), line-of-sight smoothing,
+                            nearest-REACHABLE fallback for blocked taps
   RoomPreloader.cs        — Background asset warmer: queues every room's textures at boot
                             (saved room first, then cases in scene order) and loads ONE per
                             frame from Update(), only on frames where a blocking load can't
@@ -605,7 +612,28 @@ dotnet run
 Controls: WASD or arrow keys. Enter to interact/advance dialogue. In an interrogation menu:
 W/S (or arrows) to choose a topic, Enter to act. Escape backs out one layer (menu -> dialogue ->
 board -> autosave + main menu); it only quits the app from the main menu. F12 on the main menu
-opens the DevMenu scene picker. F1 toggles the debug overlay.
+opens the DevMenu scene picker. F1 toggles the debug overlay (also draws the tap path in magenta).
+
+**Tap / click controls (phones, tablets, desktop mouse - `Game1.TapControls.cs`).** Always on,
+no device detection; hints switch to "Tap ..." wording when the last input was touch.
+- **Tap to go, tap again to act.** Tap floor = walk there (blocked/cut-off spot -> nearest spot
+  the cat can REACH). Tap a person/object = select it (gold pulsing outline + "Tap again to talk
+  to X" prompt) and walk into reach; nothing opens. Tap a door arrow/zone = select the door (arrow
+  pulses gold) and walk into the doorway; nothing loads. Tapping the selected thing again acts -
+  at once if in reach, else on arrival. Movement keys cancel the path and selection.
+- Tap targets: sprites grown to >= 72 px, door arrows to >= 96 px; characters beat objects on
+  overlap. A walk-behind prop that is opaque at the tap pixel (per-prop quarter-res opacity mask,
+  GPU-built at LoadRoom) blocks objects behind it until it fades - the hidden speaker, registry,
+  feather etc. are only tappable once the cat is behind their prop (same rule as keyboard play).
+- Dialogue: tap anywhere = Enter; corner X = Escape; topic rows are tapped directly (a stray tap
+  never picks a topic). HUD MENU button = Escape from the room (autosave + main menu).
+- Stuck: < 6 px progress in 0.4 s replans once, then stops. **Stuck spots are fixed in the room's
+  Tiled Collisions rects, never with per-room nav code.**
+- `dotnet run --no-build -- --screenshot ui navtest [case]` walks the REAL follower + cat movement
+  from every spawn to every interactable and door, plus 150 seeded random floor taps per room, and
+  prints FAILs with coordinates (plus how much of each object a prop covers). Run it after any
+  Collisions/Spawn/Interactables map edit. Malibu 1214/1214, tutorial 326/326 at introduction.
+- `--screenshot <case> <room> tap` selects the room's first character (outline + prompt + path).
 
 To rebuild content assets after changing `.mgcb`:
 ```bash
@@ -730,7 +758,12 @@ branches on `#if BLAZORGL` (defined only by the web csproj):
   never enforced it).
 - Interactable highlight silhouettes are pre-rendered into render targets at
   LoadRoom (`InteractableEntity.PrewarmSilhouette`) - WebGL cannot GetData()
-  from content textures.
+  from content textures. Prop opacity masks use the same route (draw into an RT,
+  read the RT back); if that read fails the prop simply never blocks a tap.
+- Touch: KNI's window listeners preventDefault() touch events, so browsers never
+  synthesize mouse clicks from taps - touch arrives ONLY via TouchPanel
+  (`PointerInput`). Web music starts on pointer release (touchend is a user
+  activation, touchstart is not).
 
 Content: `Content/Content.Web.mgcb` is a copy of `Content.mgcb` with
 `/platform:BlazorGL`, `/compress:True` + `/compression:Brotli` (decoded JS-side
