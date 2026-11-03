@@ -994,11 +994,27 @@ namespace CatDetective
                         _confirmNewGame = false;
                         SaveSystem.DeleteSave();
                         _saveExists = false;
-                        StartCaseIntro("malibu_mansion");
+                        // First ever New Game: Training Day first, then straight on
+                        // into Malibu (Game1.Tutorial.cs). Marked seen at the start,
+                        // so quitting halfway never forces it again.
+                        if (!_settings.TutorialSeen)
+                        {
+                            _settings.TutorialSeen = true;
+                            SaveSystem.SaveSettings(_settings);
+                            _tutorialLeadsToCase = "malibu_mansion";
+                            StartCaseIntro("tutorial");
+                        }
+                        else
+                        {
+                            StartCaseIntro("malibu_mansion");
+                        }
                     }
                     break;
 
-                case "TUTORIAL": StartCase("tutorial");                 break;
+                case "TUTORIAL":
+                    _tutorialLeadsToCase = null;   // replay from the menu: back to the menu after
+                    StartCaseIntro("tutorial");
+                    break;
                 case "SETTINGS": _currentState = GameState.Settings;    break;
 #if !BLAZORGL
                 case "QUIT":     Exit();                                break;
@@ -1044,8 +1060,10 @@ namespace CatDetective
                 // in play order). Beat shown fully typed, fx settled.
                 case "script":
                 {
-                    LoadCaseScript("malibu_mansion");
-                    var parts = _screenshotView.Split(':');
+                    // Optional "@case" suffix: intro:0@tutorial (default malibu_mansion).
+                    var at = _screenshotView.Split('@');
+                    LoadCaseScript(at.Length > 1 ? at[1] : "malibu_mansion");
+                    var parts = at[0].Split(':');
                     var beats = ScriptSection(parts[0]);
                     int idx   = parts.Length > 1 && int.TryParse(parts[1], out int bi) ? bi : 0;
                     StartCutscene(beats, () => _currentState = GameState.MainMenu);
@@ -1656,7 +1674,21 @@ namespace CatDetective
                                 else if (_isFinalSolveMode)
                                 {
                                     if (_deduction.ValidateCase())
+                                    {
+                                        // A scripted outro (case_script.json "ending", no
+                                        // gathering - the tutorial) plays as a cutscene;
+                                        // otherwise the typewriter end scene.
+                                        if (_caseScript is { Ending.Count: > 0 } && !HasGathering)
+                                        {
+                                            _isDeductionBoardOpen = false;
+                                            _isFinalSolveMode     = false;
+                                            FinishCase();
+                                            StartCutscene(_caseScript.Ending, AfterCaseOutro, AfterCaseOutro);
+                                            _prevMouseState = mouseState;
+                                            return;
+                                        }
                                         StartEndScene(_currentCaseId);
+                                    }
                                 }
                                 else
                                 {
@@ -2472,8 +2504,12 @@ namespace CatDetective
                         var (roomFound, roomTotal) = _notebook.GetRoomClueCounts(
                             _currentRoomId, id => !_ungatedClueIds.Contains(id));
 
-                        DrawRoomCard(ToDisplayName(_currentRoomId), roomFound, roomTotal,
-                                     _notebook.UnlockedClues.Count, _notebook.TotalClueCount);
+                        // The tutorial's guide card carries the clue count itself.
+                        if (_currentCaseId == TUTORIAL_CASE)
+                            DrawTutorialGuide();   // Game1.Tutorial.cs
+                        else
+                            DrawRoomCard(ToDisplayName(_currentRoomId), roomFound, roomTotal,
+                                         _notebook.UnlockedClues.Count, _notebook.TotalClueCount);
                     }
 
                     // Transient toast — bottom-center, fades out at the end.
@@ -2543,6 +2579,23 @@ namespace CatDetective
                                     J(160, jsy) + _dialogueFont.LineSpacing * headScale + 6 * jsy),
                                 headSolved ? new Color(30, 130, 50) : _inkColor * 0.75f,
                                 0f, Vector2.Zero, 0.68f * jsy, SpriteEffects.None, 0f);
+
+                            // Tutorial: how a board works, in ink at the foot of the page.
+                            if (_currentCaseId == TUTORIAL_CASE && !headSolved)
+                            {
+                                string how = _pointer.LastWasTouch
+                                    ? "How it works:\n1. Tap a clue on the right (the tabs sort them by color).\n" +
+                                      "2. Tap a gap in the sentence to put it there.\n3. Tap Submit."
+                                    : "How it works:\n1. Click a clue on the right (the tabs sort them by color).\n" +
+                                      "2. Click a gap in the sentence - or Insert - to put it there.\n3. Click Submit.";
+                                if (_isFinalSolveMode)
+                                    how += "\n\nThe Final Solve uses the clues of every room you solved.";
+                                float howScale = 0.56f * jsy;
+                                float howH     = _dialogueFont.MeasureString(how).Y * howScale;
+                                _spriteBatch.DrawString(_dialogueFont, how,
+                                    new Vector2(leftPageArea.X, J(1010, jsy) - howH),
+                                    _inkColor * 0.7f, 0f, Vector2.Zero, howScale, SpriteEffects.None, 0f);
+                            }
                         }
 
                         string[] slotCatLabels = { "WHO", "WHAT", "WHY", "WHERE/WHEN" };

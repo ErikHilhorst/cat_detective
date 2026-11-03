@@ -9,8 +9,7 @@
     <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/moonlit_cat_case.mp3</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/shadow_blob.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/case of the mising maccaw.jpg</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_one/bg_base.jpg</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_two/bg_base.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/training_room/bg_base.jpg</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/rudebeak.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/walk_animation_forward.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/walk_animation_upward.png</File>
@@ -84,17 +83,10 @@
     <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/Interactables/inspect_pool_selfie.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/Interactables/inspect_feather.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/pool_area/Interactables/inspect_production_schedule.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_welcome_placard.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_saucer.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_kitten.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_old_dog.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_water_bowl.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_one/Interactables/inspect_board_placard.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_doorway_placard.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_window.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_latch.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_mailman_cutout.png</File>
-    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/lesson_two/Interactables/inspect_graduation_scroll.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/training_room/Interactables/inspect_saucer.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/training_room/Interactables/inspect_kitten.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/training_room/Interactables/inspect_old_dog.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/tutorial/training_room/Interactables/inspect_water_bowl.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/speech_bubble.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/arrow.png</File>
   </SourceFiles>
@@ -104,14 +96,6 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File>Shared/case_poster.jpg</File>
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

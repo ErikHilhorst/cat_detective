@@ -293,7 +293,7 @@ namespace CatDetective
 
             if (!string.IsNullOrEmpty(beat.Stamp)) DrawStamp(beat.Stamp);
 
-            string footer = "Enter - continue   Esc - skip";
+            string footer = _pointer.LastWasTouch ? "Tap to continue" : "Enter - continue   Esc - skip";
             var fSz = _dialogueFont.MeasureString(footer) * 0.5f;
             _spriteBatch.DrawString(_dialogueFont, footer,
                 new Vector2(SCREEN_WIDTH - fSz.X - 24f, 14f),

@@ -1,0 +1,49 @@
+{
+  "props": [],
+  "localDeductionSentence": "[Who] knocked over [What].",
+  "localDeductionClueIds": ["the_kitten", "the_saucer"],
+  "interactables": [
+    {
+      "id": "inspect_saucer",
+      "name": "Tipped Saucer",
+      "texture": "Shared/placeholder_object",
+      "scale": 1.0,
+      "text": "A saucer, flipped on its back in a puddle of milk. Somebody knocked over [the saucer].|See the word in color? That is a CLUE. Finding one writes it into your casebook - it is already there.",
+      "keywords": [
+        { "displayText": "the saucer", "id": "the_saucer", "color": "crime" }
+      ]
+    },
+    {
+      "id": "inspect_water_bowl",
+      "name": "Water Bowl",
+      "texture": "Shared/placeholder_object",
+      "scale": 1.0,
+      "text": "A [water bowl]. Full, upright, not a drop spilled.|Not every clue is part of the answer. Some are only there to make you think twice.",
+      "keywords": [
+        { "displayText": "water bowl", "id": "water_bowl", "color": "crime" }
+      ]
+    },
+    {
+      "id": "inspect_kitten",
+      "name": "The Kitten",
+      "texture": "Shared/placeholder_person",
+      "scale": 1.0,
+      "text": "[The kitten] sits right next to the puddle, looking far too innocent. Milk on her whiskers. Every few seconds she tears around the room in circles - a classic case of [the zoomies].|Clues come in four colors: WHO, WHAT, WHERE/WHEN and WHY. Each color is a tab in your casebook.",
+      "keywords": [
+        { "displayText": "The kitten", "id": "the_kitten", "color": "crime" },
+        { "displayText": "the zoomies", "id": "the_zoomies", "color": "crime" }
+      ]
+    },
+    {
+      "id": "inspect_old_dog",
+      "name": "The Old Dog",
+      "texture": "Shared/placeholder_person",
+      "scale": 1.0,
+      "text": "[The old dog] is fast asleep on his rug. He is always [hungry], but he has not moved in hours. The snoring proves it.|Most cases have more than one suspect. Your job is to work out who actually fits.",
+      "keywords": [
+        { "displayText": "The old dog", "id": "the_old_dog", "color": "crime" },
+        { "displayText": "hungry", "id": "hunger", "color": "crime" }
+      ]
+    }
+  ]
+}

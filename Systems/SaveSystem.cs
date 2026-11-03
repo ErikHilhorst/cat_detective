@@ -31,6 +31,8 @@ namespace CatDetective.Systems
         [JsonPropertyName("version")]     public int   Version     { get; set; } = 1;
         [JsonPropertyName("musicVolume")] public float MusicVolume { get; set; } = 0.5f;
         [JsonPropertyName("crtEnabled")]  public bool  CrtEnabled  { get; set; } = false;
+        /// <summary>The first NEW GAME plays the tutorial first; set once it has started.</summary>
+        [JsonPropertyName("tutorialSeen")] public bool TutorialSeen { get; set; } = false;
     }
 
     /// <summary>

@@ -27,21 +27,7 @@ namespace CatDetective.Systems
         private static readonly Dictionary<string, EndSceneBeat[]> _endScenes = new()
         {
             // malibu_mansion: the gathering + ending live in case_script.json.
-
-            ["tutorial"] = new[]
-            {
-                new EndSceneBeat("",
-                    "The white room folds up like a napkin. Somewhere, a " +
-                    "sunbeam moves.\n\n" +
-                    "Dikkie wakes on the windowsill, already certain of three " +
-                    "things: the kitten did it, the wind gets blamed for " +
-                    "everything, and the basics never change."),
-
-                new EndSceneBeat("",
-                    "WHISKER ACADEMY - BASICS COMPLETE\n\n" +
-                    "Dikkie is ready for a real case.",
-                    IsCard: true),
-            },
+            // tutorial: intro + outro live in its case_script.json too.
         };
 
         /// <summary>Intro pages for a case; empty when the case has no intro.</summary>

@@ -220,8 +220,6 @@ C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Lev
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\pool_area\shrub.xnb
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\kitchen\console.xnb
 C:\Users\Erik\Desktop\Python projects\cat_detective\bin\Debug\net8.0\Content\Shared\ui_notebook_score_card.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_one\room_map.json
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\room_map.json
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\bg_base.png
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\full scene.png
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\Interactables\inspect_answering_machine.png
@@ -232,8 +230,6 @@ C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\prop_cabinet.png
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\detective_office\prop_desk.png
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\case_config.json
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_one\room_config.json
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\room_config.json
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\bedroom\Interactables\inspect_delivery_manifest.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\bedroom\Interactables\inspect_headphone_box.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\bedroom\Interactables\inspect_husband.xnb
@@ -279,19 +275,6 @@ C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_ma
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\pool_area\Interactables\inspect_socialite.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\pool_area\shrub.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\rudebeak.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_one\bg_base.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_one\Interactables\inspect_board_placard.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_one\Interactables\inspect_kitten.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_one\Interactables\inspect_old_dog.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_one\Interactables\inspect_saucer.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_one\Interactables\inspect_water_bowl.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_one\Interactables\inspect_welcome_placard.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\bg_base.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\Interactables\inspect_doorway_placard.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\Interactables\inspect_graduation_scroll.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\Interactables\inspect_latch.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\Interactables\inspect_mailman_cutout.xnb
-C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\lesson_two\Interactables\inspect_window.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\arrow.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\case_poster.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\moonlit_cat_case.ogg
@@ -302,3 +285,11 @@ C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\speech_bu
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\ui_notebook_score_card.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\case_script.json
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\living_room\cage.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\case_script.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\training_room\room_config.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\training_room\room_map.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\training_room\bg_base.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\training_room\Interactables\inspect_kitten.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\training_room\Interactables\inspect_old_dog.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\training_room\Interactables\inspect_saucer.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\training_room\Interactables\inspect_water_bowl.xnb

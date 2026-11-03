@@ -12,7 +12,7 @@ Built in C# using **MonoGame (KNI fork)**, targeting **Web/WASM** as the final p
 Current state: the case system is playable end-to-end AND the game has its shell: a main menu
 (CONTINUE / NEW GAME / TUTORIAL / SETTINGS / QUIT), a single-slot autosave, a settings screen
 (music volume + CRT filter toggle, persisted), a poster-and-typewriter case intro, a five-beat
-end scene, and a two-room tutorial case. The protagonist's name is **Dikkie**.
+end scene, and a one-room tutorial case. The protagonist's name is **Dikkie**.
 
 The first case, **Malibu Mansion / "The Missing Macaw"**
 (7 rooms, 79 clues: 70 room clues + 9 case-global TIME clues), is fully wired: free-roam movement, room transfers,
@@ -34,11 +34,18 @@ furniture-free repaint (source `base_layer.jpg`) plus four full-canvas walk-behi
 map's Triggers layer; the birdcage sprite (`Interactables/inspect_birdcage.png`) is cropped from
 the layered `cage.png` and Y-sorts on its own as an interactable (no fade).
 
-The second case, **tutorial / "Whisker Academy - Hall of Basics"** (2 rooms `lesson_one` /
-`lesson_two`, 12 clues), is Dikkie's dream of his training: a white void with placards that teach
-movement, clues, interrogation menus, decoys, local solves, doorways, confrontations, and the
-final board - built entirely on the normal case systems (no special tutorial code paths) with
-`Shared/placeholder_object` / `placeholder_person` sprites and flat near-white `bg_base.jpg`s.
+The second case, **tutorial / "Training Day"** (1 room `training_room`, 6 macro clues, 4 objects:
+saucer, water bowl, kitten, old dog - no people/topics, no doors), is one plain near-white screen
+that teaches exactly: walk, look at things to find clues, Solve the room's board ("[Who] knocked
+over [What]."), then Final Solve ("...because of [the zoomies]"). Each object text ends with a
+short `|`-page lesson (clues, decoys, colors/tabs, suspects). Intro + outro are `case_script.json`
+cutscenes; the outro explains per-room solves vs the overarching final solve. The only
+tutorial-specific code is `Game1.Tutorial.cs`: a top-centre guide card (device-aware controls via
+`_pointer.LastWasTouch` + a 3-step checklist that ticks itself; it replaces the room card) and
+the first-run hand-off - the very first NEW GAME sets `settings.json` `tutorialSeen`, plays the
+tutorial, and its outro leads straight into Malibu (`_tutorialLeadsToCase`); the menu's TUTORIAL
+replays it and returns to the menu. A final-solve submit in a case whose script has `ending` but
+no `gathering` plays that ending as a cutscene (`AfterCaseOutro`).
 
 ### Game states & shell
 
@@ -49,7 +56,7 @@ final board - built entirely on the normal case systems (no special tutorial cod
   "Dikkie / Detective", tagline, idle Dikkie sprite; right page = "Contents" with cozy-kit
   buttons. Settings uses the same spread. Menu labels are display-cased; `ActivateMainMenuItem`
   matches them upper-cased. W/S + Enter or mouse/tap. CONTINUE only enabled while a save exists; NEW GAME over an
-  existing save asks for a second Enter ("overwrite" confirm); TUTORIAL starts the tutorial case;
+  existing save asks for a second Enter ("overwrite" confirm); TUTORIAL replays the tutorial (the first NEW GAME plays it automatically);
   F12 opens the legacy DevMenu scene picker; Esc quits. Menus run at a fixed 1456x816 canvas
   (`SetCanvas`); rooms still resize the canvas per background.
 - **Escape is contextual**: in Playing it closes topic menu/dialogue first, then the board, then
@@ -88,7 +95,7 @@ final board - built entirely on the normal case systems (no special tutorial cod
     answers + bank are unlocked when it starts (nothing can dead-end the finale). Closing a
     board aborts back to the room; FINAL SOLVE resumes at the same step (not saved).
   - `ending` - appended after the last step's success; the save is deleted (`FinishCase`).
-- **EndScene** (`StartEndScene`, cases without a script, e.g. the tutorial): beats from `CaseScripts.GetEndScene(caseId)`; a beat can show
+- **EndScene** (`StartEndScene`, cases without a script `ending`): beats from `CaseScripts.GetEndScene(caseId)`; a beat can show
   `rudebeak.png` (`ShowRudebeak`) or render as a centered title card (`IsCard`). Replaces the old
   `_isGameWon` win banner entirely. Reached from a valid final-solve submit.
 - **Settings**: music volume (10 cells, applies to `MediaPlayer.Volume` live) + CRT toggle;
@@ -120,6 +127,7 @@ Game1.Cutscene.cs         — Scripted scene player + gathering flow (partial cl
 Game1.TapControls.cs      — Tap/click controls: tap-to-walk, tap-to-select/act, dialogue taps, navtest
 Game1.UiStyle.cs          — Cozy UI kit: generated rounded buttons/chips, parchment panels, HUD card
 Game1.MenuScreens.cs      — Main menu + settings as the open casebook spread
+Game1.Tutorial.cs         — Training Day guide card (controls + checklist) + first-run tutorial hand-off
 
 Entities/
   GameObject.cs           — Abstract base: Position (bottom-center), LayerDepth, CollisionBox
@@ -657,7 +665,7 @@ no device detection; hints switch to "Tap ..." wording when the last input was t
 - `dotnet run --no-build -- --screenshot ui navtest [case]` walks the REAL follower + cat movement
   from every spawn to every interactable and door, plus 150 seeded random floor taps per room, and
   prints FAILs with coordinates (plus how much of each object a prop covers). Run it after any
-  Collisions/Spawn/Interactables map edit. Malibu 1214/1214, tutorial 326/326 at introduction.
+  Collisions/Spawn/Interactables map edit. Malibu 1214/1214, tutorial 154/154 at introduction.
 - `--screenshot <case> <room> tap` selects the room's first character (outline + prompt + path).
 
 To rebuild content assets after changing `.mgcb`:

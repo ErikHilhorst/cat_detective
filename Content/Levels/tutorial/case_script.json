@@ -1,0 +1,48 @@
+{
+  "backgrounds": {
+    "room": {
+      "layers": [
+        "Levels/tutorial/training_room/bg_base"
+      ]
+    },
+    "black": {
+      "layers": []
+    }
+  },
+  "intro": [
+    {
+      "bg": "black",
+      "card": true,
+      "text": "TRAINING DAY\n\nDikkie's first case"
+    },
+    {
+      "bg": "room",
+      "speaker": "",
+      "text": "Every great detective starts somewhere. Even Dikkie.",
+      "dim": 0.05
+    },
+    {
+      "speaker": "",
+      "text": "One room. One small mess. Let's learn how a case works.",
+      "dim": 0.05
+    }
+  ],
+  "ending": [
+    {
+      "bg": "room",
+      "speaker": "",
+      "text": "Case closed! The kitten confessed.\n(Well. She purred. Same thing.)",
+      "dim": 0.05
+    },
+    {
+      "speaker": "",
+      "text": "In a real case, every room hides its own little mystery with its own Solve.\nCrack them all, and the Final Solve ties the whole story together.",
+      "dim": 0.05
+    },
+    {
+      "bg": "black",
+      "card": true,
+      "text": "YOU'RE READY\n\nTime for a real case."
+    }
+  ]
+}
