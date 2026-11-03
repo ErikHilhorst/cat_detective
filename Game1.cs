@@ -1715,12 +1715,20 @@ namespace CatDetective
                                 }
                             }
 
-                            // Word bank item clicks
+                            // Word bank item clicks. Tap = select (read it in the
+                            // inspector); tap the selected chip again = place it
+                            // ("tap again to act", as in the rooms). A gap tapped
+                            // first stays armed: the next matching chip goes straight in.
                             foreach (var (rect, clue) in _wordBankClueRects)
                             {
                                 if (rect.Contains(vm))
                                 {
+                                    bool again = clue == _selectedWordBankClue;
                                     _selectedWordBankClue = clue;
+                                    if (!boardLocked && (again ||
+                                        (_insertTargetSlot != null &&
+                                         _insertTargetSlot.Category == clue.Category)))
+                                        PlaceSelectedClue(activeDeduction, _insertTargetSlot);
                                     break;
                                 }
                             }
@@ -1731,23 +1739,9 @@ namespace CatDetective
                             if (_journalNextPageRect.Contains(vm) && _wordBankPage < _wordBankPageCount)
                                 _wordBankPage++;
 
-                            // Insert selected clue: prefer the slot the player clicked,
-                            // then the first EMPTY slot of the category, then the first slot.
-                            // (A sentence can hold two slots of the same category.)
+                            // "Place in sentence" - the explicit fallback for tap-again.
                             if (!boardLocked && _journalInsertRect.Contains(vm) && _selectedWordBankClue != null)
-                            {
-                                var slots  = activeDeduction.Slots;
-                                var target =
-                                    (_insertTargetSlot != null &&
-                                     _insertTargetSlot.Category == _selectedWordBankClue.Category &&
-                                     slots.Contains(_insertTargetSlot))
-                                        ? _insertTargetSlot
-                                        : slots.Find(s => s.Category == _selectedWordBankClue.Category
-                                                       && s.SelectedClueId == null)
-                                          ?? slots.Find(s => s.Category == _selectedWordBankClue.Category);
-                                if (target != null)
-                                    target.SelectedClueId = _selectedWordBankClue.Id;
-                            }
+                                PlaceSelectedClue(activeDeduction, _insertTargetSlot);
 
                             // Clear all slots (reset the board without redoing anything)
                             if (!boardLocked && _journalClearRect.Contains(vm))
@@ -1759,7 +1753,8 @@ namespace CatDetective
                             }
 
                             // Submit
-                            if (!boardLocked && _journalSubmitRect.Contains(vm))
+                            if (!boardLocked && _journalSubmitRect.Contains(vm) &&
+                                activeDeduction.Slots.TrueForAll(sl => sl.SelectedClueId != null))
                             {
                                 if (_isFinalSolveMode && _gatheringActive)
                                 {
@@ -1836,12 +1831,20 @@ namespace CatDetective
                                 }
                             }
 
-                            // Left page slot clicks -> switch active tab + target the slot
-                            // for INSERT. Clicking a FILLED slot removes its clue.
+                            // Left page slot clicks. With a matching chip selected the
+                            // gap takes it (replacing what was there). Otherwise: switch
+                            // to the gap's tab and arm it for the next chip; a FILLED
+                            // gap gives its clue back.
                             foreach (var slot in activeDeduction.Slots)
                             {
                                 if (slot.Bounds.Contains(vm))
                                 {
+                                    if (!boardLocked && _selectedWordBankClue != null &&
+                                        _selectedWordBankClue.Category == slot.Category)
+                                    {
+                                        PlaceSelectedClue(activeDeduction, slot);
+                                        break;
+                                    }
                                     if (!boardLocked && slot.SelectedClueId != null)
                                     {
                                         slot.SelectedClueId = null;
@@ -1915,6 +1918,12 @@ namespace CatDetective
                                 ShowToast($"Locked - solve every room's deduction first " +
                                           $"({SolvedRoomCount()}/{_caseRooms.Count} solved).");
                             }
+                        }
+                        else if (BottomPromptRect() is Rectangle prompt && prompt.Contains(vm))
+                        {
+                            // "Tap again to inspect X" - tapping the note itself is
+                            // that second tap (players reach for the prompt first).
+                            ActOnBottomPrompt();
                         }
                         else
                         {
@@ -2606,12 +2615,9 @@ namespace CatDetective
 
                     // Bottom-center prompt: a tap selection explains the second tap;
                     // otherwise the doorway prompt for the zone the cat stands in.
-                    string? bottomHint = _isDeductionBoardOpen ? null : TapSelectionHint();
-                    if (bottomHint == null && _activeTransferZone != null)
-                        bottomHint = _pointer.LastWasTouch ? "Tap the door to go through"
-                                                           : "[ Enter ] to enter";
+                    string? bottomHint = _isDeductionBoardOpen ? null : BottomPromptText();
                     if (bottomHint != null)
-                        DrawNotePill(bottomHint, SCREEN_HEIGHT - 28);
+                        DrawNotePill(bottomHint, BOTTOM_PROMPT_Y);
 
                     // Clue counters: current room progress + case-wide total.
                     // Room basis = clues whose roomId is this room, matching the
@@ -2659,7 +2665,7 @@ namespace CatDetective
                         int J(float v, float s) => (int)(v * s);
                         var leftPageArea  = new Rectangle(J(250,jsx), J(300,jsy), J(650,jsx), J(600,jsy));
                         var wordBankArea  = new Rectangle(J(1050,jsx), J(280,jsy), J(750,jsx), J(400,jsy));
-                        var inspectorArea = new Rectangle(J(1150,jsx), J(800,jsy), J(600,jsx), J(250,jsy));
+                        var inspectorArea = new Rectangle(J(1150,jsx), J(800,jsy), J(600,jsx), J(160,jsy));
 
                         // Journal text scales: the panel rects shrink with the canvas, so
                         // the 32pt font must shrink with them or it overflows every box.
@@ -2702,15 +2708,15 @@ namespace CatDetective
                             {
                                 string how = _pointer.LastWasTouch
                                     ? "How it works:\n1. Tap a clue on the right (the tabs sort them by color).\n" +
-                                      "2. Tap a gap in the sentence to put it there.\n3. Tap Submit."
+                                      "2. Tap it again - or tap a glowing gap - to put it in.\n3. Tap Submit."
                                     : "How it works:\n1. Click a clue on the right (the tabs sort them by color).\n" +
-                                      "2. Click a gap in the sentence - or Insert - to put it there.\n3. Click Submit.";
+                                      "2. Click it again - or click a glowing gap - to put it in.\n3. Click Submit.";
                                 if (_isFinalSolveMode)
                                     how += "\n\nThe Final Solve uses the clues of every room you solved.";
                                 float howScale = 0.56f * jsy;
                                 float howH     = _dialogueFont.MeasureString(how).Y * howScale;
                                 _spriteBatch.DrawString(_dialogueFont, how,
-                                    new Vector2(leftPageArea.X, J(1010, jsy) - howH),
+                                    new Vector2(leftPageArea.X, J(950, jsy) - howH),
                                     _inkColor * 0.7f, 0f, Vector2.Zero, howScale, SpriteEffects.None, 0f);
                             }
                         }
@@ -2718,6 +2724,8 @@ namespace CatDetective
                         string[] slotCatLabels = { "WHO", "WHAT", "WHY", "WHERE/WHEN" };
 
                         var activeDeduction = _isFinalSolveMode ? _deduction : _localDeduction;
+                        bool headSolvedBoard = !_isFinalSolveMode &&
+                            _roomSolvedStates.TryGetValue(_currentRoomId, out var hsb) && hsb;
 
                         foreach (var seg in activeDeduction.Segments)
                         {
@@ -2764,10 +2772,19 @@ namespace CatDetective
                                 var slotColor = _tabColors[(int)slot.Category];
                                 var slotRect  = new Rectangle((int)lx, (int)ly, slotW, slotH);
                                 // Empty slot = faint tab-tinted paper; filled = the chip itself.
+                                // A gap that would take the selected chip pulses gold.
+                                bool takes = _selectedWordBankClue != null && !headSolvedBoard &&
+                                             _selectedWordBankClue.Category == slot.Category;
+                                if (takes)
+                                {
+                                    float pulse = 0.5f + 0.5f * MathF.Sin(_uiTime * 4f);
+                                    DrawSoft(slotRect, 8 + (int)(5 * pulse), UiGlow * (0.4f + 0.4f * pulse));
+                                }
                                 if (slot.SelectedClueId != null)
                                     DrawChip(slotRect, Color.Lerp(slotColor, UiCream, 0.35f), 0.8f, lifted: false);
                                 else
-                                    DrawChip(slotRect, slotColor * 0.32f, 0.45f, lifted: false);
+                                    DrawChip(slotRect, slotColor * (takes ? 0.55f : 0.32f),
+                                             takes ? 0.8f : 0.45f, lifted: false);
                                 float tX = slotRect.X + (slotRect.Width  - textW) * 0.5f;
                                 float tY = slotRect.Y + (slotRect.Height - _dialogueFont.LineSpacing * jt) * 0.5f;
                                 _spriteBatch.DrawString(_dialogueFont, label, new Vector2(tX, tY), _inkColor,
@@ -2924,9 +2941,10 @@ namespace CatDetective
                                     inspectorArea.Width, _dialogueFont.LineSpacing * fitScale + 4,
                                     new Color(95, 75, 130), fitScale);
                             }
-                            DrawUiButton(_journalInsertRect,
-                                Color.Lerp(_tabColors[(int)_selectedWordBankClue.Category], UiCream, 0.35f),
-                                "Insert", maxLabelScale: jt);
+                            if (!headSolvedBoard)
+                                DrawUiButton(_journalInsertRect,
+                                    Color.Lerp(_tabColors[(int)_selectedWordBankClue.Category], UiCream, 0.35f),
+                                    "Place in sentence", glow: true, maxLabelScale: jt);
                         }
 
                         // A solved room's board is a locked recap — no CLEAR/SUBMIT.
@@ -2947,8 +2965,11 @@ namespace CatDetective
                         }
                         if (!drawLocked)
                         {
+                            bool allFilled = activeDeduction.Slots.TrueForAll(sl => sl.SelectedClueId != null);
                             DrawUiButton(_journalClearRect,  UiCream, "Clear",  maxLabelScale: jt);
-                            DrawUiButton(_journalSubmitRect, UiGreen, "Submit", maxLabelScale: jt);
+                            DrawUiButton(_journalSubmitRect, UiGreen, "Submit", enabled: allFilled,
+                                         glow: allFilled && string.IsNullOrEmpty(activeDeduction.ValidationMessage),
+                                         maxLabelScale: jt);
                         }
 
                         // ── Page turn (forward to Case Notes) ─────────────────
@@ -3434,10 +3455,13 @@ namespace CatDetective
             float sy = (float)SCREEN_HEIGHT / 1136f;
             int S(float v) => (int)v;
 
-            // HUD (cozy kit): wide tab-style pills, bottom-right stack + top-right Menu.
-            _solveButtonRect      = new Rectangle(S((2020 - 290) * sx), S((1136 - 140) * sy), S(250 * sx), S(100 * sy));
-            _finalSolveButtonRect = new Rectangle(S((2020 - 290) * sx), S((1136 - 262) * sy), S(250 * sx), S(96 * sy));
-            _menuButtonRect       = new Rectangle(S((2020 - 190) * sx), S(28 * sy), S(160 * sx), S(70 * sy));
+            // HUD (cozy kit): wide tab-style pills.
+            // Top-right column, right-aligned under Menu: the rooms are isometric,
+            // so the top band is wall while floor + objects fill the lower half -
+            // a bottom-right HUD covered the entrance's guest registry.
+            _menuButtonRect       = new Rectangle(S((2020 - 190) * sx), S(28  * sy), S(160 * sx), S(70 * sy));
+            _solveButtonRect      = new Rectangle(S((2020 - 280) * sx), S(116 * sy), S(250 * sx), S(96 * sy));
+            _finalSolveButtonRect = new Rectangle(S((2020 - 280) * sx), S(228 * sy), S(250 * sx), S(90 * sy));
 
             // Tab bar image is 800×150 (four 200px humps), drawn scaled at _tabImagePos —
             // hotspots mirror those humps exactly in the same reference space.
@@ -3469,17 +3493,47 @@ namespace CatDetective
 
             _journalPrevPageRect = new Rectangle(S(1050 * sx), S(692 * sy), S(90 * sx), S(35 * sy));
             _journalNextPageRect = new Rectangle(S(1710 * sx), S(692 * sy), S(90 * sx), S(35 * sy));
-            // Top-right of the inspector paper, level with the clue name —
-            // keeps the button clear of the wrapped description text.
-            _journalInsertRect   = new Rectangle(S(1610 * sx), S(800 * sy), S(140 * sx), S(50 * sy));
-            _journalSubmitRect   = new Rectangle(S(1400 * sx), S(1040 * sy), S(270 * sx), S(70 * sy));
-            _journalClearRect    = new Rectangle(S(1200 * sx), S(1040 * sy), S(170 * sx), S(70 * sy));
+            // "Place in sentence": full-width at the foot of the inspector paper,
+            // under the description it acts on (the text area stops above it).
+            _journalInsertRect   = new Rectangle(S(1250 * sx), S(968 * sy), S(420 * sx), S(76 * sy));
+            // Clear + Submit sit on the LEFT page under the sentence they act on
+            // (they used to share the right page with the word bank - players
+            // reached for Submit to move a chip over).
+            _journalClearRect    = new Rectangle(S(260 * sx), S(1028 * sy), S(190 * sx), S(76 * sy));
+            _journalSubmitRect   = new Rectangle(S(480 * sx), S(1028 * sy), S(400 * sx), S(76 * sy));
             _journalCloseRect    = new Rectangle(S(1930 * sx), S(30  * sy), S(60  * sx), S(60 * sy));
 
             // Page-turn buttons live in the book's bottom corners (page-corner metaphor):
             // forward on the right page, back on the left page.
             _journalTurnPageRect = new Rectangle(S(1700 * sx), S(1040 * sy), S(180 * sx), S(70 * sy));
             _journalTurnBackRect = new Rectangle(S(250  * sx), S(1040 * sy), S(180 * sx), S(70 * sy));
+        }
+
+        /// <summary>
+        /// Puts the selected word-bank chip into <paramref name="slot"/> when it
+        /// matches, else the first EMPTY gap of its category, else the first gap of
+        /// its category (a sentence can hold two). Deselects the chip afterwards,
+        /// so it visibly "moves over" and can't be double-placed by a third tap.
+        /// </summary>
+        private void PlaceSelectedClue(DeductionManager deduction, DeductionSlot? slot)
+        {
+            var clue = _selectedWordBankClue;
+            if (clue == null) return;
+            var slots  = deduction.Slots;
+            var target =
+                (slot != null && slot.Category == clue.Category && slots.Contains(slot))
+                    ? slot
+                    : slots.Find(s => s.Category == clue.Category && s.SelectedClueId == null)
+                      ?? slots.Find(s => s.Category == clue.Category);
+            if (target == null) return;
+            // One chip, one gap: pull it out of any other gap first.
+            foreach (var other in slots)
+                if (other != target && other.SelectedClueId == clue.Id)
+                    other.SelectedClueId = null;
+            target.SelectedClueId     = clue.Id;
+            deduction.ValidationMessage = "";
+            _selectedWordBankClue     = null;
+            _insertTargetSlot         = null;
         }
 
         // ── Screenshot helper ──────────────────────────────────────────────────

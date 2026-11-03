@@ -260,8 +260,16 @@ rectangles for player-facing UI (that look was the placeholder era).
 - **Chips/slots** on the board use `DrawChip` (same shape, lighter shadow).
 - Shapes are generated at LoadContent (`CreateUiTextures`, SetData, premultiplied) - no
   asset files, WebGL-safe. Use them only in AlphaBlend passes.
-- HUD layout: room card top-left (name, clue bar, case total), Menu top-right, Final Solve
-  above Solve bottom-right, prompts/toasts as parchment notes bottom-center.
+- HUD layout: room card top-left (name, clue bar, case total); top-right column Menu, Solve,
+  Final Solve (moved up from bottom-right - in the isometric rooms the floor and objects fill
+  the lower half, and the old stack hid the entrance's guest registry); prompts/toasts as
+  parchment notes bottom-center. Keep HUD chrome out of the lower half of the screen.
+- **Board flow** (playtest 7): tap a word-bank chip = select it (inspector shows it, the
+  gaps that take it pulse gold); tap it AGAIN, tap a glowing gap, or the big "Place in
+  sentence" button at the foot of the inspector = place it (`PlaceSelectedClue`: one chip,
+  one gap; deselects). A gap tapped first stays armed - the next matching chip goes straight
+  in. Clear + Submit live on the LEFT page under the sentence; Submit is dim until every gap
+  is filled, then glows.
 
 ### Text & font rules
 - `Shared/dialogue_font.spritefont` covers **ASCII 32–126 only** (`DefaultCharacter` is `?` as a crash
@@ -664,7 +672,9 @@ no device detection; hints switch to "Tap ..." wording when the last input was t
   the cat can REACH). Tap a person/object = select it (gold pulsing outline + "Tap again to talk
   to X" prompt) and walk into reach; nothing opens. Tap a door arrow/zone = select the door (arrow
   pulses gold) and walk into the doorway; nothing loads. Tapping the selected thing again acts -
-  at once if in reach, else on arrival. Movement keys cancel the path and selection.
+  at once if in reach, else on arrival. Tapping the bottom prompt note ("Tap again to inspect
+  X", "Tap the door to go through") counts as that second tap - players reach for the prompt
+  first (`ActOnBottomPrompt`). Movement keys cancel the path and selection.
 - Tap targets: sprites grown to >= 72 px, door arrows to >= 96 px; characters beat objects on
   overlap. A walk-behind prop that is opaque at the tap pixel (per-prop quarter-res opacity mask,
   GPU-built at LoadRoom) blocks objects behind it until it fades - the hidden speaker, registry,

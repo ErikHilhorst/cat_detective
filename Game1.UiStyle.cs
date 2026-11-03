@@ -286,13 +286,22 @@ namespace CatDetective
         /// A short parchment note, centred horizontally with its bottom at
         /// <paramref name="bottomY"/>: the bottom prompt ("Tap again to...") and toasts.
         /// </summary>
+        private const int NOTE_PILL_PAD_X = 28, NOTE_PILL_PAD_Y = 12;
+
+        /// <summary>Screen rect of a note pill (shared by drawing and tap hit-tests).</summary>
+        private Rectangle NotePillRect(string text, float bottomY, float scale = 0.62f)
+        {
+            var sz = _dialogueFont.MeasureString(text) * scale;
+            const int padX = NOTE_PILL_PAD_X, padY = NOTE_PILL_PAD_Y;
+            return new Rectangle((int)((SCREEN_WIDTH - sz.X) * 0.5f) - padX,
+                                 (int)(bottomY - sz.Y) - padY * 2,
+                                 (int)sz.X + padX * 2, (int)sz.Y + padY * 2);
+        }
+
         private void DrawNotePill(string text, float bottomY, float alpha = 1f, float scale = 0.62f)
         {
-            var sz   = _dialogueFont.MeasureString(text) * scale;
-            const int padX = 28, padY = 12;
-            var r = new Rectangle((int)((SCREEN_WIDTH - sz.X) * 0.5f) - padX,
-                                  (int)(bottomY - sz.Y) - padY * 2,
-                                  (int)sz.X + padX * 2, (int)sz.Y + padY * 2);
+            const int padX = NOTE_PILL_PAD_X, padY = NOTE_PILL_PAD_Y;
+            var r = NotePillRect(text, bottomY, scale);
             DrawParchment(r, alpha, edge: 16);
             _spriteBatch.DrawString(_dialogueFont, text,
                 new Vector2(r.X + padX, r.Y + padY + 1), UiInk * alpha,

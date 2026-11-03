@@ -455,6 +455,47 @@ namespace CatDetective
 
         // ── Hints ─────────────────────────────────────────────────────────────
 
+        private float BOTTOM_PROMPT_Y => SCREEN_HEIGHT - 28;
+
+        /// <summary>
+        /// Bottom-center prompt: the tap selection's "tap again" line, else the
+        /// doorway prompt for the zone the cat stands in, else null.
+        /// </summary>
+        private string? BottomPromptText()
+        {
+            string? hint = TapSelectionHint();
+            if (hint == null && _activeTransferZone != null)
+                hint = _pointer.LastWasTouch ? "Tap the door to go through"
+                                             : "[ Enter ] to enter";
+            return hint;
+        }
+
+        /// <summary>Hit rect of the bottom prompt (grown for fingers), or null if none shows.</summary>
+        private Rectangle? BottomPromptRect()
+        {
+            string? text = BottomPromptText();
+            if (text == null) return null;
+            var r = NotePillRect(text, BOTTOM_PROMPT_Y);
+            r.Inflate(12, 12);
+            return r;
+        }
+
+        /// <summary>A tap on the bottom prompt = the second tap on whatever it names.</summary>
+        private void ActOnBottomPrompt()
+        {
+            if (_tapEntity != null || _tapDoor != null)
+            {
+                _tapActOnArrival = true;          // same as tapping the selection again
+                return;
+            }
+            if (_activeTransferZone != null)
+            {
+                ClearTapState();
+                _tapDoor         = _activeTransferZone;
+                _tapActOnArrival = true;          // cat is already in the zone: goes now
+            }
+        }
+
         /// <summary>Bottom-center prompt while something is tap-selected, else null.</summary>
         private string? TapSelectionHint()
         {
