@@ -32,15 +32,25 @@
 <body>
 
     <!-- Blazor mounts App.razor here; the game canvas is rendered by Index.razor -->
-    <div id="app">
+    <div id="app"></div>
+
+    <!-- Boot overlay. Lives OUTSIDE #app (Blazor replaces #app's children on
+         mount) and stays up until the game has drawn its first frame
+         (gameLoaderHide, called from Game1.Draw). -->
+    <div id="boot-overlay">
         <div id="blazor-loader">
             <div id="blazor-loader-title">Dikkie Detective</div>
-            <div id="blazor-loader-label">Downloading... may take a minute</div>
+            <div id="blazor-loader-label">Starting...</div>
             <div id="blazor-loader-bar-bg">
                 <div id="blazor-loader-bar-fill"></div>
             </div>
         </div>
     </div>
+
+    <!-- Texture streaming: starts downloading + decoding the game art right
+         away, in parallel with the .NET runtime (js/gametex*.js). -->
+    <script src="js/gametex.js"></script>
+    <script src="js/bootinfo.js" onerror="window.BOOT_TOTAL_BYTES = 0"></script>
 
     <!-- Brotli decoder for compressed .xnb content: KNI's XHR bridge
          (nkXHR.DecompressBrotliStream) decompresses on the JS side, straight
@@ -101,11 +111,20 @@
             var canvas = document.getElementById('theCanvas');
 
             // The canvas always fills the window/iframe; the game letterboxes
-            // its virtual canvas into it (WasmScale).
+            // its virtual canvas into it (WasmScale). The backing store uses the
+            // device pixel ratio (capped at 2x for phone fill-rate) - at 1x a
+            // phone would get a ~844 px canvas that the browser then blows up
+            // 3x, which is what made mobile look grainy/soft. Pointer events
+            // stay in CSS px; WasmScale.ToGame multiplies by gamePixelRatio.
             function resizeCanvas() {
-                canvas.width = Math.max(1, window.innerWidth);
-                canvas.height = Math.max(1, window.innerHeight);
+                var dpr = Math.min(window.devicePixelRatio || 1, 2);
+                var w = Math.max(1, Math.round(window.innerWidth * dpr));
+                var h = Math.max(1, Math.round(window.innerHeight * dpr));
+                if (canvas.width !== w) canvas.width = w;
+                if (canvas.height !== h) canvas.height = h;
+                window.gamePixelRatio = w / Math.max(1, window.innerWidth);
             }
+            window.gameGetPixelRatio = () => window.gamePixelRatio || 1;
             window.addEventListener('resize', resizeCanvas);
             resizeCanvas();
 
@@ -139,48 +158,92 @@
 
     <script src="_framework/blazor.webassembly.js" autostart="false"></script>
     <script>
-        // Manual boot with a byte-counting progress bar.
+        // Manual boot. Phase 1 (bar 0-80%): the .NET runtime - fetched as
+        // pre-gzipped .gz files (tools/build_web_assets.py) and inflated by the
+        // browser's native DecompressionStream; itch.io serves files without
+        // compression, so this cuts the download from ~27 MB to ~10 MB.
+        // Phase 2 (80-100%): the texture worker decoding the menu art. The
+        // overlay stays until the game draws its first frame (gameLoaderHide).
         (function () {
-            var totalBytes = 0;
-            var loadedBytes = 0;
+            var loadedBytes = 0, seenBytes = 0, phase = 1, shown = 0;
+            var fill = document.getElementById('blazor-loader-bar-fill');
+            var label = document.getElementById('blazor-loader-label');
 
-            function setProgress(pct) {
-                var fill = document.getElementById('blazor-loader-bar-fill');
-                var label = document.getElementById('blazor-loader-label');
-                if (fill) fill.style.width = Math.min(100, pct).toFixed(1) + '%';
-                if (label) label.textContent = 'Downloading... ' + Math.round(Math.min(100, pct)) + '%';
+            function setBar(pct, text) {
+                shown = Math.max(shown, Math.min(100, pct));       // never runs backwards
+                if (fill) fill.style.width = shown.toFixed(1) + '%';
+                if (label) label.textContent = text;
+            }
+            function downloadProgress() {
+                var total = Math.max(window.BOOT_TOTAL_BYTES || 0, seenBytes, 1);
+                var f = Math.min(1, loadedBytes / total);
+                setBar(f * 80, 'Downloading the game... ' + Math.round(f * 100) + '%');
+            }
+
+            var GZ = /\.(wasm|dat|dll)$/;
+            var canInflate = typeof DecompressionStream !== 'undefined';
+
+            function fetchCounted(url) {
+                return fetch(url).then(function (response) {
+                    if (!response.ok) throw new Error('HTTP ' + response.status + ' ' + url);
+                    var len = parseInt(response.headers.get('Content-Length') || '0', 10);
+                    if (len > 0) seenBytes += len;
+                    var reader = response.body.getReader();
+                    var chunks = [];
+                    function pump() {
+                        return reader.read().then(function (r) {
+                            if (r.done) return new Blob(chunks);
+                            chunks.push(r.value);
+                            loadedBytes += r.value.byteLength;
+                            downloadProgress();
+                            return pump();
+                        });
+                    }
+                    return pump();
+                });
+            }
+
+            function inflateIfGzip(blob) {
+                // The CDN may already have decoded it (Content-Encoding: gzip):
+                // only inflate when the bytes still start with the gzip magic.
+                return blob.slice(0, 2).arrayBuffer().then(function (head) {
+                    var h = new Uint8Array(head);
+                    if (h.length < 2 || h[0] !== 0x1f || h[1] !== 0x8b) return blob;
+                    return new Response(blob.stream().pipeThrough(new DecompressionStream('gzip'))).blob();
+                });
             }
 
             Blazor.start({
                 loadBootResource: function (type, name, defaultUri, integrity) {
                     if (type === 'dotnetjs') return defaultUri;
-                    return fetch(defaultUri, { cache: 'no-cache' })
-                        .then(function (response) {
-                            if (!response.ok) throw new Error('Fetch failed: ' + response.status + ' ' + defaultUri);
-                            var contentLength = parseInt(response.headers.get('Content-Length') || '0', 10);
-                            if (contentLength > 0) totalBytes += contentLength;
-                            var contentType = response.headers.get('Content-Type') || 'application/octet-stream';
-                            var reader = response.body.getReader();
-                            var chunks = [];
-                            function pump() {
-                                return reader.read().then(function (result) {
-                                    if (result.done) {
-                                        if (totalBytes > 0) setProgress(loadedBytes / totalBytes * 100);
-                                        return new Response(new Blob(chunks, { type: contentType }));
-                                    }
-                                    chunks.push(result.value);
-                                    loadedBytes += result.value.byteLength;
-                                    if (totalBytes > 0) setProgress(loadedBytes / totalBytes * 100);
-                                    return pump();
-                                });
-                            }
-                            return pump();
-                        });
+                    var mime = /\.wasm$/.test(name) ? 'application/wasm'
+                             : /\.json$/.test(name) ? 'application/json' : 'application/octet-stream';
+                    var p = (canInflate && GZ.test(name))
+                        ? fetchCounted(defaultUri + '.gz').then(inflateIfGzip, function () { return fetchCounted(defaultUri); })
+                        : fetchCounted(defaultUri);
+                    return p.then(function (blob) {
+                        return new Response(blob, { headers: { 'Content-Type': mime } });
+                    });
                 }
             }).then(function () {
-                var loader = document.getElementById('blazor-loader');
-                if (loader) loader.style.display = 'none';
+                phase = 2;
+                // Phase 2: the game boots as soon as its menu art is decoded.
+                var timer = setInterval(function () {
+                    if (phase !== 2) { clearInterval(timer); return; }
+                    var tex = window.gameTex;
+                    var rc = tex && tex.state() === 'active' ? tex.readyCount('Shared/').split(',') : null;
+                    var f = rc && +rc[1] > 0 ? (+rc[0]) / (+rc[1]) : 1;
+                    setBar(80 + 20 * f, 'Unpacking the casebook...');
+                }, 150);
+            }, function (err) {
+                setBar(shown, 'Could not start the game: ' + err);
             });
+
+            window.gameLoaderHide = function () {
+                phase = 3;
+                var o = document.getElementById('boot-overlay');
+                if (o) o.style.display = 'none';
+            };
         })();
     </script>
 </body>

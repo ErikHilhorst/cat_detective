@@ -257,7 +257,7 @@ namespace CatDetective
         // ── Game state / scene selection ───────────────────────────────────────
         // MainMenu is the boot state; DevMenu (the scene picker) stays reachable
         // from it via F12 as a dev tool.
-        private enum GameState { MainMenu, Settings, CaseIntro, Playing, EndScene, DevMenu, Cutscene }
+        private enum GameState { MainMenu, Settings, CaseIntro, Playing, EndScene, DevMenu, Cutscene, Loading }
         private GameState    _currentState    = GameState.MainMenu;
         private List<string> _availableScenes = new();
 
@@ -270,6 +270,11 @@ namespace CatDetective
             { "Continue", "New Game", "Tutorial", "Settings", "Quit" };
 #endif
         private int         _menuIndex           = 1;   // default: NEW GAME
+#if BLAZORGL
+        // Half-size chain for the final web blit (see the end of Draw).
+        private readonly RenderTarget2D?[] _downsampleRTs = new RenderTarget2D?[3];
+        private bool _webLoaderHidden;
+#endif
         // Title splash (boot only): sleeping Dikkie + logo until any key/click,
         // then _menuRevealT eases 0 -> 1 while the menu panel slides in.
         private bool        _titleSplash         = true;
@@ -342,6 +347,10 @@ namespace CatDetective
             // KNI enforces the Reach 2048px texture cap that desktop MonoGame
             // never did - the 2100px cat walk sheets need HiDef (4096 max).
             _graphics.GraphicsProfile = GraphicsProfile.HiDef;
+#endif
+#if BLAZORGL
+            // Textures stream in through the page's worker (Systems/WebTextures.cs).
+            Content = new WebContentManager(Services, "Content");
 #endif
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -417,6 +426,21 @@ namespace CatDetective
             // NEW GAME's entry room leads). Pumped one asset per safe frame
             // from Update(); by the time the menu/intro has been read, the
             // first room is warm and LoadRoom is near-instant.
+#if BLAZORGL
+            // Web: the texture worker streams everything in the background;
+            // put what the player will most likely open first at the front.
+            if (WebTextures.Active)
+            {
+                var first = new List<string>();
+                if (_saveExists && SaveSystem.LoadGame() is { } webSave)
+                    first.AddRange(CaseStartAssets(webSave.CaseId, webSave.RoomId));
+                else if (!_settings.TutorialSeen)
+                    first.AddRange(CaseStartAssets("tutorial", null));
+                first.AddRange(CaseStartAssets("malibu_mansion", null));
+                WebTextures.Prioritize(first);
+            }
+            else
+#endif
             if (!_screenshotMode)
             {
                 _preloader = new RoomPreloader(Content);
@@ -943,7 +967,12 @@ namespace CatDetective
         /// Opens the poster-and-typewriter intro for a case, falling straight
         /// through to the case itself when it has no authored intro.
         /// </summary>
-        private void StartCaseIntro(string caseId)
+        /// <summary>Gate: the case's cutscene + first-room art must be in memory (web).</summary>
+        private void StartCaseIntro(string caseId) =>
+            WhenAssetsReady(() => CaseStartAssets(caseId, null),
+                "Opening a new case file...", () => StartCaseIntroNow(caseId));
+
+        private void StartCaseIntroNow(string caseId)
         {
             string configPath = Path.Combine(
                 Content.RootDirectory, "Levels", caseId, "case_config.json");
@@ -985,7 +1014,8 @@ namespace CatDetective
                 case "CONTINUE":
                     var save = SaveSystem.LoadGame();
                     if (save != null)
-                        RestoreFromSave(save);
+                        WhenAssetsReady(() => CaseStartAssets(save.CaseId, save.RoomId),
+                            "Finding your place in the casebook...", () => RestoreFromSave(save));
                     else
                     {
                         _saveExists = false;
@@ -1039,6 +1069,14 @@ namespace CatDetective
             {
                 case "settings": _titleSplash = false; _menuRevealT = 1f; _currentState = GameState.Settings; break;
                 case "title":    _currentState = GameState.MainMenu; break;   // boot splash
+                case "loading":   // the web loading screen, frozen mid-way (layout check)
+                    _loadingLabel       = "Opening a new case file...";
+                    _loadingDone        = 7;
+                    _loadingTotal       = 12;
+                    _loadingShown       = 1f;
+                    _loadingReturnState = GameState.Loading;   // UpdateLoading keeps it up
+                    _currentState       = GameState.Loading;
+                    break;
                 case "menu":
                     _titleSplash  = false;
                     _menuRevealT  = 1f;
@@ -1390,6 +1428,14 @@ namespace CatDetective
             }
 #endif
 
+            if (_currentState == GameState.Loading)
+            {
+                UpdateLoading((float)gameTime.ElapsedGameTime.TotalSeconds);
+                _prevMouseState = mouseState;
+                base.Update(gameTime);
+                return;
+            }
+
             if (_currentState == GameState.MainMenu)
             {
 #if !BLAZORGL
@@ -1409,9 +1455,10 @@ namespace CatDetective
                 }
                 else if (_menuRevealT < 1f)
                 {
-                    // Panel still sliding in: swallow input so the dismissing
-                    // click can never land on a button.
-                    _menuRevealT = Math.Min(1f, _menuRevealT +
+                    // Panel still sliding in: a new tap/key just finishes the
+                    // slide (never activates a button - so the dismissing click
+                    // can't land on one, and an impatient tap isn't ignored).
+                    _menuRevealT = (anyKeyPressed || clicked) ? 1f : Math.Min(1f, _menuRevealT +
                         (float)gameTime.ElapsedGameTime.TotalSeconds / MENU_REVEAL_SECONDS);
                 }
                 else
@@ -1991,8 +2038,13 @@ namespace CatDetective
                         }
                         else
                         {
-                            LoadRoom(doorToUse.TargetRoom, doorToUse.TargetSpawn);
-                            AutoSave();
+                            var door = doorToUse;
+                            WhenAssetsReady(() => RoomAssets(door.TargetRoom),
+                                "Dikkie pads into the next room...", () =>
+                                {
+                                    LoadRoom(door.TargetRoom, door.TargetSpawn);
+                                    AutoSave();
+                                });
                             return; // state was rebuilt; skip rest of this Update
                         }
                     }
@@ -2092,6 +2144,14 @@ namespace CatDetective
             // (dialogue/board open) or simply not holding a movement key. This
             // frame's input was already processed above, so the stall only
             // delays the next frame of a screen that isn't animating movement.
+            {
+                bool movingKey = kbState.IsKeyDown(Keys.W) || kbState.IsKeyDown(Keys.A) ||
+                                 kbState.IsKeyDown(Keys.S) || kbState.IsKeyDown(Keys.D) ||
+                                 kbState.IsKeyDown(Keys.Up)   || kbState.IsKeyDown(Keys.Down) ||
+                                 kbState.IsKeyDown(Keys.Left) || kbState.IsKeyDown(Keys.Right);
+                PumpBackgroundTextures(_currentState != GameState.Playing ||
+                                       _isDialogueActive || _isDeductionBoardOpen || !movingKey);
+            }
             if (_preloader != null && _preloader.HasWork)
             {
                 bool moving = kbState.IsKeyDown(Keys.W) || kbState.IsKeyDown(Keys.A) ||
@@ -2118,6 +2178,7 @@ namespace CatDetective
             // (the viewport follows the bound target).
             WasmScale.WindowWidth  = GraphicsDevice.Viewport.Width;
             WasmScale.WindowHeight = GraphicsDevice.Viewport.Height;
+            WasmScale.RefreshPixelRatio();
 #endif
             GraphicsDevice.SetRenderTarget(_renderTarget);
 
@@ -2153,6 +2214,10 @@ namespace CatDetective
             else if (_currentState == GameState.MainMenu)
             {
                 DrawMainMenu();
+            }
+            else if (_currentState == GameState.Loading)
+            {
+                DrawLoadingScreen();
             }
             else if (_currentState == GameState.Settings)
             {
@@ -3046,16 +3111,42 @@ namespace CatDetective
                 _crt.Draw(_spriteBatch, SCREEN_WIDTH, SCREEN_HEIGHT);
 
             // ── Blit render target to the OS window at display scale ─────────
+#if BLAZORGL
+            // Letterbox into the browser canvas, whatever size it currently is.
+            // A single bilinear draw that shrinks the frame by more than ~1.6x
+            // skips texels (grainy, sparkly linework on small screens), so first
+            // halve it in exact 2x steps - each one averages 2x2 texels.
+            var       blitDest = WasmScale.LetterboxRect();
+            Texture2D blitSrc  = _renderTarget;
+            for (int step = 0; step < _downsampleRTs.Length && blitDest.Width * 1.6f < blitSrc.Width; step++)
+            {
+                int hw = Math.Max(1, blitSrc.Width / 2), hh = Math.Max(1, blitSrc.Height / 2);
+                var half = _downsampleRTs[step];
+                if (half == null || half.Width != hw || half.Height != hh)
+                {
+                    half?.Dispose();
+                    half = _downsampleRTs[step] = new RenderTarget2D(GraphicsDevice, hw, hh);
+                }
+                GraphicsDevice.SetRenderTarget(half);
+                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.LinearClamp);
+                _spriteBatch.Draw(blitSrc, new Rectangle(0, 0, hw, hh), Color.White);
+                _spriteBatch.End();
+                blitSrc = half;
+            }
+
+            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.Clear(Color.Black);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque,
+                SamplerState.LinearClamp);
+            _spriteBatch.Draw(blitSrc, blitDest, Color.White);
+            _spriteBatch.End();
+
+            // First real frame is on screen: retire the HTML loader.
+            if (!_webLoaderHidden) { _webLoaderHidden = true; WebTextures.HideLoader(); }
+#else
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);
 
-#if BLAZORGL
-            // Letterbox into the browser canvas, whatever size it currently is.
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque,
-                SamplerState.LinearClamp);
-            _spriteBatch.Draw(_renderTarget, WasmScale.LetterboxRect(), Color.White);
-            _spriteBatch.End();
-#else
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
             _spriteBatch.Draw(
                 _renderTarget,

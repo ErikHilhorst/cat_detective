@@ -62,7 +62,7 @@ namespace CatDetective
         /// sleeping Dikkie, "z"s, logo, and (as the reveal runs) the parchment
         /// panel. Leaves an AlphaBlend batch OPEN for the panel's content.
         /// </summary>
-        private void BeginMenuScene()
+        private void BeginMenuScene(bool showPrompt = true)
         {
             GraphicsDevice.Clear(new Color(40, 28, 20));
             float e = MenuReveal;
@@ -135,7 +135,7 @@ namespace CatDetective
             }
 
             // Splash prompt, fading out as the menu comes in.
-            if (e < 1f)
+            if (e < 1f && showPrompt)
             {
                 string prompt = _pointer.LastWasTouch ? "Tap to wake Dikkie" : "Click or press any key";
                 float  pulse  = 0.92f + 0.08f * MathF.Sin(t * 3f);

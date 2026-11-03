@@ -66,6 +66,26 @@ namespace CatDetective.Systems
         public static int GameW = 1456;
         public static int GameH = 816;
 
+        // Canvas backing pixels per CSS pixel (index.html sizes the canvas at
+        // devicePixelRatio, capped at 2). KNI reports pointer coordinates in
+        // CSS pixels, so ToGame scales them up by this first.
+        public static float PixelRatio = 1f;
+        private static IJSInProcessRuntime? _js;
+
+        public static void Initialize(IJSRuntime runtime) =>
+            _js = runtime as IJSInProcessRuntime;
+
+        /// <summary>Re-reads the pixel ratio (call once per frame; cheap in-process interop).</summary>
+        public static void RefreshPixelRatio()
+        {
+            try
+            {
+                float r = _js?.Invoke<float>("gameGetPixelRatio") ?? 1f;
+                PixelRatio = r > 0.1f ? r : 1f;
+            }
+            catch { PixelRatio = 1f; }
+        }
+
         private static float Scale =>
             Math.Min(WindowWidth / (float)GameW, WindowHeight / (float)GameH);
 
@@ -83,10 +103,11 @@ namespace CatDetective.Systems
         {
             if (WindowWidth <= 0 || WindowHeight <= 0)
                 return new Point(rawX, rawY);
+            float px = rawX * PixelRatio, py = rawY * PixelRatio;   // CSS px -> canvas px
             float scale = Scale;
             float ox = (WindowWidth  - GameW * scale) / 2f;
             float oy = (WindowHeight - GameH * scale) / 2f;
-            return new Point((int)((rawX - ox) / scale), (int)((rawY - oy) / scale));
+            return new Point((int)((px - ox) / scale), (int)((py - oy) / scale));
         }
     }
 }

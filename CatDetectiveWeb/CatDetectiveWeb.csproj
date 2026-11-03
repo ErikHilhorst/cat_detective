@@ -11,10 +11,44 @@
     <DefineConstants>$(DefineConstants);BLAZORGL</DefineConstants>
     <KniPlatform>BlazorGL</KniPlatform>
     <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
-    <!-- System.Text.Json deserializes the config classes via reflection; IL trimming
-         strips the property metadata it needs. Bigger download, working game. -->
-    <PublishTrimmed>false</PublishTrimmed>
+    <!-- IL trimming ON for the .NET libraries only (~27 MB -> much less to
+         download). The game assembly and every KNI/nkast assembly are kept
+         whole (TrimmerRootAssembly below): System.Text.Json deserializes the
+         config classes by reflection, and KNI wires its platform by reflection. -->
+    <PublishTrimmed>true</PublishTrimmed>
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+    <!-- JSImport (Systems/WebTextures.cs) copies decoded pixels via Span<byte>. -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- Browser-only app: CA1416 ("only supported on browser") is noise here. -->
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+    <!-- All text is ASCII; skips the ~1 MB ICU culture data download. -->
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- publish/ lives inside the project folder: without this the SDK globs the
+         previous publish output in as content and nests it (publish/publish/...). -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);publish\**;itch\**</DefaultItemExcludes>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Kept whole by the trimmer (see PublishTrimmed). -->
+    <TrimmerRootAssembly Include="CatDetectiveWeb" />
+    <TrimmerRootAssembly Include="Kni.Platform" />
+    <TrimmerRootAssembly Include="Xna.Framework" />
+    <TrimmerRootAssembly Include="Xna.Framework.Audio" />
+    <TrimmerRootAssembly Include="Xna.Framework.Content" />
+    <TrimmerRootAssembly Include="Xna.Framework.Devices" />
+    <TrimmerRootAssembly Include="Xna.Framework.Game" />
+    <TrimmerRootAssembly Include="Xna.Framework.Graphics" />
+    <TrimmerRootAssembly Include="Xna.Framework.Input" />
+    <TrimmerRootAssembly Include="Xna.Framework.Media" />
+    <TrimmerRootAssembly Include="Xna.Framework.Storage" />
+    <TrimmerRootAssembly Include="Xna.Framework.XR" />
+    <TrimmerRootAssembly Include="nkast.Wasm.Audio" />
+    <TrimmerRootAssembly Include="nkast.Wasm.Canvas" />
+    <TrimmerRootAssembly Include="nkast.Wasm.Dom" />
+    <TrimmerRootAssembly Include="nkast.Wasm.JSInterop" />
+    <TrimmerRootAssembly Include="nkast.Wasm.XHR" />
+    <TrimmerRootAssembly Include="nkast.Wasm.XR" />
+  </ItemGroup>
 
   <ItemGroup>
     <!-- ILLink descriptor: preserve all KNI/XNA types (LogicalName is the
@@ -77,6 +111,20 @@
   <!-- itch.io's static host refuses paths starting with an underscore, so the
        published output is patched: folders renamed, references rewritten,
        integrity hashes cleared, stale pre-compressed variants deleted. -->
+  <!-- Wipe the publish folder before every publish, so it only ever holds the
+       current build (no stale files, no old zips). Guarded: only a folder INSIDE
+       this project that is not the project folder itself is ever removed. -->
+  <Target Name="CleanPublishDir" BeforeTargets="PrepareForPublish">
+    <PropertyGroup>
+      <_PubFull>$([System.IO.Path]::GetFullPath('$(PublishDir)').TrimEnd(''))</_PubFull>
+      <_ProjFull>$(MSBuildProjectDirectory.TrimEnd(''))</_ProjFull>
+    </PropertyGroup>
+    <RemoveDir Directories="$(_PubFull)"
+               Condition="'$(PublishDir)' != '' and $(_PubFull.StartsWith('$(_ProjFull)')) and Exists('$(_PubFull)')" />
+    <Message Text="Cleaned old publish output: $(_PubFull)" Importance="high"
+             Condition="'$(PublishDir)' != '' and $(_PubFull.StartsWith('$(_ProjFull)'))" />
+  </Target>
+
   <Target Name="ItchIoFix" AfterTargets="Publish">
     <PropertyGroup>
       <Wroot>$(PublishDir)wwwroot\</Wroot>
@@ -100,6 +148,23 @@
     <!-- 4. Delete stale pre-compressed variants: itch's CDN would serve the
          unpatched .br/.gz copies and silently ignore fixes 1-3. -->
     <Exec Command="powershell -Command &quot;Get-ChildItem -Path '$(Wroot)' -Recurse -Include *.br,*.gz | Remove-Item -Force; Write-Host 'Deleted pre-compressed .br/.gz variants'&quot;" />
+
+    <!-- 4b. Small jpg/webp texture copies + manifest for the streaming worker,
+         gzipped framework files for the boot loader, and the progress total
+         (tools/build_web_assets.py; needs Python 3 + Pillow + numpy). If it
+         fails the build still works - textures fall back to the slow .xnb path. -->
+    <Exec Command="python &quot;$(MSBuildProjectDirectory)\..\tools\build_web_assets.py&quot; &quot;$(Wroot).&quot;"
+          ContinueOnError="true" />
+
+    <!-- 5. The upload: zip the CONTENTS of wwwroot (index.html at the zip root)
+         to itch/dikkie-detective-web.zip. ZipDirectory writes forward-slash
+         entry paths (PowerShell 5's Compress-Archive writes backslashes, which
+         break on itch's Linux servers). -->
+    <MakeDir Directories="$(MSBuildProjectDirectory)\itch" />
+    <ZipDirectory SourceDirectory="$(Wroot)"
+                  DestinationFile="$(MSBuildProjectDirectory)\itch\dikkie-detective-web.zip"
+                  Overwrite="true" />
+    <Message Text="itch.io upload ready: $(MSBuildProjectDirectory)\itch\dikkie-detective-web.zip" Importance="high" />
   </Target>
 
 </Project>

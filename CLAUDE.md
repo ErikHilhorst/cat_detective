@@ -156,14 +156,11 @@ Systems/ (shell)
   NavGrid.cs              — Tap-to-walk grid (8 px cells, cat's widest feet box + 1 px),
                             time-weighted A* (vertical steps cost 2x), line-of-sight smoothing,
                             nearest-REACHABLE fallback for blocked taps
-  RoomPreloader.cs        — Background asset warmer: queues every room's textures at boot
-                            (saved room first, then cases in scene order) and loads ONE per
-                            frame from Update(), only on frames where a blocking load can't
-                            be felt (non-Playing states, dialogue/board open, or no movement
-                            key held). Exists for the web build, where each Content.Load is
-                            a synchronous XHR + Brotli decode (~10 s per cold room);
-                            LoadRoom itself is unchanged - the shared ContentManager caches
-                            by asset path, so a warmed room loads as pure cache hits.
+  RoomPreloader.cs        — DESKTOP-only background asset warmer (one Content.Load per safe
+                            frame). The web build no longer uses it - see "Web loading".
+  WebTextures.cs          — (web) JSImport bridge to the texture worker + WebContentManager
+                            (serves Texture2D loads from worker-decoded RGBA, .xnb fallback)
+Game1.Loading.cs          — WhenAssetsReady gates + GameState.Loading screen + BootTextures
 
 Map/
   MapParser.cs            — Reads Tiled room_map.json: Collisions, Triggers, Transfers, Spawn, Interactables
@@ -793,6 +790,12 @@ branches on `#if BLAZORGL` (defined only by the web csproj):
   `wwwroot/index.html`), started on the first user gesture (autoplay policy).
 - The browser owns the canvas size: `SetCanvas` only resizes the render target,
   `Draw` letterbox-blits via `WasmScale`, and mouse coords are inverse-mapped.
+- **Sharpness on phones/tablets**: the canvas backing store is sized at
+  `devicePixelRatio` (capped at 2, `resizeCanvas` in index.html); KNI reports pointers in
+  CSS px, so `WasmScale.ToGame` multiplies by `WasmScale.PixelRatio` (read per frame via
+  `gameGetPixelRatio`). When the letterbox still shrinks the frame by >1.6x, `Draw`
+  pre-halves it through `_downsampleRTs` (exact 2x bilinear = 2x2 box average) - a
+  single big bilinear minify skips texels and looks grainy.
 - Screenshot mode, hot-reload, QUIT/Exit are compiled out on web.
 - `GraphicsProfile.HiDef` is forced on web: KNI enforces the Reach 2048px
   texture cap (the 2100px cat walk sheets crash under Reach; desktop MonoGame
@@ -806,6 +809,42 @@ branches on `#if BLAZORGL` (defined only by the web csproj):
   (`PointerInput`). Web music starts on pointer release (touchend is a user
   activation, touchstart is not).
 
+### Web loading (the reason the web build is playable - keep it this way)
+Measured with a headless-Chrome phone probe (844x390 @3x, CPU 4x slower): the old build
+froze the page for ~2.5 MINUTES after boot (RoomPreloader doing blocking XHR + JS-Brotli
+decodes on the main thread - taps lost, NEW GAME "did nothing"). Now nothing loads on the
+main thread:
+- **Textures stream through a Web Worker** (`wwwroot/js/gametex.js` + `gametex-worker.js`):
+  `tools/build_web_assets.py` (run by publish) re-encodes every TextureImporter entry of
+  Content.Web.mgcb to `Content/<asset>.jpg` (opaque) / `.webp` (alpha) + `textures.json`
+  (54 MB xnb -> ~8.6 MB). The worker downloads in priority order (only `Shared/` until the
+  runtime is up, so slow connections give the runtime full bandwidth), decodes with
+  createImageBitmap + OffscreenCanvas, and posts RGBA. `WebContentManager` (Content on web)
+  builds Texture2Ds from it; `Pump()` drains decoded textures in small time slices.
+  Missing manifest / no OffscreenCanvas (Safari < 16.4) -> plain .xnb loads (slow, works).
+- **Gates, not blocking**: every entry point that needs art goes through
+  `WhenAssetsReady(assets, label, action)` (Game1.Loading.cs): `StartCaseIntro` (NEW GAME,
+  TUTORIAL, tutorial hand-off; assets = case_script bgs + cast + first room), CONTINUE
+  (save room) and door transfers. Ready -> runs at once; else GameState.Loading shows the
+  study scene + parchment progress card (`--screenshot ui loading`). Add new entry points
+  through it, never a bare LoadRoom/LoadCase from a menu.
+- **Boot**: Index.razor.cs waits for `Game1.BootTextures` (exactly what LoadContent loads)
+  before constructing Game1; the HTML overlay (`#boot-overlay`, OUTSIDE `#app` - Blazor
+  replaces #app on mount) shows download % (real total from `js/bootinfo.js`) then
+  "Unpacking the casebook...", and is hidden by Game1.Draw's first frame (`gameLoaderHide`).
+- **Runtime size**: `PublishTrimmed=true` with the game + every KNI/nkast assembly as
+  `TrimmerRootAssembly` (reflection: System.Text.Json configs, KNI platform wiring) and
+  `InvariantGlobalization` -> 24 MB -> 7.5 MB; publish gzips framework *.wasm/.dat/.dll and
+  the boot loader inflates them with native DecompressionStream (itch serves no
+  compression) -> ~3.4 MB first download (was ~27 MB). A new assembly that is only reached
+  by reflection must be added as a TrimmerRootAssembly.
+- No `cache: 'no-cache'` on boot fetches - itch gives every upload a fresh URL, so normal
+  HTTP caching makes repeat visits near-instant.
+- Probe harness (not in repo): Chrome `--headless=new --remote-debugging-port`, a Node CDP
+  script with Emulation.setDeviceMetricsOverride / Network.emulateNetworkConditions /
+  setCPUThrottlingRate, Input.dispatchTouchEvent taps, periodic screenshots. A screenshot
+  that times out = main thread blocked.
+
 Content: `Content/Content.Web.mgcb` is a copy of `Content.mgcb` with
 `/platform:BlazorGL`, `/compress:True` + `/compression:Brotli` (decoded JS-side
 via `wwwroot/js/decode.min.js` - the `window.BrotliDecode` global is required,
@@ -817,8 +856,15 @@ Build / test / ship:
 ```bash
 dotnet publish CatDetectiveWeb/CatDetectiveWeb.csproj -c Release -o CatDetectiveWeb/publish
 python -m http.server 8321 --directory CatDetectiveWeb/publish/wwwroot   # local test
-# zip the CONTENTS of publish/wwwroot (index.html at zip root) -> upload to itch.io
+# publish needs Python 3 + Pillow (WebP) + numpy for tools/build_web_assets.py (cached in
+# CatDetectiveWeb/obj/web_assets_cache; if it fails the build falls back to .xnb loading)
+# -> upload CatDetectiveWeb/itch/dikkie-detective-web.zip to itch.io
 ```
+Every publish first WIPES `publish/` (`CleanPublishDir`, guarded to folders inside the
+project) and finally zips the contents of `publish/wwwroot` (index.html at the zip root,
+forward-slash paths via MSBuild `ZipDirectory`) to `CatDetectiveWeb/itch/`. `publish/**`
+and `itch/**` are in `DefaultItemExcludes` - without that the SDK globbed old output back
+in as content (`publish/publish/...`). Never put files of your own inside `publish/`.
 The `ItchIoFix` publish target renames `_framework`/`_content` (itch.io rejects
 underscore paths), rewrites references, clears integrity hashes, and deletes
 stale `.br`/`.gz` files. itch.io settings: HTML5 game, viewport 1456x816,

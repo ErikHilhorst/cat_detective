@@ -4,5 +4,6 @@ bin/
 obj/
 CatDetectiveWeb/wwwroot/Content/
 CatDetectiveWeb/publish/
+CatDetectiveWeb/itch/
 *.zip
 __pycache__/
