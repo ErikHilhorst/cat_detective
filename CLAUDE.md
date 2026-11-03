@@ -6,6 +6,9 @@ A 2.5D isometric detective adventure game where a cat solves human crimes.
 Cozy Studio Ghibli aesthetic, pre-rendered backgrounds, point-and-click/free-roam gameplay.
 Built in C# using **MonoGame (KNI fork)**, targeting **Web/WASM** as the final platform.
 
+**Game title: "Dikkie Detective"** (window title, web page title, main menu). The cat is Dikkie
+(D-I-K-K-I-E) - never "Dicky". The C# namespace / project names stay `CatDetective`.
+
 Current state: the case system is playable end-to-end AND the game has its shell: a main menu
 (CONTINUE / NEW GAME / TUTORIAL / SETTINGS / QUIT), a single-slot autosave, a settings screen
 (music volume + CRT filter toggle, persisted), a poster-and-typewriter case intro, a five-beat
@@ -41,7 +44,11 @@ final board - built entirely on the normal case systems (no special tutorial cod
 
 `Game1.GameState`: `MainMenu, Settings, CaseIntro, Playing, EndScene, DevMenu, Cutscene`. Boot = MainMenu.
 
-- **MainMenu**: W/S + Enter or mouse. CONTINUE only enabled while a save exists; NEW GAME over an
+- **MainMenu** (`Game1.MenuScreens.cs`): drawn as Dikkie's open casebook on the desk (the clean
+  `ui_notebook_score_card` spread, already loaded - no extra web loads): left page = ink title
+  "Dikkie / Detective", tagline, idle Dikkie sprite; right page = "Contents" with cozy-kit
+  buttons. Settings uses the same spread. Menu labels are display-cased; `ActivateMainMenuItem`
+  matches them upper-cased. W/S + Enter or mouse/tap. CONTINUE only enabled while a save exists; NEW GAME over an
   existing save asks for a second Enter ("overwrite" confirm); TUTORIAL starts the tutorial case;
   F12 opens the legacy DevMenu scene picker; Esc quits. Menus run at a fixed 1456x816 canvas
   (`SetCanvas`); rooms still resize the canvas per background.
@@ -111,6 +118,8 @@ Program.cs                — Entry point ([STAThread])
 Game1.cs                  — Main loop; render passes, dialogue UI, journal/deduction UI, HUD, screenshot mode
 Game1.Cutscene.cs         — Scripted scene player + gathering flow (partial class of Game1)
 Game1.TapControls.cs      — Tap/click controls: tap-to-walk, tap-to-select/act, dialogue taps, navtest
+Game1.UiStyle.cs          — Cozy UI kit: generated rounded buttons/chips, parchment panels, HUD card
+Game1.MenuScreens.cs      — Main menu + settings as the open casebook spread
 
 Entities/
   GameObject.cs           — Abstract base: Position (bottom-center), LayerDepth, CollisionBox
@@ -224,6 +233,22 @@ Neither bg has baked titles (the board art keeps only the inspector-panel paper)
 are in-engine ink text: the board's left page shows the room name over "What happened here?"
 (-> green "Solved!" once solved; final board = "The Final Solve" / "What really happened?"),
 the notes page draws "The Investigation" / "Deductions so far". Keep new titles in-engine.
+
+### UI kit - "cozy casebook" (`Game1.UiStyle.cs`)
+All UI chrome comes from one kit, matching the painted art; never draw flat `_debugPixel`
+rectangles for player-facing UI (that look was the placeholder era).
+- **Buttons** (`DrawUiButton(rect, fill, label, enabled, glow, selected)`) look like the tab
+  art: rounded pastel paper, brown ink outline, ink label, soft shadow; `\n` starts a smaller
+  status sub-line ("Final Solve\n3/7 rooms solved"). Fill from the palette only: `UiCream` idle,
+  `UiYellow` + `glow` = ready/selected, `UiGreen` done/confirm, `UiRed` finale/close, tab
+  colours for category actions. `enabled: false` fades to warm locked paper.
+- **Panels** (`DrawParchment`, `DrawRoomCard`, `DrawNotePill` for prompts + toasts) are a
+  nine-slice of `ui_dialogue_box.png` with a paw-free centre patch (`ParchCenter`).
+- **Chips/slots** on the board use `DrawChip` (same shape, lighter shadow).
+- Shapes are generated at LoadContent (`CreateUiTextures`, SetData, premultiplied) - no
+  asset files, WebGL-safe. Use them only in AlphaBlend passes.
+- HUD layout: room card top-left (name, clue bar, case total), Menu top-right, Final Solve
+  above Solve bottom-right, prompts/toasts as parchment notes bottom-center.
 
 ### Text & font rules
 - `Shared/dialogue_font.spritefont` covers **ASCII 32–126 only** (`DefaultCharacter` is `?` as a crash

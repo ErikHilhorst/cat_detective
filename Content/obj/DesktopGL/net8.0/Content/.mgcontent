@@ -38,6 +38,7 @@
     <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/bedroom/bg_base.jpg</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/bg_base.jpg</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/prop_table.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/cage.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/prop_north_couch.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/prop_south_couch.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/living_room/prop_sofa_chair.png</File>
@@ -103,6 +104,7 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File>Shared/case_poster.jpg</File>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

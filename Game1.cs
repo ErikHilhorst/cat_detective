@@ -12,7 +12,7 @@ using System.IO;
 namespace CatDetective
 {
     /// <summary>
-    /// Root game class for the Cat Detective prototype.
+    /// Root game class for Dikkie Detective.
     ///
     /// SCREEN RESOLUTION
     ///   2020 × 1136 — matches the art assets exactly so no scaling artefacts occur.
@@ -265,9 +265,9 @@ namespace CatDetective
         // Web build: a browser tab cannot close itself, so QUIT is dropped.
         private static readonly string[] _mainMenuLabels =
 #if BLAZORGL
-            { "CONTINUE", "NEW GAME", "TUTORIAL", "SETTINGS" };
+            { "Continue", "New Game", "Tutorial", "Settings" };
 #else
-            { "CONTINUE", "NEW GAME", "TUTORIAL", "SETTINGS", "QUIT" };
+            { "Continue", "New Game", "Tutorial", "Settings", "Quit" };
 #endif
         private int         _menuIndex           = 1;   // default: NEW GAME
         private Rectangle[] _mainMenuButtonRects = Array.Empty<Rectangle>();
@@ -362,6 +362,7 @@ namespace CatDetective
         // ══════════════════════════════════════════════════════════════════════
         protected override void Initialize()
         {
+            Window.Title = "Dikkie Detective";
             GameObject.SetScreenHeight(SCREEN_HEIGHT);
             base.Initialize();
         }
@@ -382,8 +383,10 @@ namespace CatDetective
 
             _dialogueFont   = Content.Load<SpriteFont>("Shared/dialogue_font");
             _dialogueBoxTex = Content.Load<Texture2D>("Shared/ui_dialogue_box");
+            CreateUiTextures();   // cozy UI kit (Game1.UiStyle.cs)
             _notebookBgTex  = Content.Load<Texture2D>("Shared/ui_notebook_bg");
             _notesBgTex     = Content.Load<Texture2D>("Shared/ui_notebook_score_card");
+            LayoutMenuScreens();   // menu lives on this spread's right page
             _speechBubbleTex = Content.Load<Texture2D>("Shared/speech_bubble");
             _arrowTex        = Content.Load<Texture2D>("Shared/arrow");
 
@@ -967,7 +970,7 @@ namespace CatDetective
 
         private void ActivateMainMenuItem(int index)
         {
-            switch (_mainMenuLabels[index])
+            switch (_mainMenuLabels[index].ToUpperInvariant())   // labels are display-cased
             {
                 case "CONTINUE":
                     var save = SaveSystem.LoadGame();
@@ -2045,6 +2048,7 @@ namespace CatDetective
         // ══════════════════════════════════════════════════════════════════════
         protected override void Draw(GameTime gameTime)
         {
+            _uiTime = (float)gameTime.TotalGameTime.TotalSeconds;
 #if BLAZORGL
             // Snapshot the real canvas size BEFORE binding the render target
             // (the viewport follows the bound target).
@@ -2317,7 +2321,7 @@ namespace CatDetective
                     }
 
                     // Corner X: the touch stand-in for Escape (closes the conversation).
-                    DrawUiButton(DialogueCloseRect, new Color(120, 90, 60), "X", Color.White);
+                    DrawUiButton(DialogueCloseRect, UiRed, "X", maxLabelScale: 0.6f);
 
                     if (_isTopicMenuOpen)
                     {
@@ -2409,50 +2413,47 @@ namespace CatDetective
                         bool roomSolved = _roomSolvedStates.TryGetValue(_currentRoomId, out var rs) && rs;
                         var (roomFound, roomTotal) = _notebook.GetRoomClueCounts(
                             _currentRoomId, id => !_ungatedClueIds.Contains(id));
+                        // Casebook buttons (Game1.UiStyle.cs): cream = idle, gold glow =
+                        // "ready" (every clue found), green = solved, red = the finale.
                         if (roomSolved)
                         {
-                            DrawUiButton(_solveButtonRect, new Color(85, 125, 85), "SOLVED", Color.White);
+                            DrawUiButton(_solveButtonRect, UiGreen, "Solved", maxLabelScale: 0.7f);
                         }
                         else if (roomTotal > 0 && roomFound > 0 &&
                                  _notebook.AreRoomCluesFound(_currentRoomId,
                                      id => _ungatedClueIds.Contains(id)))
                         {
-                            float pulse = 0.5f + 0.5f *
-                                (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 3.0);
-                            DrawUiButton(_solveButtonRect,
-                                Color.Lerp(new Color(170, 120, 30), new Color(255, 195, 60), pulse),
-                                "SOLVE", Color.White);
+                            DrawUiButton(_solveButtonRect, UiYellow, "Solve", glow: true, maxLabelScale: 0.75f);
                         }
                         else
                         {
-                            DrawUiButton(_solveButtonRect, new Color(170, 120, 30), "SOLVE", Color.White);
+                            DrawUiButton(_solveButtonRect, UiCream, "Solve", maxLabelScale: 0.75f);
                         }
 
-                        // FINAL SOLVE — locked until every room is solved AND every
+                        // FINAL SOLVE - locked until every room is solved AND every
                         // confrontation (requiresSolve topic) has been heard.
                         if (AllRoomsSolved && AllConfrontationsHeard)
                         {
-                            DrawUiButton(_finalSolveButtonRect, new Color(190, 60, 45),
-                                "FINAL\nSOLVE", Color.White);
+                            DrawUiButton(_finalSolveButtonRect, UiRed, "Final Solve",
+                                glow: true, maxLabelScale: 0.62f);
                         }
                         else if (AllRoomsSolved)
                         {
-                            DrawUiButton(_finalSolveButtonRect, new Color(70, 70, 78),
-                                $"FINAL SOLVE\n{HeardConfrontationCount()}/{_confrontationTopics.Count} confronted",
-                                Color.LightGray, maxLabelScale: 0.6f);
+                            DrawUiButton(_finalSolveButtonRect, UiCream,
+                                $"Final Solve\n{HeardConfrontationCount()}/{_confrontationTopics.Count} confronted",
+                                enabled: false, maxLabelScale: 0.55f);
                         }
                         else
                         {
-                            DrawUiButton(_finalSolveButtonRect, new Color(70, 70, 78),
-                                $"FINAL SOLVE\n{SolvedRoomCount()}/{_caseRooms.Count} rooms",
-                                Color.LightGray, maxLabelScale: 0.6f);
+                            DrawUiButton(_finalSolveButtonRect, UiCream,
+                                $"Final Solve\n{SolvedRoomCount()}/{_caseRooms.Count} rooms solved",
+                                enabled: false, maxLabelScale: 0.55f);
                         }
                     }
 
                     // MENU: touch stand-in for Escape from the room (autosave + menu).
                     if (!_isDeductionBoardOpen)
-                        DrawUiButton(_menuButtonRect, new Color(70, 70, 78), "MENU", Color.White,
-                                     maxLabelScale: 0.6f);
+                        DrawUiButton(_menuButtonRect, UiCream, "Menu", maxLabelScale: 0.55f);
 
                     // Bottom-center prompt: a tap selection explains the second tap;
                     // otherwise the doorway prompt for the zone the cat stands in.
@@ -2461,17 +2462,7 @@ namespace CatDetective
                         bottomHint = _pointer.LastWasTouch ? "Tap the door to go through"
                                                            : "[ Enter ] to enter";
                     if (bottomHint != null)
-                    {
-                        string       enterHint   = bottomHint;
-                        var          enterHintSz = _dialogueFont.MeasureString(enterHint);
-                        var          hintPos     = new Vector2(
-                            (SCREEN_WIDTH  - enterHintSz.X) * 0.5f,
-                            SCREEN_HEIGHT  - enterHintSz.Y - 60);
-                        // Drop shadow: the prompt sits over bright floors.
-                        _spriteBatch.DrawString(_dialogueFont, enterHint,
-                            hintPos + new Vector2(2, 2), Color.Black * 0.7f);
-                        _spriteBatch.DrawString(_dialogueFont, enterHint, hintPos, Color.White);
-                    }
+                        DrawNotePill(bottomHint, SCREEN_HEIGHT - 28);
 
                     // Clue counters: current room progress + case-wide total.
                     // Room basis = clues whose roomId is this room, matching the
@@ -2481,31 +2472,15 @@ namespace CatDetective
                         var (roomFound, roomTotal) = _notebook.GetRoomClueCounts(
                             _currentRoomId, id => !_ungatedClueIds.Contains(id));
 
-                        const float hudScale = 0.8f;
-                        string hud = $"Clues ({ToDisplayName(_currentRoomId)}): " +
-                                     $"{roomFound}/{roomTotal}    " +
-                                     $"Case: {_notebook.UnlockedClues.Count}/{_notebook.TotalClueCount}";
-                        _spriteBatch.DrawString(_dialogueFont, hud, new Vector2(26, 18),
-                            Color.Black * 0.6f, 0f, Vector2.Zero, hudScale, SpriteEffects.None, 0f);
-                        _spriteBatch.DrawString(_dialogueFont, hud, new Vector2(24, 16),
-                            Color.White, 0f, Vector2.Zero, hudScale, SpriteEffects.None, 0f);
+                        DrawRoomCard(ToDisplayName(_currentRoomId), roomFound, roomTotal,
+                                     _notebook.UnlockedClues.Count, _notebook.TotalClueCount);
                     }
 
                     // Transient toast — bottom-center, fades out at the end.
                     if (_toastTimer > 0f)
                     {
-                        const float toastScale = 0.8f;
-                        float alpha   = Math.Min(1f, _toastTimer / 0.5f);
-                        var   toastSz = _dialogueFont.MeasureString(_toastMessage) * toastScale;
-                        var   toastPos = new Vector2(
-                            (SCREEN_WIDTH - toastSz.X) * 0.5f,
-                            SCREEN_HEIGHT - toastSz.Y - 120);
-                        var bgRect = new Rectangle(
-                            (int)(toastPos.X - 20), (int)(toastPos.Y - 10),
-                            (int)(toastSz.X + 40),  (int)(toastSz.Y + 20));
-                        _spriteBatch.Draw(_debugPixel, bgRect, Color.Black * (0.65f * alpha));
-                        _spriteBatch.DrawString(_dialogueFont, _toastMessage, toastPos,
-                            Color.White * alpha, 0f, Vector2.Zero, toastScale, SpriteEffects.None, 0f);
+                        float alpha = Math.Min(1f, _toastTimer / 0.5f);
+                        DrawNotePill(_toastMessage, SCREEN_HEIGHT - 110, alpha, scale: 0.66f);
                     }
 
                     _spriteBatch.End();
@@ -2618,8 +2593,11 @@ namespace CatDetective
                                 { lx = leftPageArea.X; ly += lineH; }
                                 var slotColor = _tabColors[(int)slot.Category];
                                 var slotRect  = new Rectangle((int)lx, (int)ly, slotW, slotH);
-                                _spriteBatch.Draw(_debugPixel, slotRect, slotColor * 0.3f);
-                                DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, slotRect, slotColor);
+                                // Empty slot = faint tab-tinted paper; filled = the chip itself.
+                                if (slot.SelectedClueId != null)
+                                    DrawChip(slotRect, Color.Lerp(slotColor, UiCream, 0.35f), 0.8f, lifted: false);
+                                else
+                                    DrawChip(slotRect, slotColor * 0.32f, 0.45f, lifted: false);
                                 float tX = slotRect.X + (slotRect.Width  - textW) * 0.5f;
                                 float tY = slotRect.Y + (slotRect.Height - _dialogueFont.LineSpacing * jt) * 0.5f;
                                 _spriteBatch.DrawString(_dialogueFont, label, new Vector2(tX, tY), _inkColor,
@@ -2685,16 +2663,17 @@ namespace CatDetective
                                 var  tagR = new Rectangle((int)currentX, (int)currentY,
                                                           (int)boxWidth, (int)boxHeight);
                                 bool sel  = cl == _selectedWordBankClue;
-                                _spriteBatch.Draw(_debugPixel, tagR,
+                                // Word-bank chip: pale tab paper; the selected one is full
+                                // colour, lifted, with a soft gold halo.
+                                DrawChip(tagR,
                                     sel ? _tabColors[(int)_activeTab]
-                                        : _tabColors[(int)_activeTab] * 0.25f);
-                                DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, tagR,
-                                    _tabColors[(int)_activeTab] * (sel ? 1f : 0.6f));
+                                        : Color.Lerp(_tabColors[(int)_activeTab], UiCream, 0.6f),
+                                    sel ? 0.9f : 0.5f, lifted: sel);
                                 float nameX = tagR.X + (tagR.Width  - textSz.X) * 0.5f;
                                 float nameY = tagR.Y + (tagR.Height - textSz.Y) * 0.5f;
                                 _spriteBatch.DrawString(_dialogueFont, cl.Name,
                                     new Vector2(nameX, nameY),
-                                    sel ? Color.White : _inkColor,
+                                    _inkColor,
                                     0f, Vector2.Zero, jt, SpriteEffects.None, 0f);
                                 _wordBankClueRects.Add((tagR, cl));
                             }
@@ -2715,9 +2694,9 @@ namespace CatDetective
                         if (_wordBankPageCount > 0)
                         {
                             if (_wordBankPage > 0)
-                                DrawUiButton(_journalPrevPageRect, new Color(40, 40, 60), "<", Color.White);
+                                DrawUiButton(_journalPrevPageRect, UiCream, "<");
                             if (_wordBankPage < _wordBankPageCount)
-                                DrawUiButton(_journalNextPageRect, new Color(40, 40, 60), ">", Color.White);
+                                DrawUiButton(_journalNextPageRect, UiCream, ">");
 
                             var pageLbl   = $"{_wordBankPage + 1} / {_wordBankPageCount + 1}";
                             var pageLblSz = _dialogueFont.MeasureString(pageLbl) * jt;
@@ -2776,8 +2755,8 @@ namespace CatDetective
                                     new Color(95, 75, 130), fitScale);
                             }
                             DrawUiButton(_journalInsertRect,
-                                _tabColors[(int)_selectedWordBankClue.Category], "INSERT", Color.White,
-                                maxLabelScale: jt);
+                                Color.Lerp(_tabColors[(int)_selectedWordBankClue.Category], UiCream, 0.35f),
+                                "Insert", maxLabelScale: jt);
                         }
 
                         // A solved room's board is a locked recap — no CLEAR/SUBMIT.
@@ -2798,18 +2777,16 @@ namespace CatDetective
                         }
                         if (!drawLocked)
                         {
-                            DrawUiButton(_journalClearRect,  new Color(110, 60, 40), "CLEAR",  Color.White,
-                                maxLabelScale: jt);
-                            DrawUiButton(_journalSubmitRect, new Color(20, 100, 40), "SUBMIT", Color.White,
-                                maxLabelScale: jt);
+                            DrawUiButton(_journalClearRect,  UiCream, "Clear",  maxLabelScale: jt);
+                            DrawUiButton(_journalSubmitRect, UiGreen, "Submit", maxLabelScale: jt);
                         }
 
                         // ── Page turn (forward to Case Notes) ─────────────────
-                        DrawUiButton(_journalTurnPageRect, new Color(120, 92, 55),
-                            "CASE NOTES >", Color.White, maxLabelScale: jt);
+                        DrawUiButton(_journalTurnPageRect, UiCream,
+                            "Case Notes >", maxLabelScale: jt);
 
                         // ── Close button (X) ──────────────────────────────────
-                        DrawUiButton(_journalCloseRect, new Color(100, 40, 40), "X", Color.White);
+                        DrawUiButton(_journalCloseRect, UiRed, "X", maxLabelScale: 0.6f);
                     }
 
                     _spriteBatch.End();
@@ -2968,9 +2945,9 @@ namespace CatDetective
                     }
 
                     // ── Page turn (back to the board) + close ─────────────────
-                    DrawUiButton(_journalTurnBackRect, new Color(120, 92, 55),
-                        "< BOARD", Color.White, maxLabelScale: jt);
-                    DrawUiButton(_journalCloseRect, new Color(100, 40, 40), "X", Color.White);
+                    DrawUiButton(_journalTurnBackRect, UiCream,
+                        "< Board", maxLabelScale: jt);
+                    DrawUiButton(_journalCloseRect, UiRed, "X", maxLabelScale: 0.6f);
 
                     _spriteBatch.End();
                 }
@@ -3022,127 +2999,6 @@ namespace CatDetective
         }
 
         // ── Menu screens ───────────────────────────────────────────────────────
-
-        private void DrawMainMenu()
-        {
-            GraphicsDevice.Clear(new Color(16, 16, 22));
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-
-            float sy = SCREEN_HEIGHT / 1136f;
-
-            const string title      = "CAT DETECTIVE";
-            float        titleScale = 3.2f * sy;
-            var          titleSz    = _dialogueFont.MeasureString(title) * titleScale;
-            var          titlePos   = new Vector2((SCREEN_WIDTH - titleSz.X) * 0.5f, 170f * sy);
-            _spriteBatch.DrawString(_dialogueFont, title, titlePos + new Vector2(6, 6),
-                Color.Black * 0.8f, 0f, Vector2.Zero, titleScale, SpriteEffects.None, 0f);
-            _spriteBatch.DrawString(_dialogueFont, title, titlePos, Color.Gold,
-                0f, Vector2.Zero, titleScale, SpriteEffects.None, 0f);
-
-            const string subtitle = "the casebook of Dikkie";
-            float        subScale = 0.9f * sy;
-            var          subSz    = _dialogueFont.MeasureString(subtitle) * subScale;
-            _spriteBatch.DrawString(_dialogueFont, subtitle,
-                new Vector2((SCREEN_WIDTH - subSz.X) * 0.5f, titlePos.Y + titleSz.Y + 14f * sy),
-                new Color(170, 170, 180), 0f, Vector2.Zero, subScale, SpriteEffects.None, 0f);
-
-            for (int i = 0; i < _mainMenuButtonRects.Length; i++)
-            {
-                bool  enabled  = IsMenuItemEnabled(i);
-                bool  selected = i == _menuIndex && enabled;
-                Color fill     = !enabled  ? new Color(40, 40, 48)
-                               : selected  ? new Color(125, 92, 28)
-                               :             new Color(50, 55, 75);
-                Color label    = enabled ? Color.White : new Color(110, 110, 118);
-                DrawUiButton(_mainMenuButtonRects[i], fill, _mainMenuLabels[i], label);
-            }
-
-            if (_confirmNewGame)
-            {
-                const string warn   = "This overwrites the saved case. Press Enter again to confirm.";
-                float        wScale = 0.7f * sy;
-                var          wSz    = _dialogueFont.MeasureString(warn) * wScale;
-                _spriteBatch.DrawString(_dialogueFont, warn,
-                    new Vector2((SCREEN_WIDTH - wSz.X) * 0.5f, SCREEN_HEIGHT - 62f * sy),
-                    new Color(230, 170, 60), 0f, Vector2.Zero, wScale, SpriteEffects.None, 0f);
-            }
-            else if (!IsMenuItemEnabled(0))
-            {
-                const string hint   = "New here? The TUTORIAL teaches the ropes.";
-                float        hScale = 0.7f * sy;
-                var          hSz    = _dialogueFont.MeasureString(hint) * hScale;
-                _spriteBatch.DrawString(_dialogueFont, hint,
-                    new Vector2((SCREEN_WIDTH - hSz.X) * 0.5f, SCREEN_HEIGHT - 62f * sy),
-                    new Color(140, 140, 150), 0f, Vector2.Zero, hScale, SpriteEffects.None, 0f);
-            }
-
-            const string devHint  = "F12 dev";
-            float        dScale   = 0.6f * sy;
-            var          dSz      = _dialogueFont.MeasureString(devHint) * dScale;
-            _spriteBatch.DrawString(_dialogueFont, devHint,
-                new Vector2(SCREEN_WIDTH - dSz.X - 16f, SCREEN_HEIGHT - dSz.Y - 12f),
-                new Color(90, 90, 100), 0f, Vector2.Zero, dScale, SpriteEffects.None, 0f);
-
-            _spriteBatch.End();
-        }
-
-        private void DrawSettingsScreen()
-        {
-            GraphicsDevice.Clear(new Color(16, 16, 22));
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-
-            float sx = SCREEN_WIDTH  / 2020f;
-            float sy = SCREEN_HEIGHT / 1136f;
-
-            const string title      = "SETTINGS";
-            float        titleScale = 2.2f * sy;
-            var          titleSz    = _dialogueFont.MeasureString(title) * titleScale;
-            var          titlePos   = new Vector2((SCREEN_WIDTH - titleSz.X) * 0.5f, 150f * sy);
-            _spriteBatch.DrawString(_dialogueFont, title, titlePos + new Vector2(4, 4),
-                Color.Black * 0.8f, 0f, Vector2.Zero, titleScale, SpriteEffects.None, 0f);
-            _spriteBatch.DrawString(_dialogueFont, title, titlePos, Color.Gold,
-                0f, Vector2.Zero, titleScale, SpriteEffects.None, 0f);
-
-            float labelScale = 0.9f * sy;
-
-            // ── Music volume row ──────────────────────────────────────────────
-            _spriteBatch.DrawString(_dialogueFont, "MUSIC VOLUME",
-                new Vector2(560f * sx, _settingsVolMinusRect.Y +
-                    (_settingsVolMinusRect.Height - _dialogueFont.LineSpacing * labelScale) * 0.5f),
-                Color.White, 0f, Vector2.Zero, labelScale, SpriteEffects.None, 0f);
-
-            DrawUiButton(_settingsVolMinusRect, new Color(50, 55, 75), "-", Color.White);
-            int filledCells = (int)Math.Round(_settings.MusicVolume * 10f);
-            for (int i = 0; i < _settingsVolCellRects.Length; i++)
-            {
-                bool filled = i < filledCells;
-                _spriteBatch.Draw(_debugPixel, _settingsVolCellRects[i],
-                    filled ? new Color(212, 175, 55) : new Color(35, 35, 45));
-                DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel,
-                    _settingsVolCellRects[i], new Color(90, 90, 105));
-            }
-            DrawUiButton(_settingsVolPlusRect, new Color(50, 55, 75), "+", Color.White);
-
-            // ── CRT filter row ────────────────────────────────────────────────
-            _spriteBatch.DrawString(_dialogueFont, "CRT FILTER",
-                new Vector2(560f * sx, _settingsCrtToggleRect.Y +
-                    (_settingsCrtToggleRect.Height - _dialogueFont.LineSpacing * labelScale) * 0.5f),
-                Color.White, 0f, Vector2.Zero, labelScale, SpriteEffects.None, 0f);
-            DrawUiButton(_settingsCrtToggleRect,
-                _settings.CrtEnabled ? new Color(45, 110, 60) : new Color(50, 55, 75),
-                _settings.CrtEnabled ? "ON" : "OFF", Color.White);
-
-            DrawUiButton(_settingsBackRect, new Color(50, 55, 75), "BACK", Color.White);
-
-            const string hint   = "Left/Right or click to change volume.   Esc - back";
-            float        hScale = 0.62f * sy;
-            var          hSz    = _dialogueFont.MeasureString(hint) * hScale;
-            _spriteBatch.DrawString(_dialogueFont, hint,
-                new Vector2((SCREEN_WIDTH - hSz.X) * 0.5f, SCREEN_HEIGHT - 56f * sy),
-                new Color(140, 140, 150), 0f, Vector2.Zero, hScale, SpriteEffects.None, 0f);
-
-            _spriteBatch.End();
-        }
 
         private void DrawCaseIntro()
         {
@@ -3287,33 +3143,6 @@ namespace CatDetective
         /// Code-drawn UI button: drop shadow, fill, lighter border, hover highlight,
         /// and a label auto-scaled to fit inside the rect.
         /// </summary>
-        private void DrawUiButton(Rectangle rect, Color fill, string label, Color labelColor,
-                                  float maxLabelScale = 0.85f)
-        {
-            var mouse   = Mouse.GetState();
-            var vm      = new Point((int)(mouse.X / DISPLAY_SCALE), (int)(mouse.Y / DISPLAY_SCALE));
-            bool hover  = rect.Contains(vm);
-
-            _spriteBatch.Draw(_debugPixel,
-                new Rectangle(rect.X + 4, rect.Y + 4, rect.Width, rect.Height),
-                Color.Black * 0.35f);
-            _spriteBatch.Draw(_debugPixel, rect, hover ? Color.Lerp(fill, Color.White, 0.18f) : fill);
-            DebugHelper.DrawHollowRect(_spriteBatch, _debugPixel, rect,
-                Color.Lerp(fill, Color.White, hover ? 0.7f : 0.45f));
-
-            var size  = _dialogueFont.MeasureString(label);
-            float fitW = (rect.Width  - 16) / Math.Max(size.X, 1f);
-            float fitH = (rect.Height - 10) / Math.Max(size.Y, 1f);
-            float scale = Math.Min(maxLabelScale, Math.Min(fitW, fitH));
-            var pos = new Vector2(
-                rect.X + (rect.Width  - size.X * scale) * 0.5f,
-                rect.Y + (rect.Height - size.Y * scale) * 0.5f);
-            _spriteBatch.DrawString(_dialogueFont, label, pos + new Vector2(2, 2),
-                Color.Black * 0.4f, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
-            _spriteBatch.DrawString(_dialogueFont, label, pos,
-                labelColor, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
-        }
-
         private float DrawWrappedString(
             SpriteBatch spriteBatch,
             SpriteFont  font,
@@ -3406,9 +3235,10 @@ namespace CatDetective
             float sy = (float)SCREEN_HEIGHT / 1136f;
             int S(float v) => (int)v;
 
-            _solveButtonRect      = new Rectangle(S((2020 - 160) * sx), S((1136 - 160) * sy), S(120 * sx), S(120 * sy));
-            _finalSolveButtonRect = new Rectangle(S((2020 - 160) * sx), S((1136 - 290) * sy), S(120 * sx), S(110 * sy));
-            _menuButtonRect       = new Rectangle(S((2020 - 170) * sx), S(24 * sy), S(140 * sx), S(70 * sy));
+            // HUD (cozy kit): wide tab-style pills, bottom-right stack + top-right Menu.
+            _solveButtonRect      = new Rectangle(S((2020 - 290) * sx), S((1136 - 140) * sy), S(250 * sx), S(100 * sy));
+            _finalSolveButtonRect = new Rectangle(S((2020 - 290) * sx), S((1136 - 262) * sy), S(250 * sx), S(96 * sy));
+            _menuButtonRect       = new Rectangle(S((2020 - 190) * sx), S(28 * sy), S(160 * sx), S(70 * sy));
 
             // Tab bar image is 800×150 (four 200px humps), drawn scaled at _tabImagePos —
             // hotspots mirror those humps exactly in the same reference space.
@@ -3433,6 +3263,10 @@ namespace CatDetective
                     S((1090 + i * 62) * sx), S(450 * sy), S(56 * sx), S(80 * sy));
             _settingsVolPlusRect   = new Rectangle(S(1716 * sx), S(450 * sy), S(70 * sx), S(80 * sy));
             _settingsCrtToggleRect = new Rectangle(S(1090 * sx), S(610 * sy), S(180 * sx), S(80 * sy));
+
+            // Casebook menu (Game1.MenuScreens.cs) overrides the rects above with
+            // right-page positions once the spread art is loaded.
+            LayoutMenuScreens();
 
             _journalPrevPageRect = new Rectangle(S(1050 * sx), S(692 * sy), S(90 * sx), S(35 * sy));
             _journalNextPageRect = new Rectangle(S(1710 * sx), S(692 * sy), S(90 * sx), S(35 * sy));

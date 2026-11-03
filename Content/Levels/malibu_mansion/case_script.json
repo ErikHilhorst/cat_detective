@@ -51,7 +51,7 @@
       "fallback": "night"
     },
     "living_room": {
-      "layers": ["Levels/malibu_mansion/living_room/bg_base", "Levels/malibu_mansion/living_room/prop_north_couch", "Levels/malibu_mansion/living_room/prop_south_couch", "Levels/malibu_mansion/living_room/prop_sofa_chair"]
+      "layers": ["Levels/malibu_mansion/living_room/bg_base", "Levels/malibu_mansion/living_room/prop_north_couch", "Levels/malibu_mansion/living_room/prop_south_couch", "Levels/malibu_mansion/living_room/prop_sofa_chair", "Levels/malibu_mansion/living_room/cage"]
     },
     "garden": {
       "layers": ["Levels/malibu_mansion/garden/bg_base"]
@@ -187,7 +187,7 @@
     },
     { "who": "reyes", "text": "...Fine. You want in? Bird's gone, the doors are sealed, and somebody in there is lying to me." },
     { "who": "reyes", "text": "Find out who took him, how he got out of a locked cage, and where he is now.\nBefore sunrise." },
-    { "bg": "poster", "card": true, "dim": 0.55, "text": "THE MISSING MACAW\n\nThe cat took the case." }
+    { "bg": "poster", "card": true, "dim": 0, "text": "" }
   ],
   "gathering": {
     "intro": [

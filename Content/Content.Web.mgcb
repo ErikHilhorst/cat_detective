@@ -427,6 +427,17 @@
 /processorParam:TextureFormat=Color
 /build:Levels/malibu_mansion/living_room/prop_table.png
 
+#begin Levels/malibu_mansion/living_room/cage.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Levels/malibu_mansion/living_room/cage.png
+
 #begin Levels/malibu_mansion/living_room/prop_north_couch.png
 /importer:TextureImporter
 /processor:TextureProcessor

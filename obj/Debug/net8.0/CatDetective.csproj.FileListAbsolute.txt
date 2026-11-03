@@ -301,3 +301,4 @@ C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\placehold
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\speech_bubble.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\ui_notebook_score_card.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\case_script.json
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\living_room\cage.xnb
