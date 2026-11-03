@@ -284,6 +284,12 @@ rectangles for player-facing UI (that look was the placeholder era).
   room_config overrides either default. The text origin shifts right by
   `PORTRAIT_MAX_W + PORTRAIT_TEXT_GAP`; pagination budgets the same shift, so keep those
   constants in sync.
+- **Dikkie on the box** (`Game1.DikkiePortrait.cs`): every conversation also shows Dikkie
+  perched on the dialogue box's top border, right side, left of the X, facing the speaker
+  (own NonPremultiplied batch after Pass 6; pop-in + breathing). Pose rolled once per
+  conversation from `DikkiePoses` (percent weights: main 40, six others 10 each). Art in
+  `Content/Shared/dikkie/` (sources `art trials/dikkie/`, trimmed, mirrored to face left,
+  420 px max side; listed in both .mgcb files and `BootTextures`). No backing glow - by choice.
 - The dialogue box shows a small **name label** top-left: the interactable's `name` field,
   falling back to the prettified id (`inspect_duty_roster` -> "Duty Roster"). Give objects a
   `name` when the prettified id reads badly.
@@ -825,13 +831,24 @@ main thread:
 - **Gates, not blocking**: every entry point that needs art goes through
   `WhenAssetsReady(assets, label, action)` (Game1.Loading.cs): `StartCaseIntro` (NEW GAME,
   TUTORIAL, tutorial hand-off; assets = case_script bgs + cast + first room), CONTINUE
-  (save room) and door transfers. Ready -> runs at once; else GameState.Loading shows the
-  study scene + parchment progress card (`--screenshot ui loading`). Add new entry points
-  through it, never a bare LoadRoom/LoadCase from a menu.
+  (save room) and door transfers. On web the loading screen goes up IN THE CLICK FRAME,
+  always (even with every texture cached the action takes a moment on a phone - no
+  silent 2-3 s waits); the asset list (reads JSON) and the action run only after a loading
+  frame has been presented (`_loadingFrames`). From menus: the study scene with the
+  loading content on the menu page (`--screenshot ui loading`); doors: the current room
+  dimmed under a parchment card (`--screenshot <case> <room> loading`). Both show Dikkie
+  trotting along a cozy-kit progress bar (`DrawLoadingCard`). Desktop runs actions at
+  once. Add new entry points through it, never a bare LoadRoom/LoadCase from a menu.
 - **Boot**: Index.razor.cs waits for `Game1.BootTextures` (exactly what LoadContent loads)
   before constructing Game1; the HTML overlay (`#boot-overlay`, OUTSIDE `#app` - Blazor
-  replaces #app on mount) shows download % (real total from `js/bootinfo.js`) then
-  "Unpacking the casebook...", and is hidden by Game1.Draw's first frame (`gameLoaderHide`).
+  replaces #app on mount) mirrors the title splash exactly (menu_room/logo/cat from
+  Content/Shared in a 1456x816 letterboxed stage, same positions as `BeginMenuScene` at
+  reveal 0) with a parchment pill (CSS border-image of ui_dialogue_box.webp) + cozy bar
+  where the splash prompt sits, so the hand-off to the first frame is seamless. Keep the
+  two layouts in sync. Hidden by Game1.Draw's first frame (`gameLoaderHide`).
+- **Quick taps on slow frames**: a tap can start AND end between two Updates; PointerInput
+  treats the first sighting of a finger (any state, incl. Released) as the press. Before
+  this fix menu taps on slow phones were silently lost ("NEW GAME does nothing").
 - **Runtime size**: `PublishTrimmed=true` with the game + every KNI/nkast assembly as
   `TrimmerRootAssembly` (reflection: System.Text.Json configs, KNI platform wiring) and
   `InvariantGlobalization` -> 24 MB -> 7.5 MB; publish gzips framework *.wasm/.dat/.dll and

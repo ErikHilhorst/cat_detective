@@ -50,13 +50,17 @@ namespace CatDetective.Systems
                 {
                     anyTouch = true;
                     RawPosition = new Point((int)t.Position.X, (int)t.Position.Y);
-                    if (t.State == TouchLocationState.Pressed && !_touchDown)
+                    // A quick tap on a slow frame can start AND end between two
+                    // Updates: the panel then only reports Moved/Released. Treat the
+                    // first sighting of a finger as the press, whatever its state.
+                    if (t.State != TouchLocationState.Released && !_touchDown)
                     {
                         Pressed    = true;
                         _touchDown = true;
                     }
                     else if (t.State == TouchLocationState.Released)
                     {
+                        if (!_touchDown) Pressed = true;   // whole tap fell between frames
                         Released   = true;
                         _touchDown = false;
                     }

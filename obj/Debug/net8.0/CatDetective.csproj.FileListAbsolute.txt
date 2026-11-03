@@ -298,3 +298,10 @@ C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\menu_logo
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\menu_room.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\front_gate.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\reporter.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\dikkie\dikkie_belly.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\dikkie\dikkie_crouch.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\dikkie\dikkie_main.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\dikkie\dikkie_reach.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\dikkie\dikkie_scratch.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\dikkie\dikkie_sit_paw.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\dikkie\dikkie_stretch.xnb

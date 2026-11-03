@@ -38,11 +38,15 @@
          mount) and stays up until the game has drawn its first frame
          (gameLoaderHide, called from Game1.Draw). -->
     <div id="boot-overlay">
-        <div id="blazor-loader">
-            <div id="blazor-loader-title">Dikkie Detective</div>
-            <div id="blazor-loader-label">Starting...</div>
-            <div id="blazor-loader-bar-bg">
-                <div id="blazor-loader-bar-fill"></div>
+        <div id="boot-stage">
+            <img id="boot-room" src="Content/Shared/menu_room.jpg" alt="" onload="this.classList.add('ready')" />
+            <img id="boot-cat"  src="Content/Shared/menu_cat.webp" alt="" onload="this.classList.add('ready')" />
+            <img id="boot-logo" src="Content/Shared/menu_logo.webp" alt="Dikkie Detective" onload="this.classList.add('ready')" />
+            <div id="blazor-loader">
+                <div id="blazor-loader-label">Waking up Dikkie...</div>
+                <div id="blazor-loader-bar-bg">
+                    <div id="blazor-loader-bar-fill"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -177,7 +181,7 @@
             function downloadProgress() {
                 var total = Math.max(window.BOOT_TOTAL_BYTES || 0, seenBytes, 1);
                 var f = Math.min(1, loadedBytes / total);
-                setBar(f * 80, 'Downloading the game... ' + Math.round(f * 100) + '%');
+                setBar(f * 80, 'Fetching the casebook... ' + Math.round(f * 100) + '%');
             }
 
             var GZ = /\.(wasm|dat|dll)$/;
@@ -233,7 +237,7 @@
                     var tex = window.gameTex;
                     var rc = tex && tex.state() === 'active' ? tex.readyCount('Shared/').split(',') : null;
                     var f = rc && +rc[1] > 0 ? (+rc[0]) / (+rc[1]) : 1;
-                    setBar(80 + 20 * f, 'Unpacking the casebook...');
+                    setBar(80 + 20 * f, 'Dusting off the clues...');
                 }, 150);
             }, function (err) {
                 setBar(shown, 'Could not start the game: ' + err);

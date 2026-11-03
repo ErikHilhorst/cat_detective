@@ -406,6 +406,7 @@ namespace CatDetective
             LayoutMenuScreens();   // menu lives on the parchment panel (Game1.MenuScreens.cs)
             _speechBubbleTex = Content.Load<Texture2D>("Shared/speech_bubble");
             _arrowTex        = Content.Load<Texture2D>("Shared/arrow");
+            LoadDikkiePortraits();   // Game1.DikkiePortrait.cs
 
             _tabTextures[ClueCategory.Who]       = Content.Load<Texture2D>("Shared/who");
             _tabTextures[ClueCategory.What]      = Content.Load<Texture2D>("Shared/how");
@@ -481,6 +482,19 @@ namespace CatDetective
                 if (_screenshotView == "crt")
                 {
                     _settings.CrtEnabled = true;
+                }
+                // "loading" freezes the web door-transfer loading overlay over this room.
+                else if (_screenshotView == "loading")
+                {
+                    _loadingOverRoom    = true;
+                    _loadingResolved    = true;
+                    _loadingLabel       = "Dikkie pads into the next room...";
+                    _loadingDone        = 5;
+                    _loadingTotal       = 12;
+                    _loadingBar         = 5 / 12f;
+                    _loadingShown       = 1f;
+                    _loadingReturnState = GameState.Loading;
+                    _currentState       = GameState.Loading;
                 }
                 // Optional view arg opens the journal so board layouts can be captured.
                 else if (_screenshotView == "journal" || _screenshotView == "final")
@@ -1070,6 +1084,10 @@ namespace CatDetective
                 case "settings": _titleSplash = false; _menuRevealT = 1f; _currentState = GameState.Settings; break;
                 case "title":    _currentState = GameState.MainMenu; break;   // boot splash
                 case "loading":   // the web loading screen, frozen mid-way (layout check)
+                    _titleSplash        = false;
+                    _menuRevealT        = 1f;
+                    _loadingResolved    = true;
+                    _loadingBar         = 7 / 12f;
                     _loadingLabel       = "Opening a new case file...";
                     _loadingDone        = 7;
                     _loadingTotal       = 12;
@@ -2215,7 +2233,7 @@ namespace CatDetective
             {
                 DrawMainMenu();
             }
-            else if (_currentState == GameState.Loading)
+            else if (_currentState == GameState.Loading && !_loadingOverRoom)
             {
                 DrawLoadingScreen();
             }
@@ -2235,8 +2253,9 @@ namespace CatDetective
             {
                 DrawCutscene();
             }
-            else if (_currentState == GameState.Playing)
+            else if (_currentState == GameState.Playing || _currentState == GameState.Loading)
             {
+                // (Loading over a room = a door: the room stays up, dimmed, under the card.)
                 GraphicsDevice.Clear(_ambientColor);
 
                 // ════════════════════════════════════════════════════════════════
@@ -2524,6 +2543,7 @@ namespace CatDetective
                             0f, Vector2.Zero, dialogueScale, SpriteEffects.None, 0f);
                     }
                     _spriteBatch.End();
+                    DrawDikkiePortrait(boxRect, (float)gameTime.TotalGameTime.TotalSeconds);   // Game1.DikkiePortrait.cs
                 }
 
                 // ════════════════════════════════════════════════════════════════
@@ -3103,6 +3123,9 @@ namespace CatDetective
                 }
             } // end Playing
 
+            if (_currentState == GameState.Loading)
+                DrawLoadingAfterWorld();
+
             // ════════════════════════════════════════════════════════════════
             // PASS 9 — CRT OVERLAY (optional). Drawn into the render target so
             // it covers every state and appears in screenshots.
@@ -3664,6 +3687,7 @@ namespace CatDetective
         /// </summary>
         private void SetDialoguePortrait(InteractableEntity entity)
         {
+            RollDikkiePose();   // a fresh Dikkie pose per conversation
             _dialoguePortrait = null;
             if (entity.Data == null || entity.Texture == null)
                 return;
