@@ -109,7 +109,10 @@ for room in ROOMS:
         fb = feet_box(sp["x"], sp["y"])
         for z in tlayers.get("Transfers", []):
             if intersects(fb, (z["x"], z["y"], z["width"], z["height"])):
-                errors.append(f"{tgt}: spawn '{spawn}' ({sp['x']},{sp['y']}) re-triggers zone '{z['name']}'")
+                # Doors need Enter / a second tap, so this is no longer a bounce loop -
+                # just the 'go back' prompt showing on arrival. Polish, not a failure.
+                warnings.append(f"{tgt}: spawn '{spawn}' ({sp['x']:.0f},{sp['y']:.0f}) arrives "
+                                f"inside door zone '{z['name']}' (nudge it into the room in Tiled)")
         for c in tlayers.get("Collisions", []):
             if intersects(fb, (c["x"], c["y"], c["width"], c["height"])):
                 errors.append(f"{tgt}: spawn '{spawn}' ({sp['x']},{sp['y']}) inside collision '{c['name']}'")

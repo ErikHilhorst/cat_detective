@@ -5,36 +5,39 @@ using System;
 namespace CatDetective
 {
     /// <summary>
-    /// Main menu + settings, drawn as Dikkie's open casebook on the desk
-    /// (ui_notebook_score_card.png - the clean spread, already loaded for the
-    /// Case Notes page, so the menu costs no extra content loads on web).
-    ///   LEFT page : title "Dikkie Detective" in ink, subtitle, Dikkie himself.
-    ///   RIGHT page: the menu as the book's "Contents" (cozy-kit buttons), or the
-    ///               settings controls.
-    /// Page geometry is measured from the art in its own 1408x768 pixels and
-    /// mapped to the canvas, so it follows the stretch exactly.
+    /// Main menu + settings, staged in Dikkie's sunny study (Shared/menu_room,
+    /// menu_logo, menu_cat - sources in "art trials/menu"):
+    ///   TITLE SPLASH (boot only): the room, the gold "Dikkie Detective" logo and
+    ///     Dikkie asleep on his paw-print blanket on the desk, gently breathing,
+    ///     with drifting "z"s and dust motes in the window light. Any key / click
+    ///     / tap dismisses it (on web that gesture also starts the music).
+    ///   MENU: over MENU_REVEAL_SECONDS the logo and cat glide to the left half
+    ///     and a parchment panel slides in from the right holding the buttons.
+    ///   SETTINGS: same scene, the panel holds the settings controls.
+    /// Menus always run at the fixed MENU_CANVAS (1456x816).
     /// </summary>
     public partial class Game1
     {
-        private const string GAME_TITLE_1 = "Dikkie";
-        private const string GAME_TITLE_2 = "Detective";
-        private const string GAME_TAGLINE = "the casebook of a very curious cat";
+        private const string GAME_TAGLINE        = "the casebook of a very curious cat";
+        private const float  MENU_REVEAL_SECONDS = 0.8f;
 
-        private static readonly Color MenuAccentInk = new(150, 58, 42);   // red ink for "Detective"
+        private static readonly Color MenuAccentInk = new(150, 58, 42);   // red ink accents
+        private static readonly Color MenuCream     = new(255, 244, 220);
 
-        // Pages inside the spread art (1408x768 art pixels).
-        private static readonly Rectangle ArtLeftPage  = new(135, 55, 565, 680);
-        private static readonly Rectangle ArtRightPage = new(712, 55, 578, 680);
+        /// <summary>The parchment panel that holds the menu / settings controls.</summary>
+        private Rectangle RightPage => new(
+            (int)(SCREEN_WIDTH * 0.585f), (int)(SCREEN_HEIGHT * 0.07f),
+            (int)(SCREEN_WIDTH * 0.375f), (int)(SCREEN_HEIGHT * 0.86f));
 
-        private Rectangle ArtToCanvas(Rectangle a)
-        {
-            float kx = SCREEN_WIDTH  / (float)_notesBgTex.Width;
-            float ky = SCREEN_HEIGHT / (float)_notesBgTex.Height;
-            return new Rectangle((int)(a.X * kx), (int)(a.Y * ky), (int)(a.Width * kx), (int)(a.Height * ky));
-        }
+        private static float EaseInOut(float t) => t * t * (3f - 2f * t);
 
-        private Rectangle LeftPage  => ArtToCanvas(ArtLeftPage);
-        private Rectangle RightPage => ArtToCanvas(ArtRightPage);
+        /// <summary>Reveal progress 0 (title splash) -> 1 (menu), eased.</summary>
+        private float MenuReveal => _titleSplash ? 0f : EaseInOut(Math.Clamp(_menuRevealT, 0f, 1f));
+
+        /// <summary>Panel slide offset: off-screen right at reveal 0, home at 1.</summary>
+        private int MenuPanelDx => (int)((1f - MenuReveal) * (SCREEN_WIDTH - RightPage.X + 40));
+
+        private static Vector2 LerpV(Vector2 a, Vector2 b, float t) => a + (b - a) * t;
 
         private void DrawCentered(string text, float centerX, float y, float scale, Color color)
         {
@@ -55,78 +58,130 @@ namespace CatDetective
         }
 
         /// <summary>
-        /// Desk + open book + the left (title) page. Leaves the AlphaBlend batch
-        /// OPEN for the caller's right-page content.
+        /// The study scene shared by splash, menu and settings: room, dust motes,
+        /// sleeping Dikkie, "z"s, logo, and (as the reveal runs) the parchment
+        /// panel. Leaves an AlphaBlend batch OPEN for the panel's content.
         /// </summary>
-        private void BeginCasebookSpread()
+        private void BeginMenuScene()
         {
             GraphicsDevice.Clear(new Color(40, 28, 20));
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            _spriteBatch.Draw(_notesBgTex, new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), Color.White);
+            float e = MenuReveal;
+            float t = _uiTime;
 
-            var   lp = LeftPage;
-            float cx = lp.Center.X;
-            float y  = lp.Y + lp.Height * 0.10f;
+            // ── Room, cover-fitted (keeps the desk edge in view) ──────────────
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp);
+            float k  = Math.Max(SCREEN_WIDTH / (float)_menuRoomTex.Width, SCREEN_HEIGHT / (float)_menuRoomTex.Height);
+            int   vw = (int)(SCREEN_WIDTH / k), vh = (int)(SCREEN_HEIGHT / k);
+            var   src = new Rectangle((_menuRoomTex.Width - vw) / 2, (int)((_menuRoomTex.Height - vh) * 0.8f), vw, vh);
+            _spriteBatch.Draw(_menuRoomTex, new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), src, Color.White);
 
-            // Title: "Dikkie" big in ink, "Detective" in red ink, fitted to the page.
-            float t1 = Math.Min(2.2f, lp.Width * 0.78f / _dialogueFont.MeasureString(GAME_TITLE_1).X);
-            DrawCentered(GAME_TITLE_1, cx, y, t1, UiInk);
-            y += _dialogueFont.LineSpacing * t1 * 0.88f;
-            float t2 = t1 * 0.62f;
-            DrawCentered(GAME_TITLE_2, cx, y, t2, MenuAccentInk);
-            y += _dialogueFont.LineSpacing * t2 + 10f;
+            // Dust motes drifting up through the window light (left half).
+            var dotSrc = new Rectangle(0, 0, ROUND_SIZE, ROUND_SIZE);
+            for (int i = 0; i < 16; i++)
+            {
+                float fx    = Hash01(i * 12.9898f);
+                float fy    = Hash01(i * 78.233f);
+                float drift = (t * (0.010f + 0.006f * fy) + fx) % 1f;
+                float x = SCREEN_WIDTH  * (0.06f + 0.42f * fx) + 30f * MathF.Sin(t * 0.4f + i);
+                float y = SCREEN_HEIGHT * (0.75f - 0.65f * drift);
+                float a = 0.35f * MathF.Sin(MathF.PI * drift);
+                int   r = 3 + i % 3;
+                _spriteBatch.Draw(_uiRound, new Rectangle((int)x, (int)y, r, r), dotSrc,
+                    new Color(255, 236, 180) * a);
+            }
 
-            DrawInkRule(cx, y, lp.Width * 0.42f);
-            y += 16f;
-            DrawCentered(GAME_TAGLINE, cx, y, 0.6f, UiInk * 0.7f);
+            // Soft warm shade once the menu is up, so the parchment pops off the busy wall.
+            if (e > 0f)
+                _spriteBatch.Draw(_debugPixel, new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
+                    new Color(30, 18, 8) * (0.22f * e));
             _spriteBatch.End();
 
-            // Dikkie, sitting pretty on the page (idle frame of the walk sheet) with
-            // a slow breathing bob. Straight-alpha sprites -> NonPremultiplied.
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
-            const int cols = 6, rows = 2, idleFrame = 11;
-            int   fw = _walkForwardTex.Width / cols, fh = _walkForwardTex.Height / rows;
-            var   src = new Rectangle((idleFrame % cols) * fw, (idleFrame / cols) * fh, fw, fh);
-            float catScale = lp.Height * 0.40f / fh;
-            float breathe  = 1f + 0.012f * MathF.Sin(_uiTime * 2.2f);
-            var   feet     = new Vector2(cx, lp.Bottom - lp.Height * 0.10f);
+            // ── Dikkie asleep on his blanket + the logo (straight alpha) ──────
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.LinearClamp);
+            float catW    = MathHelper.Lerp(SCREEN_WIDTH * 0.46f, SCREEN_WIDTH * 0.42f, e);
+            float catS    = catW / _menuCatTex.Width;
+            var   catFeet = LerpV(new Vector2(SCREEN_WIDTH * 0.50f, SCREEN_HEIGHT + 6f),
+                                  new Vector2(SCREEN_WIDTH * 0.30f, SCREEN_HEIGHT + 6f), e);
+            float breathe = 0.010f * MathF.Sin(t * 1.6f);
+            _spriteBatch.Draw(_menuCatTex, catFeet, null, Color.White, 0f,
+                new Vector2(_menuCatTex.Width * 0.5f, _menuCatTex.Height),
+                new Vector2(catS * (1f + breathe * 0.35f), catS * (1f + breathe)),
+                SpriteEffects.None, 0f);
 
-            // The sheet frame has empty space under the paws: tuck the shadow up to them.
-            float shadowW = fw * catScale * 0.55f;
-            float pawY    = feet.Y - fh * catScale * 0.12f;
-            _spriteBatch.Draw(_shadowTex,
-                new Rectangle((int)(feet.X - shadowW * 0.5f), (int)(pawY - shadowW * 0.12f),
-                              (int)shadowW, (int)(shadowW * 0.24f)),
-                Color.White * 0.45f);
-            _spriteBatch.Draw(_walkForwardTex, feet, src, Color.White, 0f,
-                new Vector2(fw * 0.5f, fh), new Vector2(catScale, catScale * breathe),
-                SpriteEffects.FlipHorizontally, 0f);   // faces into the book
+            // Logo: big and centred on the splash, upper-left in the menu.
+            float logoW   = MathHelper.Lerp(SCREEN_WIDTH * 0.60f, SCREEN_WIDTH * 0.42f, e);
+            float logoS   = logoW / _menuLogoTex.Width;
+            var   logoTop = LerpV(new Vector2(SCREEN_WIDTH * 0.50f, SCREEN_HEIGHT * 0.05f),
+                                  new Vector2(SCREEN_WIDTH * 0.30f, SCREEN_HEIGHT * 0.07f), e);
+            float bob = 3f * MathF.Sin(t * 1.1f);
+            _spriteBatch.Draw(_menuLogoTex, logoTop + new Vector2(0, bob), null, Color.White, 0f,
+                new Vector2(_menuLogoTex.Width * 0.5f, 0f), logoS, SpriteEffects.None, 0f);
             _spriteBatch.End();
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
+            // "z z z" drifting up from the sleeping head.
+            var head = catFeet + new Vector2(-0.04f * catW, -0.86f * _menuCatTex.Height * catS);
+            for (int i = 0; i < 3; i++)
+            {
+                float p  = (t * 0.32f + i / 3f) % 1f;
+                float a  = MathF.Sin(MathF.PI * p);
+                float sc = 0.55f + 0.55f * p;
+                var  pos = head + new Vector2(p * 70f + 8f * MathF.Sin(t * 2f + i), -p * 70f);
+                _spriteBatch.DrawString(_dialogueFont, "z", pos + new Vector2(2, 2), UiInk * (0.5f * a),
+                    0f, Vector2.Zero, sc, SpriteEffects.None, 0f);
+                _spriteBatch.DrawString(_dialogueFont, "z", pos, MenuCream * a,
+                    0f, Vector2.Zero, sc, SpriteEffects.None, 0f);
+            }
+
+            // Splash prompt, fading out as the menu comes in.
+            if (e < 1f)
+            {
+                string prompt = _pointer.LastWasTouch ? "Tap to wake Dikkie" : "Click or press any key";
+                float  pulse  = 0.92f + 0.08f * MathF.Sin(t * 3f);
+                DrawNotePill(prompt, SCREEN_HEIGHT * 0.475f, (1f - e) * pulse);
+            }
+
+            // Parchment panel sliding in from the right.
+            if (e > 0f)
+            {
+                var rp = RightPage; rp.X += MenuPanelDx;
+                DrawParchment(rp);
+            }
         }
 
-        /// <summary>Small faded-ink note centred near the bottom of the right page.</summary>
+        /// <summary>Cheap deterministic 0..1 hash (fixed mote layout, no Random state).</summary>
+        private static float Hash01(float seed)
+        {
+            float v = MathF.Sin(seed) * 43758.5453f;
+            return v - MathF.Floor(v);
+        }
+
+        /// <summary>Small faded-ink note centred near the bottom of the panel.</summary>
         private void DrawRightPageNote(string text, Color color, float fromBottom = 0.07f)
         {
-            var rp = RightPage;
-            float scale = Math.Min(0.56f, rp.Width * 0.9f / _dialogueFont.MeasureString(text).X);
+            var rp = RightPage; rp.X += MenuPanelDx;
+            float scale = Math.Min(0.56f, rp.Width * 0.86f / _dialogueFont.MeasureString(text).X);
             DrawCentered(text, rp.Center.X, rp.Bottom - rp.Height * fromBottom - 18f, scale, color);
         }
 
         private void DrawMainMenu()
         {
-            BeginCasebookSpread();
+            BeginMenuScene();
+            if (_titleSplash) { _spriteBatch.End(); return; }
 
-            var rp = RightPage;
-            DrawCentered("Contents", rp.Center.X, _mainMenuButtonRects[0].Y - 80f, 0.85f, UiInk);
-            DrawInkRule(rp.Center.X, _mainMenuButtonRects[0].Y - 22f, rp.Width * 0.30f);
+            int dx = MenuPanelDx;
+            var rp = RightPage; rp.X += dx;
+            DrawCentered("Contents", rp.Center.X, _mainMenuButtonRects[0].Y - 108f, 0.85f, UiInk);
+            DrawCentered(GAME_TAGLINE, rp.Center.X, _mainMenuButtonRects[0].Y - 60f, 0.5f, UiInk * 0.65f);
+            DrawInkRule(rp.Center.X, _mainMenuButtonRects[0].Y - 18f, rp.Width * 0.30f);
 
             for (int i = 0; i < _mainMenuButtonRects.Length; i++)
             {
                 bool enabled  = IsMenuItemEnabled(i);
-                bool selected = i == _menuIndex && enabled;
-                DrawUiButton(_mainMenuButtonRects[i], selected ? UiYellow : UiCream,
+                bool selected = i == _menuIndex && enabled && _menuRevealT >= 1f;
+                var  r        = _mainMenuButtonRects[i]; r.X += dx;
+                DrawUiButton(r, selected ? UiYellow : UiCream,
                              _mainMenuLabels[i], enabled: enabled, selected: selected,
                              maxLabelScale: 0.72f);
             }
@@ -139,7 +194,7 @@ namespace CatDetective
             else if (!IsMenuItemEnabled(0))
                 DrawRightPageNote("New here? The Tutorial teaches the ropes.", UiInk * 0.6f);
 
-            // Dev hint: tiny, on the desk edge.
+            // Dev hint: tiny, bottom-right corner.
             const string devHint = "F12 dev";
             var dSz = _dialogueFont.MeasureString(devHint) * 0.45f;
             _spriteBatch.DrawString(_dialogueFont, devHint,
@@ -151,7 +206,7 @@ namespace CatDetective
 
         private void DrawSettingsScreen()
         {
-            BeginCasebookSpread();
+            BeginMenuScene();
 
             var   rp         = RightPage;
             const float labelScale = 0.66f;
@@ -195,23 +250,22 @@ namespace CatDetective
         }
 
         /// <summary>
-        /// Menu + settings layout on the right page (called from UpdateLayout;
-        /// menus always run at the fixed menu canvas).
+        /// Menu + settings layout inside the parchment panel (called from
+        /// UpdateLayout; menus always run at the fixed menu canvas).
         /// </summary>
         private void LayoutMenuScreens()
         {
-            if (_notesBgTex == null) return;
             var rp = RightPage;
             int bw = (int)(rp.Width * 0.62f), bh = 56, gap = 16;
             int bx = rp.Center.X - bw / 2;
             int total = _mainMenuLabels.Length * bh + (_mainMenuLabels.Length - 1) * gap;
-            int by = rp.Y + (int)(rp.Height * 0.53f) - total / 2;
+            int by = rp.Y + (int)(rp.Height * 0.57f) - total / 2;
             _mainMenuButtonRects = new Rectangle[_mainMenuLabels.Length];
             for (int i = 0; i < _mainMenuButtonRects.Length; i++)
                 _mainMenuButtonRects[i] = new Rectangle(bx, by + i * (bh + gap), bw, bh);
 
-            // Settings: label above each control row, Back at the page foot.
-            int left = rp.X + (int)(rp.Width * 0.12f);
+            // Settings: label above each control row, Back at the panel foot.
+            int left = rp.X + (int)(rp.Width * 0.08f);
             int rowY = rp.Y + (int)(rp.Height * 0.30f);
             _settingsVolMinusRect = new Rectangle(left, rowY, 48, 52);
             _settingsVolCellRects = new Rectangle[10];

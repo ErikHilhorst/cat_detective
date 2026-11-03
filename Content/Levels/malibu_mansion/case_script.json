@@ -40,6 +40,10 @@
       "name": "Coco",
       "sprite": "Levels/malibu_mansion/pool_area/Interactables/inspect_socialite"
     },
+    "gloria": {
+      "name": "Gloria Gale, KMAL News",
+      "sprite": "Levels/malibu_mansion/reporter"
+    },
     "rudebeak": {
       "name": "Rudebeak",
       "sprite": "Levels/malibu_mansion/rudebeak"
@@ -89,16 +93,22 @@
     {
       "bg": "gate",
       "chyron": "MALIBU  -  THE VALE ESTATE",
+      "who": "gloria",
+      "pos": "left",
       "speaker": "Gloria Gale, KMAL News",
       "text": "Good evening. I'm Gloria Gale, live outside the Vale estate, where Hollywood's rudest bird has vanished from inside a locked house."
     },
     {
       "chyron": "BREAKING: STAR MACAW MISSING",
+      "who": "gloria",
+      "pos": "left",
       "speaker": "Gloria Gale, KMAL News",
       "text": "Rudebeak the macaw: star of three films, one documentary, and a talk-show incident we still cannot air. Witnesses say he was last heard squawking at eight o'clock sharp."
     },
     {
       "chyron": "LOCKDOWN UNTIL SUNRISE",
+      "who": "gloria",
+      "pos": "left",
       "speaker": "Gloria Gale, KMAL News",
       "text": "Police have sealed the house until sunrise. At dawn the gates reopen and the film trucks roll out - and whatever is hidden in that house could roll out with them."
     },
@@ -173,6 +183,8 @@
     },
     {
       "chyron": "LOCKDOWN UNTIL SUNRISE",
+      "who": "gloria",
+      "pos": "left",
       "speaker": "Gloria Gale, KMAL News",
       "text": "Somewhere in that house is a frightened bird - and somebody who knows exactly where he is. Back to you in the studio."
     },
@@ -413,6 +425,8 @@
     {
       "bg": "gate",
       "chyron": "MACAW FOUND SAFE",
+      "who": "gloria",
+      "pos": "left",
       "speaker": "Gloria Gale, KMAL News",
       "text": "Breaking news at sunrise: Rudebeak the macaw is home, safe, and - we are told - extremely rude about it."
     },

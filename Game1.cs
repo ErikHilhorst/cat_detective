@@ -270,6 +270,11 @@ namespace CatDetective
             { "Continue", "New Game", "Tutorial", "Settings", "Quit" };
 #endif
         private int         _menuIndex           = 1;   // default: NEW GAME
+        // Title splash (boot only): sleeping Dikkie + logo until any key/click,
+        // then _menuRevealT eases 0 -> 1 while the menu panel slides in.
+        private bool        _titleSplash         = true;
+        private float       _menuRevealT;
+        private Texture2D   _menuRoomTex = null!, _menuLogoTex = null!, _menuCatTex = null!;
         private Rectangle[] _mainMenuButtonRects = Array.Empty<Rectangle>();
         private Rectangle   _settingsBackRect;
         private Rectangle   _settingsVolMinusRect;
@@ -386,7 +391,10 @@ namespace CatDetective
             CreateUiTextures();   // cozy UI kit (Game1.UiStyle.cs)
             _notebookBgTex  = Content.Load<Texture2D>("Shared/ui_notebook_bg");
             _notesBgTex     = Content.Load<Texture2D>("Shared/ui_notebook_score_card");
-            LayoutMenuScreens();   // menu lives on this spread's right page
+            _menuRoomTex    = Content.Load<Texture2D>("Shared/menu_room");
+            _menuLogoTex    = Content.Load<Texture2D>("Shared/menu_logo");
+            _menuCatTex     = Content.Load<Texture2D>("Shared/menu_cat");
+            LayoutMenuScreens();   // menu lives on the parchment panel (Game1.MenuScreens.cs)
             _speechBubbleTex = Content.Load<Texture2D>("Shared/speech_bubble");
             _arrowTex        = Content.Load<Texture2D>("Shared/arrow");
 
@@ -794,6 +802,8 @@ namespace CatDetective
             _saveExists     = SaveSystem.SaveExists();
             _confirmNewGame = false;
             _menuIndex      = IsMenuItemEnabled(0) ? 0 : 1;
+            _titleSplash    = false;   // the splash is a boot-only moment
+            _menuRevealT    = 1f;
             _currentState   = GameState.MainMenu;
         }
 
@@ -1027,7 +1037,13 @@ namespace CatDetective
         {
             switch (_screenshotRoom)
             {
-                case "settings": _currentState = GameState.Settings; break;
+                case "settings": _titleSplash = false; _menuRevealT = 1f; _currentState = GameState.Settings; break;
+                case "title":    _currentState = GameState.MainMenu; break;   // boot splash
+                case "menu":
+                    _titleSplash  = false;
+                    _menuRevealT  = 1f;
+                    _currentState = GameState.MainMenu;
+                    break;
 
                 // Poster intro, fully typed; optional view arg = page index.
                 case "intro":
@@ -1325,6 +1341,11 @@ namespace CatDetective
                 (kbState.IsKeyDown(Keys.S) || kbState.IsKeyDown(Keys.Down)) &&
                 !(_prevKbState.IsKeyDown(Keys.S) || _prevKbState.IsKeyDown(Keys.Down));
 
+            // Any fresh key press (title splash: "press any key").
+            bool anyKeyPressed = false;
+            foreach (var k in kbState.GetPressedKeys())
+                if (!_prevKbState.IsKeyDown(k)) { anyKeyPressed = true; break; }
+
             _prevKbState = kbState;
 
             var  mouseState = Mouse.GetState();
@@ -1381,6 +1402,17 @@ namespace CatDetective
                 if (f12Pressed)
                 {
                     _currentState = GameState.DevMenu;
+                }
+                else if (_titleSplash)
+                {
+                    if (anyKeyPressed || clicked) _titleSplash = false;
+                }
+                else if (_menuRevealT < 1f)
+                {
+                    // Panel still sliding in: swallow input so the dismissing
+                    // click can never land on a button.
+                    _menuRevealT = Math.Min(1f, _menuRevealT +
+                        (float)gameTime.ElapsedGameTime.TotalSeconds / MENU_REVEAL_SECONDS);
                 }
                 else
                 {

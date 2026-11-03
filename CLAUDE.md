@@ -51,10 +51,14 @@ no `gathering` plays that ending as a cutscene (`AfterCaseOutro`).
 
 `Game1.GameState`: `MainMenu, Settings, CaseIntro, Playing, EndScene, DevMenu, Cutscene`. Boot = MainMenu.
 
-- **MainMenu** (`Game1.MenuScreens.cs`): drawn as Dikkie's open casebook on the desk (the clean
-  `ui_notebook_score_card` spread, already loaded - no extra web loads): left page = ink title
-  "Dikkie / Detective", tagline, idle Dikkie sprite; right page = "Contents" with cozy-kit
-  buttons. Settings uses the same spread. Menu labels are display-cased; `ActivateMainMenuItem`
+- **MainMenu** (`Game1.MenuScreens.cs`): staged in Dikkie's sunny study (`Shared/menu_room`
+  bg, `menu_logo` gold logo, `menu_cat` sleeping Dikkie on his blanket - sources in
+  `art trials/menu/`, resized). Boot shows a TITLE SPLASH (`_titleSplash`): big centred logo,
+  breathing cat, drifting z's + dust motes, "Click or press any key" pill; any key/click/tap
+  dismisses it (on web that gesture also starts music), then logo + cat glide left and a
+  parchment panel slides in from the right over `MENU_REVEAL_SECONDS` (input swallowed until
+  done) holding the cozy-kit buttons. Returning from a case skips the splash. Settings uses the
+  same scene/panel. Screenshots: `ui title` (splash) / `ui menu` / `ui settings`. Menu labels are display-cased; `ActivateMainMenuItem`
   matches them upper-cased. W/S + Enter or mouse/tap. CONTINUE only enabled while a save exists; NEW GAME over an
   existing save asks for a second Enter ("overwrite" confirm); TUTORIAL replays the tutorial (the first NEW GAME plays it automatically);
   F12 opens the legacy DevMenu scene picker; Esc quits. Menus run at a fixed 1456x816 canvas
@@ -83,6 +87,10 @@ no `gathering` plays that ending as a cutscene (`AfterCaseOutro`).
   narration beats. Esc: intro -> straight into the case; gathering -> skip to the board;
   ending -> last card. When a case has a script, it REPLACES the CaseIntro typewriter and the
   one-shot final board/EndScene:
+  - Malibu art: the `gate` bg is `Levels/malibu_mansion/front_gate.jpg` (sunset villa with
+    police tape + news van, from `art trials/menu/`); the reporter is cast `gloria`
+    (`Levels/malibu_mansion/reporter.png`, `pos: left`) on every beat she talks to camera
+    - NOT on lineup beats (a `who` outside the lineup would dim every face).
   - `intro` - played by `StartCaseIntro` (Malibu: 8:00 squawk cold open that PLANTS the
     "alive at 8" lie, 8:15 empty cage, news-van roll call introducing all ten suspects with
     one hook each - the Sound Guy is present in the lineup but never featured - the sunrise
@@ -314,7 +322,7 @@ Call them in that order from `Game1.Update()`. Do not merge them.
 - A layer-level `offsetx`/`offsety` on any layer shifts all its objects at parse time. The entrance Transfers layer uses offset `(-142, +192)` to align with the background art.
 
 ### Spawn point placement rule — critical
-The cat collision box is **~49 px wide (±25 px from center; ~56 px / ±28 when facing up) and 32 px tall** (from `Position.Y - 32` up to `Position.Y`; derived from the 350 px frame at scale 0.28/0.32 in `Cat.cs`). `verify_level.py` deliberately checks with a wider 70 px box as a safety margin. A spawn point that lands inside a transfer zone causes an instant re-trigger loop. When placing a `spawn_from_X` point, ensure the entire collision box clears the transfer zone:
+The cat collision box is **~49 px wide (±25 px from center; ~56 px / ±28 when facing up) and 32 px tall** (from `Position.Y - 32` up to `Position.Y`; derived from the 350 px frame at scale 0.28/0.32 in `Cat.cs`). `verify_level.py` deliberately checks with a wider 70 px box as a safety margin. Doors fire only on Enter / a second tap, so a spawn inside a transfer zone no longer loops - but the cat arrives with the "go back" prompt already showing; `verify_level.py` WARNs about it. When placing a `spawn_from_X` point, ensure the entire collision box clears the transfer zone:
 
 - **Y clearance**: `spawnY > zoneBottom + 32` (spawn below a zone) or `spawnY - 32 > zoneTop` adjusted accordingly
 - **X clearance**: `spawnX - 35 > zoneRight` or `spawnX + 35 < zoneLeft` (spawn beside a zone)

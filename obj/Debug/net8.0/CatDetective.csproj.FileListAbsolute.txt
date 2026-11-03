@@ -293,3 +293,8 @@ C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\training_room\Interactables\inspect_old_dog.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\training_room\Interactables\inspect_saucer.xnb
 C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\tutorial\training_room\Interactables\inspect_water_bowl.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\menu_cat.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\menu_logo.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Shared\menu_room.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\front_gate.xnb
+C:\Users\larry\Projecten\cat_detective\bin\Debug\net8.0\Content\Levels\malibu_mansion\reporter.xnb

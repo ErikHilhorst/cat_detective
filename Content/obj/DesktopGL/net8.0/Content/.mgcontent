@@ -15,6 +15,11 @@
     <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/walk_animation_upward.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/ui_notebook_bg.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/ui_notebook_score_card.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/front_gate.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Levels/malibu_mansion/reporter.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/menu_room.jpg</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/menu_logo.png</File>
+    <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/menu_cat.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/ui_tab.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/who.png</File>
     <File>C:/Users/larry/Projecten/cat_detective/Content/Shared/how.png</File>
@@ -96,6 +101,11 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File>Shared/case_poster.jpg</File>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
