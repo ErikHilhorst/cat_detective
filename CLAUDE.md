@@ -93,7 +93,8 @@ no `gathering` plays that ending as a cutscene (`AfterCaseOutro`).
     - NOT on lineup beats (a `who` outside the lineup would dim every face).
   - `intro` - played by `StartCaseIntro` (Malibu: 8:00 squawk cold open that PLANTS the
     "alive at 8" lie, 8:15 empty cage, news-van roll call introducing all ten suspects with
-    one hook each - the Sound Guy is present in the lineup but never featured - the sunrise
+    one hook each - Milo Marsh gets a neutral beat after Wexler ("the quiet one in the big
+    headphones"; playtest: he was the only suspect never introduced) - the sunrise
     stakes, and Reyes stating the three case questions: who / how out of a locked cage /
     where is he now).
   - `gathering` - the FINAL SOLVE button (same lock) starts it: intro beats, then per step
@@ -369,7 +370,7 @@ A safe margin of ~15 px beyond the minimum is recommended.
   box that covers the unreachable furniture. Y-sort follows the sprite's resulting bottom
   edge. Fine-tune with `offsetX`/`offsetY` (draw-only, no depth change).
 - `interactables[].revealName` + `revealNameOnClue` — dialogue-label name swap once the reveal
-  clue is unlocked (The Sound Guy -> "D. Marsh" after `d_marsh_sound_guy`). Toasts deliberately
+  clue is unlocked (The Sound Guy -> "Milo Marsh" after `d_marsh_sound_guy`). Toasts deliberately
   keep the pre-reveal `name` (anti-leak rule).
 - `interactables[].altText` (+ `altTextRequiresClue` / `altTextRequiresSolve`, AND-combined) —
   alternate intro shown once its gates are satisfied, so characters react to investigation
@@ -483,7 +484,7 @@ topics gated on that room (with a queued "X might have some explaining to do..."
   `requiresSolve` topics the solve unlocks - an earned reward pointer (via `_solveGateIndex`,
   scanned in `BuildGateIndex`). Everything else is discovered through the speech-bubble
   indicator. Character names come from the interactable's optional `name` field (fallback:
-  prettified id); keep D. Marsh's as "The Sound Guy" so a toast can't leak his name early.
+  prettified id); keep Milo Marsh's as "The Sound Guy" so a toast can't leak his name early.
   Toasts are **queued** and the timer holds while the dialogue box is open.
 - **Unheard-topic indicator.** Characters with at least one available (gate satisfied) topic the
   player has not heard show a bobbing speech bubble above their trigger zone (Pass 4b,
@@ -539,7 +540,7 @@ The canvas resizes automatically when switching between room sizes.
 
 **Cast**: Vivienne Vale (Movie Star), Derek (her Husband), Chip Sterling (Manager),
 Officer Reyes (Police), Rosa (Maid), Basil (Gardener), Wexler (Director),
-Petra (Bird Handler), Coco (Socialite), **D. Marsh a.k.a. the Sound Guy — the culprit**.
+Petra (Bird Handler), Coco (Socialite), **Milo Marsh a.k.a. the Sound Guy — the culprit** (was "D. Marsh" - renamed after a playtest found the name forgettable; clue ids keep `d_marsh_*` for save-compat).
 Rudebeak is the missing macaw.
 
 **True timeline** (the gardener and the sound guy interlock — revealed only through clues):
@@ -562,7 +563,7 @@ Rudebeak is the missing macaw.
   Basil, still hiding, witnesses it (straw hat at the photo's edge; his gated confession).
 - 7:00 PM — Two equipment cases are signed in at the bedroom wing (`d_marsh_7pm` "Manifest
   Entry" + `time_700pm`, the scribbled signature split out as `scrawled_signature`) while the
-  production schedule has D. Marsh in the library. Rosa's dinner cart is also in the wing at
+  production schedule has Milo Marsh in the library. Rosa's dinner cart is also in the wing at
   7:00 (duty roster, service tray) and the grips wheel lamp returns through at 7:20
   (`time_720pm`; Wexler mentions it too) — three sets of wheels in one hour. Derek (second
   floor) hears the heavy rumbles from DOWNSTAIRS - entrance hall, then living room - never
@@ -596,11 +597,12 @@ entrance registry (the crew column opens at 6:30 with one lonely signature, "a s
 long looping tail", the rest of the crew piles in just before seven -> `early_scrawl`), the
 bedroom manifest's 7:00 cases line (`scrawled_signature`), and the library session log's
 initials (`log_initials`). It gives Marsh's 6:30 opportunity a source of its own. The pool
-call sheet is a 4-name crew list (grips, camera, lights, D. Marsh) and Coco cannot tell the
+call sheet is a 4-name crew list (grips, camera, lights, Milo Marsh) and Coco cannot tell the
 crew apart ("they all wear black") - no room before the library singles Marsh out. Each room's
 question and finale output are in `research/room_contracts.md`; keep new content inside them.
 
-**Deliberate pacing**: the early rooms (entrance, living room, bedroom) never name D. Marsh.
+**Deliberate pacing**: the early rooms (entrance, living room, bedroom) never tie Milo Marsh to evidence
+(the intro roll call names him like everyone else, with a neutral hook).
 The registry lists the whole household; the manifest signature is a scrawl; the cage-side
 evidence is a subtle cable plus suspect items from three characters (glove = Basil,
 lemon polish cloth = Rosa, vocab ledger = Vivienne-blames-Rosa). WHO only firms up in the

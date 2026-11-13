@@ -14,7 +14,7 @@ off before the text is rewritten.
 ### 1a. Case questions (stated by Reyes in the new intro)
 | # | Question | Answer | Owned by |
 |---|----------|--------|----------|
-| Q1 | **Who** took him? | D. Marsh, the sound guy | entrance (seed) -> bedroom -> pool -> library (ID) |
+| Q1 | **Who** took him? | Milo Marsh, the sound guy | entrance (seed) -> bedroom -> pool -> library (ID) |
 | Q2 | **How** did he get out of a locked cage? | Basil forced the latch ~5:50, the bird let himself out | living room (latch) -> kitchen (Basil inside 5:45) -> garden (shears, confession) |
 | Q3 | **Where** is he now? | in a foam-lined case behind the potting shed | garden (cases) + gathering reveal |
 | QA | **When** did he really vanish? (the Big Lie) | before 6:00; the 8:00 squawk was a speaker | bedroom (plant) -> living room (crack + proof) |
@@ -47,7 +47,7 @@ player's own deduction (a "same handwriting" match):
   long looping tail*. (Same words; the match is the player's.)
 - **Library:** every page of the session log is initialed with *a scribble with a long
   looping tail*, the log that ends "TAKE 47 - RUINED". (This ties the scrawl to the sound
-  desk, and the badge says D. Marsh.)
+  desk, and the badge says Milo Marsh.)
 - **Pool:** the call sheet shows the whole crew called for 7:00, Marsh one name among several.
 
 Rule: the three sources use the identical phrase and never say "the same". This keeps the
@@ -219,7 +219,7 @@ Today: R1 2, R2 2, R5 2, R8 2 - the strongest room, but it names Marsh **[PT-S]*
 
 Changes:
 - **The call sheet becomes a crew list** under "7:00 PM - Crew call": grips (west terrace),
-  camera (living room), lights (hall), sound - D. Marsh (library). One name among four
+  camera (living room), lights (hall), sound - Milo Marsh (library). One name among four
   (Christie's "hide it in a list"). `production_schedule` keeps its id; the chip name becomes
   "Crew Call Sheet".
 - Coco's schedule topic: "that man" -> she can't tell the crew apart ("they all wear black,

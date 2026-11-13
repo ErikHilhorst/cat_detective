@@ -329,9 +329,9 @@
       "roomId": "library",
       "isMacroClue": true,
       "category": "Who",
-      "name": "Sound Guy: D. Marsh",
-      "context": "The Sound Guy's name badge identifies him as D. Marsh.",
-      "inspectorDescription": "Badge says D. Marsh. He said 'nice cat' in a voice half an octave too high. His headphones aren't plugged into anything."
+      "name": "Sound Guy: Milo Marsh",
+      "context": "The Sound Guy's name badge identifies him as Milo Marsh.",
+      "inspectorDescription": "Badge says Milo Marsh. He said 'nice cat' in a voice half an octave too high. His headphones aren't plugged into anything."
     },
     {
       "id": "directors_shot_list",
@@ -447,7 +447,7 @@
       "isMacroClue": false,
       "category": "WhereWhen",
       "name": "Crew Call Sheet",
-      "context": "The crew's call sheet, crumpled and thrown away. Smoothed flat, it calls the whole crew to their posts at once: grips, camera, lights - and D. Marsh, library, audio setup.",
+      "context": "The crew's call sheet, crumpled and thrown away. Smoothed flat, it calls the whole crew to their posts at once: grips, camera, lights - and Milo Marsh, library, audio setup.",
       "inspectorDescription": "Everyone called for the same minute. Somebody balled it up and threw it at the pool. Schedules only mean something when people follow them."
     },
     {

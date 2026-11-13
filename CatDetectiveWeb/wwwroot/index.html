@@ -129,6 +129,10 @@
                 window.gamePixelRatio = w / Math.max(1, window.innerWidth);
             }
             window.gameGetPixelRatio = () => window.gamePixelRatio || 1;
+            // CSS width of the canvas: pointer coords (CSS px) are mapped onto
+            // the REAL backbuffer width (Viewport) - KNI does not always keep the
+            // backbuffer at canvas.width, so devicePixelRatio alone can be wrong.
+            window.gameGetCssWidth = () => canvas.clientWidth || window.innerWidth || 1;
             window.addEventListener('resize', resizeCanvas);
             resizeCanvas();
 
@@ -136,7 +140,7 @@
 
             // Keep the itch.io page from scrolling on game keys.
             window.addEventListener("keydown", function (e) {
-                if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " "].indexOf(e.key) > -1)
+                if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " ", "F1"].indexOf(e.key) > -1)
                     e.preventDefault();
             }, false);
 

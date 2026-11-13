@@ -18,10 +18,10 @@
         },
         {
           "prompt": "Sit on his notebook",
-          "text": "He slides it out from under you with the ease of a man who has worked with talent before.\n'The crew? Grips [hauled the lamps back] after dinner and died - heroes, all of them. Camera department is unionized. And [Marsh] - Marsh is my rock. Used to file a complaint about that bird every single day. Hasn't said a word in two weeks. Personal growth, probably.'",
+          "text": "He slides it out from under you with the ease of a man who has worked with talent before.\n'The crew? Grips [hauled the lamps back] after dinner and died - heroes, all of them. Camera department is unionized. And [Milo] - Milo Marsh is my rock. Used to file a complaint about that bird every single day. Hasn't said a word in two weeks. Personal growth, probably.'",
           "keywords": [
             { "displayText": "hauled the lamps back", "id": "lamp_returns_720", "color": "misc" },
-            { "displayText": "Marsh", "id": "d_marsh_sound_guy", "color": "crime" }
+            { "displayText": "Milo", "id": "d_marsh_sound_guy", "color": "crime" }
           ]
         },
         {
@@ -39,12 +39,12 @@
     {
       "id": "inspect_sound_guy",
       "name": "The Sound Guy",
-      "revealName": "D. Marsh",
+      "revealName": "Milo Marsh",
       "revealNameOnClue": "d_marsh_sound_guy",
-      "text": "The [Sound Guy]'s badge reads '[D. Marsh].' He is very busy re-coiling a cable that was already coiled.\n'Nice cat,' he says, half an octave too high. The coil slips out of his hands.",
+      "text": "The [Sound Guy]'s badge reads '[Milo Marsh].' He is very busy re-coiling a cable that was already coiled.\n'Nice cat,' he says, half an octave too high. The coil slips out of his hands.",
       "keywords": [
         { "displayText": "Sound Guy", "id": "d_marsh_sound_guy", "color": "crime" },
-        { "displayText": "D. Marsh", "id": "d_marsh_sound_guy", "color": "crime" }
+        { "displayText": "Milo Marsh", "id": "d_marsh_sound_guy", "color": "crime" }
       ],
       "topics": [
         {

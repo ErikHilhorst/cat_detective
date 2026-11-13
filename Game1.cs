@@ -1289,7 +1289,7 @@ namespace CatDetective
 
         /// <summary>
         /// Dialogue-label name: applies the revealName swap ("The Sound Guy" ->
-        /// "D. Marsh") once its clue is found. Toasts deliberately do NOT use this
+        /// "Milo Marsh") once its clue is found. Toasts deliberately do NOT use this
         /// (BuildGateIndex captures the pre-reveal name - the anti-leak rule).
         /// </summary>
         /// <summary>Opens an interactable's dialogue (Enter, or the second tap).</summary>
@@ -3153,6 +3153,31 @@ namespace CatDetective
             // ════════════════════════════════════════════════════════════════
             if (_settings.CrtEnabled)
                 _crt.Draw(_spriteBatch, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+            // F1 pointer crosshair (every state): where the game THINKS the
+            // pointer is, plus the raw->game mapping numbers. For chasing
+            // click offsets on web builds (DPI scaling, itch iframes).
+            if (_showDebug)
+            {
+                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                var  pp = _pointerGamePos;
+                var  ch = Color.Magenta;
+                _spriteBatch.Draw(_debugPixel, new Rectangle(pp.X - 18, pp.Y - 1, 36, 3), ch);
+                _spriteBatch.Draw(_debugPixel, new Rectangle(pp.X - 1, pp.Y - 18, 3, 36), ch);
+                _spriteBatch.Draw(_debugPixel, new Rectangle(pp.X - 4, pp.Y - 4, 9, 9), Color.White);
+#if BLAZORGL
+                string info = $"raw {_pointer.RawPosition.X},{_pointer.RawPosition.Y} -> game {pp.X},{pp.Y} | " +
+                              $"buf {WasmScale.WindowWidth}x{WasmScale.WindowHeight} ratio {WasmScale.PixelRatio:0.00} | " +
+                              $"canvas {SCREEN_WIDTH}x{SCREEN_HEIGHT}";
+#else
+                string info = $"raw {_pointer.RawPosition.X},{_pointer.RawPosition.Y} -> game {pp.X},{pp.Y} | canvas {SCREEN_WIDTH}x{SCREEN_HEIGHT}";
+#endif
+                var size = _dialogueFont.MeasureString(info) * 0.6f;
+                _spriteBatch.Draw(_debugPixel, new Rectangle(8, SCREEN_HEIGHT - (int)size.Y - 14, (int)size.X + 12, (int)size.Y + 8), Color.Black * 0.7f);
+                _spriteBatch.DrawString(_dialogueFont, info, new Vector2(14, SCREEN_HEIGHT - size.Y - 10), Color.Yellow,
+                    0f, Vector2.Zero, 0.6f, SpriteEffects.None, 0f);
+                _spriteBatch.End();
+            }
 
             // ── Blit render target to the OS window at display scale ─────────
 #if BLAZORGL

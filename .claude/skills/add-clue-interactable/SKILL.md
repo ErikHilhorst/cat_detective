@@ -56,7 +56,7 @@ Objects use a single `text`. **Characters** additionally get an interrogation me
 `text` becomes the intro (first meeting beat), and `topics[]` lists 3-4 selectable entries.
 Characters also get a `name` field ("Basil", "Officer Reyes") — it feeds the gate-unlock
 toast ("Basil (Garden) might have some explaining to do..."). Use a non-spoiler name if the
-character's real name is itself a reveal (D. Marsh is "The Sound Guy").
+character's real name is itself a reveal (Milo Marsh is "The Sound Guy").
 - `prompt`: a **cat action**, not a question — the detective cannot talk ("Stare at him. Do not
   blink.", "Sit hopefully beneath the treat jar"). One line, distinct per character; never reuse
   a generic "ask about X" phrasing across characters.

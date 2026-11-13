@@ -256,7 +256,7 @@ instinct, not a confession. Though if it WERE a confession, the ratings would be
 (His crew alibi also gives the lamps a voice now: the grips "**hauled the lamps back** after
 dinner and died - heroes, all of them" - so the 7:20 wheels are heard of before the manifest.)
 
-And then there is **The Sound Guy**. His badge reads **D. Marsh** - the dialogue label only
+And then there is **The Sound Guy**. His badge reads **Milo Marsh** - the dialogue label only
 switches from "The Sound Guy" to his name once the badge clue is found (and cross-room toasts
 deliberately keep calling him The Sound Guy so the name never leaks early). He is very busy
 re-coiling a cable that was already coiled. "Nice cat," he says, half an octave too high.
@@ -289,11 +289,11 @@ RUINED. BIRD. AGAIN." - the handwriting angrier with every page, the last page t
 
 **Local solve:** "One crew member has an alibi nobody asked for: [__]. Behind his mixer, the
 [__] leaves the room inside the wall - and the log by his chair is one long grudge, page after
-page: the [__]." (Answers: D. Marsh / Audio Cable / Ruined Takes.)
+page: the [__]." (Answers: Milo Marsh / Audio Cable / Ruined Takes.)
 
 | Clue | Id | Category | Time |
 |---|---|---|---|
-| Sound Guy: D. Marsh (M) | `d_marsh_sound_guy` | Who | - |
+| Sound Guy: Milo Marsh (M) | `d_marsh_sound_guy` | Who | - |
 | Audio Cable (M) | `audio_cable` | What | - |
 | Ruined Takes (M) | `ruined_takes` | Why | - |
 | 'The Cases Are EMPTY' (M)(C) | `knew_cases_empty` | Who | - |
@@ -440,7 +440,7 @@ The objects close the trap:
   behind the potting shed: a **straw hat**, peeking. (One photo, two suspects placed: the
   snatcher in motion, and Basil the witness - hiding, not working.)
 - The **Crumpled Schedule**: a ball of paper, thrown at the pool with feeling. It missed.
-  Batted flat, it reads: "7:00 PM - Crew Assignments: **D. Marsh - Library (audio setup)**."
+  Batted flat, it reads: "7:00 PM - Crew Assignments: **Milo Marsh - Library (audio setup)**."
   The alibi Marsh recited in the library, in writing - and the photo says its owner was doing
   cardio through the begonias with two giant cases fifteen minutes early. Somebody balled it
   up and threw it away; schedules only mean something when people follow them.
@@ -485,7 +485,7 @@ What actually happened, assembled from the clues that carry each timestamp:
 | 6:30 PM | The crew column in the registry begins - one arrival is half an hour ahead of its own call sheet, though nothing in the game says so | `guest_registry`, `time_630pm` |
 | 6:45-6:47 PM | A figure wheels two big cases through the garden; finds Rudebeak soggy and docile; Coco sees it, her selfie catches it - and catches Basil's straw hat watching from behind the shed | `eyewitness_645pm`, `selfie_figure_cases`, `straw_hat_witness` |
 | 6:55 PM | Manifest: catering ice run | manifest (`inspect_delivery_manifest`) |
-| 7:00 PM | Two equipment cases signed into the east wing under a scribble - while the schedule has D. Marsh in the library. Rosa's dinner cart is in the wing the same hour. Derek hears wheels - twice: once with soup smell, once without; the soupless one smelled of cable grease | `d_marsh_7pm`, `scrawled_signature`, `production_schedule`, `dinner_cart_7pm`, `husband_hall_7pm`, `hall_rumble_no_soup`, `cable_grease` |
+| 7:00 PM | Two equipment cases signed into the east wing under a scribble - while the schedule has Milo Marsh in the library. Rosa's dinner cart is in the wing the same hour. Derek hears wheels - twice: once with soup smell, once without; the soupless one smelled of cable grease | `d_marsh_7pm`, `scrawled_signature`, `production_schedule`, `dinner_cart_7pm`, `husband_hall_7pm`, `hall_rumble_no_soup`, `cable_grease` |
 | 7:10 PM | Linen return, housekeeping | manifest |
 | 7:20 PM | Grip department wheels lamp returns through the wing | `lamp_returns_720` |
 | before lockdown | The cases end up stashed behind the potting shed under a tarp, boot prints deep at the toe | `sound_proof_cases`, `boot_prints_shed` |
@@ -512,7 +512,7 @@ the [WHY]."
 | WHEN-1 | 6:30 PM | "half an hour before his own call" - the call (7:00) is on the crumpled schedule; the crew column start (6:30) is in the registry. The player does the subtraction. |
 | WHEN-2 | 6:47 PM | "caught on camera" - the phone's exact timestamp beats Coco's rounded 6:45. |
 | WHEN-3 | 7:00 PM | the manifest hour, against 7:20 (the lamps) - broken by readable names on the manifest and Rosa's cable grease. |
-| WHO | Sound Guy: D. Marsh | vs Derek (ultimatum in writing), Rosa (skull + keys), Basil (broke the latch), 'The Cases Are EMPTY' (the slip as pseudo-suspect chip) |
+| WHO | Sound Guy: Milo Marsh | vs Derek (ultimatum in writing), Rosa (skull + keys), Basil (broke the latch), 'The Cases Are EMPTY' (the slip as pseudo-suspect chip) |
 | WHAT | Sound-Proof Cases | vs Derek's Headphones, Broken Latch, Bent Shears, Smell of Cable Grease |
 | HOW | Hidden Speaker | vs Derek's Headphones (the rival audio device), same What pool |
 | WHY | Ruined Takes | vs Derek's Ultimatum, Insulted Cooking, Cages Are Prisons, PR Disaster |

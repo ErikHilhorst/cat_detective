@@ -81,7 +81,7 @@ namespace CatDetective.Entities
 
         /// <summary>
         /// Replacement display name shown once <see cref="RevealNameOnClue"/> is
-        /// unlocked ("The Sound Guy" -> "D. Marsh"). Empty = no reveal.
+        /// unlocked ("The Sound Guy" -> "Milo Marsh"). Empty = no reveal.
         /// Toast names deliberately keep <see cref="DisplayName"/> (anti-leak rule).
         /// </summary>
         public string RevealName       { get; }

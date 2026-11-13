@@ -66,8 +66,9 @@ namespace CatDetective.Systems
         public static int GameW = 1456;
         public static int GameH = 816;
 
-        // Canvas backing pixels per CSS pixel (index.html sizes the canvas at
-        // devicePixelRatio, capped at 2). KNI reports pointer coordinates in
+        // Backbuffer pixels per CSS pixel = Viewport width / canvas CSS width
+        // (NOT devicePixelRatio - the backbuffer does not always follow the
+        // canvas.width index.html sets). KNI reports pointer coordinates in
         // CSS pixels, so ToGame scales them up by this first.
         public static float PixelRatio = 1f;
         private static IJSInProcessRuntime? _js;
@@ -80,7 +81,13 @@ namespace CatDetective.Systems
         {
             try
             {
-                float r = _js?.Invoke<float>("gameGetPixelRatio") ?? 1f;
+                // Backbuffer px per CSS px, measured from the actual viewport
+                // (WindowWidth is snapshotted just before this call). Using
+                // devicePixelRatio here broke clicks on 125%/150% Windows
+                // scaling: KNI kept the backbuffer at CSS size, so every
+                // pointer landed 25-50% too far right/down (itch playtest).
+                float css = _js?.Invoke<float>("gameGetCssWidth") ?? 0f;
+                float r = css > 0.5f && WindowWidth > 0 ? WindowWidth / css : 1f;
                 PixelRatio = r > 0.1f ? r : 1f;
             }
             catch { PixelRatio = 1f; }

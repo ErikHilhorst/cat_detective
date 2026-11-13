@@ -33,7 +33,7 @@
       "sprite": "Levels/malibu_mansion/library/Interactables/inspect_director"
     },
     "marsh": {
-      "name": "The Sound Guy",
+      "name": "Milo Marsh",
       "sprite": "Levels/malibu_mansion/library/Interactables/inspect_sound_guy"
     },
     "coco": {
@@ -166,6 +166,13 @@
       "chyron": "WEXLER - DIRECTOR",
       "lineup": ["vivienne", "derek", "chip", "petra", "rosa", "basil", "wexler", "marsh", "coco", "reyes"],
       "text": "Director Wexler, in town shooting a documentary about the star. His whole crew is stuck in there too - grips, camera, lights and sound - with more carts and road cases than a moving company."
+    },
+    {
+      "who": "marsh",
+      "speaker": "Gloria Gale, KMAL News",
+      "chyron": "MILO MARSH - SOUND",
+      "lineup": ["vivienne", "derek", "chip", "petra", "rosa", "basil", "wexler", "marsh", "coco", "reyes"],
+      "text": "Among them, Milo Marsh, the sound man - the quiet one in the big headphones. Colleagues say nothing gets past his ears."
     },
     {
       "who": "coco",
@@ -347,19 +354,19 @@
         "intro": [
           {
             "lineup": ["vivienne", "derek", "chip", "petra", "rosa", "basil", "wexler", "marsh", "coco", "reyes"],
-            "text": "Every head in the room turns toward the crew. In the corner, the Sound Guy is coiling a cable that is already coiled."
+            "text": "Every head in the room turns toward the crew. In the corner, Milo Marsh, the sound guy, is coiling a cable that is already coiled."
           },
           {
             "who": "marsh",
             "fx": ["shake"],
             "text": "Don't look at me. I was in the LIBRARY at seven. Audio setup. It's on the schedule! Everybody check the schedule!"
           },
-          { "who": "wexler", "pos": "right", "text": "Marsh? Marsh is my rock. He hasn't complained about that bird in two weeks." }
+          { "who": "wexler", "pos": "right", "text": "Milo? Milo Marsh is my rock. He hasn't complained about that bird in two weeks." }
         ],
         "sentence": "In the book by the front door, [signature] opens the crew column at [WHEN], though the crew wasn't called until seven. At [WHEN] Coco's photo caught him rolling cases through the garden - and at [WHEN] those same cases went past the bedrooms on the wing's delivery list, signed with [scrawl].",
         "answers": ["early_scrawl", "time_630pm", "time_647pm", "time_700pm", "scrawled_signature"],
         "bank": ["early_scrawl", "scrawled_signature", "log_initials", "household_roster", "straw_hat_witness", "the_director", "time_545pm", "time_600pm", "time_630pm", "time_645pm", "time_647pm", "time_700pm", "time_720pm", "time_800pm", "time_815pm"],
-        "wrongLine": "The Sound Guy: 'See? It doesn't add up!'",
+        "wrongLine": "Milo: 'See? It doesn't add up!'",
         "success": [
           {
             "stamp": "POUNCE!",
@@ -383,12 +390,12 @@
         "sentence": "The [initials] on the mixing desk's log carry the same tail: [WHO], with a grudge called the [WHY]. Before the lockdown Coco watched the cases make a [return trip] to the shed, tagged for the truck - and Rudebeak spent the evening in the dark, padded silence of the [WHAT].",
         "answers": ["log_initials", "d_marsh_sound_guy", "ruined_takes", "cases_came_back", "sound_proof_cases"],
         "bank": ["log_initials", "d_marsh_sound_guy", "ruined_takes", "cases_came_back", "sound_proof_cases", "early_scrawl", "scrawled_signature", "the_director", "derek_the_husband", "the_maid", "the_gardener", "knew_cases_empty", "cases_tagged_empty", "lamp_returns_720", "eyewitness_645pm", "headphone_box", "marsh_headphones", "audio_cable", "couch_cable", "documentary_camera", "director_notes", "directors_shot_list", "insulted_cooking", "basil_free_the_bird", "star_note_to_husband", "pr_disaster"],
-        "wrongLine": "The Sound Guy: 'Ha! Wrong! ...I mean, obviously wrong.'",
+        "wrongLine": "Milo: 'Ha! Wrong! ...I mean, obviously wrong.'",
         "success": [
           {
             "stamp": "GOTCHA!",
             "fx": ["flash", "shake"],
-            "text": "Dikkie leaps out of the cage, lands squarely in the Sound Guy's lap, and stares into his soul. Nobody has ever out-waited a cat."
+            "text": "Dikkie leaps out of the cage, lands squarely in Milo's lap, and stares into his soul. Nobody has ever out-waited a cat."
           },
           {
             "who": "marsh",
@@ -415,7 +422,7 @@
             "who": "marsh",
             "text": "In there, he was quiet. For the first time all shoot, it was QUIET. I was going to roll him out with the trucks at sunrise. Let him go somewhere nice. Somewhere far."
           },
-          { "who": "reyes", "text": "D. Marsh, you're coming with me. Bring your headphones. The plugged-in kind." }
+          { "who": "reyes", "text": "Milo Marsh, you're coming with me. Bring your headphones. The plugged-in kind." }
         ]
       }
     ]

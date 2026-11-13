@@ -77,7 +77,7 @@ namespace CatDetective.Map
         [JsonPropertyName("offsetY")]  public int                     OffsetY  { get; set; } = 0;
         /// <summary>Fallback sprite content path (e.g. "Shared/placeholder_object").</summary>
         [JsonPropertyName("texture")]  public string                  Texture  { get; set; } = "";
-        /// <summary>Display name swap once the reveal clue is found ("The Sound Guy" -> "D. Marsh").</summary>
+        /// <summary>Display name swap once the reveal clue is found ("The Sound Guy" -> "Milo Marsh").</summary>
         [JsonPropertyName("revealName")]           public string RevealName           { get; set; } = "";
         [JsonPropertyName("revealNameOnClue")]     public string RevealNameOnClue     { get; set; } = "";
         /// <summary>Alternate intro once its gates are satisfied; brackets must map to the regular keywords.</summary>

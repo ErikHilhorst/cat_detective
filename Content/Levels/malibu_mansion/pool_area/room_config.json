@@ -61,7 +61,7 @@
     {
       "id": "inspect_production_schedule",
       "name": "Crumpled Schedule",
-      "text": "A ball of paper, crumpled with feeling and thrown at the pool. It missed. You bat it flat. It is the crew call sheet - under '[7:00 PM] - [Crew call]:' it reads:\n- Grips - west terrace (lamps)\n- Camera - living room\n- Lights - front hall\n- D. Marsh - library (audio setup)",
+      "text": "A ball of paper, crumpled with feeling and thrown at the pool. It missed. You bat it flat. It is the crew call sheet - under '[7:00 PM] - [Crew call]:' it reads:\n- Grips - west terrace (lamps)\n- Camera - living room\n- Lights - front hall\n- Milo Marsh - library (audio setup)",
       "keywords": [
         { "displayText": "7:00 PM", "id": "time_700pm", "color": "plot" },
         { "displayText": "Crew call", "id": "production_schedule", "color": "misc" }
